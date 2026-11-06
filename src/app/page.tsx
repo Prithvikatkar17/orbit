@@ -1,35 +1,29 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   CheckCircle2,
   Clock,
-  Calendar as CalendarIcon,
   Repeat,
   Plus,
-  Sparkles,
   ArrowRight,
-  Inbox,
   ShieldCheck,
 } from "lucide-react";
 import { db } from "@/lib/db/client";
 import { useUIStore } from "@/lib/stores/ui-store";
 import { LegacyMigrationBanner } from "@/components/legacy-migration-banner";
 import { CATEGORY_ICONS } from "@/lib/constants";
+import { useTodayDate } from "@/lib/utils/dates";
 
 export default function HomePage() {
   const { openQuickCapture } = useUIStore();
-  const [todayStr, setTodayStr] = useState("");
-
-  useEffect(() => {
-    setTodayStr(new Date().toLocaleDateString("en-CA"));
-  }, []);
+  const todayStr = useTodayDate();
 
   // Live queries from Dexie
   const tasks = useLiveQuery(() => db.tasks.toArray()) ?? [];
-  const habits = useLiveQuery(() => db.habits.where("isActive").equals(1).toArray()) ?? [];
+  const habits = useLiveQuery(() => db.habits.filter((h) => h.isActive).toArray()) ?? [];
   const todayLogs = useLiveQuery(
     () => (todayStr ? db.habitLogs.where("date").equals(todayStr).toArray() : []),
     [todayStr]

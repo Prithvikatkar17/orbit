@@ -1,4 +1,5 @@
 export const DEFAULT_CATEGORIES = [
+  { name: "Inbox", icon: "📥", color: "#64748b", module: "inbox" as const },
   { name: "Task", icon: "📌", color: "#6366f1", module: "task" as const },
   { name: "Goal", icon: "🎯", color: "#ec4899", module: "task" as const },
   { name: "Idea", icon: "💡", color: "#f59e0b", module: "task" as const },
@@ -10,6 +11,7 @@ export const DEFAULT_CATEGORIES = [
 ];
 
 export const CATEGORY_ICONS: Record<string, string> = {
+  Inbox: "📥",
   Task: "📌",
   Goal: "🎯",
   Idea: "💡",
@@ -18,6 +20,7 @@ export const CATEGORY_ICONS: Record<string, string> = {
   Learn: "📚",
   Buy: "🛒",
   Habit: "🌱",
+  inbox: "📥",
   task: "📌",
   goal: "🎯",
   idea: "💡",
@@ -28,4 +31,3 @@ export const CATEGORY_ICONS: Record<string, string> = {
   buy: "🛒",
   habit: "🌱",
 };
-

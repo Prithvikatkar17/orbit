@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { Download, AlertTriangle, CheckCircle, ArrowRight, X } from "lucide-react";
+import React, { useState, useSyncExternalStore } from "react";
+import { Download, CheckCircle, ArrowRight, X } from "lucide-react";
 import {
   detectLegacyData,
   analyzeLegacyData,
@@ -10,19 +9,25 @@ import {
   type MigrationPreview,
 } from "@/lib/utils/migrate-legacy";
 
+function subscribeLegacy(cb: () => void) {
+  if (typeof window === "undefined") return () => {};
+  window.addEventListener("storage", cb);
+  return () => window.removeEventListener("storage", cb);
+}
+
 export function LegacyMigrationBanner() {
-  const [hasLegacy, setHasLegacy] = useState(false);
+  const hasLegacy = useSyncExternalStore(
+    subscribeLegacy,
+    detectLegacyData,
+    () => false
+  );
+  const [dismissed, setDismissed] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [preview, setPreview] = useState<MigrationPreview | null>(null);
   const [isImporting, setIsImporting] = useState(false);
   const [importResult, setImportResult] = useState<string | null>(null);
 
-  useEffect(() => {
-    const legacyExists = detectLegacyData();
-    setHasLegacy(legacyExists);
-  }, []);
-
-  if (!hasLegacy) return null;
+  if (!hasLegacy || dismissed) return null;
 
   async function handleOpenPreview() {
     const data = await analyzeLegacyData();
@@ -37,7 +42,7 @@ export function LegacyMigrationBanner() {
       setImportResult(
         `Imported ${res.importedTasks} tasks, ${res.importedHabits} habits (${res.importedLogs} logs), and ${res.importedLibrary} library entries.`
       );
-      setHasLegacy(false);
+      setDismissed(true);
     } catch (e) {
       console.error("Migration error:", e);
     } finally {

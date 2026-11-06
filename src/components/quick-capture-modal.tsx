@@ -1,24 +1,24 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { X, ArrowRight, Tag, AlertCircle } from "lucide-react";
+import { X, ArrowRight } from "lucide-react";
 import { useUIStore } from "@/lib/stores/ui-store";
 import { db } from "@/lib/db/client";
 import { ItemSchema, TaskSchema, HabitSchema, LibraryEntrySchema } from "@/lib/schemas";
 import { DEFAULT_CATEGORIES } from "@/lib/constants";
+import { normalizeUrl } from "@/lib/utils/dates";
 
 export function QuickCaptureModal() {
   const { quickCaptureOpen, closeQuickCapture } = useUIStore();
   const [title, setTitle] = useState("");
   const [notes, setNotes] = useState("");
   const [link, setLink] = useState("");
-  const [category, setCategory] = useState("task");
+  const [category, setCategory] = useState("inbox");
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
   const [dueDate, setDueDate] = useState("");
   const [dueTime, setDueTime] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Keyboard shortcut listener for Cmd+K / Ctrl+K & Escape
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
@@ -49,7 +49,21 @@ export function QuickCaptureModal() {
     try {
       const lowerCat = category.toLowerCase();
 
-      if (lowerCat === "habit") {
+      if (lowerCat === "inbox") {
+        // Pure capture into items table
+        const item = ItemSchema.parse({
+          id,
+          title: title.trim(),
+          notes: notes.trim(),
+          link: normalizeUrl(link),
+          category: "inbox",
+          priority,
+          status: "pending",
+          createdAt: nowIso,
+          updatedAt: nowIso,
+        });
+        await db.items.add(item);
+      } else if (lowerCat === "habit") {
         const habit = HabitSchema.parse({
           id,
           title: title.trim(),
@@ -68,7 +82,7 @@ export function QuickCaptureModal() {
           id,
           title: title.trim(),
           notes: notes.trim(),
-          link: link.trim() || undefined,
+          link: normalizeUrl(link),
           type: lowerCat === "youtube" ? "watch" : (lowerCat as "watch" | "learn" | "buy"),
           status: "saved",
           tags: [category],
@@ -82,7 +96,7 @@ export function QuickCaptureModal() {
           id,
           title: title.trim(),
           notes: notes.trim(),
-          link: link.trim() || undefined,
+          link: normalizeUrl(link),
           category: lowerCat,
           priority,
           status: "todo",
@@ -95,7 +109,6 @@ export function QuickCaptureModal() {
         });
         await db.tasks.add(task);
 
-        // If it has date & time, schedule an event/reminder
         if (dueDate) {
           const eventId = crypto.randomUUID();
           await db.events.add({
@@ -134,6 +147,7 @@ export function QuickCaptureModal() {
       setLink("");
       setDueDate("");
       setDueTime("");
+      setCategory("inbox");
       closeQuickCapture();
     } catch (err) {
       console.error("Failed to save capture:", err);
@@ -186,7 +200,7 @@ export function QuickCaptureModal() {
                 className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
               >
                 {DEFAULT_CATEGORIES.map((c) => (
-                  <option key={c.name} value={c.name}>
+                  <option key={c.name} value={c.name.toLowerCase()}>
                     {c.icon} {c.name}
                   </option>
                 ))}
@@ -209,30 +223,32 @@ export function QuickCaptureModal() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
-                Date (Optional)
-              </label>
-              <input
-                type="date"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
-              />
+          {category.toLowerCase() !== "inbox" && (
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Date (Optional)
+                </label>
+                <input
+                  type="date"
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Time (Optional)
+                </label>
+                <input
+                  type="time"
+                  value={dueTime}
+                  onChange={(e) => setDueTime(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                />
+              </div>
             </div>
-            <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
-                Time (Optional)
-              </label>
-              <input
-                type="time"
-                value={dueTime}
-                onChange={(e) => setDueTime(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
-              />
-            </div>
-          </div>
+          )}
 
           <div>
             <input
@@ -276,4 +292,3 @@ export function QuickCaptureModal() {
     </div>
   );
 }
-

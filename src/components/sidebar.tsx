@@ -19,6 +19,8 @@ import {
   X,
 } from "lucide-react";
 import { useUIStore } from "@/lib/stores/ui-store";
+import { useLiveQuery } from "dexie-react-hooks";
+import { db } from "@/lib/db/client";
 
 const NAV_ITEMS = [
   { name: "Home", href: "/", icon: Home },
@@ -35,6 +37,7 @@ export function Sidebar() {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const { sidebarOpen, setSidebarOpen, openQuickCapture } = useUIStore();
+  const inboxCount = useLiveQuery(() => db.items.where("status").equals("pending").count(), []) ?? 0;
 
   return (
     <>
@@ -116,7 +119,12 @@ export function Sidebar() {
                     active ? "text-indigo-600 dark:text-indigo-400" : ""
                   }`}
                 />
-                <span>{item.name}</span>
+                <span className="flex-1">{item.name}</span>
+                {item.name === "Inbox" && inboxCount > 0 && (
+                  <span className="rounded-full bg-indigo-600 px-2 py-0.5 text-[10px] font-bold text-white shadow-2xs">
+                    {inboxCount}
+                  </span>
+                )}
               </Link>
             );
           })}
