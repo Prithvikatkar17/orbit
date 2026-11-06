@@ -1,38 +1,78 @@
-# Everything-List 📋
+# ORBIT 🪐
+> **"Your Personal Space. Everything in Place."**
 
-Everything-List is a versatile, fully-featured task and idea capture web application. Designed to replace multiple specialized apps by keeping track of tasks, goals, media to consume, habits, and spontaneous ideas—all in one place. 
+ORBIT is a private, local-first personal digital assistant evolved from [Everything-List](legacy/README.md). It helps you capture thoughts, organize tasks and goals, manage daily routines, and store personal references without mandatory cloud accounts or tracking.
 
-## Features ✨
+---
 
-* **Multiple Views**: Organize your items by *All, Today, Upcoming, Someday*, and *Completed*.
-* **Categorization**: Tag your entries with specific types like *Task, Goal, Watch, YouTube, Learn, Buy, Habit,* or *Idea*.
-* **Rich Task Data**: Support for setting Priorities (Low, Medium, High), Dates, Times, URLs, and multi-line notes.
-* **Drag-and-Drop Reordering**: Intuitively rearrange tasks using [SortableJS](https://sortablejs.github.io/Sortable/).
-* **Dark & Light Mode**: Seamlessly toggle between fully styled themes that adapt to your preferences.
-* **Browser Reminders**: Receive real-time push notifications when tasks with a specified date and time are due.
-* **Activity Tracking**: Includes an activity contribution grid to visualize your productivity (similar to GitHub).
-* **Fully Responsive**: Beautiful UI that works flawlessly on desktop and mobile devices.
-* **Privacy First**: Everything is saved locally on your device via `localStorage`. No accounts, no cloud sync, no tracking.
+## ✨ Key Principles
 
-## How to Run 🚀
+- **Local-First**: Works completely offline without needing an active internet connection.
+- **Privacy-First**: No mandatory login or account creation; all data resides locally on your device in IndexedDB.
+- **Reliable Storage**: Powered by Dexie.js with atomic transactions, multi-reminder occurrence tracking, and full JSON backup/restore.
+- **Smooth Evolution**: Preserves the dual-mode "Everything" capture and 180-day habit heatmap concepts from Everything-List with an automatic, non-destructive migration engine.
 
-Since this is a client-side vanilla JavaScript app, no build step or server is required:
+---
 
-1. Clone or download this repository.
-2. Open `index.html` in your favorite modern web browser.
-3. Start adding items!
+## 🛠️ Technology Stack
 
-## Tech Stack 🛠️
+- **Framework**: [Next.js 16](https://nextjs.org) (App Router, static export ready)
+- **Language**: TypeScript (strict mode)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com)
+- **Database**: [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) via [Dexie.js](https://dexie.org/) & `dexie-react-hooks`
+- **Validation**: [Zod](https://zod.dev)
+- **State Management**: [Zustand](https://github.com/pmndrs/zustand) (ephemeral UI state only)
+- **Drag-and-Drop**: [@dnd-kit](https://dndkit.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Theming**: `next-themes` (light / dark / system)
 
-* **HTML5**: Semantic structure.
-* **CSS3**: Vanilla CSS with CSS Variables, Flexbox, CSS Grid, and custom micro-interactions.
-* **Vanilla JavaScript**: Pure JS handles state management, DOM rendering, modal logic, and `localStorage` integration.
-* **SortableJS**: Powers the fluid drag-and-drop mechanics.
+---
 
-## Contributing 🤝
+## 🚀 Getting Started
 
-Feel free to submit pull requests if you'd like to add new features, fix bugs, or improve the UI/UX.
+### Prerequisites
 
-## License 📄
+- Node.js 18+ (tested with Node 20+)
+- npm or pnpm
 
-This project is open-source and available for anyone to use or modify.
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/Prithvikatkar17/orbit.git
+cd orbit
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## 📋 Project Structure
+
+```
+orbit/
+├── legacy/                  # Archived Everything-List source & docs
+├── public/                  # Static assets & icons
+├── src/
+│   ├── app/                 # Next.js App Router (pages & layout)
+│   ├── components/          # Reusable UI & layout components
+│   └── lib/
+│       ├── db/              # Dexie.js database client & indexes
+│       ├── schemas/         # Zod schemas for all 9 entities
+│       ├── stores/          # Zustand ephemeral UI stores
+│       └── utils/           # Migration, date helpers, export/import
+├── package.json
+└── tsconfig.json
+```
+
+---
+
+## 📄 License
+
+Open-source and available under the MIT License.
