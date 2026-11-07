@@ -301,3 +301,58 @@ export function useTodayDate(): string {
     () => ""
   );
 }
+
+const emptySubscribe = () => () => {};
+
+/**
+ * Returns true once the component has mounted on the client.
+ * Uses useSyncExternalStore to guarantee zero hydration mismatch and zero cascading renders.
+ */
+export function useMounted(): boolean {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
+}
+
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+/**
+ * Formats a "YYYY-MM-DD" string or year/month into "Month YYYY" (e.g. "November 2026").
+ */
+export function formatMonthYear(dateInput: string | { year: number; month: number }): string {
+  if (typeof dateInput === "string") {
+    const [year, month] = dateInput.split("-").map(Number);
+    return `${MONTH_NAMES[(month || 1) - 1]} ${year}`;
+  }
+  return `${MONTH_NAMES[(dateInput.month || 1) - 1]} ${dateInput.year}`;
+}
+
+/**
+ * Formats a "YYYY-MM-DD" string into a full date display, e.g. "Wednesday, November 11, 2026".
+ */
+export function formatDateDisplay(dateStr: string): string {
+  if (!dateStr) return "";
+  const d = parseLocalDate(dateStr);
+  return d.toLocaleDateString(undefined, {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+

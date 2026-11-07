@@ -35,9 +35,9 @@ test("Date Utilities — Local Calendar Integrity", () => {
   assert.equal(prevDay, "2026-11-05");
 
   // Friendly date formatting
-  assert.equal(formatFriendlyDate("2026-11-06"), "Today");
-  assert.equal(formatFriendlyDate("2026-11-07"), "Tomorrow");
-  assert.equal(formatFriendlyDate("2026-11-05"), "Yesterday");
+  assert.equal(formatFriendlyDate(getLocalDateString()), "Today");
+  assert.equal(formatFriendlyDate(getOffsetDateString(1)), "Tomorrow");
+  assert.equal(formatFriendlyDate(getOffsetDateString(-1)), "Yesterday");
   assert.equal(formatFriendlyDate(undefined), "Someday");
 
   // Month and Leap Year Boundary

@@ -14,6 +14,7 @@ import {
 import { db } from "@/lib/db/client";
 import { useUIStore } from "@/lib/stores/ui-store";
 import { LegacyMigrationBanner } from "@/components/legacy-migration-banner";
+import { UpcomingEventsWidget } from "@/components/dashboard/upcoming-events";
 import { CATEGORY_ICONS } from "@/lib/constants";
 import { useTodayDate } from "@/lib/utils/dates";
 
@@ -288,6 +289,9 @@ export default function HomePage() {
           </div>
         </section>
       </div>
+
+      {/* Upcoming Events (7 Days) Widget */}
+      <UpcomingEventsWidget />
 
       {/* Local-First Privacy Callout Banner */}
       <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs text-slate-600 shadow-xs dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">

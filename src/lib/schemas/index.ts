@@ -7,4 +7,5 @@ export * from "./reminder";
 export * from "./library-entry";
 export * from "./category";
 export * from "./settings";
+export * from "./backup";
 

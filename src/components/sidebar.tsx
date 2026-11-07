@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -21,6 +22,8 @@ import {
 import { useUIStore } from "@/lib/stores/ui-store";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db/client";
+import { NotificationCenter } from "@/components/reminders/notification-center";
+import { useMounted } from "@/lib/utils/dates";
 
 const NAV_ITEMS = [
   { name: "Home", href: "/", icon: Home },
@@ -35,9 +38,12 @@ const NAV_ITEMS = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
+  const mounted = useMounted();
+  const { theme, resolvedTheme, setTheme } = useTheme();
   const { sidebarOpen, setSidebarOpen, openQuickCapture } = useUIStore();
   const inboxCount = useLiveQuery(() => db.items.where("status").equals("pending").count(), []) ?? 0;
+
+  const isDark = (resolvedTheme || theme) === "dark";
 
   return (
     <>
@@ -71,13 +77,16 @@ export function Sidebar() {
             </div>
           </Link>
 
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 md:hidden dark:text-slate-400 dark:hover:bg-slate-800"
-            aria-label="Close sidebar"
-          >
-            <X className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-1.5">
+            <NotificationCenter />
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 md:hidden dark:text-slate-400 dark:hover:bg-slate-800"
+              aria-label="Close sidebar"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
         </div>
 
         {/* Quick Add Button */}
@@ -133,16 +142,33 @@ export function Sidebar() {
         {/* Footer: Theme Toggle */}
         <div className="border-t border-slate-200 pt-3 dark:border-slate-800">
           <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+            type="button"
+            onClick={() => {
+              if (mounted) {
+                setTheme(isDark ? "light" : "dark");
+              }
+            }}
+            className="flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors"
+            aria-label="Toggle light and dark theme"
           >
             <div className="flex items-center gap-3">
-              {theme === "dark" ? (
-                <Moon className="h-4 w-4 text-indigo-400" />
+              {!mounted ? (
+                <>
+                  <div className="flex h-4 w-4 shrink-0 items-center justify-center">
+                    <div className="h-3.5 w-3.5 rounded-full border border-slate-300 dark:border-slate-600" />
+                  </div>
+                  <span className="text-slate-500 dark:text-slate-400">Theme</span>
+                </>
               ) : (
-                <Sun className="h-4 w-4 text-amber-500" />
+                <>
+                  {isDark ? (
+                    <Moon className="h-4 w-4 text-indigo-400 shrink-0" />
+                  ) : (
+                    <Sun className="h-4 w-4 text-amber-500 shrink-0" />
+                  )}
+                  <span>{isDark ? "Dark Mode" : "Light Mode"}</span>
+                </>
               )}
-              <span>{theme === "dark" ? "Dark Mode" : "Light Mode"}</span>
             </div>
             <span className="text-[11px] text-slate-400">Toggle</span>
           </button>
@@ -169,13 +195,16 @@ export function MobileHeader() {
         ORBIT
       </span>
 
-      <button
-        onClick={openQuickCapture}
-        className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white"
-        aria-label="Quick Add"
-      >
-        <Plus className="h-4 w-4" />
-      </button>
+      <div className="flex items-center gap-2">
+        <NotificationCenter />
+        <button
+          onClick={openQuickCapture}
+          className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white"
+          aria-label="Quick Add"
+        >
+          <Plus className="h-4 w-4" />
+        </button>
+      </div>
     </header>
   );
 }

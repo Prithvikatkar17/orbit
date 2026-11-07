@@ -8,14 +8,19 @@ export const EventSchema = z.object({
     "general",
     "birthday",
     "anniversary",
+    "assignment",
     "deadline",
+    "meeting",
+    "personal",
     "holiday",
     "milestone",
+    "other",
   ]).default("general"),
   date:         z.string(), // "YYYY-MM-DD"
   startTime:    z.string().optional(), // "HH:mm"
   endTime:      z.string().optional(), // "HH:mm"
   isAllDay:     z.boolean().default(true),
+  description:  z.string().max(5000).optional(),
   recurrence:   z.object({
     rule:       z.enum(["none", "daily", "weekly", "monthly", "yearly"]).default("none"),
     endDate:    z.string().optional(), // "YYYY-MM-DD"
