@@ -6,6 +6,7 @@ import { HabitLogSchema } from "./habit-log";
 import { EventSchema } from "./event";
 import { ReminderSchema } from "./reminder";
 import { LibraryEntrySchema } from "./library-entry";
+import { LibraryCollectionSchema } from "./library-collection";
 import { CategorySchema } from "./category";
 import { SettingsSchema } from "./settings";
 
@@ -19,9 +20,9 @@ export const BackupPayloadSchema = z.object({
   events: z.array(EventSchema).default([]),
   reminders: z.array(ReminderSchema).default([]),
   libraryEntries: z.array(LibraryEntrySchema).default([]),
+  libraryCollections: z.array(LibraryCollectionSchema).default([]),
   categories: z.array(CategorySchema).default([]),
   settings: z.array(SettingsSchema).default([]),
 });
 
 export type BackupPayload = z.infer<typeof BackupPayloadSchema>;
-

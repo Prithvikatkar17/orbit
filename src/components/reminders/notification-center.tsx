@@ -23,11 +23,7 @@ import { useMounted } from "@/lib/utils/dates";
 export function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
   const [panelStyle, setPanelStyle] = useState<React.CSSProperties | null>(null);
-  const [permission, setPermission] = useState<NotificationPermission>(() =>
-    typeof window !== "undefined" && "Notification" in window
-      ? Notification.permission
-      : "default"
-  );
+  const [permission, setPermission] = useState<NotificationPermission>("default");
 
   const buttonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -149,6 +145,9 @@ export function NotificationCenter() {
         aria-haspopup="dialog"
         onClick={() => {
           if (!isOpen) {
+            if (typeof window !== "undefined" && "Notification" in window) {
+              setPermission(Notification.permission);
+            }
             updatePosition();
             setIsOpen(true);
           } else {
@@ -160,7 +159,7 @@ export function NotificationCenter() {
         aria-label="Open notifications"
       >
         <Bell className="h-4 w-4" />
-        {unreadCount > 0 && (
+        {mounted && unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-rose-600 px-1 text-[10px] font-bold text-white shadow-xs animate-in zoom-in-75">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>

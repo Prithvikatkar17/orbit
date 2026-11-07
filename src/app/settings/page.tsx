@@ -29,11 +29,7 @@ import { useMounted } from "@/lib/utils/dates";
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const mounted = useMounted();
-  const [permission, setPermission] = useState<NotificationPermission>(() =>
-    typeof window !== "undefined" && "Notification" in window
-      ? Notification.permission
-      : "default"
-  );
+  const [permission, setPermission] = useState<NotificationPermission>("default");
   const [defaultReminderTime, setDefaultReminderTime] = useState("09:00");
   const [weekStartsOn, setWeekStartsOn] = useState<"monday" | "sunday">("monday");
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -58,6 +54,9 @@ export default function SettingsPage() {
         if (s) {
           if (s.defaultReminderTime) setDefaultReminderTime(s.defaultReminderTime);
           if (s.weekStartsOn) setWeekStartsOn(s.weekStartsOn);
+        }
+        if (typeof window !== "undefined" && "Notification" in window) {
+          setPermission(Notification.permission);
         }
       })
       .catch((err) => console.error("Error loading settings:", err));
@@ -184,6 +183,8 @@ export default function SettingsPage() {
           db.events,
           db.reminders,
           db.libraryEntries,
+          db.libraryCollections,
+          db.libraryFiles,
           db.categories,
           db.settings,
         ],
@@ -196,6 +197,8 @@ export default function SettingsPage() {
             db.events.clear(),
             db.reminders.clear(),
             db.libraryEntries.clear(),
+            db.libraryCollections.clear(),
+            db.libraryFiles.clear(),
             db.categories.clear(),
             db.settings.clear(),
           ]);
@@ -369,31 +372,31 @@ export default function SettingsPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
           <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
             <span className="text-[11px] font-medium text-slate-500">Inbox Items</span>
-            <p className="text-xl font-bold text-slate-800 dark:text-slate-200 mt-1">{itemsCount}</p>
+            <p className="text-xl font-bold text-slate-800 dark:text-slate-200 mt-1">{mounted ? itemsCount : 0}</p>
           </div>
           <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
             <span className="text-[11px] font-medium text-slate-500">Tasks</span>
-            <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400 mt-1">{tasksCount}</p>
+            <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400 mt-1">{mounted ? tasksCount : 0}</p>
           </div>
           <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
             <span className="text-[11px] font-medium text-slate-500">Events</span>
-            <p className="text-xl font-bold text-pink-600 dark:text-pink-400 mt-1">{eventsCount}</p>
+            <p className="text-xl font-bold text-pink-600 dark:text-pink-400 mt-1">{mounted ? eventsCount : 0}</p>
           </div>
           <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
             <span className="text-[11px] font-medium text-slate-500">Reminders</span>
-            <p className="text-xl font-bold text-purple-600 dark:text-purple-400 mt-1">{remindersCount}</p>
+            <p className="text-xl font-bold text-purple-600 dark:text-purple-400 mt-1">{mounted ? remindersCount : 0}</p>
           </div>
           <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
             <span className="text-[11px] font-medium text-slate-500">Habits</span>
-            <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">{habitsCount}</p>
+            <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">{mounted ? habitsCount : 0}</p>
           </div>
           <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
             <span className="text-[11px] font-medium text-slate-500">Habit Logs</span>
-            <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">{habitLogsCount}</p>
+            <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">{mounted ? habitLogsCount : 0}</p>
           </div>
           <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
             <span className="text-[11px] font-medium text-slate-500">Library Items</span>
-            <p className="text-xl font-bold text-cyan-600 dark:text-cyan-400 mt-1">{libraryCount}</p>
+            <p className="text-xl font-bold text-cyan-600 dark:text-cyan-400 mt-1">{mounted ? libraryCount : 0}</p>
           </div>
         </div>
       </section>

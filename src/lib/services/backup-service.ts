@@ -7,7 +7,7 @@ import {
 export { BackupPayloadSchema, type BackupPayload };
 
 /**
- * Exports all 9 Dexie tables to a complete JSON object.
+ * Exports all Dexie tables to a complete JSON object.
  */
 export async function exportFullBackup(): Promise<BackupPayload> {
   const [
@@ -18,6 +18,7 @@ export async function exportFullBackup(): Promise<BackupPayload> {
     events,
     reminders,
     libraryEntries,
+    libraryCollections,
     categories,
     settings,
   ] = await Promise.all([
@@ -28,12 +29,13 @@ export async function exportFullBackup(): Promise<BackupPayload> {
     db.events.toArray(),
     db.reminders.toArray(),
     db.libraryEntries.toArray(),
+    db.libraryCollections.toArray(),
     db.categories.toArray(),
     db.settings.toArray(),
   ]);
 
   const payload: BackupPayload = {
-    version: 1,
+    version: 2,
     exportedAt: new Date().toISOString(),
     items,
     tasks,
@@ -42,6 +44,7 @@ export async function exportFullBackup(): Promise<BackupPayload> {
     events,
     reminders,
     libraryEntries,
+    libraryCollections,
     categories,
     settings,
   };
@@ -78,6 +81,7 @@ export interface RestoreStats {
   events: number;
   reminders: number;
   libraryEntries: number;
+  libraryCollections: number;
   categories: number;
   settings: number;
 }
@@ -91,7 +95,7 @@ export async function restoreBackup(
   rawData: unknown,
   mode: "replace" | "merge" = "replace"
 ): Promise<RestoreStats> {
-  // Validate incoming structure
+  // Validate incoming structure (backward-compatible with v1 and v2 payloads)
   const parsed = BackupPayloadSchema.parse(rawData);
 
   const stats: RestoreStats = {
@@ -102,6 +106,7 @@ export async function restoreBackup(
     events: parsed.events.length,
     reminders: parsed.reminders.length,
     libraryEntries: parsed.libraryEntries.length,
+    libraryCollections: parsed.libraryCollections.length,
     categories: parsed.categories.length,
     settings: parsed.settings.length,
   };
@@ -116,6 +121,8 @@ export async function restoreBackup(
       db.events,
       db.reminders,
       db.libraryEntries,
+      db.libraryCollections,
+      db.libraryFiles,
       db.categories,
       db.settings,
     ],
@@ -129,6 +136,8 @@ export async function restoreBackup(
           db.events.clear(),
           db.reminders.clear(),
           db.libraryEntries.clear(),
+          db.libraryCollections.clear(),
+          db.libraryFiles.clear(),
           db.categories.clear(),
           db.settings.clear(),
         ]);
@@ -142,6 +151,7 @@ export async function restoreBackup(
         db.events.bulkPut(parsed.events),
         db.reminders.bulkPut(parsed.reminders),
         db.libraryEntries.bulkPut(parsed.libraryEntries),
+        db.libraryCollections.bulkPut(parsed.libraryCollections),
         db.categories.bulkPut(parsed.categories),
         db.settings.bulkPut(parsed.settings),
       ]);

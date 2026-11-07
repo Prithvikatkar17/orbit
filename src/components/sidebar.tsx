@@ -42,6 +42,7 @@ export function Sidebar() {
   const { theme, resolvedTheme, setTheme } = useTheme();
   const { sidebarOpen, setSidebarOpen, openQuickCapture } = useUIStore();
   const inboxCount = useLiveQuery(() => db.items.where("status").equals("pending").count(), []) ?? 0;
+  const libraryCount = useLiveQuery(() => db.libraryEntries.count(), []) ?? 0;
 
   const isDark = (resolvedTheme || theme) === "dark";
 
@@ -129,9 +130,14 @@ export function Sidebar() {
                   }`}
                 />
                 <span className="flex-1">{item.name}</span>
-                {item.name === "Inbox" && inboxCount > 0 && (
+                {item.name === "Inbox" && mounted && inboxCount > 0 && (
                   <span className="rounded-full bg-indigo-600 px-2 py-0.5 text-[10px] font-bold text-white shadow-2xs">
                     {inboxCount}
+                  </span>
+                )}
+                {item.name === "Library" && mounted && libraryCount > 0 && (
+                  <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                    {libraryCount}
                   </span>
                 )}
               </Link>

@@ -276,7 +276,7 @@ export function calculateStreak(
  * Subscribes to local calendar date changes (e.g. midnight roll-over).
  */
 function subscribeDateChange(callback: () => void) {
-  if (typeof window === "undefined") return () => {};
+  if (typeof window === "undefined") return () => { };
 
   let currentDate = getLocalDateString();
   const interval = setInterval(() => {
@@ -306,7 +306,9 @@ const emptySubscribe = () => () => {};
 
 /**
  * Returns true once the component has mounted on the client.
- * Uses useSyncExternalStore to guarantee zero hydration mismatch and zero cascading renders.
+ * Uses useSyncExternalStore to guarantee that during SSR and initial client hydration,
+ * the return value is strictly false (matching the server HTML 100%), and cleanly transitions
+ * to true immediately after hydration without any shared state or listeners.
  */
 export function useMounted(): boolean {
   return useSyncExternalStore(

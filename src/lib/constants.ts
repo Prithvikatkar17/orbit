@@ -30,6 +30,12 @@ export const CATEGORY_ICONS: Record<string, string> = {
   learn: "📚",
   buy: "🛒",
   habit: "🌱",
+  bookmark: "🔖",
+  video: "📹",
+  playlist: "📑",
+  article: "📰",
+  note: "📝",
+  file: "📎",
 };
 
 export const EVENT_TYPES = [
@@ -67,3 +73,6 @@ export const REMINDER_PRESETS = [
   { label: "3 days before", type: "before" as const, offsetMinutes: 4320 },
   { label: "7 days before", type: "before" as const, offsetMinutes: 10080 },
 ];
+
+export const MAX_LIBRARY_FILE_SIZE = 20 * 1024 * 1024; // 20 MB in bytes
+
