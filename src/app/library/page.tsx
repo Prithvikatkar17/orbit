@@ -22,6 +22,7 @@ import { LibraryCard } from "@/components/library/library-card";
 import { LibraryRow } from "@/components/library/library-row";
 import { LibraryEntryModal } from "@/components/library/library-entry-modal";
 import { LibraryCollectionModal } from "@/components/library/library-collection-modal";
+import { LibraryDetailModal } from "@/components/library/library-detail-modal";
 
 type ViewMode = "grid" | "list";
 type SortOption = "recent" | "viewed" | "alpha" | "rating";
@@ -64,8 +65,14 @@ export default function LibraryPage() {
   // Modals state
   const [isEntryModalOpen, setIsEntryModalOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState<LibraryEntry | null>(null);
+  const [viewingEntryId, setViewingEntryId] = useState<string | null>(null);
   const [isCollectionModalOpen, setIsCollectionModalOpen] = useState(false);
   const [editingCollection, setEditingCollection] = useState<LibraryCollection | null>(null);
+
+  const viewingEntry = useMemo(
+    () => (viewingEntryId ? entries.find((e) => e.id === viewingEntryId) || null : null),
+    [viewingEntryId, entries]
+  );
 
   // Derived metrics
   const counts = useMemo(() => {
@@ -206,6 +213,7 @@ export default function LibraryPage() {
       lastViewedAt: nowIso,
       updatedAt: nowIso,
     });
+    setViewingEntryId(entry.id);
   }
 
   async function handleDelete(id: string) {
@@ -846,6 +854,25 @@ export default function LibraryPage() {
             )}
           </section>
         </div>
+      )}
+
+      {/* Detail View Modal */}
+      {viewingEntry && (
+        <LibraryDetailModal
+          entry={viewingEntry}
+          collection={viewingEntry.collectionId ? collectionsMap.get(viewingEntry.collectionId) : undefined}
+          onClose={() => setViewingEntryId(null)}
+          onEdit={(entry) => {
+            setViewingEntryId(null);
+            handleEdit(entry);
+          }}
+          onDelete={(id) => {
+            setViewingEntryId(null);
+            handleDelete(id);
+          }}
+          onToggleFavorite={handleToggleFavorite}
+          onStatusChange={handleStatusChange}
+        />
       )}
 
       {/* Entry Modal */}

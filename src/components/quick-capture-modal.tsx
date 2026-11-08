@@ -1,10 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { X, ArrowRight } from "lucide-react";
+import { X, ArrowRight, Star } from "lucide-react";
 import { useUIStore } from "@/lib/stores/ui-store";
+import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db/client";
-import { ItemSchema, TaskSchema, HabitSchema, LibraryEntrySchema } from "@/lib/schemas";
+import {
+  ItemSchema,
+  TaskSchema,
+  HabitSchema,
+  LibraryEntrySchema,
+  type LibraryEntry,
+} from "@/lib/schemas";
 import { DEFAULT_CATEGORIES } from "@/lib/constants";
 import { normalizeUrl } from "@/lib/utils/dates";
 
@@ -17,7 +24,33 @@ export function QuickCaptureModal() {
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
   const [dueDate, setDueDate] = useState("");
   const [dueTime, setDueTime] = useState("");
+
+  // Library-specific Quick Capture fields
+  const [collectionId, setCollectionId] = useState("");
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [libraryStatus, setLibraryStatus] = useState<LibraryEntry["status"]>("saved");
+  const [tagInput, setTagInput] = useState("");
+
+  const collections = useLiveQuery(
+    () => db.libraryCollections.orderBy("sortOrder").toArray(),
+    []
+  ) ?? [];
+
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const isLibraryCategory = [
+    "watch",
+    "youtube",
+    "learn",
+    "buy",
+    "bookmark",
+    "article",
+    "video",
+    "playlist",
+    "note",
+    "file",
+    "library",
+  ].includes(category.toLowerCase());
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -77,15 +110,62 @@ export function QuickCaptureModal() {
           updatedAt: nowIso,
         });
         await db.habits.add(habit);
-      } else if (["watch", "youtube", "learn", "buy"].includes(lowerCat)) {
+      } else if (isLibraryCategory) {
+        let resolvedType: LibraryEntry["type"] = "other";
+        switch (lowerCat) {
+          case "bookmark":
+          case "library":
+            resolvedType = "bookmark";
+            break;
+          case "video":
+          case "youtube":
+            resolvedType = "video";
+            break;
+          case "watch":
+            resolvedType = "watch";
+            break;
+          case "article":
+            resolvedType = "article";
+            break;
+          case "note":
+            resolvedType = "note";
+            break;
+          case "learn":
+            resolvedType = "learn";
+            break;
+          case "buy":
+            resolvedType = "buy";
+            break;
+          case "playlist":
+            resolvedType = "playlist";
+            break;
+          case "file":
+            resolvedType = "file";
+            break;
+          default:
+            resolvedType = "other";
+            break;
+        }
+
+        const tags = tagInput
+          .split(",")
+          .map((t) => t.trim().toLowerCase())
+          .filter(Boolean);
+        if (!tags.includes(lowerCat) && lowerCat !== "library") {
+          tags.push(lowerCat);
+        }
+
         const entry = LibraryEntrySchema.parse({
           id,
           title: title.trim(),
           notes: notes.trim(),
           link: normalizeUrl(link),
-          type: lowerCat === "youtube" ? "watch" : (lowerCat as "watch" | "learn" | "buy"),
-          status: "saved",
-          tags: [category],
+          type: resolvedType,
+          status: libraryStatus,
+          tags,
+          isFavorite,
+          collectionId: collectionId || undefined,
+          completedAt: libraryStatus === "completed" ? nowIso : undefined,
           createdAt: nowIso,
           updatedAt: nowIso,
         });
@@ -148,6 +228,10 @@ export function QuickCaptureModal() {
       setDueDate("");
       setDueTime("");
       setCategory("inbox");
+      setCollectionId("");
+      setIsFavorite(false);
+      setLibraryStatus("saved");
+      setTagInput("");
       closeQuickCapture();
     } catch (err) {
       console.error("Failed to save capture:", err);
@@ -207,23 +291,74 @@ export function QuickCaptureModal() {
               </select>
             </div>
 
-            <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
-                Priority
-              </label>
-              <select
-                value={priority}
-                onChange={(e) => setPriority(e.target.value as "low" | "medium" | "high")}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
-              >
-                <option value="low">Low Priority</option>
-                <option value="medium">Medium Priority</option>
-                <option value="high">High Priority</option>
-              </select>
-            </div>
+            {isLibraryCategory ? (
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Collection (Optional)
+                </label>
+                <select
+                  value={collectionId}
+                  onChange={(e) => setCollectionId(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                >
+                  <option value="">No Collection</option>
+                  {collections.map((col) => (
+                    <option key={col.id} value={col.id}>
+                      {col.icon || "📁"} {col.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Priority
+                </label>
+                <select
+                  value={priority}
+                  onChange={(e) => setPriority(e.target.value as "low" | "medium" | "high")}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                >
+                  <option value="low">Low Priority</option>
+                  <option value="medium">Medium Priority</option>
+                  <option value="high">High Priority</option>
+                </select>
+              </div>
+            )}
           </div>
 
-          {category.toLowerCase() !== "inbox" && (
+          {isLibraryCategory && (
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Status
+                </label>
+                <select
+                  value={libraryStatus}
+                  onChange={(e) => setLibraryStatus(e.target.value as LibraryEntry["status"])}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                >
+                  <option value="saved">Saved (Not Started)</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Tags (Optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. react, tutorial"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                />
+              </div>
+            </div>
+          )}
+
+          {!isLibraryCategory && category.toLowerCase() !== "inbox" && category.toLowerCase() !== "habit" && (
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
@@ -255,7 +390,7 @@ export function QuickCaptureModal() {
               type="url"
               value={link}
               onChange={(e) => setLink(e.target.value)}
-              placeholder="Add Link / URL (optional)"
+              placeholder={isLibraryCategory ? "Resource Link / URL (e.g. https://...)" : "Add Link / URL (optional)"}
               className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 dark:border-slate-800 dark:bg-slate-800/50 dark:text-white"
             />
           </div>
@@ -265,10 +400,33 @@ export function QuickCaptureModal() {
               rows={2}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="Notes or details..."
+              placeholder={isLibraryCategory ? "Notes, thoughts, or key takeaways..." : "Notes or details..."}
               className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-900 placeholder-slate-400 dark:border-slate-800 dark:bg-slate-800/50 dark:text-white"
             />
           </div>
+
+          {isLibraryCategory && (
+            <div className="flex items-center gap-2 pt-1">
+              <input
+                type="checkbox"
+                id="quick-capture-favorite"
+                checked={isFavorite}
+                onChange={(e) => setIsFavorite(e.target.checked)}
+                className="h-4 w-4 rounded-md border-slate-300 text-indigo-600 focus:ring-indigo-500"
+              />
+              <label
+                htmlFor="quick-capture-favorite"
+                className="text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer flex items-center gap-1.5"
+              >
+                <Star
+                  className={`h-3.5 w-3.5 ${
+                    isFavorite ? "fill-amber-400 text-amber-400" : "text-slate-400"
+                  }`}
+                />
+                <span>Mark as Favourite</span>
+              </label>
+            </div>
+          )}
 
           <div className="flex items-center justify-end gap-2 pt-2">
             <button

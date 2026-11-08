@@ -1,9 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
-import { CheckSquare, Repeat, BookOpen, X, ArrowRight } from "lucide-react";
+import { CheckSquare, Repeat, BookOpen, X, ArrowRight, Star } from "lucide-react";
+import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db/client";
-import { type Item, TaskSchema, HabitSchema, LibraryEntrySchema } from "@/lib/schemas";
+import {
+  type Item,
+  TaskSchema,
+  HabitSchema,
+  LibraryEntrySchema,
+  type LibraryEntry,
+} from "@/lib/schemas";
 import { normalizeUrl } from "@/lib/utils/dates";
 
 interface ConvertModalProps {
@@ -19,7 +26,19 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
   const [priority, setPriority] = useState<"low" | "medium" | "high">(item.priority || "medium");
   const [dueDate, setDueDate] = useState("");
   const [dueTime, setDueTime] = useState("");
-  const [libraryType, setLibraryType] = useState<"watch" | "read" | "listen" | "learn" | "buy" | "other">("watch");
+
+  // Library-specific convert fields
+  const [libraryType, setLibraryType] = useState<LibraryEntry["type"]>("bookmark");
+  const [collectionId, setCollectionId] = useState("");
+  const [libraryStatus, setLibraryStatus] = useState<LibraryEntry["status"]>("saved");
+  const [libraryTags, setLibraryTags] = useState("");
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const collections = useLiveQuery(
+    () => db.libraryCollections.orderBy("sortOrder").toArray(),
+    []
+  ) ?? [];
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -76,14 +95,25 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
           await db.items.delete(item.id);
         });
       } else if (destination === "library") {
+        const tags = libraryTags
+          .split(",")
+          .map((t) => t.trim().toLowerCase())
+          .filter(Boolean);
+        if (!tags.includes("inbox-converted")) {
+          tags.push("inbox-converted");
+        }
+
         const entry = LibraryEntrySchema.parse({
           id: newId,
           title: title.trim(),
           notes: notes.trim(),
           link: normalizeUrl(link),
           type: libraryType,
-          status: "saved",
-          tags: ["inbox-converted"],
+          status: libraryStatus,
+          tags,
+          isFavorite,
+          collectionId: collectionId || undefined,
+          completedAt: libraryStatus === "completed" ? nowIso : undefined,
           sourceItemId: item.id,
           createdAt: nowIso,
           updatedAt: nowIso,
@@ -221,23 +251,101 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
           )}
 
           {destination === "library" && (
-            <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
-                Library Category
-              </label>
-              <select
-                value={libraryType}
-                onChange={(e) => setLibraryType(e.target.value as "watch" | "read" | "listen" | "learn" | "buy" | "other")}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
-              >
-                <option value="watch">🎬 Watch</option>
-                <option value="read">📖 Read</option>
-                <option value="listen">🎧 Listen</option>
-                <option value="learn">📚 Learn</option>
-                <option value="buy">🛒 Buy</option>
-                <option value="other">📦 Other</option>
-              </select>
-            </div>
+            <>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                    Resource Type
+                  </label>
+                  <select
+                    value={libraryType}
+                    onChange={(e) => setLibraryType(e.target.value as LibraryEntry["type"])}
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                  >
+                    <option value="bookmark">🔖 Bookmark</option>
+                    <option value="video">📹 Video</option>
+                    <option value="playlist">📑 Playlist</option>
+                    <option value="article">📰 Article</option>
+                    <option value="note">📝 Note</option>
+                    <option value="learn">📚 Course / Learn</option>
+                    <option value="listen">🎧 Audio</option>
+                    <option value="buy">🛒 Buy</option>
+                    <option value="file">📎 File</option>
+                    <option value="watch">🎬 Watch</option>
+                    <option value="other">📌 Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                    Collection (Optional)
+                  </label>
+                  <select
+                    value={collectionId}
+                    onChange={(e) => setCollectionId(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                  >
+                    <option value="">No Collection</option>
+                    {collections.map((col) => (
+                      <option key={col.id} value={col.id}>
+                        {col.icon || "📁"} {col.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                    Learning Status
+                  </label>
+                  <select
+                    value={libraryStatus}
+                    onChange={(e) => setLibraryStatus(e.target.value as LibraryEntry["status"])}
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                  >
+                    <option value="saved">Saved (Not Started)</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                    Tags (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. react, tutorial"
+                    value={libraryTags}
+                    onChange={(e) => setLibraryTags(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 pt-1">
+                <input
+                  type="checkbox"
+                  id="convert-library-favorite"
+                  checked={isFavorite}
+                  onChange={(e) => setIsFavorite(e.target.checked)}
+                  className="h-4 w-4 rounded-md border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                />
+                <label
+                  htmlFor="convert-library-favorite"
+                  className="text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer flex items-center gap-1.5"
+                >
+                  <Star
+                    className={`h-3.5 w-3.5 ${
+                      isFavorite ? "fill-amber-400 text-amber-400" : "text-slate-400"
+                    }`}
+                  />
+                  <span>Mark as Favourite</span>
+                </label>
+              </div>
+            </>
           )}
 
           <div>
