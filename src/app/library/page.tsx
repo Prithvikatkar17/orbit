@@ -13,6 +13,7 @@ import {
   Sparkles,
   FolderPlus,
   GraduationCap,
+  FileText,
   X,
 } from "lucide-react";
 import { db } from "@/lib/db/client";
@@ -65,6 +66,7 @@ export default function LibraryPage() {
   // Modals state
   const [isEntryModalOpen, setIsEntryModalOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState<LibraryEntry | null>(null);
+  const [modalInitialType, setModalInitialType] = useState<LibraryEntry["type"] | undefined>(undefined);
   const [viewingEntryId, setViewingEntryId] = useState<string | null>(null);
   const [isCollectionModalOpen, setIsCollectionModalOpen] = useState(false);
   const [editingCollection, setEditingCollection] = useState<LibraryCollection | null>(null);
@@ -155,14 +157,15 @@ export default function LibraryPage() {
         if (entry.status !== selectedStatus) return false;
       }
 
-      // 5. Search query across title, notes, and tags
+      // 5. Search query across title, notes, tags, link, and attached filename
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         const matchesTitle = entry.title.toLowerCase().includes(q);
         const matchesNotes = entry.notes ? entry.notes.toLowerCase().includes(q) : false;
         const matchesTags = entry.tags?.some((t) => t.toLowerCase().includes(q));
         const matchesLink = entry.link?.toLowerCase().includes(q);
-        if (!matchesTitle && !matchesNotes && !matchesTags && !matchesLink) return false;
+        const matchesFile = entry.fileMetadata?.fileName.toLowerCase().includes(q);
+        if (!matchesTitle && !matchesNotes && !matchesTags && !matchesLink && !matchesFile) return false;
       }
 
       return true;
@@ -218,18 +221,21 @@ export default function LibraryPage() {
 
   async function handleDelete(id: string) {
     if (confirm("Are you sure you want to delete this resource?")) {
+      await db.libraryFiles.where("entryId").equals(id).delete();
       await db.libraryEntries.delete(id);
     }
   }
 
-  function handleOpenAddModal(colId?: string) {
+  function handleOpenAddModal(colId?: string, type?: LibraryEntry["type"]) {
     setEditingEntry(null);
+    setModalInitialType(type);
     if (colId) setSelectedCollectionId(colId);
     setIsEntryModalOpen(true);
   }
 
   function handleEdit(entry: LibraryEntry) {
     setEditingEntry(entry);
+    setModalInitialType(undefined);
     setIsEntryModalOpen(true);
   }
 
@@ -281,6 +287,15 @@ export default function LibraryPage() {
           >
             <FolderPlus className="h-4 w-4 text-slate-500" />
             <span>New Collection</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleOpenAddModal(undefined, "note")}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/50 px-3.5 py-2.5 text-xs font-semibold text-indigo-700 shadow-2xs hover:bg-indigo-100/60 dark:border-indigo-900/60 dark:bg-indigo-950/40 dark:text-indigo-300 dark:hover:bg-indigo-900/50 transition-colors"
+          >
+            <FileText className="h-4 w-4 text-indigo-500" />
+            <span>New Note</span>
           </button>
 
           <button
@@ -879,11 +894,13 @@ export default function LibraryPage() {
       {isEntryModalOpen && (
         <LibraryEntryModal
           initialEntry={editingEntry}
+          initialType={modalInitialType}
           collections={collections}
           defaultCollectionId={selectedCollectionId !== "all" ? selectedCollectionId : undefined}
           onClose={() => {
             setIsEntryModalOpen(false);
             setEditingEntry(null);
+            setModalInitialType(undefined);
           }}
         />
       )}

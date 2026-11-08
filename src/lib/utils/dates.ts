@@ -302,18 +302,31 @@ export function useTodayDate(): string {
   );
 }
 
-const emptySubscribe = () => () => {};
+let isClientMounted = false;
+const mountedListeners = new Set<() => void>();
+
+function subscribeMounted(onStoreChange: () => void) {
+  mountedListeners.add(onStoreChange);
+  if (!isClientMounted) {
+    isClientMounted = true;
+    queueMicrotask(() => {
+      mountedListeners.forEach((listener) => listener());
+    });
+  }
+  return () => {
+    mountedListeners.delete(onStoreChange);
+  };
+}
 
 /**
  * Returns true once the component has mounted on the client.
- * Uses useSyncExternalStore to guarantee that during SSR and initial client hydration,
- * the return value is strictly false (matching the server HTML 100%), and cleanly transitions
- * to true immediately after hydration without any shared state or listeners.
+ * Guaranteed to return strictly false during SSR and the initial client hydration render,
+ * perfectly matching server-rendered HTML, then cleanly transitions to true post-hydration.
  */
 export function useMounted(): boolean {
   return useSyncExternalStore(
-    emptySubscribe,
-    () => true,
+    subscribeMounted,
+    () => isClientMounted,
     () => false
   );
 }

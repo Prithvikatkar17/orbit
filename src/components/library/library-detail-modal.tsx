@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   X,
   ExternalLink,
@@ -13,10 +13,16 @@ import {
   CheckCircle2,
   Tag,
   Folder,
+  Download,
+  Eye,
+  Loader2,
+  AlertCircle,
 } from "lucide-react";
+import { db } from "@/lib/db/client";
 import type { LibraryEntry, LibraryCollection } from "@/lib/schemas";
 import { getTypeConfig, getStatusConfig } from "./library-card";
 import { formatFriendlyDate } from "@/lib/utils/dates";
+import { MarkdownContent } from "./markdown-content";
 
 interface LibraryDetailModalProps {
   entry: LibraryEntry | null;
@@ -37,6 +43,64 @@ export function LibraryDetailModal({
   onToggleFavorite,
   onStatusChange,
 }: LibraryDetailModalProps) {
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [isLoadingFile, setIsLoadingFile] = useState(false);
+  const [fileLoadError, setFileLoadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    let createdUrl: string | null = null;
+
+    async function loadAttachment() {
+      if (!entry?.fileMetadata) {
+        setFileUrl(null);
+        setFileLoadError(null);
+        return;
+      }
+
+      setIsLoadingFile(true);
+      setFileLoadError(null);
+
+      try {
+        let file = await db.libraryFiles.get(entry.fileMetadata.fileId);
+        if (!file && entry.id) {
+          file = await db.libraryFiles.where("entryId").equals(entry.id).first();
+        }
+
+        if (!active) return;
+
+        if (file && file.data) {
+          const blob =
+            file.data instanceof Blob
+              ? file.data
+              : new Blob([file.data], { type: file.fileType || entry.fileMetadata.fileType });
+          createdUrl = URL.createObjectURL(blob);
+          setFileUrl(createdUrl);
+        } else {
+          setFileLoadError("Attachment file binary is missing from local storage.");
+        }
+      } catch (err) {
+        if (active) {
+          console.error("Error loading attachment file:", err);
+          setFileLoadError("Could not retrieve attachment from database.");
+        }
+      } finally {
+        if (active) {
+          setIsLoadingFile(false);
+        }
+      }
+    }
+
+    loadAttachment();
+
+    return () => {
+      active = false;
+      if (createdUrl) {
+        URL.revokeObjectURL(createdUrl);
+      }
+    };
+  }, [entry?.id, entry?.fileMetadata]);
+
   if (!entry) return null;
 
   const typeCfg = getTypeConfig(entry.type);
@@ -52,6 +116,14 @@ export function LibraryDetailModal({
         }
       })()
     : null;
+
+  const isImageFile =
+    Boolean(entry.fileMetadata?.fileType?.startsWith("image/")) ||
+    Boolean(entry.fileMetadata?.fileName?.match(/\.(png|jpe?g|gif|webp|svg)$/i));
+
+  const isPdfFile =
+    entry.fileMetadata?.fileType === "application/pdf" ||
+    Boolean(entry.fileMetadata?.fileName?.match(/\.pdf$/i));
 
   return (
     <div
@@ -137,14 +209,71 @@ export function LibraryDetailModal({
           </div>
         )}
 
-        {/* File Metadata Banner */}
+        {/* File Attachment Card */}
         {entry.fileMetadata && (
-          <div className="mt-3 flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300">
-            <Paperclip className="h-4 w-4 text-slate-500" />
-            <span className="font-semibold">{entry.fileMetadata.fileName}</span>
-            <span className="text-slate-400">
-              ({(entry.fileMetadata.fileSize / 1024).toFixed(0)} KB · {entry.fileMetadata.fileType})
-            </span>
+          <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-800/60 space-y-2">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <div className="flex items-center gap-2 min-w-0">
+                <Paperclip className="h-4 w-4 shrink-0 text-slate-500" />
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
+                    {entry.fileMetadata.fileName}
+                  </p>
+                  <p className="text-[11px] text-slate-400">
+                    {(entry.fileMetadata.fileSize / 1024).toFixed(0)} KB · {entry.fileMetadata.fileType}
+                  </p>
+                </div>
+              </div>
+
+              {/* Action Buttons for Attachment */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                {isLoadingFile ? (
+                  <span className="inline-flex items-center gap-1 text-xs text-slate-400 py-1.5 px-2">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    <span>Loading...</span>
+                  </span>
+                ) : fileUrl ? (
+                  <>
+                    {isPdfFile && (
+                      <a
+                        href={fileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                        <span>Preview PDF</span>
+                      </a>
+                    )}
+                    <a
+                      href={fileUrl}
+                      download={entry.fileMetadata.fileName}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white shadow-2xs hover:bg-indigo-500 transition-colors"
+                    >
+                      <Download className="h-3.5 w-3.5" />
+                      <span>Download</span>
+                    </a>
+                  </>
+                ) : fileLoadError ? (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-rose-500">
+                    <AlertCircle className="h-3.5 w-3.5" />
+                    <span>File unavailable</span>
+                  </span>
+                ) : null}
+              </div>
+            </div>
+
+            {/* Inline Image Preview */}
+            {isImageFile && fileUrl && (
+              <div className="mt-2 overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={fileUrl}
+                  alt={entry.fileMetadata.fileName}
+                  className="max-h-64 mx-auto rounded-md object-contain"
+                />
+              </div>
+            )}
           </div>
         )}
 
@@ -190,19 +319,19 @@ export function LibraryDetailModal({
           </div>
         </div>
 
-        {/* Notes & Summary Section */}
+        {/* Notes & Content Section */}
         {entry.notes ? (
           <div className="mt-5 space-y-2">
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              Notes & Summary
+              {entry.type === "note" ? "Note Content" : "Notes & Summary"}
             </h4>
-            <div className="max-h-72 overflow-y-auto rounded-xl border border-slate-100 bg-slate-50/60 p-4 text-xs text-slate-800 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-200 leading-relaxed whitespace-pre-wrap font-sans">
-              {entry.notes}
+            <div className="max-h-80 overflow-y-auto rounded-xl border border-slate-100 bg-slate-50/60 p-4 text-xs text-slate-800 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-200 leading-relaxed font-sans scrollbar-thin">
+              <MarkdownContent content={entry.notes} />
             </div>
           </div>
         ) : (
           <div className="mt-4 rounded-xl border border-dashed border-slate-200 p-4 text-center text-xs text-slate-400 dark:border-slate-800">
-            No notes or takeaways recorded yet.
+            {entry.type === "note" ? "Empty note." : "No notes or takeaways recorded yet."}
           </div>
         )}
 
@@ -279,7 +408,7 @@ export function LibraryDetailModal({
               className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-indigo-500 transition-colors"
             >
               <Edit2 className="h-3.5 w-3.5" />
-              <span>Edit Resource</span>
+              <span>{entry.type === "note" ? "Edit Note" : "Edit Resource"}</span>
             </button>
           </div>
         </div>
@@ -287,4 +416,3 @@ export function LibraryDetailModal({
     </div>
   );
 }
-
