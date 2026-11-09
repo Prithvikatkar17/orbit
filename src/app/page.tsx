@@ -15,6 +15,7 @@ import { db } from "@/lib/db/client";
 import { useUIStore } from "@/lib/stores/ui-store";
 import { LegacyMigrationBanner } from "@/components/legacy-migration-banner";
 import { UpcomingEventsWidget } from "@/components/dashboard/upcoming-events";
+import { WeeklyProgressWidget } from "@/components/dashboard/weekly-progress";
 import { CATEGORY_ICONS } from "@/lib/constants";
 import { useTodayDate } from "@/lib/utils/dates";
 
@@ -289,6 +290,9 @@ export default function HomePage() {
           </div>
         </section>
       </div>
+
+      {/* Weekly Progress & Insights Preview */}
+      <WeeklyProgressWidget />
 
       {/* Upcoming Events (7 Days) Widget */}
       <UpcomingEventsWidget />
