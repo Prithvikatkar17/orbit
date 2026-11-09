@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { db } from "@/lib/db/client";
 import {
+  downloadBackupZip,
   downloadBackupFile,
   restoreBackup,
 } from "@/lib/services/backup-service";
@@ -45,6 +46,8 @@ export default function SettingsPage() {
   const eventsCount = useLiveQuery(() => db.events.count()) ?? 0;
   const remindersCount = useLiveQuery(() => db.reminders.count()) ?? 0;
   const libraryCount = useLiveQuery(() => db.libraryEntries.count()) ?? 0;
+  const collectionsCount = useLiveQuery(() => db.libraryCollections.count()) ?? 0;
+  const filesCount = useLiveQuery(() => db.libraryFiles.count()) ?? 0;
 
   useEffect(() => {
     // Load settings from db
@@ -130,14 +133,29 @@ export default function SettingsPage() {
     setTimeout(() => setStatusMessage(null), 3000);
   }
 
-  async function handleBackupDownload() {
+  async function handleBackupZipDownload() {
+    try {
+      await downloadBackupZip();
+      setStatusMessage("Full ZIP backup downloaded successfully (11 tables & attachments)!");
+      setTimeout(() => setStatusMessage(null), 4000);
+    } catch (err) {
+      console.error("Failed to download ZIP backup:", err);
+      setErrorMessage(
+        err instanceof Error
+          ? `Failed to create ZIP backup: ${err.message}`
+          : "Failed to create backup."
+      );
+    }
+  }
+
+  async function handleBackupJsonDownload() {
     try {
       await downloadBackupFile();
-      setStatusMessage("Backup downloaded successfully!");
-      setTimeout(() => setStatusMessage(null), 3000);
+      setStatusMessage("JSON backup downloaded successfully (data only)!");
+      setTimeout(() => setStatusMessage(null), 4000);
     } catch (err) {
-      console.error("Failed to download backup:", err);
-      setErrorMessage("Failed to create backup.");
+      console.error("Failed to download JSON backup:", err);
+      setErrorMessage("Failed to create JSON backup.");
     }
   }
 
@@ -148,27 +166,44 @@ export default function SettingsPage() {
     setErrorMessage(null);
     setStatusMessage(null);
 
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-      try {
-        const text = event.target?.result as string;
-        const parsed = JSON.parse(text);
-        const stats = await restoreBackup(parsed, restoreMode);
-        setStatusMessage(
-          `Successfully restored ${stats.events} events, ${stats.reminders} reminders, ${stats.tasks} tasks, and ${stats.habits} habits!`
-        );
-      } catch (err: unknown) {
-        console.error("Import error:", err);
-        setErrorMessage(
-          err instanceof Error
-            ? `Failed to restore: ${err.message}`
-            : "Invalid backup file or validation failed."
-        );
+    try {
+      const isZip =
+        file.name.toLowerCase().endsWith(".zip") ||
+        file.type.includes("zip");
+
+      let confirmFileDeletion = false;
+
+      // In Replace All mode with legacy JSON, warn user before clearing attachments
+      if (!isZip && restoreMode === "replace") {
+        const existingFiles = await db.libraryFiles.count();
+        if (existingFiles > 0) {
+          const proceed = window.confirm(
+            `Notice: Legacy JSON backups do not contain file attachments.\n\nRestoring in 'Replace All' mode will delete ${existingFiles} existing file attachment(s) from this device.\n\nClick OK to proceed with deleting them, or Cancel to keep your existing data and switch to 'Merge' mode.`
+          );
+          if (!proceed) {
+            setErrorMessage("Restore cancelled: existing attachments were protected.");
+            e.target.value = "";
+            return;
+          }
+          confirmFileDeletion = true;
+        }
       }
-    };
-    reader.readAsText(file);
-    // Reset file input
-    e.target.value = "";
+
+      const stats = await restoreBackup(file, restoreMode, { confirmFileDeletion });
+
+      setStatusMessage(
+        `Successfully restored ${stats.tasks} tasks, ${stats.events} events, ${stats.libraryEntries} library resources, and ${stats.libraryFiles} file attachments!`
+      );
+    } catch (err: unknown) {
+      console.error("Import error:", err);
+      setErrorMessage(
+        err instanceof Error
+          ? `Failed to restore: ${err.message}`
+          : "Invalid backup file or validation failed."
+      );
+    } finally {
+      e.target.value = "";
+    }
   }
 
   async function handleResetDatabase() {
@@ -398,6 +433,14 @@ export default function SettingsPage() {
             <span className="text-[11px] font-medium text-slate-500">Library Items</span>
             <p className="text-xl font-bold text-cyan-600 dark:text-cyan-400 mt-1">{mounted ? libraryCount : 0}</p>
           </div>
+          <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
+            <span className="text-[11px] font-medium text-slate-500">Collections</span>
+            <p className="text-xl font-bold text-teal-600 dark:text-teal-400 mt-1">{mounted ? collectionsCount : 0}</p>
+          </div>
+          <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
+            <span className="text-[11px] font-medium text-slate-500">Attachments</span>
+            <p className="text-xl font-bold text-blue-600 dark:text-blue-400 mt-1">{mounted ? filesCount : 0}</p>
+          </div>
         </div>
       </section>
 
@@ -405,21 +448,31 @@ export default function SettingsPage() {
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
         <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <Download className="h-4 w-4 text-indigo-600" />
-          <span>Backup & Restore (9 Tables)</span>
+          <span>Backup & Restore (11 Tables & Attachments)</span>
         </h2>
         <p className="text-xs text-slate-500 dark:text-slate-400">
-          Export your complete database into a portable JSON file, including events, reminders, habits, tasks, and notes.
+          Export your complete workspace into a portable ZIP archive containing all 11 tables and binary file attachments, or restore from a ZIP or legacy JSON backup.
         </p>
 
         <div className="flex flex-wrap items-center gap-3">
-          {/* Export Button */}
+          {/* Primary Export: ZIP */}
           <button
             type="button"
-            onClick={handleBackupDownload}
+            onClick={handleBackupZipDownload}
             className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-indigo-500 transition-colors"
           >
             <Download className="h-4 w-4" />
-            <span>Export Full JSON Backup</span>
+            <span>Export Full Backup (.zip)</span>
+          </button>
+
+          {/* Secondary Export: JSON Data Only */}
+          <button
+            type="button"
+            onClick={handleBackupJsonDownload}
+            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+          >
+            <Download className="h-4 w-4 text-slate-400" />
+            <span>Export JSON (Data Only)</span>
           </button>
 
           {/* Import Controls */}
@@ -435,15 +488,19 @@ export default function SettingsPage() {
 
             <label className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-xs hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 cursor-pointer transition-colors">
               <Upload className="h-4 w-4 text-indigo-600" />
-              <span>Restore from JSON</span>
+              <span>Restore from Backup</span>
               <input
                 type="file"
-                accept=".json"
+                accept=".json,.zip,application/zip,application/json"
                 onChange={handleFileImport}
                 className="hidden"
               />
             </label>
           </div>
+        </div>
+
+        <div className="text-[11px] text-slate-400 dark:text-slate-500">
+          * Full ZIP backups include all records and binary file attachments. Legacy JSON backups contain database records only (attachments are excluded).
         </div>
       </section>
 

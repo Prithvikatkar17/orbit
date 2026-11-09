@@ -11,7 +11,7 @@ import type {
   LibraryFile,
   Category,
   Settings,
-} from "@/lib/schemas";
+} from "../schemas/index.ts";
 
 export class OrbitDatabase extends Dexie {
   items!:              EntityTable<Item, "id">;
