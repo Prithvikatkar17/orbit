@@ -5,6 +5,7 @@ import { HabitSchema } from "./habit.ts";
 import { HabitLogSchema } from "./habit-log.ts";
 import { EventSchema } from "./event.ts";
 import { ReminderSchema } from "./reminder.ts";
+import { NotificationSchema } from "./notification.ts";
 import { LibraryEntrySchema } from "./library-entry.ts";
 import { LibraryCollectionSchema } from "./library-collection.ts";
 import { MAX_LIBRARY_FILE_SIZE } from "./library-file.ts";
@@ -35,6 +36,7 @@ export const BackupPayloadSchema = z.object({
   habitLogs: z.array(HabitLogSchema).default([]),
   events: z.array(EventSchema).default([]),
   reminders: z.array(ReminderSchema).default([]),
+  notifications: z.array(NotificationSchema).default([]),
   libraryEntries: z.array(LibraryEntrySchema).default([]),
   libraryCollections: z.array(LibraryCollectionSchema).default([]),
   libraryFiles: z.array(BackupLibraryFileSchema).default([]),

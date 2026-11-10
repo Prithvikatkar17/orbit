@@ -22,6 +22,7 @@ import { db } from "@/lib/db/client";
 import type { LibraryEntry, LibraryCollection } from "@/lib/schemas";
 import { getTypeConfig, getStatusConfig } from "./library-card";
 import { formatFriendlyDate } from "@/lib/utils/dates";
+import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
 import { MarkdownContent } from "./markdown-content";
 
 interface LibraryDetailModalProps {
@@ -45,6 +46,7 @@ export function LibraryDetailModal({
   onToggleFavorite,
   onStatusChange,
 }: LibraryDetailModalProps) {
+  const modalRef = useAccessibleModal({ isOpen: Boolean(entry), onClose });
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [isLoadingFile, setIsLoadingFile] = useState(false);
   const [fileLoadError, setFileLoadError] = useState<string | null>(null);
@@ -143,7 +145,12 @@ export function LibraryDetailModal({
       onClick={onClose}
     >
       <div
-        className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 scrollbar-thin animate-in zoom-in-95 duration-150"
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="library-detail-modal-title"
+        tabIndex={-1}
+        className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900 scrollbar-thin animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Navigation & Type Badge */}
@@ -176,6 +183,8 @@ export function LibraryDetailModal({
                   : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
               }`}
               title={entry.isFavorite ? "Remove from favourites" : "Add to favourites"}
+              aria-label={entry.isFavorite ? "Remove from favourites" : "Add to favourites"}
+              aria-pressed={entry.isFavorite}
             >
               <Star
                 className={`h-4 w-4 ${entry.isFavorite ? "fill-amber-500" : ""}`}
@@ -185,6 +194,7 @@ export function LibraryDetailModal({
             {/* Close Button */}
             <button
               type="button"
+              aria-label="Close modal"
               onClick={onClose}
               className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors"
             >
@@ -195,7 +205,7 @@ export function LibraryDetailModal({
 
         {/* Title */}
         <div className="mt-4">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white leading-snug">
+          <h2 id="library-detail-modal-title" className="text-xl font-bold text-slate-900 dark:text-white leading-snug">
             {entry.title}
           </h2>
         </div>

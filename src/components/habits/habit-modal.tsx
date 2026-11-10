@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { X, Check } from "lucide-react";
 import { db } from "@/lib/db/client";
 import { type Habit, HabitSchema } from "@/lib/schemas";
+import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
 
 interface HabitModalProps {
   initialHabit?: Habit | null;
@@ -32,6 +33,7 @@ const DAYS_OF_WEEK = [
 ];
 
 export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
+  const modalRef = useAccessibleModal({ onClose });
   const isEditing = Boolean(initialHabit);
   const [title, setTitle] = useState(initialHabit?.title || "");
   const [notes, setNotes] = useState(initialHabit?.notes || "");
@@ -103,12 +105,21 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs animate-in fade-in">
-      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="habit-modal-title"
+        tabIndex={-1}
+        className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900"
+      >
         <div className="flex items-center justify-between pb-3">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+          <h3 id="habit-modal-title" className="text-lg font-bold text-slate-900 dark:text-white">
             {isEditing ? "Edit Habit" : "Create New Habit"}
           </h3>
           <button
+            type="button"
+            aria-label="Close modal"
             onClick={onClose}
             className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
           >

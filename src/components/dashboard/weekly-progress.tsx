@@ -11,38 +11,59 @@ import {
   Repeat,
   ArrowRight,
 } from "lucide-react";
-import { db } from "@/lib/db/client";
 import type { Task, Habit, HabitLog } from "@/lib/schemas";
 import { useMounted, useTodayDate, parseLocalDate } from "@/lib/utils/dates";
 import { calculateAnalyticsSnapshot } from "@/lib/services/analytics-service";
+import { fetchDashboardSnapshotData } from "@/lib/services/workspace-queries";
 
-export function WeeklyProgressWidget() {
+export interface WeeklyProgressWidgetProps {
+  tasks?: Task[];
+  habits?: Habit[];
+  habitLogs?: HabitLog[];
+  isLoaded?: boolean;
+}
+
+export function WeeklyProgressWidget({
+  tasks: propTasks,
+  habits: propHabits,
+  habitLogs: propHabitLogs,
+  isLoaded: propIsLoaded,
+}: WeeklyProgressWidgetProps = {}) {
   const mounted = useMounted();
   const todayStr = useTodayDate();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  // Reactive queries
-  const rawTasks = useLiveQuery(() => db.tasks.toArray(), []);
-  const rawHabits = useLiveQuery(() => db.habits.toArray(), []);
-  const rawHabitLogs = useLiveQuery(() => db.habitLogs.toArray(), []);
+  const hasExternalData = Boolean(
+    propTasks !== undefined && propHabits !== undefined && propHabitLogs !== undefined
+  );
+
+  // Skip Dexie subscription entirely when parent supplies consolidated live data
+  const liveData = useLiveQuery(
+    () => (hasExternalData ? null : fetchDashboardSnapshotData()),
+    [hasExternalData]
+  );
+
+  const isReady = hasExternalData ? (propIsLoaded ?? true) : Boolean(liveData);
 
   // Hydration-safe arrays
-  const tasks: Task[] = useMemo(
-    () => (mounted && rawTasks ? rawTasks : []),
-    [mounted, rawTasks]
-  );
-  const habits: Habit[] = useMemo(
-    () => (mounted && rawHabits ? rawHabits : []),
-    [mounted, rawHabits]
-  );
-  const habitLogs: HabitLog[] = useMemo(
-    () => (mounted && rawHabitLogs ? rawHabitLogs : []),
-    [mounted, rawHabitLogs]
-  );
+  const tasks: Task[] = useMemo(() => {
+    if (!mounted) return [];
+    return hasExternalData ? (propTasks ?? []) : (liveData?.tasks ?? []);
+  }, [mounted, hasExternalData, propTasks, liveData]);
+
+  const habits: Habit[] = useMemo(() => {
+    if (!mounted) return [];
+    return hasExternalData ? (propHabits ?? []) : (liveData?.habits ?? []);
+  }, [mounted, hasExternalData, propHabits, liveData]);
+
+  const habitLogs: HabitLog[] = useMemo(() => {
+    if (!mounted) return [];
+    return hasExternalData ? (propHabitLogs ?? []) : (liveData?.habitLogs ?? []);
+  }, [mounted, hasExternalData, propHabitLogs, liveData]);
 
   // Pure analytics snapshot for last 7 days
   const snapshot = useMemo(() => {
-    if (!mounted || !rawTasks || !rawHabits || !rawHabitLogs) return null;
+    if (!mounted || !isReady) return null;
     return calculateAnalyticsSnapshot({
       rangeType: "7d",
       tasks,
@@ -50,7 +71,7 @@ export function WeeklyProgressWidget() {
       habitLogs,
       today: todayStr || undefined,
     });
-  }, [mounted, rawTasks, rawHabits, rawHabitLogs, tasks, habits, habitLogs, todayStr]);
+  }, [mounted, isReady, tasks, habits, habitLogs, todayStr]);
 
   if (!mounted || !snapshot) {
     return (

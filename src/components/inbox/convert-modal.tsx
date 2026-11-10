@@ -6,12 +6,13 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db/client";
 import {
   type Item,
-  TaskSchema,
   HabitSchema,
   LibraryEntrySchema,
   type LibraryEntry,
 } from "@/lib/schemas";
+import { saveTaskWithSync } from "@/lib/services/task-sync-service";
 import { normalizeUrl } from "@/lib/utils/dates";
+import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
 
 interface ConvertModalProps {
   item: Item;
@@ -19,6 +20,7 @@ interface ConvertModalProps {
 }
 
 export function ConvertModal({ item, onClose }: ConvertModalProps) {
+  const modalRef = useAccessibleModal({ onClose });
   const [destination, setDestination] = useState<"task" | "habit" | "library">("task");
   const [title, setTitle] = useState(item.title);
   const [notes, setNotes] = useState(item.notes || "");
@@ -54,26 +56,26 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
 
     try {
       if (destination === "task") {
-        const task = TaskSchema.parse({
-          id: newId,
-          title: title.trim(),
-          notes: notes.trim(),
-          link: normalizeUrl(link),
-          category: "task",
-          priority,
-          status: "todo",
-          dueDate: dueDate || undefined,
-          dueTime: dueTime || undefined,
-          sortOrder: 0,
-          tags: ["inbox-converted"],
-          sourceItemId: item.id,
-          createdAt: nowIso,
-          updatedAt: nowIso,
-        });
-
-        // Atomic transaction: Add task + Remove or update inbox item
-        await db.transaction("rw", [db.tasks, db.items], async () => {
-          await db.tasks.add(task);
+        // Atomic transaction: Add task with sync + Remove inbox item
+        await db.transaction("rw", [db.tasks, db.events, db.reminders, db.items], async () => {
+          await saveTaskWithSync({
+            taskData: {
+              id: newId,
+              title: title.trim(),
+              notes: notes.trim(),
+              link,
+              category: "task",
+              priority,
+              status: "todo",
+              dueDate: dueDate || undefined,
+              dueTime: dueTime || undefined,
+              sortOrder: 0,
+              tags: ["inbox-converted"],
+              sourceItemId: item.id,
+              createdAt: nowIso,
+              updatedAt: nowIso,
+            },
+          });
           await db.items.delete(item.id);
         });
       } else if (destination === "habit") {
@@ -136,12 +138,21 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs animate-in fade-in">
-      <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="convert-modal-title"
+        tabIndex={-1}
+        className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900"
+      >
         <div className="flex items-center justify-between pb-3">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+          <h3 id="convert-modal-title" className="text-lg font-bold text-slate-900 dark:text-white">
             Process Inbox Item
           </h3>
           <button
+            type="button"
+            aria-label="Close modal"
             onClick={onClose}
             className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
           >

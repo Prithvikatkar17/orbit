@@ -13,14 +13,13 @@ import {
   FileText,
   Trash2,
 } from "lucide-react";
-import { db } from "@/lib/db/client";
 import {
   type LibraryEntry,
-  LibraryEntrySchema,
   type LibraryCollection,
 } from "@/lib/schemas";
 import { validateLibraryFileSize } from "@/lib/schemas/library-file";
-import { normalizeUrl } from "@/lib/utils/dates";
+import { saveLibraryEntryWithAttachment } from "@/lib/services/library-service";
+import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
 import { MarkdownContent } from "./markdown-content";
 
 interface LibraryEntryModalProps {
@@ -40,6 +39,7 @@ export function LibraryEntryModal({
   onClose,
   onSaved,
 }: LibraryEntryModalProps) {
+  const modalRef = useAccessibleModal({ onClose });
   const isEditing = Boolean(initialEntry);
 
   const [title, setTitle] = useState(initialEntry?.title || "");
@@ -104,9 +104,6 @@ export function LibraryEntryModal({
     setIsSubmitting(true);
     setError(null);
 
-    const nowIso = new Date().toISOString();
-    const id = initialEntry?.id || crypto.randomUUID();
-
     // Process comma-separated tags
     const tags = tagInput
       .split(",")
@@ -114,66 +111,34 @@ export function LibraryEntryModal({
       .filter(Boolean);
 
     try {
-      // 1. Handle file attachment in Dexie libraryFiles table
-      let resolvedFileMetadata = isRemovingFile ? undefined : existingFileMetadata;
-
-      if (attachedFile) {
-        const fileId = crypto.randomUUID();
-        resolvedFileMetadata = {
-          fileId,
-          fileName: attachedFile.name,
-          fileType: attachedFile.type || "application/octet-stream",
-          fileSize: attachedFile.size,
-        };
-
-        // Binary storage into libraryFiles table
-        await db.libraryFiles.put({
-          id: fileId,
-          entryId: id,
-          fileName: attachedFile.name,
-          fileType: attachedFile.type || "application/octet-stream",
-          fileSize: attachedFile.size,
-          data: attachedFile,
-          createdAt: nowIso,
-        });
-      } else if (isRemovingFile && initialEntry?.id) {
-        await db.libraryFiles.where("entryId").equals(initialEntry.id).delete();
-      }
-
-      // 2. Validate and persist library entry metadata
-      const parsedEntry = LibraryEntrySchema.parse({
-        id,
-        title: title.trim(),
-        notes: notes.trim(),
-        link: normalizeUrl(link),
-        type,
-        status,
-        rating: rating || undefined,
-        tags,
-        isFavorite,
-        collectionId: collectionId || undefined,
-        lastViewedAt: initialEntry?.lastViewedAt,
-        completedAt:
-          status === "completed"
-            ? initialEntry?.completedAt || nowIso
-            : undefined,
-        sourceItemId: initialEntry?.sourceItemId,
-        fileMetadata: resolvedFileMetadata,
-        createdAt: initialEntry?.createdAt || nowIso,
-        updatedAt: nowIso,
+      const parsedEntry = await saveLibraryEntryWithAttachment({
+        entryData: {
+          id: initialEntry?.id,
+          title: title.trim(),
+          notes: notes.trim(),
+          link: link.trim() ? link : undefined,
+          type,
+          status,
+          rating: rating || undefined,
+          tags,
+          isFavorite,
+          collectionId: collectionId || undefined,
+          lastViewedAt: initialEntry?.lastViewedAt,
+          completedAt: initialEntry?.completedAt,
+          sourceItemId: initialEntry?.sourceItemId,
+          createdAt: initialEntry?.createdAt,
+        },
+        attachedFile,
+        existingFileMetadata,
+        isRemovingFile,
+        isEditing,
       });
-
-      if (isEditing) {
-        await db.libraryEntries.put(parsedEntry);
-      } else {
-        await db.libraryEntries.add(parsedEntry);
-      }
 
       onSaved?.(parsedEntry);
       onClose();
     } catch (err: unknown) {
       console.error("Save library entry error:", err);
-      setError(err instanceof Error ? err.message : "Validation error");
+      setError(err instanceof Error ? err.message : "Validation or storage error");
     } finally {
       setIsSubmitting(false);
     }
@@ -198,14 +163,21 @@ export function LibraryEntryModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs animate-in fade-in">
-      <div className="max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 scrollbar-thin">
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="library-entry-modal-title"
+        tabIndex={-1}
+        className="max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900 scrollbar-thin"
+      >
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <h3 id="library-entry-modal-title" className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
             {isNoteType ? (
-              <FileText className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+              <FileText className="h-5 w-5 text-indigo-600 dark:text-indigo-400" aria-hidden="true" />
             ) : (
-              <BookOpen className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+              <BookOpen className="h-5 w-5 text-indigo-600 dark:text-indigo-400" aria-hidden="true" />
             )}
             <span>
               {isEditing
@@ -219,6 +191,7 @@ export function LibraryEntryModal({
           </h3>
           <button
             type="button"
+            aria-label="Close modal"
             onClick={onClose}
             className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 transition-colors"
           >

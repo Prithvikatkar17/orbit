@@ -2,11 +2,16 @@
 
 import React, { useEffect } from "react";
 import { checkDueReminders } from "@/lib/services/reminder-service";
+import { useNotificationStore } from "@/lib/stores/notification-store";
 
 export function ReminderProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    // Initial check on mount
-    checkDueReminders();
+    // Hydrate persisted notifications from IndexedDB, then check due reminders
+    async function init() {
+      await useNotificationStore.getState().hydrateNotifications();
+      await checkDueReminders();
+    }
+    init();
 
     // Check periodically every 30 seconds
     const interval = setInterval(() => {

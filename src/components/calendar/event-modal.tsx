@@ -8,6 +8,7 @@ import { ReminderSchema } from "@/lib/schemas/reminder";
 import { EVENT_TYPES } from "@/lib/constants";
 import { ReminderEditor, type ReminderDraft } from "@/components/reminders/reminder-editor";
 import { getLocalDateString } from "@/lib/utils/dates";
+import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
 
 interface EventModalProps {
   initialEvent?: Event | null;
@@ -24,6 +25,7 @@ export function EventModal({
   onClose,
   onSaved,
 }: EventModalProps) {
+  const modalRef = useAccessibleModal({ onClose });
   const isEditing = Boolean(initialEvent);
   const todayStr = getLocalDateString();
 
@@ -148,14 +150,23 @@ export function EventModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs animate-in fade-in">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 scrollbar-thin">
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="event-modal-title"
+        tabIndex={-1}
+        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900 scrollbar-thin"
+      >
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <CalendarIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+          <h3 id="event-modal-title" className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <CalendarIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" aria-hidden="true" />
             <span>{isEditing ? "Edit Event" : "Create Event"}</span>
           </h3>
           <button
+            type="button"
+            aria-label="Close modal"
             onClick={onClose}
             className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
           >

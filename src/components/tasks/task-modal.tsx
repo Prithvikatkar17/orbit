@@ -3,8 +3,9 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 import { db } from "@/lib/db/client";
-import { type Task, TaskSchema } from "@/lib/schemas";
-import { normalizeUrl } from "@/lib/utils/dates";
+import { type Task } from "@/lib/schemas";
+import { saveTaskWithSync } from "@/lib/services/task-sync-service";
+import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
 
 interface TaskModalProps {
   initialTask?: Task | null;
@@ -12,6 +13,7 @@ interface TaskModalProps {
 }
 
 export function TaskModal({ initialTask, onClose }: TaskModalProps) {
+  const modalRef = useAccessibleModal({ onClose });
   const isEditing = Boolean(initialTask);
   const [title, setTitle] = useState(initialTask?.title || "");
   const [notes, setNotes] = useState(initialTask?.notes || "");
@@ -29,45 +31,32 @@ export function TaskModal({ initialTask, onClose }: TaskModalProps) {
 
     setIsSubmitting(true);
     setError(null);
-    const nowIso = new Date().toISOString();
 
     try {
-      if (isEditing && initialTask) {
-        const updated = TaskSchema.parse({
-          ...initialTask,
-          title: title.trim(),
-          notes: notes.trim(),
-          link: normalizeUrl(link),
-          category: category.toLowerCase(),
-          priority,
-          dueDate: dueDate || undefined,
-          dueTime: dueTime || undefined,
-          updatedAt: nowIso,
-        });
-
-        await db.tasks.put(updated);
-      } else {
+      let sortOrder = initialTask?.sortOrder ?? 0;
+      if (!isEditing) {
         const maxOrderTask = await db.tasks.orderBy("sortOrder").last();
-        const nextSortOrder = maxOrderTask ? maxOrderTask.sortOrder + 1 : 0;
-
-        const newTask = TaskSchema.parse({
-          id: crypto.randomUUID(),
-          title: title.trim(),
-          notes: notes.trim(),
-          link: normalizeUrl(link),
-          category: category.toLowerCase(),
-          priority,
-          status: "todo",
-          dueDate: dueDate || undefined,
-          dueTime: dueTime || undefined,
-          sortOrder: nextSortOrder,
-          tags: [category],
-          createdAt: nowIso,
-          updatedAt: nowIso,
-        });
-
-        await db.tasks.add(newTask);
+        sortOrder = maxOrderTask ? maxOrderTask.sortOrder + 1 : 0;
       }
+
+      await saveTaskWithSync({
+        taskData: {
+          id: isEditing ? initialTask?.id : undefined,
+          title,
+          notes,
+          link,
+          category,
+          priority,
+          status: isEditing ? initialTask?.status : "todo",
+          dueDate,
+          dueTime,
+          sortOrder,
+          tags: isEditing ? initialTask?.tags : [category.toLowerCase()],
+          sourceItemId: initialTask?.sourceItemId,
+          createdAt: initialTask?.createdAt,
+        },
+        isEditing,
+      });
 
       onClose();
     } catch (err: unknown) {
@@ -80,12 +69,21 @@ export function TaskModal({ initialTask, onClose }: TaskModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs animate-in fade-in">
-      <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="task-modal-title"
+        tabIndex={-1}
+        className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900"
+      >
         <div className="flex items-center justify-between pb-3">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+          <h3 id="task-modal-title" className="text-lg font-bold text-slate-900 dark:text-white">
             {isEditing ? "Edit Task / Goal" : "Create New Task"}
           </h3>
           <button
+            type="button"
+            aria-label="Close modal"
             onClick={onClose}
             className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
           >

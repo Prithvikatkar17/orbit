@@ -113,6 +113,7 @@ export function NotificationCenter() {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
         setIsOpen(false);
+        buttonRef.current?.focus();
       }
     }
 
@@ -132,7 +133,7 @@ export function NotificationCenter() {
 
   async function handleAcknowledge(item: NotificationItem) {
     await acknowledgeReminder(item.reminderId);
-    markAsRead(item.id);
+    await markAsRead(item.id);
   }
 
   return (
@@ -170,8 +171,11 @@ export function NotificationCenter() {
       {isOpen && mounted && typeof document !== "undefined" && panelStyle && createPortal(
         <div
           ref={panelRef}
+          role="dialog"
+          aria-label="Notifications"
+          tabIndex={-1}
           style={panelStyle}
-          className="flex flex-col rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-800 dark:bg-slate-900 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150"
+          className="flex flex-col rounded-2xl border border-slate-200 bg-white shadow-xl outline-hidden dark:border-slate-800 dark:bg-slate-900 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150"
         >
           {/* Header */}
           <div className="shrink-0 flex items-center justify-between border-b border-slate-100 p-3.5 dark:border-slate-800">
@@ -191,7 +195,7 @@ export function NotificationCenter() {
                 <>
                   <button
                     type="button"
-                    onClick={markAllAsRead}
+                    onClick={() => void markAllAsRead()}
                     className="text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors"
                   >
                     Mark all read
@@ -199,7 +203,7 @@ export function NotificationCenter() {
                   <span className="text-slate-300 dark:text-slate-700">•</span>
                   <button
                     type="button"
-                    onClick={clearAll}
+                    onClick={() => void clearAll()}
                     className="text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 transition-colors"
                   >
                     Clear
@@ -293,6 +297,7 @@ export function NotificationCenter() {
                       onClick={() => dismissNotification(item.id)}
                       className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5"
                       title="Dismiss"
+                      aria-label={`Dismiss notification for ${item.eventTitle}`}
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import Link from "next/link";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
@@ -18,24 +18,37 @@ import { UpcomingEventsWidget } from "@/components/dashboard/upcoming-events";
 import { WeeklyProgressWidget } from "@/components/dashboard/weekly-progress";
 import { CATEGORY_ICONS } from "@/lib/constants";
 import { useTodayDate } from "@/lib/utils/dates";
+import { toggleTaskCompletionWithSync } from "@/lib/services/task-sync-service";
+import {
+  fetchDashboardSnapshotData,
+  deriveDashboardMetrics,
+} from "@/lib/services/workspace-queries";
+import type { Task } from "@/lib/schemas";
+
+const EMPTY_DASHBOARD_DATA = {
+  tasks: [],
+  habits: [],
+  habitLogs: [],
+};
 
 export default function HomePage() {
   const { openQuickCapture } = useUIStore();
   const todayStr = useTodayDate();
 
-  // Live queries from Dexie
-  const tasks = useLiveQuery(() => db.tasks.toArray()) ?? [];
-  const habits = useLiveQuery(() => db.habits.filter((h) => h.isActive).toArray()) ?? [];
-  const todayLogs = useLiveQuery(
-    () => (todayStr ? db.habitLogs.where("date").equals(todayStr).toArray() : []),
-    [todayStr]
-  ) ?? [];
+  // Single consolidated Dexie live query shared between HomePage & WeeklyProgressWidget
+  const rawDashboardData = useLiveQuery(() => fetchDashboardSnapshotData(), []);
+  const dashboardData = rawDashboardData ?? EMPTY_DASHBOARD_DATA;
 
-  const completedTodayHabitIds = new Set(todayLogs.map((l) => l.habitId));
-
-  const openTasks = tasks.filter((t) => t.status !== "completed");
-  const completedTasks = tasks.filter((t) => t.status === "completed");
-  const dueTodayTasks = openTasks.filter((t) => t.dueDate === todayStr);
+  const {
+    activeHabits,
+    completedTodayHabitIds,
+    openTasks,
+    completedTasks,
+    dueTodayTasks,
+  } = useMemo(
+    () => deriveDashboardMetrics(dashboardData, todayStr),
+    [dashboardData, todayStr]
+  );
 
   async function toggleHabit(habitId: string) {
     if (!todayStr) return;
@@ -57,13 +70,12 @@ export default function HomePage() {
     }
   }
 
-  async function toggleTask(task: typeof tasks[0]) {
-    const isDone = task.status === "completed";
-    await db.tasks.update(task.id, {
-      status: isDone ? "todo" : "completed",
-      completedAt: isDone ? undefined : new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    });
+  async function toggleTask(task: Task) {
+    try {
+      await toggleTaskCompletionWithSync(task);
+    } catch (err: unknown) {
+      console.error("Toggle task error:", err);
+    }
   }
 
   return (
@@ -126,7 +138,7 @@ export default function HomePage() {
           </span>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">
-              {todayLogs.length} / {habits.length}
+              {completedTodayHabitIds.size} / {activeHabits.length}
             </span>
           </div>
         </div>
@@ -186,6 +198,8 @@ export default function HomePage() {
                     className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50/60 p-3 transition-colors hover:bg-slate-100/60 dark:border-slate-800/80 dark:bg-slate-800/40 dark:hover:bg-slate-800/70"
                   >
                     <button
+                      type="button"
+                      aria-label={`Mark "${task.title}" as completed`}
                       onClick={() => toggleTask(task)}
                       className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-slate-300 transition-colors hover:border-indigo-600 dark:border-slate-600"
                     />
@@ -237,13 +251,14 @@ export default function HomePage() {
           </div>
 
           <div className="space-y-2.5">
-            {habits.length === 0 ? (
+            {activeHabits.length === 0 ? (
               <div className="rounded-xl border border-dashed border-slate-200 py-10 text-center dark:border-slate-800">
                 <Repeat className="mx-auto h-8 w-8 text-slate-400" />
                 <p className="mt-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
                   No habits set up yet.
                 </p>
                 <button
+                  type="button"
                   onClick={openQuickCapture}
                   className="mt-3 text-xs font-semibold text-indigo-600 hover:underline dark:text-indigo-400"
                 >
@@ -251,7 +266,7 @@ export default function HomePage() {
                 </button>
               </div>
             ) : (
-              habits.map((habit) => {
+              activeHabits.map((habit) => {
                 const done = completedTodayHabitIds.has(habit.id);
                 return (
                   <div
@@ -260,6 +275,13 @@ export default function HomePage() {
                   >
                     <div className="flex items-center gap-3">
                       <button
+                        type="button"
+                        aria-pressed={done}
+                        aria-label={
+                          done
+                            ? `Mark "${habit.title}" incomplete`
+                            : `Mark "${habit.title}" completed`
+                        }
                         onClick={() => toggleHabit(habit.id)}
                         className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border-2 transition-all ${
                           done
@@ -292,7 +314,12 @@ export default function HomePage() {
       </div>
 
       {/* Weekly Progress & Insights Preview */}
-      <WeeklyProgressWidget />
+      <WeeklyProgressWidget
+        tasks={dashboardData.tasks}
+        habits={dashboardData.habits}
+        habitLogs={dashboardData.habitLogs}
+        isLoaded={Boolean(rawDashboardData)}
+      />
 
       {/* Upcoming Events (7 Days) Widget */}
       <UpcomingEventsWidget />

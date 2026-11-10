@@ -26,6 +26,10 @@ import {
 import { requestNotificationPermission } from "@/lib/services/reminder-service";
 import { useNotificationStore } from "@/lib/stores/notification-store";
 import { useMounted } from "@/lib/utils/dates";
+import {
+  fetchDatabaseStorageCounts,
+  EMPTY_STORAGE_COUNTS,
+} from "@/lib/services/workspace-queries";
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
@@ -38,16 +42,18 @@ export default function SettingsPage() {
   const [restoreMode, setRestoreMode] = useState<"replace" | "merge">("replace");
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
 
-  // Live queries for storage counts
-  const itemsCount = useLiveQuery(() => db.items.count()) ?? 0;
-  const tasksCount = useLiveQuery(() => db.tasks.count()) ?? 0;
-  const habitsCount = useLiveQuery(() => db.habits.count()) ?? 0;
-  const habitLogsCount = useLiveQuery(() => db.habitLogs.count()) ?? 0;
-  const eventsCount = useLiveQuery(() => db.events.count()) ?? 0;
-  const remindersCount = useLiveQuery(() => db.reminders.count()) ?? 0;
-  const libraryCount = useLiveQuery(() => db.libraryEntries.count()) ?? 0;
-  const collectionsCount = useLiveQuery(() => db.libraryCollections.count()) ?? 0;
-  const filesCount = useLiveQuery(() => db.libraryFiles.count()) ?? 0;
+  // Consolidated single Dexie live query for all storage counts
+  const {
+    itemsCount,
+    tasksCount,
+    habitsCount,
+    habitLogsCount,
+    eventsCount,
+    remindersCount,
+    libraryCount,
+    collectionsCount,
+    filesCount,
+  } = useLiveQuery(() => fetchDatabaseStorageCounts(), []) ?? EMPTY_STORAGE_COUNTS;
 
   useEffect(() => {
     // Load settings from db
@@ -108,8 +114,8 @@ export default function SettingsPage() {
     }
   }
 
-  function handleSendTestNotification() {
-    useNotificationStore.getState().addNotification({
+  async function handleSendTestNotification() {
+    await useNotificationStore.getState().addNotification({
       id: crypto.randomUUID(),
       reminderId: "test",
       eventId: "test",
@@ -217,6 +223,7 @@ export default function SettingsPage() {
           db.habitLogs,
           db.events,
           db.reminders,
+          db.notifications,
           db.libraryEntries,
           db.libraryCollections,
           db.libraryFiles,
@@ -231,6 +238,7 @@ export default function SettingsPage() {
             db.habitLogs.clear(),
             db.events.clear(),
             db.reminders.clear(),
+            db.notifications.clear(),
             db.libraryEntries.clear(),
             db.libraryCollections.clear(),
             db.libraryFiles.clear(),
@@ -239,6 +247,7 @@ export default function SettingsPage() {
           ]);
         }
       );
+      await useNotificationStore.getState().clearAll();
       setIsResetConfirmOpen(false);
       setStatusMessage("All data cleared successfully.");
       setTimeout(() => setStatusMessage(null), 4000);

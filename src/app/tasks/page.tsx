@@ -26,6 +26,10 @@ import {
 } from "lucide-react";
 import { db } from "@/lib/db/client";
 import { type Task } from "@/lib/schemas";
+import {
+  deleteTaskWithCascade,
+  toggleTaskCompletionWithSync,
+} from "@/lib/services/task-sync-service";
 import { SortableTaskItem } from "@/components/tasks/sortable-task-item";
 import { TaskModal } from "@/components/tasks/task-modal";
 import { useTodayDate } from "@/lib/utils/dates";
@@ -183,14 +187,11 @@ export default function TasksPage() {
 
   // Toggle completion
   async function handleToggle(task: Task) {
-    const isNowCompleted = task.status !== "completed";
-    const nowIso = new Date().toISOString();
-
-    await db.tasks.update(task.id, {
-      status: isNowCompleted ? "completed" : "todo",
-      completedAt: isNowCompleted ? nowIso : undefined,
-      updatedAt: nowIso,
-    });
+    try {
+      await toggleTaskCompletionWithSync(task);
+    } catch (err: unknown) {
+      console.error("Toggle task error:", err);
+    }
   }
 
   // Edit task
@@ -202,7 +203,11 @@ export default function TasksPage() {
   // Delete task
   async function handleDelete(id: string) {
     if (confirm("Are you sure you want to delete this task?")) {
-      await db.tasks.delete(id);
+      try {
+        await deleteTaskWithCascade(id);
+      } catch (err: unknown) {
+        console.error("Delete task error:", err);
+      }
     }
   }
 

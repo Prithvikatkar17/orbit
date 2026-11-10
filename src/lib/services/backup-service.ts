@@ -35,6 +35,7 @@ export interface RestoreStats {
   habitLogs: number;
   events: number;
   reminders: number;
+  notifications: number;
   libraryEntries: number;
   libraryCollections: number;
   libraryFiles: number;
@@ -143,6 +144,7 @@ export async function exportFullBackup(
     habitLogs,
     events,
     reminders,
+    notifications,
     libraryEntries,
     libraryCollections,
     rawLibraryFiles,
@@ -155,6 +157,7 @@ export async function exportFullBackup(
     dbInstance.habitLogs.toArray(),
     dbInstance.events.toArray(),
     dbInstance.reminders.toArray(),
+    dbInstance.notifications ? dbInstance.notifications.toArray() : Promise.resolve([]),
     dbInstance.libraryEntries.toArray(),
     dbInstance.libraryCollections.toArray(),
     dbInstance.libraryFiles.toArray(),
@@ -180,6 +183,7 @@ export async function exportFullBackup(
     habitLogs,
     events,
     reminders,
+    notifications,
     libraryEntries,
     libraryCollections,
     libraryFiles,
@@ -483,6 +487,7 @@ export async function restoreBackup(
       habitLogs: payload.habitLogs.length,
       events: payload.events.length,
       reminders: payload.reminders.length,
+      notifications: payload.notifications.length,
       libraryEntries: payload.libraryEntries.length,
       libraryCollections: payload.libraryCollections.length,
       libraryFiles: reconstructedFiles.length,
@@ -490,54 +495,61 @@ export async function restoreBackup(
       settings: payload.settings.length,
     };
 
-    // Atomic Dexie transaction restoring all 11 tables
-    await dbInstance.transaction(
-      "rw",
-      [
-        dbInstance.items,
-        dbInstance.tasks,
-        dbInstance.habits,
-        dbInstance.habitLogs,
-        dbInstance.events,
-        dbInstance.reminders,
-        dbInstance.libraryEntries,
-        dbInstance.libraryCollections,
-        dbInstance.libraryFiles,
-        dbInstance.categories,
-        dbInstance.settings,
-      ],
-      async () => {
-        if (mode === "replace") {
-          await Promise.all([
-            dbInstance.items.clear(),
-            dbInstance.tasks.clear(),
-            dbInstance.habits.clear(),
-            dbInstance.habitLogs.clear(),
-            dbInstance.events.clear(),
-            dbInstance.reminders.clear(),
-            dbInstance.libraryEntries.clear(),
-            dbInstance.libraryCollections.clear(),
-            dbInstance.libraryFiles.clear(),
-            dbInstance.categories.clear(),
-            dbInstance.settings.clear(),
-          ]);
-        }
+    const zipTxTables = [
+      dbInstance.items,
+      dbInstance.tasks,
+      dbInstance.habits,
+      dbInstance.habitLogs,
+      dbInstance.events,
+      dbInstance.reminders,
+      dbInstance.libraryEntries,
+      dbInstance.libraryCollections,
+      dbInstance.libraryFiles,
+      dbInstance.categories,
+      dbInstance.settings,
+      ...(dbInstance.notifications ? [dbInstance.notifications] : []),
+    ];
 
-        await Promise.all([
-          dbInstance.items.bulkPut(payload.items),
-          dbInstance.tasks.bulkPut(payload.tasks),
-          dbInstance.habits.bulkPut(payload.habits),
-          dbInstance.habitLogs.bulkPut(payload.habitLogs),
-          dbInstance.events.bulkPut(payload.events),
-          dbInstance.reminders.bulkPut(payload.reminders),
-          dbInstance.libraryEntries.bulkPut(payload.libraryEntries),
-          dbInstance.libraryCollections.bulkPut(payload.libraryCollections),
-          dbInstance.libraryFiles.bulkPut(reconstructedFiles),
-          dbInstance.categories.bulkPut(payload.categories),
-          dbInstance.settings.bulkPut(payload.settings),
-        ]);
+    // Atomic Dexie transaction restoring all tables
+    await dbInstance.transaction("rw", zipTxTables, async () => {
+      if (mode === "replace") {
+        const clears = [
+          dbInstance.items.clear(),
+          dbInstance.tasks.clear(),
+          dbInstance.habits.clear(),
+          dbInstance.habitLogs.clear(),
+          dbInstance.events.clear(),
+          dbInstance.reminders.clear(),
+          dbInstance.libraryEntries.clear(),
+          dbInstance.libraryCollections.clear(),
+          dbInstance.libraryFiles.clear(),
+          dbInstance.categories.clear(),
+          dbInstance.settings.clear(),
+        ];
+        if (dbInstance.notifications) {
+          clears.push(dbInstance.notifications.clear());
+        }
+        await Promise.all(clears);
       }
-    );
+
+      const puts = [
+        dbInstance.items.bulkPut(payload.items),
+        dbInstance.tasks.bulkPut(payload.tasks),
+        dbInstance.habits.bulkPut(payload.habits),
+        dbInstance.habitLogs.bulkPut(payload.habitLogs),
+        dbInstance.events.bulkPut(payload.events),
+        dbInstance.reminders.bulkPut(payload.reminders),
+        dbInstance.libraryEntries.bulkPut(payload.libraryEntries),
+        dbInstance.libraryCollections.bulkPut(payload.libraryCollections),
+        dbInstance.libraryFiles.bulkPut(reconstructedFiles),
+        dbInstance.categories.bulkPut(payload.categories),
+        dbInstance.settings.bulkPut(payload.settings),
+      ];
+      if (dbInstance.notifications && payload.notifications.length > 0) {
+        puts.push(dbInstance.notifications.bulkPut(payload.notifications));
+      }
+      await Promise.all(puts);
+    });
 
     return stats;
   }
@@ -591,6 +603,7 @@ export async function restoreBackup(
     habitLogs: parsed.habitLogs.length,
     events: parsed.events.length,
     reminders: parsed.reminders.length,
+    notifications: parsed.notifications.length,
     libraryEntries: parsed.libraryEntries.length,
     libraryCollections: parsed.libraryCollections.length,
     libraryFiles: 0,
@@ -598,56 +611,62 @@ export async function restoreBackup(
     settings: parsed.settings.length,
   };
 
-  await dbInstance.transaction(
-    "rw",
-    [
-      dbInstance.items,
-      dbInstance.tasks,
-      dbInstance.habits,
-      dbInstance.habitLogs,
-      dbInstance.events,
-      dbInstance.reminders,
-      dbInstance.libraryEntries,
-      dbInstance.libraryCollections,
-      dbInstance.libraryFiles,
-      dbInstance.categories,
-      dbInstance.settings,
-    ],
-    async () => {
-      if (mode === "replace") {
-        const clears = [
-          dbInstance.items.clear(),
-          dbInstance.tasks.clear(),
-          dbInstance.habits.clear(),
-          dbInstance.habitLogs.clear(),
-          dbInstance.events.clear(),
-          dbInstance.reminders.clear(),
-          dbInstance.libraryEntries.clear(),
-          dbInstance.libraryCollections.clear(),
-          dbInstance.categories.clear(),
-          dbInstance.settings.clear(),
-        ];
-        // Only clear libraryFiles if explicit confirmation was provided
-        if (options.confirmFileDeletion) {
-          clears.push(dbInstance.libraryFiles.clear());
-        }
-        await Promise.all(clears);
-      }
+  const jsonTxTables = [
+    dbInstance.items,
+    dbInstance.tasks,
+    dbInstance.habits,
+    dbInstance.habitLogs,
+    dbInstance.events,
+    dbInstance.reminders,
+    dbInstance.libraryEntries,
+    dbInstance.libraryCollections,
+    dbInstance.libraryFiles,
+    dbInstance.categories,
+    dbInstance.settings,
+    ...(dbInstance.notifications ? [dbInstance.notifications] : []),
+  ];
 
-      await Promise.all([
-        dbInstance.items.bulkPut(parsed.items),
-        dbInstance.tasks.bulkPut(parsed.tasks),
-        dbInstance.habits.bulkPut(parsed.habits),
-        dbInstance.habitLogs.bulkPut(parsed.habitLogs),
-        dbInstance.events.bulkPut(parsed.events),
-        dbInstance.reminders.bulkPut(parsed.reminders),
-        dbInstance.libraryEntries.bulkPut(parsed.libraryEntries),
-        dbInstance.libraryCollections.bulkPut(parsed.libraryCollections),
-        dbInstance.categories.bulkPut(parsed.categories),
-        dbInstance.settings.bulkPut(parsed.settings),
-      ]);
+  await dbInstance.transaction("rw", jsonTxTables, async () => {
+    if (mode === "replace") {
+      const clears = [
+        dbInstance.items.clear(),
+        dbInstance.tasks.clear(),
+        dbInstance.habits.clear(),
+        dbInstance.habitLogs.clear(),
+        dbInstance.events.clear(),
+        dbInstance.reminders.clear(),
+        dbInstance.libraryEntries.clear(),
+        dbInstance.libraryCollections.clear(),
+        dbInstance.categories.clear(),
+        dbInstance.settings.clear(),
+      ];
+      if (dbInstance.notifications) {
+        clears.push(dbInstance.notifications.clear());
+      }
+      // Only clear libraryFiles if explicit confirmation was provided
+      if (options.confirmFileDeletion) {
+        clears.push(dbInstance.libraryFiles.clear());
+      }
+      await Promise.all(clears);
     }
-  );
+
+    const puts = [
+      dbInstance.items.bulkPut(parsed.items),
+      dbInstance.tasks.bulkPut(parsed.tasks),
+      dbInstance.habits.bulkPut(parsed.habits),
+      dbInstance.habitLogs.bulkPut(parsed.habitLogs),
+      dbInstance.events.bulkPut(parsed.events),
+      dbInstance.reminders.bulkPut(parsed.reminders),
+      dbInstance.libraryEntries.bulkPut(parsed.libraryEntries),
+      dbInstance.libraryCollections.bulkPut(parsed.libraryCollections),
+      dbInstance.categories.bulkPut(parsed.categories),
+      dbInstance.settings.bulkPut(parsed.settings),
+    ];
+    if (dbInstance.notifications && parsed.notifications.length > 0) {
+      puts.push(dbInstance.notifications.bulkPut(parsed.notifications));
+    }
+    await Promise.all(puts);
+  });
 
   return stats;
 }

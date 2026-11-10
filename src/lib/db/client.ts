@@ -6,6 +6,7 @@ import type {
   HabitLog,
   Event,
   Reminder,
+  NotificationItem,
   LibraryEntry,
   LibraryCollection,
   LibraryFile,
@@ -20,6 +21,7 @@ export class OrbitDatabase extends Dexie {
   habitLogs!:          EntityTable<HabitLog, "id">;
   events!:             EntityTable<Event, "id">;
   reminders!:          EntityTable<Reminder, "id">;
+  notifications!:      EntityTable<NotificationItem, "id">;
   libraryEntries!:     EntityTable<LibraryEntry, "id">;
   libraryCollections!: EntityTable<LibraryCollection, "id">;
   libraryFiles!:       EntityTable<LibraryFile, "id">;
@@ -57,6 +59,12 @@ export class OrbitDatabase extends Dexie {
         if (entry.isFavorite === undefined) entry.isFavorite = false;
         if (!entry.tags) entry.tags = [];
       });
+    });
+
+    // Version 3: Phase 7D Persistent Notifications table
+    // Avoids storing boolean indexes since IndexedDB keys exclude booleans.
+    this.version(3).stores({
+      notifications: "id, reminderId, eventId, occurrenceDate, deliveredAt",
     });
   }
 }

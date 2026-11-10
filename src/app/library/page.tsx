@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { db } from "@/lib/db/client";
 import type { LibraryEntry, LibraryCollection } from "@/lib/schemas";
+import { deleteLibraryEntryWithFiles } from "@/lib/services/library-service";
 import { useMounted } from "@/lib/utils/dates";
 import { LibraryCard } from "@/components/library/library-card";
 import { LibraryRow } from "@/components/library/library-row";
@@ -259,8 +260,14 @@ export default function LibraryPage() {
 
   async function handleDelete(id: string) {
     if (confirm("Are you sure you want to delete this resource?")) {
-      await db.libraryFiles.where("entryId").equals(id).delete();
-      await db.libraryEntries.delete(id);
+      try {
+        await deleteLibraryEntryWithFiles(id);
+        if (viewingEntryId === id) {
+          setViewingEntryId(null);
+        }
+      } catch (err: unknown) {
+        console.error("Delete library entry error:", err);
+      }
     }
   }
 

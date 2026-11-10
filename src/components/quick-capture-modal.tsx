@@ -7,16 +7,21 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db/client";
 import {
   ItemSchema,
-  TaskSchema,
   HabitSchema,
   LibraryEntrySchema,
   type LibraryEntry,
 } from "@/lib/schemas";
+import { saveTaskWithSync } from "@/lib/services/task-sync-service";
 import { DEFAULT_CATEGORIES } from "@/lib/constants";
 import { normalizeUrl } from "@/lib/utils/dates";
+import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
 
 export function QuickCaptureModal() {
   const { quickCaptureOpen, closeQuickCapture } = useUIStore();
+  const modalRef = useAccessibleModal({
+    isOpen: quickCaptureOpen,
+    onClose: closeQuickCapture,
+  });
   const [title, setTitle] = useState("");
   const [notes, setNotes] = useState("");
   const [link, setLink] = useState("");
@@ -173,53 +178,23 @@ export function QuickCaptureModal() {
         await db.libraryEntries.add(entry);
       } else {
         // Task / Goal / Idea
-        const task = TaskSchema.parse({
-          id,
-          title: title.trim(),
-          notes: notes.trim(),
-          link: normalizeUrl(link),
-          category: lowerCat,
-          priority,
-          status: "todo",
-          dueDate: dueDate || undefined,
-          dueTime: dueTime || undefined,
-          sortOrder: 0,
-          tags: [category],
-          createdAt: nowIso,
-          updatedAt: nowIso,
-        });
-        await db.tasks.add(task);
-
-        if (dueDate) {
-          const eventId = crypto.randomUUID();
-          await db.events.add({
-            id: eventId,
-            title: title.trim(),
-            notes: notes.trim(),
-            type: lowerCat === "goal" ? "deadline" : "general",
-            date: dueDate,
-            startTime: dueTime || undefined,
-            isAllDay: !dueTime,
-            recurrence: { rule: "none" },
-            sourceItemId: id,
+        await saveTaskWithSync({
+          taskData: {
+            id,
+            title,
+            notes,
+            link,
+            category: lowerCat,
+            priority,
+            status: "todo",
+            dueDate,
+            dueTime,
+            sortOrder: 0,
+            tags: [category],
             createdAt: nowIso,
             updatedAt: nowIso,
-          });
-
-          if (dueTime) {
-            await db.reminders.add({
-              id: crypto.randomUUID(),
-              eventId,
-              timing: { type: "at_time" },
-              label: "At time of event",
-              lastNotifiedOccurrenceDate: undefined,
-              notifiedAt: undefined,
-              acknowledgedAt: undefined,
-              isActive: true,
-              createdAt: nowIso,
-            });
-          }
-        }
+          },
+        });
       }
 
       // Reset form & close
@@ -243,17 +218,26 @@ export function QuickCaptureModal() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
-      <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 animate-in fade-in zoom-in-95 duration-150">
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="quick-capture-modal-title"
+        tabIndex={-1}
+        className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900 animate-in fade-in zoom-in-95 duration-150"
+      >
         <div className="flex items-center justify-between pb-3">
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300" aria-hidden="true">
               ⚡
             </span>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+            <h2 id="quick-capture-modal-title" className="text-lg font-bold text-slate-900 dark:text-white">
               Quick Capture
             </h2>
           </div>
           <button
+            type="button"
+            aria-label="Close modal"
             onClick={closeQuickCapture}
             className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
           >

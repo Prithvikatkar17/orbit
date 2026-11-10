@@ -4,6 +4,7 @@ export * from "./habit";
 export * from "./habit-log";
 export * from "./event";
 export * from "./reminder";
+export * from "./notification";
 export * from "./library-entry";
 export * from "./library-collection";
 export * from "./library-file";
