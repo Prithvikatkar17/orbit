@@ -179,15 +179,26 @@ export function SearchResultItem({
   return (
     <button
       ref={itemRef}
+      id={`search-option-${item.id}`}
+      role="option"
+      aria-selected={isSelected}
       type="button"
       onClick={() => onSelect(item)}
       onMouseEnter={onMouseEnter}
-      className={`group w-full text-left rounded-xl p-3 transition-colors flex items-start gap-3 select-none ${
+      className={`group w-full text-left rounded-xl p-2.5 sm:p-3 min-h-[48px] sm:min-h-[44px] transition-all flex items-start gap-2.5 sm:gap-3 select-none relative focus:outline-hidden focus-visible:ring-2 focus-visible:ring-indigo-500 ${
         isSelected
-          ? "bg-indigo-50/80 dark:bg-indigo-950/50 ring-1 ring-indigo-500/30"
+          ? "bg-indigo-50/90 dark:bg-indigo-950/60 ring-1 ring-indigo-500/40 shadow-xs"
           : "hover:bg-slate-50 dark:hover:bg-slate-800/40"
       }`}
     >
+      {/* Left Active Accent Pill */}
+      {isSelected && (
+        <span
+          className="absolute left-1 top-2.5 bottom-2.5 w-1 rounded-full bg-indigo-600 dark:bg-indigo-400"
+          aria-hidden="true"
+        />
+      )}
+
       {/* Icon Capsule */}
       <div
         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg mt-0.5 transition-colors ${containerBg}`}

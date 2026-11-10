@@ -3,28 +3,30 @@ import type { SearchModuleType } from "@/lib/services/search-service";
 
 export type SearchFilterTab = "all" | SearchModuleType;
 
-const RECENT_SEARCHES_KEY = "orbit:recent_searches";
-const MAX_RECENT_SEARCHES = 8;
+export const RECENT_SEARCHES_KEY = "orbit:recent_searches";
+export const MAX_RECENT_SEARCHES = 8;
 
-function loadRecentSearches(): string[] {
-  if (typeof window === "undefined") return [];
+export function loadRecentSearches(storage: Storage | null = typeof window !== "undefined" ? window.localStorage : null): string[] {
+  if (!storage) return [];
   try {
-    const raw = localStorage.getItem(RECENT_SEARCHES_KEY);
+    const raw = storage.getItem(RECENT_SEARCHES_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed)) {
-      return parsed.filter((item) => typeof item === "string" && item.trim().length > 0).slice(0, MAX_RECENT_SEARCHES);
+      return parsed
+        .filter((item) => typeof item === "string" && item.trim().length > 0)
+        .slice(0, MAX_RECENT_SEARCHES);
     }
   } catch {
-    // Ignore storage quota or blocked errors
+    // Ignore storage quota or corrupted JSON
   }
   return [];
 }
 
-function saveRecentSearches(items: string[]) {
-  if (typeof window === "undefined") return;
+export function saveRecentSearches(items: string[], storage: Storage | null = typeof window !== "undefined" ? window.localStorage : null): void {
+  if (!storage) return;
   try {
-    localStorage.setItem(
+    storage.setItem(
       RECENT_SEARCHES_KEY,
       JSON.stringify(items.slice(0, MAX_RECENT_SEARCHES))
     );
@@ -113,8 +115,11 @@ export const useSearchStore = create<SearchState>((set) => ({
   },
 
   removeRecentSearch: (term: string) => {
+    const trimmed = term.trim().toLowerCase();
     set((state) => {
-      const updated = state.recentSearches.filter((s) => s !== term);
+      const updated = state.recentSearches.filter(
+        (s) => s.toLowerCase() !== trimmed
+      );
       saveRecentSearches(updated);
       return { recentSearches: updated };
     });
