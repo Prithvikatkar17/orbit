@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   X,
   ExternalLink,
@@ -27,6 +27,7 @@ import { MarkdownContent } from "./markdown-content";
 interface LibraryDetailModalProps {
   entry: LibraryEntry | null;
   collection?: LibraryCollection;
+  focusNote?: boolean;
   onClose: () => void;
   onEdit: (entry: LibraryEntry) => void;
   onDelete: (id: string) => void;
@@ -37,6 +38,7 @@ interface LibraryDetailModalProps {
 export function LibraryDetailModal({
   entry,
   collection,
+  focusNote,
   onClose,
   onEdit,
   onDelete,
@@ -46,6 +48,16 @@ export function LibraryDetailModal({
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [isLoadingFile, setIsLoadingFile] = useState(false);
   const [fileLoadError, setFileLoadError] = useState<string | null>(null);
+  const noteContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (focusNote && noteContainerRef.current) {
+      const timer = setTimeout(() => {
+        noteContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 80);
+      return () => clearTimeout(timer);
+    }
+  }, [focusNote]);
 
   useEffect(() => {
     let active = true;
@@ -325,12 +337,27 @@ export function LibraryDetailModal({
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               {entry.type === "note" ? "Note Content" : "Notes & Summary"}
             </h4>
-            <div className="max-h-80 overflow-y-auto rounded-xl border border-slate-100 bg-slate-50/60 p-4 text-xs text-slate-800 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-200 leading-relaxed font-sans scrollbar-thin">
+            <div
+              ref={noteContainerRef}
+              tabIndex={focusNote ? 0 : undefined}
+              className={`max-h-80 overflow-y-auto rounded-xl border p-4 text-xs leading-relaxed font-sans scrollbar-thin transition-all ${
+                focusNote
+                  ? "border-indigo-400 ring-2 ring-indigo-500/30 bg-indigo-50/20 dark:border-indigo-500 dark:bg-indigo-950/20 text-slate-900 dark:text-slate-100"
+                  : "border-slate-100 bg-slate-50/60 text-slate-800 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-200"
+              }`}
+            >
               <MarkdownContent content={entry.notes} />
             </div>
           </div>
         ) : (
-          <div className="mt-4 rounded-xl border border-dashed border-slate-200 p-4 text-center text-xs text-slate-400 dark:border-slate-800">
+          <div
+            ref={noteContainerRef}
+            className={`mt-4 rounded-xl border border-dashed p-4 text-center text-xs transition-all ${
+              focusNote
+                ? "border-indigo-400 bg-indigo-50/20 text-indigo-700 dark:border-indigo-500 dark:text-indigo-300"
+                : "border-slate-200 text-slate-400 dark:border-slate-800"
+            }`}
+          >
             {entry.type === "note" ? "Empty note." : "No notes or takeaways recorded yet."}
           </div>
         )}

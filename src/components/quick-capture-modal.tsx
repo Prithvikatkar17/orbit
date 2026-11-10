@@ -54,7 +54,8 @@ export function QuickCaptureModal() {
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+      // Ctrl+Shift+K / Cmd+Shift+K: Toggle Quick Capture
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === "k") {
         e.preventDefault();
         const { quickCaptureOpen, openQuickCapture, closeQuickCapture } =
           useUIStore.getState();

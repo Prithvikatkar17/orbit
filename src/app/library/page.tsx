@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback, Suspense } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   BookOpen,
@@ -24,6 +24,7 @@ import { LibraryRow } from "@/components/library/library-row";
 import { LibraryEntryModal } from "@/components/library/library-entry-modal";
 import { LibraryCollectionModal } from "@/components/library/library-collection-modal";
 import { LibraryDetailModal } from "@/components/library/library-detail-modal";
+import { DeepLinkListener } from "@/components/common/deep-link-listener";
 
 type ViewMode = "grid" | "list";
 type SortOption = "recent" | "viewed" | "alpha" | "rating";
@@ -68,8 +69,45 @@ export default function LibraryPage() {
   const [editingEntry, setEditingEntry] = useState<LibraryEntry | null>(null);
   const [modalInitialType, setModalInitialType] = useState<LibraryEntry["type"] | undefined>(undefined);
   const [viewingEntryId, setViewingEntryId] = useState<string | null>(null);
+  const [focusNoteView, setFocusNoteView] = useState(false);
   const [isCollectionModalOpen, setIsCollectionModalOpen] = useState(false);
   const [editingCollection, setEditingCollection] = useState<LibraryCollection | null>(null);
+
+  // Deep link handler for /library?entryId={id}, ?view=note, and ?collectionId={id}
+  const handleLibraryDeepLink = useCallback(
+    async (params: Record<string, string>) => {
+      // 1. Entry / Note deep link
+      if (params.entryId) {
+        try {
+          const entry = await db.libraryEntries.get(params.entryId);
+          if (entry) {
+            setViewingEntryId(entry.id);
+            setFocusNoteView(params.view === "note");
+          } else {
+            console.warn(`[DeepLink] Library entry not found: ${params.entryId}`);
+          }
+        } catch (err) {
+          console.error("[DeepLink] Failed to load library entry:", err);
+        }
+      }
+
+      // 2. Collection deep link
+      if (params.collectionId) {
+        try {
+          const col = await db.libraryCollections.get(params.collectionId);
+          if (col) {
+            setSelectedCollectionId(col.id);
+            setActiveSection("all");
+          } else {
+            console.warn(`[DeepLink] Collection not found: ${params.collectionId}`);
+          }
+        } catch (err) {
+          console.error("[DeepLink] Failed to load collection:", err);
+        }
+      }
+    },
+    []
+  );
 
   const viewingEntry = useMemo(
     () => (viewingEntryId ? entries.find((e) => e.id === viewingEntryId) || null : null),
@@ -256,6 +294,14 @@ export default function LibraryPage() {
 
   return (
     <div className="space-y-6 pb-16 animate-in fade-in duration-200">
+      {/* Deep Link Listener */}
+      <Suspense fallback={null}>
+        <DeepLinkListener
+          params={["entryId", "view", "collectionId"]}
+          onDeepLink={handleLibraryDeepLink}
+        />
+      </Suspense>
+
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -876,13 +922,19 @@ export default function LibraryPage() {
         <LibraryDetailModal
           entry={viewingEntry}
           collection={viewingEntry.collectionId ? collectionsMap.get(viewingEntry.collectionId) : undefined}
-          onClose={() => setViewingEntryId(null)}
+          focusNote={focusNoteView}
+          onClose={() => {
+            setViewingEntryId(null);
+            setFocusNoteView(false);
+          }}
           onEdit={(entry) => {
             setViewingEntryId(null);
+            setFocusNoteView(false);
             handleEdit(entry);
           }}
           onDelete={(id) => {
             setViewingEntryId(null);
+            setFocusNoteView(false);
             handleDelete(id);
           }}
           onToggleFavorite={handleToggleFavorite}

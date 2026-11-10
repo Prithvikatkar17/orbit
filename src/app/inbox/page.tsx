@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback, Suspense } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   Plus,
@@ -16,6 +16,7 @@ import { db } from "@/lib/db/client";
 import { type Item, ItemSchema } from "@/lib/schemas";
 import { ConvertModal } from "@/components/inbox/convert-modal";
 import { formatFriendlyDate, normalizeUrl } from "@/lib/utils/dates";
+import { DeepLinkListener } from "@/components/common/deep-link-listener";
 
 export default function InboxPage() {
   const [search, setSearch] = useState("");
@@ -27,6 +28,21 @@ export default function InboxPage() {
   const [newLink, setNewLink] = useState("");
   const [isAddingInline, setIsAddingInline] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Deep link handler for /inbox?itemId={id}
+  const handleInboxDeepLink = useCallback(async ({ itemId }: Record<string, string>) => {
+    if (!itemId) return;
+    try {
+      const item = await db.items.get(itemId);
+      if (item) {
+        setEditingItem(item);
+      } else {
+        console.warn(`[DeepLink] Inbox item not found: ${itemId}`);
+      }
+    } catch (err) {
+      console.error("[DeepLink] Failed to load inbox item:", err);
+    }
+  }, []);
 
   // Live query for items with status 'pending'
   const items = useLiveQuery(async () => {
@@ -108,6 +124,11 @@ export default function InboxPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
+      {/* Deep Link Listener */}
+      <Suspense fallback={null}>
+        <DeepLinkListener params={["itemId"]} onDeepLink={handleInboxDeepLink} />
+      </Suspense>
+
       {/* Header */}
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>

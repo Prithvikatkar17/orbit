@@ -20,9 +20,10 @@ interface HabitCardProps {
   habit: Habit;
   onEdit: (habit: Habit) => void;
   onDelete: (id: string) => void;
+  isHighlighted?: boolean;
 }
 
-export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
+export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardProps) {
   const today = useTodayDate();
 
   // Reactive query for logs belonging to this habit
@@ -82,8 +83,11 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
 
   return (
     <div
-      className={`rounded-2xl border bg-white p-5 shadow-xs transition-all dark:bg-slate-900 ${
-        habit.isActive
+      id={`habit-${habit.id}`}
+      className={`rounded-2xl border bg-white p-5 shadow-xs transition-all duration-300 dark:bg-slate-900 ${
+        isHighlighted
+          ? "ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-slate-950 border-indigo-400 dark:border-indigo-500 shadow-md"
+          : habit.isActive
           ? "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
           : "border-slate-200/60 bg-slate-50/50 opacity-70 dark:border-slate-800/60 dark:bg-slate-900/40"
       }`}

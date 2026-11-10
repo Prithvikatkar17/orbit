@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback, Suspense } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   DndContext,
@@ -29,6 +29,7 @@ import { type Task } from "@/lib/schemas";
 import { SortableTaskItem } from "@/components/tasks/sortable-task-item";
 import { TaskModal } from "@/components/tasks/task-modal";
 import { useTodayDate } from "@/lib/utils/dates";
+import { DeepLinkListener } from "@/components/common/deep-link-listener";
 
 type ViewTab = "all" | "today" | "upcoming" | "someday" | "completed";
 type SortOption = "custom" | "dueDate" | "priority" | "createdAt";
@@ -205,6 +206,22 @@ export default function TasksPage() {
     }
   }
 
+  // Deep link handler for /tasks?taskId={id}
+  const handleTaskDeepLink = useCallback(async ({ taskId }: Record<string, string>) => {
+    if (!taskId) return;
+    try {
+      const task = await db.tasks.get(taskId);
+      if (task) {
+        setEditingTask(task);
+        setModalOpen(true);
+      } else {
+        console.warn(`[DeepLink] Task not found for ID: ${taskId}`);
+      }
+    } catch (err) {
+      console.error("[DeepLink] Failed to load task:", err);
+    }
+  }, []);
+
   const categoryOptions = [
     { value: "all", label: "All Types" },
     { value: "task", label: "📌 Tasks" },
@@ -216,6 +233,11 @@ export default function TasksPage() {
 
   return (
     <div className="space-y-6 pb-12">
+      {/* Deep Link Listener */}
+      <Suspense fallback={null}>
+        <DeepLinkListener params={["taskId"]} onDeepLink={handleTaskDeepLink} />
+      </Suspense>
+
       {/* Top Banner / Stats */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>

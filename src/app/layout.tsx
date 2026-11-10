@@ -3,6 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Sidebar, MobileHeader } from "@/components/sidebar";
 import { QuickCaptureModal } from "@/components/quick-capture-modal";
+import { SearchModal } from "@/components/search/search-modal";
 import { ReminderProvider } from "@/components/reminders/reminder-provider";
 
 export const metadata: Metadata = {
@@ -39,7 +40,10 @@ export default function RootLayout({
               </div>
             </div>
 
-            {/* Global Quick Capture Modal (Cmd+K / Ctrl+K) */}
+            {/* Global Universal Search Palette (Ctrl+K / Cmd+K) */}
+            <SearchModal />
+
+            {/* Global Quick Capture Modal (Ctrl+Shift+K / Cmd+Shift+K) */}
             <QuickCaptureModal />
           </ReminderProvider>
         </ThemeProvider>

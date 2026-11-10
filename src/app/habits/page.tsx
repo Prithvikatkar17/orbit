@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback, Suspense } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   Plus,
@@ -13,12 +13,44 @@ import { type Habit } from "@/lib/schemas";
 import { HabitCard } from "@/components/habits/habit-card";
 import { HabitModal } from "@/components/habits/habit-modal";
 import { calculateStreak, useTodayDate } from "@/lib/utils/dates";
+import { DeepLinkListener } from "@/components/common/deep-link-listener";
 
 export default function HabitsPage() {
   const [activeTab, setActiveTab] = useState<"active" | "archived">("active");
   const [modalOpen, setModalOpen] = useState(false);
   const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
+  const [highlightedHabitId, setHighlightedHabitId] = useState<string | null>(null);
   const today = useTodayDate();
+
+  // Deep link handler for /habits?habitId={id}
+  const handleHabitDeepLink = useCallback(async ({ habitId }: Record<string, string>) => {
+    if (!habitId) return;
+    try {
+      const habit = await db.habits.get(habitId);
+      if (habit) {
+        // Switch tab if habit is archived
+        setActiveTab(habit.isActive ? "active" : "archived");
+        setHighlightedHabitId(habit.id);
+
+        // Scroll to habit element
+        setTimeout(() => {
+          const el = document.getElementById(`habit-${habit.id}`);
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }, 100);
+
+        // Clear highlight after 3 seconds
+        setTimeout(() => {
+          setHighlightedHabitId((prev) => (prev === habit.id ? null : prev));
+        }, 3000);
+      } else {
+        console.warn(`[DeepLink] Habit not found: ${habitId}`);
+      }
+    } catch (err) {
+      console.error("[DeepLink] Failed to load habit:", err);
+    }
+  }, []);
 
   const rawHabits = useLiveQuery(() => db.habits.orderBy("sortOrder").toArray(), []);
   const habits = useMemo(() => rawHabits ?? [], [rawHabits]);
@@ -88,6 +120,11 @@ export default function HabitsPage() {
 
   return (
     <div className="space-y-6 pb-12">
+      {/* Deep Link Listener */}
+      <Suspense fallback={null}>
+        <DeepLinkListener params={["habitId"]} onDeepLink={handleHabitDeepLink} />
+      </Suspense>
+
       {/* Top Banner */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -217,6 +254,7 @@ export default function HabitsPage() {
             <HabitCard
               key={habit.id}
               habit={habit}
+              isHighlighted={habit.id === highlightedHabitId}
               onEdit={handleEdit}
               onDelete={handleDelete}
             />

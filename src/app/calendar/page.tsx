@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback, Suspense } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db/client";
 import { type Event } from "@/lib/schemas/event";
@@ -25,6 +25,7 @@ import {
   formatMonthYear,
   formatDateDisplay,
 } from "@/lib/utils/dates";
+import { DeepLinkListener } from "@/components/common/deep-link-listener";
 
 export default function CalendarPage() {
   const [viewMode, setViewMode] = useState<CalendarViewMode>("month");
@@ -48,6 +49,30 @@ export default function CalendarPage() {
     event: Event;
     occurrenceDate: string;
   } | null>(null);
+
+  // Deep link handler for /calendar?eventId={id}&date={date}
+  const handleCalendarDeepLink = useCallback(
+    async ({ eventId, date }: Record<string, string>) => {
+      if (!eventId) return;
+      try {
+        const event = await db.events.get(eventId);
+        if (event) {
+          const targetDate =
+            date && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : event.date;
+          setCurrentDateStr(targetDate);
+          setActiveDetails({
+            event,
+            occurrenceDate: targetDate,
+          });
+        } else {
+          console.warn(`[DeepLink] Event not found: ${eventId}`);
+        }
+      } catch (err) {
+        console.error("[DeepLink] Failed to load calendar event:", err);
+      }
+    },
+    []
+  );
 
   const todayStr = useMemo(() => getLocalDateString(), []);
 
@@ -175,6 +200,14 @@ export default function CalendarPage() {
 
   return (
     <div className="flex h-full flex-col p-4 sm:p-6 lg:p-8 space-y-4 max-w-7xl mx-auto w-full">
+      {/* Deep Link Listener */}
+      <Suspense fallback={null}>
+        <DeepLinkListener
+          params={["eventId", "date"]}
+          onDeepLink={handleCalendarDeepLink}
+        />
+      </Suspense>
+
       {/* Calendar Header with Navigation and Filters */}
       <CalendarHeader
         viewMode={viewMode}
