@@ -261,7 +261,7 @@ export default function InboxPage() {
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
               {search
                 ? "Try searching for a different keyword."
-                : "All items have been processed. Capture anything anytime with ⌘K."}
+                : "All items have been processed. Capture anything anytime with ⌘⇧K."}
             </p>
             {!search && (
               <button

@@ -2,35 +2,254 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ==========================================================================
+   ORBIT Semantic Design Tokens (Default Personality Foundation)
+   Future theme personalities override these CSS variables via:
+   [data-orbit-theme="<personality>"] and [data-orbit-theme="<personality>"].dark
+   ========================================================================== */
+
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
   color-scheme: light;
+
+  /* Typography */
+  --orbit-font-display: var(--font-orbit-display-base), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --orbit-font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --orbit-font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Background & Canvas */
+  --orbit-bg: #f8fafc;
+  --orbit-bg-canvas: #f8fafc;
+  --orbit-bg-subtle: #f1f5f9;
+
+  /* Surfaces */
+  --orbit-surface: #ffffff;
+  --orbit-surface-secondary: #f8fafc;
+  --orbit-surface-elevated: #ffffff;
+
+  /* Text Hierarchy */
+  --orbit-text: #0f172a;
+  --orbit-text-secondary: #475569;
+  --orbit-text-muted: #64748b;
+
+  /* Primary & Secondary Accents */
+  --orbit-accent: #4f46e5;
+  --orbit-accent-hover: #4338ca;
+  --orbit-accent-fg: #ffffff;
+  --orbit-accent-soft: #eef2ff;
+  --orbit-accent-secondary: #0ea5e9;
+  --orbit-accent-secondary-soft: #f0f9ff;
+
+  /* Semantic Status Colors */
+  --orbit-success: #10b981;
+  --orbit-success-soft: #ecfdf5;
+  --orbit-warning: #f59e0b;
+  --orbit-warning-soft: #fffbeb;
+  --orbit-danger: #ef4444;
+  --orbit-danger-soft: #fef2f2;
+
+  /* Borders & Focus Rings */
+  --orbit-border: #e2e8f0;
+  --orbit-border-strong: #cbd5e1;
+  --orbit-focus-ring: rgba(79, 70, 229, 0.45);
+
+  /* Radii */
+  --orbit-radius-card: 1rem;
+  --orbit-radius-control: 0.75rem;
+  --orbit-radius-pill: 9999px;
+
+  /* Shadows & Elevation */
+  --orbit-shadow-xs: 0 1px 2px 0 rgb(15 23 42 / 0.04);
+  --orbit-shadow-card: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.04);
+  --orbit-shadow-elevated: 0 20px 45px -15px rgb(15 23 42 / 0.16);
+
+  /* Charts */
+  --orbit-chart-1: #4f46e5;
+  --orbit-chart-2: #10b981;
+  --orbit-chart-3: #0ea5e9;
+  --orbit-chart-grid: #e2e8f0;
+
+  /* Motion */
+  --orbit-transition-fast: 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --orbit-transition-normal: 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Compatibility Aliases */
+  --background: var(--orbit-bg);
+  --foreground: var(--orbit-text);
 }
 
 .dark {
-  --background: #020617;
-  --foreground: #f8fafc;
   color-scheme: dark;
+
+  --orbit-bg: #020617;
+  --orbit-bg-canvas: #020617;
+  --orbit-bg-subtle: #0f172a;
+
+  --orbit-surface: #0f172a;
+  --orbit-surface-secondary: #1e293b;
+  --orbit-surface-elevated: #162033;
+
+  --orbit-text: #f8fafc;
+  --orbit-text-secondary: #cbd5e1;
+  --orbit-text-muted: #94a3b8;
+
+  --orbit-accent: #6366f1;
+  --orbit-accent-hover: #818cf8;
+  --orbit-accent-fg: #ffffff;
+  --orbit-accent-soft: rgba(99, 102, 241, 0.16);
+  --orbit-accent-secondary: #38bdf8;
+  --orbit-accent-secondary-soft: rgba(56, 189, 248, 0.14);
+
+  --orbit-success: #34d399;
+  --orbit-success-soft: rgba(16, 185, 129, 0.15);
+  --orbit-warning: #fbbf24;
+  --orbit-warning-soft: rgba(245, 158, 11, 0.15);
+  --orbit-danger: #f87171;
+  --orbit-danger-soft: rgba(239, 68, 68, 0.15);
+
+  --orbit-border: #1e293b;
+  --orbit-border-strong: #334155;
+  --orbit-focus-ring: rgba(129, 140, 248, 0.55);
+
+  --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.25);
+  --orbit-shadow-card: 0 2px 6px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.25);
+  --orbit-shadow-elevated: 0 24px 50px -12px rgb(0 0 0 / 0.55);
+
+  --orbit-chart-1: #818cf8;
+  --orbit-chart-2: #34d399;
+  --orbit-chart-3: #38bdf8;
+  --orbit-chart-grid: #1e293b;
+
+  --background: var(--orbit-bg);
+  --foreground: var(--orbit-text);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    --background: #020617;
-    --foreground: #f8fafc;
     color-scheme: dark;
+
+    --orbit-bg: #020617;
+    --orbit-bg-canvas: #020617;
+    --orbit-bg-subtle: #0f172a;
+
+    --orbit-surface: #0f172a;
+    --orbit-surface-secondary: #1e293b;
+    --orbit-surface-elevated: #162033;
+
+    --orbit-text: #f8fafc;
+    --orbit-text-secondary: #cbd5e1;
+    --orbit-text-muted: #94a3b8;
+
+    --orbit-accent: #6366f1;
+    --orbit-accent-hover: #818cf8;
+    --orbit-accent-fg: #ffffff;
+    --orbit-accent-soft: rgba(99, 102, 241, 0.16);
+    --orbit-accent-secondary: #38bdf8;
+    --orbit-accent-secondary-soft: rgba(56, 189, 248, 0.14);
+
+    --orbit-success: #34d399;
+    --orbit-success-soft: rgba(16, 185, 129, 0.15);
+    --orbit-warning: #fbbf24;
+    --orbit-warning-soft: rgba(245, 158, 11, 0.15);
+    --orbit-danger: #f87171;
+    --orbit-danger-soft: rgba(239, 68, 68, 0.15);
+
+    --orbit-border: #1e293b;
+    --orbit-border-strong: #334155;
+    --orbit-focus-ring: rgba(129, 140, 248, 0.55);
+
+    --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.25);
+    --orbit-shadow-card: 0 2px 6px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.25);
+    --orbit-shadow-elevated: 0 24px 50px -12px rgb(0 0 0 / 0.55);
+
+    --orbit-chart-1: #818cf8;
+    --orbit-chart-2: #34d399;
+    --orbit-chart-3: #38bdf8;
+    --orbit-chart-grid: #1e293b;
+
+    --background: var(--orbit-bg);
+    --foreground: var(--orbit-text);
   }
 }
 
+/* Tailwind CSS v4 Token Integration */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--orbit-bg);
+  --color-foreground: var(--orbit-text);
+
+  --color-orbit-bg: var(--orbit-bg);
+  --color-orbit-canvas: var(--orbit-bg-canvas);
+  --color-orbit-subtle: var(--orbit-bg-subtle);
+
+  --color-orbit-surface: var(--orbit-surface);
+  --color-orbit-surface-secondary: var(--orbit-surface-secondary);
+  --color-orbit-surface-elevated: var(--orbit-surface-elevated);
+
+  --color-orbit-text: var(--orbit-text);
+  --color-orbit-text-secondary: var(--orbit-text-secondary);
+  --color-orbit-text-muted: var(--orbit-text-muted);
+
+  --color-orbit-accent: var(--orbit-accent);
+  --color-orbit-accent-hover: var(--orbit-accent-hover);
+  --color-orbit-accent-fg: var(--orbit-accent-fg);
+  --color-orbit-accent-soft: var(--orbit-accent-soft);
+  --color-orbit-accent-secondary: var(--orbit-accent-secondary);
+  --color-orbit-accent-secondary-soft: var(--orbit-accent-secondary-soft);
+
+  --color-orbit-success: var(--orbit-success);
+  --color-orbit-success-soft: var(--orbit-success-soft);
+  --color-orbit-warning: var(--orbit-warning);
+  --color-orbit-warning-soft: var(--orbit-warning-soft);
+  --color-orbit-danger: var(--orbit-danger);
+  --color-orbit-danger-soft: var(--orbit-danger-soft);
+
+  --color-orbit-border: var(--orbit-border);
+  --color-orbit-border-strong: var(--orbit-border-strong);
+
+  --font-display: var(--orbit-font-display);
+  --font-sans: var(--orbit-font-sans);
+  --font-mono: var(--orbit-font-mono);
+
+  --radius-orbit-card: var(--orbit-radius-card);
+  --radius-orbit-control: var(--orbit-radius-control);
+  --radius-orbit-pill: var(--orbit-radius-pill);
+
+  --shadow-orbit-xs: var(--orbit-shadow-xs);
+  --shadow-orbit-card: var(--orbit-shadow-card);
+  --shadow-orbit-elevated: var(--orbit-shadow-elevated);
 }
 
+/* Base Typography & Canvas Defaults */
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--orbit-bg);
+  color: var(--orbit-text);
+  font-family: var(--orbit-font-sans);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--orbit-font-display);
+}
+
+code,
+kbd,
+pre {
+  font-family: var(--orbit-font-mono);
+}
+
+/* Accessible Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --orbit-transition-fast: 0ms;
+    --orbit-transition-normal: 0ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

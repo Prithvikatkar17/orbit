@@ -303,13 +303,15 @@ export function useTodayDate(): string {
 }
 
 let isClientMounted = false;
+let mountedScheduled = false;
 const mountedListeners = new Set<() => void>();
 
 function subscribeMounted(onStoreChange: () => void) {
   mountedListeners.add(onStoreChange);
-  if (!isClientMounted) {
-    isClientMounted = true;
+  if (!mountedScheduled) {
+    mountedScheduled = true;
     queueMicrotask(() => {
+      isClientMounted = true;
       mountedListeners.forEach((listener) => listener());
     });
   }

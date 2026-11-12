@@ -199,7 +199,7 @@ export default function CalendarPage() {
   }
 
   return (
-    <div className="flex h-full flex-col p-4 sm:p-6 lg:p-8 space-y-4 max-w-7xl mx-auto w-full">
+    <div className="flex h-full flex-col space-y-4 w-full">
       {/* Deep Link Listener */}
       <Suspense fallback={null}>
         <DeepLinkListener

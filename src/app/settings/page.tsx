@@ -258,7 +258,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto w-full p-4 sm:p-6 pb-16 animate-in fade-in duration-200">
+    <div className="space-y-6 max-w-4xl mx-auto w-full pb-16 animate-in fade-in duration-200">
       {/* Page Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
