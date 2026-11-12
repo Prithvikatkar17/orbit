@@ -26,6 +26,12 @@ import { LibraryEntryModal } from "@/components/library/library-entry-modal";
 import { LibraryCollectionModal } from "@/components/library/library-collection-modal";
 import { LibraryDetailModal } from "@/components/library/library-detail-modal";
 import { DeepLinkListener } from "@/components/common/deep-link-listener";
+import {
+  Button,
+  ConfirmDialog,
+  EmptyState,
+  PageHeader,
+} from "@/components/ui";
 
 type ViewMode = "grid" | "list";
 type SortOption = "recent" | "viewed" | "alpha" | "rating";
@@ -64,6 +70,10 @@ export default function LibraryPage() {
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("recent");
+
+  // Delete confirmation state
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Modals state
   const [isEntryModalOpen, setIsEntryModalOpen] = useState(false);
@@ -259,15 +269,22 @@ export default function LibraryPage() {
   }
 
   async function handleDelete(id: string) {
-    if (confirm("Are you sure you want to delete this resource?")) {
-      try {
-        await deleteLibraryEntryWithFiles(id);
-        if (viewingEntryId === id) {
-          setViewingEntryId(null);
-        }
-      } catch (err: unknown) {
-        console.error("Delete library entry error:", err);
+    setDeleteTargetId(id);
+  }
+
+  async function handleConfirmDeleteEntry() {
+    if (!deleteTargetId) return;
+    setIsDeleting(true);
+    try {
+      await deleteLibraryEntryWithFiles(deleteTargetId);
+      if (viewingEntryId === deleteTargetId) {
+        setViewingEntryId(null);
       }
+    } catch (err: unknown) {
+      console.error("Delete library entry error:", err);
+    } finally {
+      setIsDeleting(false);
+      setDeleteTargetId(null);
     }
   }
 
@@ -310,57 +327,46 @@ export default function LibraryPage() {
       </Suspense>
 
       {/* Page Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
-              📚
-            </span>
-            <span className="text-xs font-bold tracking-widest text-indigo-600 uppercase dark:text-indigo-400">
-              PERSONAL LIBRARY
-            </span>
-          </div>
-          <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-white">
-            Knowledge & Resources
-          </h1>
-          <p className="text-xs text-slate-500 sm:text-sm dark:text-slate-400">
-            Curate bookmarks, videos, notes, articles, and learning materials.
-          </p>
-        </div>
+      <PageHeader
+        eyebrow="PERSONAL LIBRARY"
+        icon="📚"
+        title="Knowledge & Resources"
+        description="Curate bookmarks, videos, notes, articles, and learning materials."
+        actions={
+          <>
+            <Button
+              variant="secondary"
+              size="md"
+              icon={<FolderPlus className="h-4 w-4 text-orbit-text-muted" />}
+              onClick={() => {
+                setEditingCollection(null);
+                setIsCollectionModalOpen(true);
+              }}
+            >
+              New Collection
+            </Button>
 
-        {/* Top Actions */}
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              setEditingCollection(null);
-              setIsCollectionModalOpen(true);
-            }}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
-          >
-            <FolderPlus className="h-4 w-4 text-slate-500" />
-            <span>New Collection</span>
-          </button>
+            <Button
+              variant="secondary"
+              size="md"
+              icon={<FileText className="h-4 w-4 text-orbit-accent" />}
+              onClick={() => handleOpenAddModal(undefined, "note")}
+              className="border-orbit-accent/25 bg-orbit-accent-soft/60 text-orbit-accent hover:bg-orbit-accent-soft"
+            >
+              New Note
+            </Button>
 
-          <button
-            type="button"
-            onClick={() => handleOpenAddModal(undefined, "note")}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/50 px-3.5 py-2.5 text-xs font-semibold text-indigo-700 shadow-2xs hover:bg-indigo-100/60 dark:border-indigo-900/60 dark:bg-indigo-950/40 dark:text-indigo-300 dark:hover:bg-indigo-900/50 transition-colors"
-          >
-            <FileText className="h-4 w-4 text-indigo-500" />
-            <span>New Note</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleOpenAddModal()}
-            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-indigo-500 transition-colors"
-          >
-            <Plus className="h-4 w-4" />
-            <span>Add Resource</span>
-          </button>
-        </div>
-      </div>
+            <Button
+              variant="primary"
+              size="md"
+              icon={<Plus className="h-4 w-4" />}
+              onClick={() => handleOpenAddModal()}
+            >
+              Add Resource
+            </Button>
+          </>
+        }
+      />
 
       {/* Top Metric Cards */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -618,27 +624,21 @@ export default function LibraryPage() {
         </div>
       ) : entries.length === 0 ? (
         /* Empty State: Library is completely empty */
-        <div className="rounded-2xl border border-dashed border-slate-200 bg-white py-16 px-6 text-center dark:border-slate-800 dark:bg-slate-900">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-950/60">
-            <BookOpen className="h-7 w-7 text-indigo-600 dark:text-indigo-400" />
-          </div>
-          <h3 className="mt-4 text-base font-bold text-slate-900 dark:text-white">
-            Your personal library is waiting
-          </h3>
-          <p className="mx-auto mt-1 max-w-sm text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-            Curate articles, videos, bookmarks, and notes. Organize everything into custom collections and track your learning progress.
-          </p>
-          <div className="mt-5 flex items-center justify-center gap-3">
-            <button
-              type="button"
+        <EmptyState
+          icon={<BookOpen className="h-6 w-6" />}
+          title="Your personal library is waiting"
+          description="Curate articles, videos, bookmarks, and notes. Organize everything into custom collections and track your learning progress."
+          action={
+            <Button
+              variant="primary"
+              size="md"
+              icon={<Plus className="h-4 w-4" />}
               onClick={() => handleOpenAddModal()}
-              className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-indigo-500 transition-colors"
             >
-              <Plus className="h-4 w-4" />
-              <span>Add your first resource</span>
-            </button>
-          </div>
-        </div>
+              Add your first resource
+            </Button>
+          }
+        />
       ) : isBrowsingAll ? (
         /* Filtered / Browse View */
         <div className="space-y-4">
@@ -662,22 +662,16 @@ export default function LibraryPage() {
           </div>
 
           {sortedEntries.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-slate-200 bg-white py-12 text-center dark:border-slate-800 dark:bg-slate-900">
-              <Search className="mx-auto h-8 w-8 text-slate-400" />
-              <h4 className="mt-3 text-sm font-bold text-slate-900 dark:text-white">
-                No resources match your filters
-              </h4>
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                Try searching for a different keyword or resetting your filters.
-              </p>
-              <button
-                type="button"
-                onClick={handleClearFilters}
-                className="mt-4 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-indigo-500"
-              >
-                Reset filters
-              </button>
-            </div>
+            <EmptyState
+              icon={<Search className="h-6 w-6" />}
+              title="No resources match your filters"
+              description="Try searching for a different keyword or resetting your filters."
+              action={
+                <Button variant="primary" size="md" onClick={handleClearFilters}>
+                  Reset filters
+                </Button>
+              }
+            />
           ) : viewMode === "grid" ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {sortedEntries.map((entry) => (
@@ -974,6 +968,18 @@ export default function LibraryPage() {
           }}
         />
       )}
+
+      {/* Delete Entry Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={deleteTargetId !== null}
+        onClose={() => setDeleteTargetId(null)}
+        onConfirm={handleConfirmDeleteEntry}
+        title="Delete resource?"
+        description="This will permanently remove the resource and any attached files."
+        confirmLabel="Delete"
+        danger
+        loading={isDeleting}
+      />
     </div>
   );
 }

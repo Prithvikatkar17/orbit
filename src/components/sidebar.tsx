@@ -75,21 +75,21 @@ export function Sidebar() {
 
       {/* Sidebar container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 flex w-64 flex-col border-r border-orbit-border bg-orbit-surface p-4 transition-transform duration-300 md:static md:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-40 flex w-64 flex-col border-r border-orbit-border bg-orbit-surface-secondary p-4 transition-transform duration-300 md:static md:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Brand Header */}
         <div className="flex items-center justify-between pb-5 pt-2">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-orbit-control bg-orbit-accent text-orbit-accent-fg shadow-orbit-card">
-              <span className="font-display text-lg font-bold">O</span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-orbit-control bg-orbit-accent text-orbit-accent-fg shadow-orbit-xs">
+              <span className="font-display text-lg font-semibold">O</span>
             </div>
             <div>
-              <span className="font-display text-lg font-extrabold tracking-tight text-orbit-text">
+              <span className="font-display text-xl font-semibold tracking-[-0.02em] text-orbit-text">
                 ORBIT
               </span>
-              <span className="block text-[10px] font-semibold tracking-wider text-orbit-accent uppercase">
+              <span className="block text-[10px] font-semibold tracking-[0.14em] text-orbit-accent uppercase">
                 Personal Space
               </span>
             </div>
@@ -130,13 +130,13 @@ export function Sidebar() {
             onClick={handleOpenSearch}
             title="Universal Search (Ctrl+K)"
             aria-label="Open Universal Search"
-            className="flex w-full items-center justify-between rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-3.5 py-2 text-xs font-medium text-orbit-text-secondary transition-colors hover:border-orbit-border-strong hover:text-orbit-text"
+            className="flex w-full items-center justify-between rounded-orbit-control border border-orbit-border bg-orbit-surface px-3.5 py-2 text-xs font-medium text-orbit-text-secondary transition-colors hover:border-orbit-border-strong hover:text-orbit-text"
           >
             <span className="flex items-center gap-2">
               <Search className="h-3.5 w-3.5 text-orbit-text-muted" />
               <span>Search ORBIT...</span>
             </span>
-            <kbd className="rounded-md border border-orbit-border bg-orbit-surface px-1.5 py-0.5 font-mono text-[10px] font-semibold text-orbit-text-muted">
+            <kbd className="rounded-md border border-orbit-border bg-orbit-surface-secondary px-1.5 py-0.5 font-mono text-[10px] font-semibold text-orbit-text-muted">
               ⌘K
             </kbd>
           </button>
@@ -160,7 +160,7 @@ export function Sidebar() {
                 }}
                 className={`flex items-center gap-3 rounded-orbit-control px-3.5 py-2.5 text-sm transition-colors ${
                   active
-                    ? "bg-orbit-accent-soft text-orbit-accent font-semibold"
+                    ? "bg-orbit-surface text-orbit-accent font-semibold shadow-orbit-xs"
                     : "font-medium text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text"
                 }`}
               >
@@ -241,7 +241,7 @@ export function MobileHeader() {
 
       <Link
         href="/"
-        className="font-display text-base font-extrabold tracking-tight text-orbit-text"
+        className="font-display text-lg font-semibold tracking-[-0.02em] text-orbit-text"
       >
         ORBIT
       </Link>

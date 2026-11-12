@@ -14,6 +14,13 @@ import { HabitCard } from "@/components/habits/habit-card";
 import { HabitModal } from "@/components/habits/habit-modal";
 import { calculateStreak, useTodayDate } from "@/lib/utils/dates";
 import { DeepLinkListener } from "@/components/common/deep-link-listener";
+import {
+  Button,
+  ConfirmDialog,
+  EmptyState,
+  PageHeader,
+  SurfaceCard,
+} from "@/components/ui";
 
 export default function HabitsPage() {
   const [activeTab, setActiveTab] = useState<"active" | "archived">("active");
@@ -21,6 +28,8 @@ export default function HabitsPage() {
   const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
   const [highlightedHabitId, setHighlightedHabitId] = useState<string | null>(null);
   const today = useTodayDate();
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Deep link handler for /habits?habitId={id}
   const handleHabitDeepLink = useCallback(async ({ habitId }: Record<string, string>) => {
@@ -109,14 +118,26 @@ export default function HabitsPage() {
   }
 
   // Delete Habit and its logs
-  async function handleDelete(id: string) {
-    if (confirm("Are you sure you want to delete this habit and all its logged history?")) {
+  async function handleConfirmDeleteHabit() {
+    if (!deleteTargetId) return;
+    setIsDeleting(true);
+    try {
       await db.transaction("rw", [db.habits, db.habitLogs], async () => {
-        await db.habitLogs.where("habitId").equals(id).delete();
-        await db.habits.delete(id);
+        await db.habitLogs.where("habitId").equals(deleteTargetId).delete();
+        await db.habits.delete(deleteTargetId);
       });
+    } finally {
+      setIsDeleting(false);
+      setDeleteTargetId(null);
     }
   }
+
+  function handleDelete(id: string) {
+    setDeleteTargetId(id);
+  }
+
+  const activeHabitsCount = habits.filter((h) => h.isActive).length;
+  const archivedHabitsCount = habits.filter((h) => !h.isActive).length;
 
   return (
     <div className="space-y-6 pb-12">
@@ -126,128 +147,126 @@ export default function HabitsPage() {
       </Suspense>
 
       {/* Top Banner */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-            Habit Tracker
-          </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Build consistency, build momentum, and visualize your daily progress.
-          </p>
+      <PageHeader
+        eyebrow="DAILY RHYTHM"
+        title="Habits"
+        description="Steady routines, gentle streaks, and your 180-day rhythm."
+        actions={
+          <Button
+            variant="primary"
+            size="md"
+            icon={<Plus className="h-4 w-4" />}
+            onClick={() => {
+              setEditingHabit(null);
+              setModalOpen(true);
+            }}
+          >
+            New Habit
+          </Button>
+        }
+      />
+
+      {/* Cohesive Momentum Strip + Segmented Filter */}
+      <SurfaceCard padding="none" className="p-4 sm:p-5">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          {/* Today's momentum summary */}
+          <div className="flex-1 space-y-2">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+              <span className="font-semibold text-orbit-text tabular-nums">
+                {stats.completedToday} of {stats.activeCount} completed today
+              </span>
+              <span className="text-xs font-medium text-orbit-accent tabular-nums">
+                {stats.completionRate}% daily rate
+              </span>
+              <span className="inline-flex items-center gap-1 text-xs font-medium text-orbit-text-secondary tabular-nums">
+                <Flame className="h-3.5 w-3.5 text-orbit-warning" />
+                Best streak: {stats.bestGlobalStreak}d
+              </span>
+            </div>
+            <div className="h-1.5 max-w-md overflow-hidden rounded-full bg-orbit-subtle">
+              <div
+                className="h-full rounded-full bg-orbit-accent transition-all duration-500"
+                style={{ width: `${Math.min(100, stats.completionRate)}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Segmented Active / Archived Tabs */}
+          <div
+            role="tablist"
+            aria-label="Habit status views"
+            className="inline-flex self-start rounded-orbit-control bg-orbit-surface-secondary p-1"
+          >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === "active"}
+              onClick={() => setActiveTab("active")}
+              className={`inline-flex items-center gap-1.5 rounded-[calc(var(--orbit-radius-control)-2px)] px-3 py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring ${
+                activeTab === "active"
+                  ? "bg-orbit-surface text-orbit-text shadow-orbit-xs"
+                  : "text-orbit-text-secondary hover:text-orbit-text"
+              }`}
+            >
+              <span>Active</span>
+              <span
+                className={`tabular-nums ${
+                  activeTab === "active" ? "text-orbit-accent" : "text-orbit-text-muted"
+                }`}
+              >
+                {activeHabitsCount}
+              </span>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === "archived"}
+              onClick={() => setActiveTab("archived")}
+              className={`inline-flex items-center gap-1.5 rounded-[calc(var(--orbit-radius-control)-2px)] px-3 py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring ${
+                activeTab === "archived"
+                  ? "bg-orbit-surface text-orbit-text shadow-orbit-xs"
+                  : "text-orbit-text-secondary hover:text-orbit-text"
+              }`}
+            >
+              <span>Archived</span>
+              <span
+                className={`tabular-nums ${
+                  activeTab === "archived" ? "text-orbit-accent" : "text-orbit-text-muted"
+                }`}
+              >
+                {archivedHabitsCount}
+              </span>
+            </button>
+          </div>
         </div>
-
-        <button
-          onClick={() => {
-            setEditingHabit(null);
-            setModalOpen(true);
-          }}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-indigo-500 transition-colors"
-        >
-          <Plus className="h-4 w-4" />
-          <span>New Habit</span>
-        </button>
-      </div>
-
-      {/* Summary Metric Cards */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-          <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
-            Completed Today
-          </div>
-          <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-              {stats.completedToday}
-            </span>
-            <span className="text-xs text-slate-400">/ {stats.activeCount} active</span>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-          <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
-            Today&apos;s Rate
-          </div>
-          <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
-              {stats.completionRate}%
-            </span>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-          <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
-            Best Active Streak
-          </div>
-          <div className="mt-1 flex items-baseline gap-1 text-2xl font-bold text-amber-500">
-            <Flame className="h-5 w-5 fill-amber-500" />
-            <span>{stats.bestGlobalStreak}d</span>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-          <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
-            Active Habits
-          </div>
-          <div className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">
-            {stats.activeCount}
-          </div>
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2 dark:border-slate-800">
-        <button
-          onClick={() => setActiveTab("active")}
-          className={`rounded-xl px-3.5 py-1.5 text-xs font-semibold transition-all ${
-            activeTab === "active"
-              ? "bg-indigo-600 text-white shadow-xs"
-              : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
-          }`}
-        >
-          Active Habits ({habits.filter((h) => h.isActive).length})
-        </button>
-        <button
-          onClick={() => setActiveTab("archived")}
-          className={`rounded-xl px-3.5 py-1.5 text-xs font-semibold transition-all ${
-            activeTab === "archived"
-              ? "bg-indigo-600 text-white shadow-xs"
-              : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
-          }`}
-        >
-          Archived ({habits.filter((h) => !h.isActive).length})
-        </button>
-      </div>
+      </SurfaceCard>
 
       {/* Habit Cards List */}
       {displayedHabits.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 p-12 text-center dark:border-slate-800">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400">
-            {activeTab === "archived" ? (
-              <Archive className="h-6 w-6" />
-            ) : (
-              <Sparkles className="h-6 w-6" />
-            )}
-          </div>
-          <h3 className="mt-4 text-sm font-semibold text-slate-900 dark:text-white">
-            {activeTab === "archived" ? "No archived habits" : "No active habits found"}
-          </h3>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 max-w-sm">
-            {activeTab === "archived"
+        <EmptyState
+          icon={activeTab === "archived" ? <Archive className="h-6 w-6" /> : <Sparkles className="h-6 w-6" />}
+          title={activeTab === "archived" ? "No archived habits" : "No active habits yet"}
+          description={
+            activeTab === "archived"
               ? "Habits you archive will appear here."
-              : "Create daily routines or habits to start building long-term consistency."}
-          </p>
-          {activeTab === "active" && (
-            <button
-              onClick={() => {
-                setEditingHabit(null);
-                setModalOpen(true);
-              }}
-              className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3.5 py-2 text-xs font-medium text-white hover:bg-indigo-500 transition-colors"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              <span>Create Habit</span>
-            </button>
-          )}
-        </div>
+              : "Create daily routines or habits to start building steady consistency."
+          }
+          action={
+            activeTab === "active" ? (
+              <Button
+                variant="primary"
+                size="md"
+                icon={<Plus className="h-3.5 w-3.5" />}
+                onClick={() => {
+                  setEditingHabit(null);
+                  setModalOpen(true);
+                }}
+              >
+                Create Habit
+              </Button>
+            ) : undefined
+          }
+        />
       ) : (
         <div className="space-y-4">
           {displayedHabits.map((habit) => (
@@ -272,6 +291,18 @@ export default function HabitsPage() {
           }}
         />
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={deleteTargetId !== null}
+        onClose={() => setDeleteTargetId(null)}
+        onConfirm={handleConfirmDeleteHabit}
+        title="Delete habit?"
+        description="This will permanently delete the habit and all its logged history. This cannot be undone."
+        confirmLabel="Delete"
+        danger
+        loading={isDeleting}
+      />
     </div>
   );
 }

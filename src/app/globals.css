@@ -3,7 +3,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ==========================================================================
-   ORBIT Semantic Design Tokens (Default Personality Foundation)
+   ORBIT Semantic Design Tokens — "Quiet Desk & Paper Editorial" Identity
    Future theme personalities override these CSS variables via:
    [data-orbit-theme="<personality>"] and [data-orbit-theme="<personality>"].dark
    ========================================================================== */
@@ -12,61 +12,62 @@
   color-scheme: light;
 
   /* Typography */
-  --orbit-font-display: var(--font-orbit-display-base), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
   --orbit-font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --orbit-font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  /* Background & Canvas */
-  --orbit-bg: #f8fafc;
-  --orbit-bg-canvas: #f8fafc;
-  --orbit-bg-subtle: #f1f5f9;
+  /* Background & Canvas — Warm Uncoated Paper */
+  --orbit-bg: #f6f5f1;
+  --orbit-bg-canvas: #f6f5f1;
+  --orbit-bg-subtle: #ebe8de;
 
-  /* Surfaces */
-  --orbit-surface: #ffffff;
-  --orbit-surface-secondary: #f8fafc;
+  /* Surfaces — Layered Warm Stationery */
+  --orbit-surface: #fcfbf8;
+  --orbit-surface-secondary: #efece3;
   --orbit-surface-elevated: #ffffff;
 
-  /* Text Hierarchy */
-  --orbit-text: #0f172a;
-  --orbit-text-secondary: #475569;
-  --orbit-text-muted: #64748b;
+  /* Text Hierarchy — Warm Charcoal Ink */
+  --orbit-text: #262621;
+  --orbit-text-secondary: #57564c;
+  --orbit-text-muted: #67655b;
 
-  /* Primary & Secondary Accents */
-  --orbit-accent: #4f46e5;
-  --orbit-accent-hover: #4338ca;
-  --orbit-accent-fg: #ffffff;
-  --orbit-accent-soft: #eef2ff;
-  --orbit-accent-secondary: #0ea5e9;
-  --orbit-accent-secondary-soft: #f0f9ff;
+  /* Primary & Secondary Accents — Botanical Pine & Mineral Teal */
+  --orbit-accent: #2c5e4f;
+  --orbit-accent-hover: #224b3e;
+  --orbit-accent-fg: #faf9f5;
+  --orbit-accent-soft: #e3eee9;
+  --orbit-accent-secondary: #366c75;
+  --orbit-accent-secondary-soft: #e6f0f2;
 
-  /* Semantic Status Colors */
-  --orbit-success: #10b981;
-  --orbit-success-soft: #ecfdf5;
-  --orbit-warning: #f59e0b;
-  --orbit-warning-soft: #fffbeb;
-  --orbit-danger: #ef4444;
-  --orbit-danger-soft: #fef2f2;
+  /* Semantic Status Colors — Harmonious & WCAG AA Accessible */
+  --orbit-success: #2f7a57;
+  --orbit-success-soft: #e6f2ec;
+  --orbit-warning: #a86214;
+  --orbit-warning-soft: #f8eedf;
+  --orbit-danger: #b8403a;
+  --orbit-danger-fg: #faf9f5;
+  --orbit-danger-soft: #faeae9;
 
   /* Borders & Focus Rings */
-  --orbit-border: #e2e8f0;
-  --orbit-border-strong: #cbd5e1;
-  --orbit-focus-ring: rgba(79, 70, 229, 0.45);
+  --orbit-border: #e3dfd4;
+  --orbit-border-strong: #cac4b6;
+  --orbit-focus-ring: rgba(44, 94, 79, 0.38);
 
   /* Radii */
-  --orbit-radius-card: 1rem;
-  --orbit-radius-control: 0.75rem;
+  --orbit-radius-card: 0.875rem;
+  --orbit-radius-control: 0.625rem;
   --orbit-radius-pill: 9999px;
 
   /* Shadows & Elevation */
-  --orbit-shadow-xs: 0 1px 2px 0 rgb(15 23 42 / 0.04);
-  --orbit-shadow-card: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.04);
-  --orbit-shadow-elevated: 0 20px 45px -15px rgb(15 23 42 / 0.16);
+  --orbit-shadow-xs: 0 1px 2px 0 rgb(38 38 33 / 0.04);
+  --orbit-shadow-card: 0 1px 3px 0 rgb(38 38 33 / 0.05), 0 8px 24px -10px rgb(38 38 33 / 0.08);
+  --orbit-shadow-elevated: 0 20px 45px -16px rgb(38 38 33 / 0.18), 0 2px 8px -2px rgb(38 38 33 / 0.06);
 
   /* Charts */
-  --orbit-chart-1: #4f46e5;
-  --orbit-chart-2: #10b981;
-  --orbit-chart-3: #0ea5e9;
-  --orbit-chart-grid: #e2e8f0;
+  --orbit-chart-1: #2c5e4f;
+  --orbit-chart-2: #4a8b71;
+  --orbit-chart-3: #b67b3e;
+  --orbit-chart-grid: #e3dfd4;
 
   /* Motion */
   --orbit-transition-fast: 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -80,44 +81,45 @@
 .dark {
   color-scheme: dark;
 
-  --orbit-bg: #020617;
-  --orbit-bg-canvas: #020617;
-  --orbit-bg-subtle: #0f172a;
+  --orbit-bg: #161613;
+  --orbit-bg-canvas: #161613;
+  --orbit-bg-subtle: #22211c;
 
-  --orbit-surface: #0f172a;
-  --orbit-surface-secondary: #1e293b;
-  --orbit-surface-elevated: #162033;
+  --orbit-surface: #1d1c18;
+  --orbit-surface-secondary: #25241e;
+  --orbit-surface-elevated: #282721;
 
-  --orbit-text: #f8fafc;
-  --orbit-text-secondary: #cbd5e1;
-  --orbit-text-muted: #94a3b8;
+  --orbit-text: #f1efe7;
+  --orbit-text-secondary: #c6c3b7;
+  --orbit-text-muted: #969385;
 
-  --orbit-accent: #6366f1;
-  --orbit-accent-hover: #818cf8;
-  --orbit-accent-fg: #ffffff;
-  --orbit-accent-soft: rgba(99, 102, 241, 0.16);
-  --orbit-accent-secondary: #38bdf8;
-  --orbit-accent-secondary-soft: rgba(56, 189, 248, 0.14);
+  --orbit-accent: #6bb39b;
+  --orbit-accent-hover: #7fc1aa;
+  --orbit-accent-fg: #11221c;
+  --orbit-accent-soft: rgba(107, 179, 155, 0.16);
+  --orbit-accent-secondary: #6eb2ba;
+  --orbit-accent-secondary-soft: rgba(110, 178, 186, 0.15);
 
-  --orbit-success: #34d399;
-  --orbit-success-soft: rgba(16, 185, 129, 0.15);
-  --orbit-warning: #fbbf24;
-  --orbit-warning-soft: rgba(245, 158, 11, 0.15);
-  --orbit-danger: #f87171;
-  --orbit-danger-soft: rgba(239, 68, 68, 0.15);
+  --orbit-success: #63b387;
+  --orbit-success-soft: rgba(99, 179, 135, 0.15);
+  --orbit-warning: #e0a34d;
+  --orbit-warning-soft: rgba(224, 163, 77, 0.15);
+  --orbit-danger: #e0736b;
+  --orbit-danger-fg: #1d0e0d;
+  --orbit-danger-soft: rgba(224, 115, 107, 0.16);
 
-  --orbit-border: #1e293b;
-  --orbit-border-strong: #334155;
-  --orbit-focus-ring: rgba(129, 140, 248, 0.55);
+  --orbit-border: #2e2d26;
+  --orbit-border-strong: #424036;
+  --orbit-focus-ring: rgba(107, 179, 155, 0.45);
 
-  --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.25);
-  --orbit-shadow-card: 0 2px 6px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.25);
-  --orbit-shadow-elevated: 0 24px 50px -12px rgb(0 0 0 / 0.55);
+  --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.28);
+  --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.34), 0 1px 2px -1px rgb(0 0 0 / 0.25);
+  --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.62);
 
-  --orbit-chart-1: #818cf8;
-  --orbit-chart-2: #34d399;
-  --orbit-chart-3: #38bdf8;
-  --orbit-chart-grid: #1e293b;
+  --orbit-chart-1: #6bb39b;
+  --orbit-chart-2: #82c59f;
+  --orbit-chart-3: #e0a34d;
+  --orbit-chart-grid: #2e2d26;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -127,44 +129,45 @@
   :root:not(.light) {
     color-scheme: dark;
 
-    --orbit-bg: #020617;
-    --orbit-bg-canvas: #020617;
-    --orbit-bg-subtle: #0f172a;
+    --orbit-bg: #161613;
+    --orbit-bg-canvas: #161613;
+    --orbit-bg-subtle: #22211c;
 
-    --orbit-surface: #0f172a;
-    --orbit-surface-secondary: #1e293b;
-    --orbit-surface-elevated: #162033;
+    --orbit-surface: #1d1c18;
+    --orbit-surface-secondary: #25241e;
+    --orbit-surface-elevated: #282721;
 
-    --orbit-text: #f8fafc;
-    --orbit-text-secondary: #cbd5e1;
-    --orbit-text-muted: #94a3b8;
+    --orbit-text: #f1efe7;
+    --orbit-text-secondary: #c6c3b7;
+    --orbit-text-muted: #969385;
 
-    --orbit-accent: #6366f1;
-    --orbit-accent-hover: #818cf8;
-    --orbit-accent-fg: #ffffff;
-    --orbit-accent-soft: rgba(99, 102, 241, 0.16);
-    --orbit-accent-secondary: #38bdf8;
-    --orbit-accent-secondary-soft: rgba(56, 189, 248, 0.14);
+    --orbit-accent: #6bb39b;
+    --orbit-accent-hover: #7fc1aa;
+    --orbit-accent-fg: #11221c;
+    --orbit-accent-soft: rgba(107, 179, 155, 0.16);
+    --orbit-accent-secondary: #6eb2ba;
+    --orbit-accent-secondary-soft: rgba(110, 178, 186, 0.15);
 
-    --orbit-success: #34d399;
-    --orbit-success-soft: rgba(16, 185, 129, 0.15);
-    --orbit-warning: #fbbf24;
-    --orbit-warning-soft: rgba(245, 158, 11, 0.15);
-    --orbit-danger: #f87171;
-    --orbit-danger-soft: rgba(239, 68, 68, 0.15);
+    --orbit-success: #63b387;
+    --orbit-success-soft: rgba(99, 179, 135, 0.15);
+    --orbit-warning: #e0a34d;
+    --orbit-warning-soft: rgba(224, 163, 77, 0.15);
+    --orbit-danger: #e0736b;
+    --orbit-danger-fg: #1d0e0d;
+    --orbit-danger-soft: rgba(224, 115, 107, 0.16);
 
-    --orbit-border: #1e293b;
-    --orbit-border-strong: #334155;
-    --orbit-focus-ring: rgba(129, 140, 248, 0.55);
+    --orbit-border: #2e2d26;
+    --orbit-border-strong: #424036;
+    --orbit-focus-ring: rgba(107, 179, 155, 0.45);
 
-    --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.25);
-    --orbit-shadow-card: 0 2px 6px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.25);
-    --orbit-shadow-elevated: 0 24px 50px -12px rgb(0 0 0 / 0.55);
+    --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.28);
+    --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.34), 0 1px 2px -1px rgb(0 0 0 / 0.25);
+    --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.62);
 
-    --orbit-chart-1: #818cf8;
-    --orbit-chart-2: #34d399;
-    --orbit-chart-3: #38bdf8;
-    --orbit-chart-grid: #1e293b;
+    --orbit-chart-1: #6bb39b;
+    --orbit-chart-2: #82c59f;
+    --orbit-chart-3: #e0a34d;
+    --orbit-chart-grid: #2e2d26;
 
     --background: var(--orbit-bg);
     --foreground: var(--orbit-text);
@@ -200,10 +203,12 @@
   --color-orbit-warning: var(--orbit-warning);
   --color-orbit-warning-soft: var(--orbit-warning-soft);
   --color-orbit-danger: var(--orbit-danger);
+  --color-orbit-danger-fg: var(--orbit-danger-fg);
   --color-orbit-danger-soft: var(--orbit-danger-soft);
 
   --color-orbit-border: var(--orbit-border);
   --color-orbit-border-strong: var(--orbit-border-strong);
+  --color-orbit-ring: var(--orbit-focus-ring);
 
   --font-display: var(--orbit-font-display);
   --font-sans: var(--orbit-font-sans);
@@ -229,6 +234,7 @@ h1,
 h2,
 h3 {
   font-family: var(--orbit-font-display);
+  letter-spacing: -0.015em;
 }
 
 code,

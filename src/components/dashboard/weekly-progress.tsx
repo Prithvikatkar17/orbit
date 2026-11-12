@@ -15,6 +15,7 @@ import type { Task, Habit, HabitLog } from "@/lib/schemas";
 import { useMounted, useTodayDate, parseLocalDate } from "@/lib/utils/dates";
 import { calculateAnalyticsSnapshot } from "@/lib/services/analytics-service";
 import { fetchDashboardSnapshotData } from "@/lib/services/workspace-queries";
+import { SurfaceCard } from "@/components/ui";
 
 export interface WeeklyProgressWidgetProps {
   tasks?: Task[];
@@ -75,7 +76,7 @@ export function WeeklyProgressWidget({
 
   if (!mounted || !snapshot) {
     return (
-      <div className="h-44 w-full animate-pulse rounded-2xl border border-slate-200/50 bg-slate-100 dark:border-slate-800 dark:bg-slate-800/40" />
+      <div className="h-44 w-full animate-pulse rounded-orbit-card border border-orbit-border bg-orbit-subtle/60" />
     );
   }
 
@@ -104,41 +105,41 @@ export function WeeklyProgressWidget({
   const activeHover = hoveredIndex !== null ? dailyTaskCompletions[hoveredIndex] : null;
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+    <SurfaceCard as="section" className="p-5 sm:p-6">
       {/* Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800/60">
-        <div className="flex items-center gap-2">
-          <TrendingUp className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-          <h2 className="text-base font-bold text-slate-900 dark:text-white">
-            Weekly Progress
+      <div className="flex items-center justify-between border-b border-orbit-border pb-4">
+        <div className="flex items-center gap-2.5">
+          <TrendingUp className="h-4 w-4 text-orbit-accent" aria-hidden />
+          <h2 className="font-display text-base font-bold text-orbit-text">
+            Weekly Rhythm
           </h2>
-          <span className="hidden sm:inline text-xs text-slate-400 dark:text-slate-500">
+          <span className="hidden text-xs text-orbit-text-muted sm:inline">
             · Last 7 days
           </span>
         </div>
 
         <Link
           href="/insights"
-          className="flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 group"
+          className="group inline-flex items-center gap-1 text-xs font-semibold text-orbit-accent hover:text-orbit-accent-hover transition-colors"
         >
-          <span>View Insights</span>
+          <span>Insights</span>
           <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
         </Link>
       </div>
 
       {/* Main Content Grid */}
       <div className="mt-5 grid grid-cols-1 gap-6 md:grid-cols-12 md:items-center">
-        {/* Left: Summary Metrics (5 columns) */}
-        <div className="grid grid-cols-2 gap-3.5 md:col-span-5">
+        {/* Left: Summary Metrics (5 columns, tonal surface without nested borders) */}
+        <div className="grid grid-cols-2 gap-3 md:col-span-5">
           {/* Tasks Completed (7d) */}
-          <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4 dark:border-slate-800/70 dark:bg-slate-800/40 flex flex-col justify-between">
-            <div className="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400">
+          <div className="flex flex-col justify-between rounded-orbit-control bg-orbit-surface-secondary p-3.5">
+            <div className="flex items-center justify-between text-xs font-medium text-orbit-text-muted">
               <span>Tasks Done</span>
-              <CheckCircle2 className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+              <CheckCircle2 className="h-3.5 w-3.5 text-orbit-accent" aria-hidden />
             </div>
 
             <div className="mt-2">
-              <div className="text-2xl font-extrabold text-slate-900 dark:text-white">
+              <div className="font-display text-2xl font-bold text-orbit-text tabular-nums">
                 {tasksCompletedInRange}
               </div>
 
@@ -147,10 +148,10 @@ export function WeeklyProgressWidget({
                   <span
                     className={`inline-flex items-center gap-0.5 font-semibold ${
                       taskPeriodComparison.trend === "up"
-                        ? "text-emerald-600 dark:text-emerald-400"
+                        ? "text-orbit-success"
                         : taskPeriodComparison.trend === "down"
-                        ? "text-rose-600 dark:text-rose-400"
-                        : "text-slate-400"
+                        ? "text-orbit-danger"
+                        : "text-orbit-text-muted"
                     }`}
                   >
                     {taskPeriodComparison.trend === "up" && <TrendingUp className="h-3 w-3" />}
@@ -158,37 +159,37 @@ export function WeeklyProgressWidget({
                     {taskPeriodComparison.trend === "neutral" && <Minus className="h-3 w-3" />}
                     {taskPeriodComparison.percentageChange > 0 ? "+" : ""}
                     {taskPeriodComparison.percentageChange}%
-                    <span className="text-slate-400 font-normal ml-0.5">vs prev wk</span>
+                    <span className="ml-0.5 font-normal text-orbit-text-muted">vs prev wk</span>
                   </span>
                 ) : (
-                  <span className="text-slate-400">0 prior week</span>
+                  <span className="text-orbit-text-muted">0 prior week</span>
                 )}
               </div>
             </div>
           </div>
 
           {/* Habit Consistency (7d) */}
-          <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4 dark:border-slate-800/70 dark:bg-slate-800/40 flex flex-col justify-between">
-            <div className="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400">
+          <div className="flex flex-col justify-between rounded-orbit-control bg-orbit-surface-secondary p-3.5">
+            <div className="flex items-center justify-between text-xs font-medium text-orbit-text-muted">
               <span>Habits (7d)</span>
-              <Repeat className="h-3.5 w-3.5 text-violet-600 dark:text-violet-400" />
+              <Repeat className="h-3.5 w-3.5 text-orbit-success" aria-hidden />
             </div>
 
             <div className="mt-2">
-              <div className="text-2xl font-extrabold text-slate-900 dark:text-white">
+              <div className="font-display text-2xl font-bold text-orbit-text tabular-nums">
                 {habitConsistency.consistencyRate}%
               </div>
 
-              <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+              <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-orbit-subtle">
                 <div
-                  className="h-full rounded-full bg-violet-600 dark:bg-violet-500 transition-all duration-300"
+                  className="h-full rounded-full bg-orbit-success transition-all duration-300"
                   style={{
                     width: `${Math.min(100, Math.max(0, habitConsistency.consistencyRate))}%`,
                   }}
                 />
               </div>
 
-              <p className="mt-1 text-[10px] text-slate-400 truncate">
+              <p className="mt-1 truncate text-[10px] text-orbit-text-muted">
                 {habitConsistency.totalCompleted} of {habitConsistency.totalScheduled} check-ins
               </p>
             </div>
@@ -196,17 +197,18 @@ export function WeeklyProgressWidget({
         </div>
 
         {/* Right: Compact 7-Day Activity Chart (7 columns) */}
-        <div className="md:col-span-7 flex flex-col justify-between">
-          <div className="flex items-center justify-between text-xs mb-1 px-1">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+        <div className="flex flex-col justify-between md:col-span-7">
+          <div className="mb-1 flex items-center justify-between px-1 text-xs">
+            <span className="text-[11px] font-semibold tracking-wider text-orbit-text-muted uppercase">
               Daily Task Activity
             </span>
             {activeHover ? (
-              <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 animate-in fade-in duration-100">
-                {activeHover.date}: {activeHover.count} {activeHover.count === 1 ? "task" : "tasks"}
+              <span className="text-xs font-semibold text-orbit-accent animate-in fade-in duration-100">
+                {activeHover.date}: {activeHover.count}{" "}
+                {activeHover.count === 1 ? "task" : "tasks"}
               </span>
             ) : (
-              <span className="text-[11px] text-slate-400">Hover for daily count</span>
+              <span className="text-[11px] text-orbit-text-muted">Hover for daily count</span>
             )}
           </div>
 
@@ -214,7 +216,7 @@ export function WeeklyProgressWidget({
           <div className="w-full">
             <svg
               viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-              className="w-full h-24 select-none"
+              className="h-24 w-full select-none"
               role="img"
               aria-label="7-day task completions chart"
             >
@@ -224,8 +226,7 @@ export function WeeklyProgressWidget({
                 y1={barAreaHeight}
                 x2={svgWidth}
                 y2={barAreaHeight}
-                stroke="currentColor"
-                className="text-slate-200 dark:text-slate-800"
+                stroke="var(--orbit-chart-grid)"
                 strokeWidth={1}
               />
 
@@ -260,11 +261,8 @@ export function WeeklyProgressWidget({
                         x={barX + barWidth / 2}
                         y={barY - 3}
                         textAnchor="middle"
-                        className={`text-[9px] font-bold ${
-                          isHovered
-                            ? "fill-indigo-600 dark:fill-indigo-400"
-                            : "fill-slate-500 dark:fill-slate-400"
-                        }`}
+                        fill={isHovered ? "var(--orbit-accent)" : "var(--orbit-text-muted)"}
+                        className="text-[9px] font-bold"
                       >
                         {item.count}
                       </text>
@@ -276,16 +274,16 @@ export function WeeklyProgressWidget({
                       y={barY}
                       width={barWidth}
                       height={barHeight}
-                      rx={3}
-                      className={`transition-colors duration-150 ${
+                      rx={4}
+                      fill={
                         item.count === 0
-                          ? "fill-slate-100 dark:fill-slate-800"
+                          ? "var(--orbit-bg-subtle)"
                           : isHovered
-                          ? "fill-indigo-500"
-                          : isToday
-                          ? "fill-indigo-600 dark:fill-indigo-500"
-                          : "fill-indigo-500/80 dark:fill-indigo-600/80"
-                      }`}
+                          ? "var(--orbit-accent-hover)"
+                          : "var(--orbit-chart-1)"
+                      }
+                      opacity={item.count === 0 ? 1 : isToday || isHovered ? 1 : 0.78}
+                      className="transition-all duration-150"
                     />
 
                     {/* Day label */}
@@ -293,11 +291,8 @@ export function WeeklyProgressWidget({
                       x={barX + barWidth / 2}
                       y={svgHeight - 6}
                       textAnchor="middle"
-                      className={`text-[10px] select-none ${
-                        isToday
-                          ? "font-bold fill-indigo-600 dark:fill-indigo-400"
-                          : "fill-slate-400"
-                      }`}
+                      fill={isToday ? "var(--orbit-accent)" : "var(--orbit-text-muted)"}
+                      className={`text-[10px] select-none ${isToday ? "font-bold" : ""}`}
                     >
                       {getWeekdayShort(item.date)}
                     </text>
@@ -308,7 +303,6 @@ export function WeeklyProgressWidget({
           </div>
         </div>
       </div>
-    </section>
+    </SurfaceCard>
   );
 }
-

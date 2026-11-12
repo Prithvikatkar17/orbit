@@ -30,6 +30,7 @@ import {
   fetchDatabaseStorageCounts,
   EMPTY_STORAGE_COUNTS,
 } from "@/lib/services/workspace-queries";
+import { Button, ConfirmDialog, PageHeader } from "@/components/ui";
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
@@ -40,7 +41,13 @@ export default function SettingsPage() {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [restoreMode, setRestoreMode] = useState<"replace" | "merge">("replace");
+  const [pendingRestore, setPendingRestore] = useState<{
+    file: File;
+    existingFilesCount: number;
+  } | null>(null);
+  const [isRestoring, setIsRestoring] = useState(false);
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
 
   // Consolidated single Dexie live query for all storage counts
   const {
@@ -165,36 +172,9 @@ export default function SettingsPage() {
     }
   }
 
-  async function handleFileImport(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setErrorMessage(null);
-    setStatusMessage(null);
-
+  async function executeRestore(file: File, confirmFileDeletion: boolean) {
+    setIsRestoring(true);
     try {
-      const isZip =
-        file.name.toLowerCase().endsWith(".zip") ||
-        file.type.includes("zip");
-
-      let confirmFileDeletion = false;
-
-      // In Replace All mode with legacy JSON, warn user before clearing attachments
-      if (!isZip && restoreMode === "replace") {
-        const existingFiles = await db.libraryFiles.count();
-        if (existingFiles > 0) {
-          const proceed = window.confirm(
-            `Notice: Legacy JSON backups do not contain file attachments.\n\nRestoring in 'Replace All' mode will delete ${existingFiles} existing file attachment(s) from this device.\n\nClick OK to proceed with deleting them, or Cancel to keep your existing data and switch to 'Merge' mode.`
-          );
-          if (!proceed) {
-            setErrorMessage("Restore cancelled: existing attachments were protected.");
-            e.target.value = "";
-            return;
-          }
-          confirmFileDeletion = true;
-        }
-      }
-
       const stats = await restoreBackup(file, restoreMode, { confirmFileDeletion });
 
       setStatusMessage(
@@ -208,11 +188,57 @@ export default function SettingsPage() {
           : "Invalid backup file or validation failed."
       );
     } finally {
-      e.target.value = "";
+      setIsRestoring(false);
     }
   }
 
+  async function handleFileImport(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = "";
+
+    setErrorMessage(null);
+    setStatusMessage(null);
+
+    try {
+      const isZip =
+        file.name.toLowerCase().endsWith(".zip") ||
+        file.type.includes("zip");
+
+      // In Replace All mode with legacy JSON, warn user via ConfirmDialog before clearing attachments
+      if (!isZip && restoreMode === "replace") {
+        const existingFiles = await db.libraryFiles.count();
+        if (existingFiles > 0) {
+          setPendingRestore({ file, existingFilesCount: existingFiles });
+          return;
+        }
+      }
+
+      await executeRestore(file, false);
+    } catch (err: unknown) {
+      console.error("Import error:", err);
+      setErrorMessage(
+        err instanceof Error
+          ? `Failed to restore: ${err.message}`
+          : "Invalid backup file or validation failed."
+      );
+    }
+  }
+
+  async function handleConfirmLegacyRestore() {
+    if (!pendingRestore) return;
+    const targetFile = pendingRestore.file;
+    await executeRestore(targetFile, true);
+    setPendingRestore(null);
+  }
+
+  function handleCancelLegacyRestore() {
+    setPendingRestore(null);
+    setErrorMessage("Restore cancelled: existing attachments were protected.");
+  }
+
   async function handleResetDatabase() {
+    setIsResetting(true);
     try {
       await db.transaction(
         "rw",
@@ -254,20 +280,18 @@ export default function SettingsPage() {
     } catch (err) {
       console.error("Failed to reset database:", err);
       setErrorMessage("Failed to reset database.");
+    } finally {
+      setIsResetting(false);
     }
   }
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto w-full pb-16 animate-in fade-in duration-200">
       {/* Page Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-          Settings
-        </h1>
-        <p className="mt-1 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-          Manage your personal workspace preferences, notification alerts, and local backups.
-        </p>
-      </div>
+      <PageHeader
+        title="Settings"
+        description="Manage your personal workspace preferences, notification alerts, and local backups."
+      />
 
       {/* Status Messages */}
       {statusMessage && (
@@ -523,39 +547,45 @@ export default function SettingsPage() {
           Resetting the database will permanently delete all local items, tasks, habits, events, and reminders from IndexedDB.
         </p>
 
-        {!isResetConfirmOpen ? (
-          <button
-            type="button"
-            onClick={() => setIsResetConfirmOpen(true)}
-            className="flex items-center gap-1.5 rounded-xl border border-rose-300 bg-white px-3.5 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:border-rose-900 dark:bg-slate-900 dark:text-rose-400"
-          >
-            <Trash2 className="h-4 w-4" />
-            <span>Reset Local Database</span>
-          </button>
-        ) : (
-          <div className="rounded-xl border border-rose-300 bg-white p-4 shadow-xs dark:border-rose-900 dark:bg-slate-900 space-y-3">
-            <p className="text-xs font-bold text-rose-800 dark:text-rose-300">
-              Are you sure? This cannot be undone unless you have a backup.
-            </p>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={handleResetDatabase}
-                className="rounded-lg bg-rose-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-rose-700"
-              >
-                Yes, Delete Everything
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsResetConfirmOpen(false)}
-                className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
+        <Button
+          variant="secondary"
+          size="md"
+          icon={<Trash2 className="h-4 w-4 text-orbit-danger" />}
+          onClick={() => setIsResetConfirmOpen(true)}
+          className="border-rose-300 text-rose-600 hover:bg-rose-50 dark:border-rose-900 dark:text-rose-400 dark:hover:bg-rose-950/40"
+        >
+          Reset Local Database
+        </Button>
       </section>
+
+      {/* Legacy JSON Restore Attachment Replacement Confirmation */}
+      <ConfirmDialog
+        isOpen={pendingRestore !== null}
+        onClose={handleCancelLegacyRestore}
+        onConfirm={handleConfirmLegacyRestore}
+        title="Replace existing attachments?"
+        description={
+          pendingRestore
+            ? `Legacy JSON backups do not contain file attachments. Restoring in 'Replace All' mode will delete ${pendingRestore.existingFilesCount} existing file attachment(s) from this device.`
+            : undefined
+        }
+        confirmLabel="Delete & Restore"
+        cancelLabel="Keep Existing Data"
+        danger
+        loading={isRestoring}
+      />
+
+      {/* Full Local Database Reset Confirmation */}
+      <ConfirmDialog
+        isOpen={isResetConfirmOpen}
+        onClose={() => setIsResetConfirmOpen(false)}
+        onConfirm={handleResetDatabase}
+        title="Reset local database?"
+        description="This will permanently delete all local items, tasks, habits, events, reminders, and library resources from IndexedDB. This cannot be undone unless you have a backup."
+        confirmLabel="Yes, Delete Everything"
+        danger
+        loading={isResetting}
+      />
     </div>
   );
 }

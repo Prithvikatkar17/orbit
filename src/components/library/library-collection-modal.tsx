@@ -14,6 +14,7 @@ import {
 } from "@/lib/schemas";
 import { deleteLibraryCollectionAndCleanReferences } from "@/lib/services/library-service";
 import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface LibraryCollectionModalProps {
   initialCollection?: LibraryCollection | null;
@@ -38,7 +39,6 @@ export function LibraryCollectionModal({
   onClose,
   onSaved,
 }: LibraryCollectionModalProps) {
-  const modalRef = useAccessibleModal({ onClose });
   const isEditing = Boolean(initialCollection);
 
   const [name, setName] = useState(initialCollection?.name || "");
@@ -47,6 +47,12 @@ export function LibraryCollectionModal({
   const [color, setColor] = useState(initialCollection?.color || "#6366f1");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const modalRef = useAccessibleModal({
+    paused: showDeleteConfirm || isSubmitting,
+    onClose,
+  });
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -87,24 +93,19 @@ export function LibraryCollectionModal({
     }
   }
 
-  async function handleDelete() {
+  async function handleConfirmDelete() {
     if (!initialCollection) return;
-    if (
-      confirm(
-        `Are you sure you want to delete collection "${initialCollection.name}"? Entries in this collection will not be deleted.`
-      )
-    ) {
-      try {
-        setIsSubmitting(true);
-        setError(null);
-        await deleteLibraryCollectionAndCleanReferences(initialCollection.id);
-        onClose();
-      } catch (err: unknown) {
-        console.error("Delete collection error:", err);
-        setError(err instanceof Error ? err.message : "Failed to delete collection");
-      } finally {
-        setIsSubmitting(false);
-      }
+    try {
+      setIsSubmitting(true);
+      setError(null);
+      await deleteLibraryCollectionAndCleanReferences(initialCollection.id);
+      onClose();
+    } catch (err: unknown) {
+      console.error("Delete collection error:", err);
+      setError(err instanceof Error ? err.message : "Failed to delete collection");
+    } finally {
+      setIsSubmitting(false);
+      setShowDeleteConfirm(false);
     }
   }
 
@@ -222,7 +223,7 @@ export function LibraryCollectionModal({
             {isEditing ? (
               <button
                 type="button"
-                onClick={handleDelete}
+                onClick={() => setShowDeleteConfirm(true)}
                 className="flex items-center gap-1 rounded-xl px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/40"
               >
                 <Trash2 className="h-3.5 w-3.5" />
@@ -251,6 +252,18 @@ export function LibraryCollectionModal({
           </div>
         </form>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={handleConfirmDelete}
+        title={`Delete "${initialCollection?.name}"?`}
+        description="Entries in this collection will not be deleted, but they will no longer be associated with any collection."
+        confirmLabel="Delete Collection"
+        danger
+        loading={isSubmitting}
+      />
     </div>
   );
 }

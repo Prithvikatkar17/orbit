@@ -5,6 +5,8 @@ import { computeNextFocusIndex, getFocusableElements } from "../utils/focus-trap
 
 interface UseAccessibleModalOptions {
   isOpen?: boolean;
+  /** Temporarily pause keyboard handling (e.g. when a nested alertdialog is open) without losing focus history */
+  paused?: boolean;
   onClose: () => void;
 }
 
@@ -16,14 +18,20 @@ interface UseAccessibleModalOptions {
  */
 export function useAccessibleModal({
   isOpen = true,
+  paused = false,
   onClose,
 }: UseAccessibleModalOptions) {
   const modalRef = useRef<HTMLDivElement | null>(null);
   const onCloseRef = useRef(onClose);
+  const pausedRef = useRef(paused);
 
   useEffect(() => {
     onCloseRef.current = onClose;
   }, [onClose]);
+
+  useEffect(() => {
+    pausedRef.current = paused;
+  }, [paused]);
 
   useEffect(() => {
     if (!isOpen || typeof document === "undefined") return;
@@ -46,6 +54,8 @@ export function useAccessibleModal({
     });
 
     function handleKeyDown(e: KeyboardEvent) {
+      if (pausedRef.current) return;
+
       if (e.key === "Escape") {
         e.preventDefault();
         e.stopPropagation();

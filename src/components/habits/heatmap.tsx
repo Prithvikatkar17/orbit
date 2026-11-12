@@ -23,7 +23,7 @@ export function HabitHeatmap({ completedDates, color = "#10b981", today: propTod
 
   if (!today) {
     return (
-      <div className="h-28 w-full animate-pulse rounded-xl bg-slate-100 dark:bg-slate-800/40" />
+      <div className="h-28 w-full animate-pulse rounded-orbit-control bg-orbit-surface-secondary" />
     );
   }
 
@@ -79,11 +79,11 @@ export function HabitHeatmap({ completedDates, color = "#10b981", today: propTod
 
   return (
     <div className="space-y-1.5">
-      <div className="flex items-center justify-between text-[11px] font-medium text-slate-400">
+      <div className="flex items-center justify-between text-[11px] font-medium text-orbit-text-muted">
         <span>Last 180 Days</span>
         <div className="flex items-center gap-1.5">
           <span>Less</span>
-          <div className="h-2.5 w-2.5 rounded-[3px] bg-slate-100 dark:bg-slate-800" />
+          <div className="h-2.5 w-2.5 rounded-[3px] bg-orbit-subtle" />
           <div
             className="h-2.5 w-2.5 rounded-[3px]"
             style={{ backgroundColor: color }}
@@ -94,11 +94,11 @@ export function HabitHeatmap({ completedDates, color = "#10b981", today: propTod
 
       <div
         ref={containerRef}
-        className="overflow-x-auto pb-1 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800"
+        className="overflow-x-auto pb-1"
       >
         <div className="inline-flex gap-1.5 py-1">
           {/* Day of week labels */}
-          <div className="grid grid-rows-7 gap-1 text-[9px] font-semibold text-slate-400 select-none pr-1">
+          <div className="grid grid-rows-7 gap-1 pr-1 text-[9px] font-semibold text-orbit-text-muted select-none">
             {dayLabels.map((label, idx) => (
               <div key={idx} className="flex h-3 w-3 items-center justify-center">
                 {idx % 2 === 1 ? label : ""}
@@ -114,7 +114,7 @@ export function HabitHeatmap({ completedDates, color = "#10b981", today: propTod
                   return (
                     <div
                       key={day.dateStr}
-                      className="h-3 w-3 rounded-[3px] bg-transparent opacity-0 pointer-events-none"
+                      className="pointer-events-none h-3 w-3 rounded-[3px] bg-transparent opacity-0"
                     />
                   );
                 }
@@ -132,13 +132,13 @@ export function HabitHeatmap({ completedDates, color = "#10b981", today: propTod
                         ? { backgroundColor: color }
                         : undefined
                     }
-                    className={`h-3 w-3 rounded-[3px] transition-transform hover:scale-125 cursor-pointer ${
+                    className={`h-3 w-3 cursor-pointer rounded-[3px] transition-transform hover:scale-125 ${
                       day.isCompleted
-                        ? "shadow-2xs"
-                        : "bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700"
+                        ? "shadow-orbit-xs"
+                        : "bg-orbit-subtle hover:bg-orbit-border-strong"
                     } ${
                       day.isToday
-                        ? "ring-1 ring-indigo-500 ring-offset-1 dark:ring-offset-slate-900"
+                        ? "ring-1 ring-orbit-accent ring-offset-1 ring-offset-orbit-surface"
                         : ""
                     }`}
                   />

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Sidebar, MobileHeader } from "@/components/sidebar";
@@ -19,10 +19,11 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-const plusJakartaDisplay = Plus_Jakarta_Sans({
+const newsreaderDisplay = Newsreader({
   variable: "--font-orbit-display-base",
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -41,7 +42,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-orbit-theme="default"
-      className={`${geistSans.variable} ${geistMono.variable} ${plusJakartaDisplay.variable}`}
+      className={`${geistSans.variable} ${geistMono.variable} ${newsreaderDisplay.variable}`}
       suppressHydrationWarning
     >
       <body className="font-sans antialiased bg-orbit-bg text-orbit-text min-h-screen">
