@@ -58,9 +58,9 @@ export default function RootLayout({
               <Sidebar />
 
               {/* Main Application Shell */}
-              <div className="flex flex-1 flex-col">
+              <div className="flex min-w-0 flex-1 flex-col">
                 <MobileHeader />
-                <main className="flex-1 p-4 md:p-8 max-w-6xl w-full mx-auto">
+                <main className="@container flex-1 min-w-0 px-4 py-5 sm:px-6 lg:px-8 lg:py-8 max-w-6xl w-full mx-auto">
                   {children}
                 </main>
               </div>

@@ -86,7 +86,7 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
     <SurfaceCard
       id={`habit-${habit.id}`}
       padding="md"
-      className={`group transition-all duration-300 ${
+      className={`@container group transition-all duration-300 ${
         isHighlighted
           ? "border-orbit-accent ring-2 ring-orbit-accent ring-offset-2 ring-offset-orbit-surface shadow-orbit-elevated"
           : habit.isActive
@@ -95,15 +95,15 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
       }`}
     >
       {/* Top Header Row */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-start gap-3">
+      <div className="flex flex-col gap-3 @[560px]:flex-row @[560px]:items-center @[560px]:justify-between">
+        <div className="flex min-w-0 items-start gap-3">
           <div
             className="mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full ring-2 ring-orbit-border"
             style={{ backgroundColor: habit.color }}
           />
-          <div>
+          <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-base font-semibold tracking-tight text-orbit-text">
+              <h3 className="[overflow-wrap:anywhere] text-base font-semibold tracking-tight text-orbit-text">
                 {habit.title}
               </h3>
               <span className="text-xs font-medium text-orbit-text-muted">
@@ -112,7 +112,7 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
               {!habit.isActive && <Badge variant="warning">Archived</Badge>}
             </div>
             {habit.notes && (
-              <p className="mt-1 text-xs leading-relaxed text-orbit-text-secondary">
+              <p className="[overflow-wrap:anywhere] mt-1 text-xs leading-relaxed text-orbit-text-secondary">
                 {habit.notes}
               </p>
             )}
@@ -136,7 +136,7 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
 
           {/* Best Streak (quiet inline label) */}
           <div
-            className="hidden items-center gap-1 text-xs font-medium text-orbit-text-muted tabular-nums md:inline-flex"
+            className="hidden items-center gap-1 text-xs font-medium text-orbit-text-muted tabular-nums @[560px]:inline-flex"
             title="All-time best streak"
           >
             <Trophy className="h-3.5 w-3.5 text-orbit-warning" />
@@ -153,7 +153,7 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
                 ? { backgroundColor: habit.color, borderColor: habit.color }
                 : undefined
             }
-            className={`inline-flex items-center gap-2 rounded-orbit-control border px-3.5 py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring focus-visible:ring-offset-2 focus-visible:ring-offset-orbit-surface ${
+            className={`inline-flex min-h-[44px] sm:min-h-[38px] items-center gap-2 rounded-orbit-control border px-3.5 py-2 sm:py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring focus-visible:ring-offset-2 focus-visible:ring-offset-orbit-surface ${
               isCompletedToday
                 ? "text-white shadow-orbit-xs"
                 : "border-orbit-border-strong bg-orbit-surface text-orbit-text hover:bg-orbit-surface-secondary"
@@ -172,11 +172,11 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
           </button>
 
           {/* Actions */}
-          <div className="flex items-center gap-0.5 sm:opacity-75 sm:transition-opacity sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
+          <div className="flex items-center gap-0.5 opacity-100 [@media(hover:hover)]:opacity-75 [@media(hover:hover)]:transition-opacity [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-focus-within:opacity-100">
             <button
               type="button"
               onClick={() => onEdit(habit)}
-              className="rounded-orbit-control p-1.5 text-orbit-text-muted transition-colors hover:bg-orbit-surface-secondary hover:text-orbit-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring"
+              className="flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-orbit-control text-orbit-text-muted transition-colors hover:bg-orbit-surface-secondary hover:text-orbit-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring"
               title="Edit habit"
               aria-label={`Edit ${habit.title}`}
             >
@@ -185,7 +185,7 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
             <button
               type="button"
               onClick={toggleArchive}
-              className="rounded-orbit-control p-1.5 text-orbit-text-muted transition-colors hover:bg-orbit-surface-secondary hover:text-orbit-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring"
+              className="flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-orbit-control text-orbit-text-muted transition-colors hover:bg-orbit-surface-secondary hover:text-orbit-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring"
               title={habit.isActive ? "Archive habit" : "Unarchive habit"}
               aria-label={
                 habit.isActive
@@ -202,7 +202,7 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
             <button
               type="button"
               onClick={() => onDelete(habit.id)}
-              className="rounded-orbit-control p-1.5 text-orbit-text-muted transition-colors hover:bg-orbit-danger-soft hover:text-orbit-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring"
+              className="flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-orbit-control text-orbit-text-muted transition-colors hover:bg-orbit-danger-soft hover:text-orbit-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring"
               title="Delete habit"
               aria-label={`Delete ${habit.title}`}
             >
@@ -212,7 +212,7 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
         </div>
       </div>
 
-      {/* 180-Day Heatmap */}
+      {/* Activity Heatmap */}
       <div className="mt-4 border-t border-orbit-border pt-4">
         <HabitHeatmap
           completedDates={completedDates}

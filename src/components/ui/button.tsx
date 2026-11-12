@@ -29,9 +29,9 @@ const variantClasses: Record<ButtonVariant, string> = {
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: "h-7 rounded-orbit-control px-2.5 text-xs font-medium gap-1.5",
-  md: "h-9 rounded-orbit-control px-3.5 text-xs font-semibold gap-2",
-  lg: "h-10 rounded-orbit-control px-5 text-sm font-semibold gap-2",
+  sm: "min-h-[40px] sm:min-h-[32px] sm:h-8 rounded-orbit-control px-3 text-xs font-medium gap-1.5",
+  md: "min-h-[44px] sm:min-h-[36px] sm:h-9 rounded-orbit-control px-3.5 text-xs font-semibold gap-2",
+  lg: "min-h-[44px] rounded-orbit-control px-5 text-sm font-semibold gap-2",
 };
 
 /**

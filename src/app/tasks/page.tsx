@@ -295,7 +295,7 @@ export default function TasksPage() {
           <div
             role="tablist"
             aria-label="Task views"
-            className="flex flex-wrap items-center gap-1 rounded-orbit-control bg-orbit-subtle p-1"
+            className="flex max-w-full items-center gap-1 overflow-x-auto rounded-orbit-control bg-orbit-subtle p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {tabs.map((tab) => {
               const isSelected = activeTab === tab.id;
@@ -306,7 +306,7 @@ export default function TasksPage() {
                   type="button"
                   aria-selected={isSelected}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${
+                  className={`inline-flex min-h-[40px] sm:min-h-[34px] shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${
                     isSelected
                       ? "bg-orbit-surface text-orbit-text shadow-orbit-xs"
                       : "text-orbit-text-secondary hover:text-orbit-text"
@@ -353,26 +353,26 @@ export default function TasksPage() {
               aria-label="Search tasks, goals, or notes"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary py-2 pr-8 pl-9 text-xs text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
+              className="w-full min-h-[42px] sm:min-h-[36px] rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary py-2 pr-10 pl-9 text-xs text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
             />
             {searchQuery && (
               <button
                 type="button"
                 aria-label="Clear search"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded p-0.5 text-orbit-text-muted hover:text-orbit-text"
+                className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-orbit-text-muted hover:text-orbit-text"
               >
                 <X className="h-3.5 w-3.5" />
               </button>
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center">
             <Select
               aria-label="Filter by type"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-auto min-w-[120px] py-1.5 text-xs"
+              className="min-h-[42px] sm:min-h-[36px] w-full sm:w-auto sm:min-w-[120px] py-1.5 text-xs"
             >
               {categoryOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -385,7 +385,7 @@ export default function TasksPage() {
               aria-label="Sort tasks"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortOption)}
-              className="w-auto min-w-[130px] py-1.5 text-xs"
+              className="min-h-[42px] sm:min-h-[36px] w-full sm:w-auto sm:min-w-[130px] py-1.5 text-xs"
             >
               <option value="custom">Custom Order</option>
               <option value="dueDate">Due Date</option>

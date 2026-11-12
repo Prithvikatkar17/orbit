@@ -67,7 +67,7 @@ export function SortableTaskItem({ task, onToggle, onEdit, onDelete }: TaskItemP
         type="button"
         {...attributes}
         {...listeners}
-        className="mt-1 cursor-grab touch-none text-orbit-text-muted/50 opacity-70 transition-opacity hover:text-orbit-text-secondary group-hover:opacity-100 active:cursor-grabbing"
+        className="-my-1.5 -ml-2 flex h-11 w-9 shrink-0 items-center justify-center cursor-grab touch-none rounded-lg text-orbit-text-muted/50 opacity-70 transition-opacity hover:text-orbit-text-secondary group-hover:opacity-100 active:cursor-grabbing"
         title="Drag to reorder"
         aria-label="Drag to reorder task"
       >
@@ -78,14 +78,18 @@ export function SortableTaskItem({ task, onToggle, onEdit, onDelete }: TaskItemP
       <button
         type="button"
         onClick={() => onToggle(task)}
-        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[var(--orbit-focus-ring)] ${
-          isCompleted
-            ? "border-orbit-success bg-orbit-success text-white"
-            : "border-orbit-border-strong hover:border-orbit-accent"
-        }`}
+        className="group/check -my-1.5 -ml-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[var(--orbit-focus-ring)]"
         aria-label={isCompleted ? "Mark task as incomplete" : "Mark task as complete"}
       >
-        {isCompleted && <Check className="h-3 w-3 stroke-[3]" />}
+        <span
+          className={`flex h-5 w-5 items-center justify-center rounded-full border-2 transition-all ${
+            isCompleted
+              ? "border-orbit-success bg-orbit-success text-white"
+              : "border-orbit-border-strong group-hover/check:border-orbit-accent"
+          }`}
+        >
+          {isCompleted && <Check className="h-3 w-3 stroke-[3]" />}
+        </span>
       </button>
 
       {/* Main Content */}
@@ -95,7 +99,7 @@ export function SortableTaskItem({ task, onToggle, onEdit, onDelete }: TaskItemP
             {icon}
           </span>
           <span
-            className={`text-sm font-semibold ${
+            className={`[overflow-wrap:anywhere] text-sm font-semibold ${
               isCompleted ? "line-through text-orbit-text-muted" : "text-orbit-text"
             }`}
           >
@@ -115,7 +119,7 @@ export function SortableTaskItem({ task, onToggle, onEdit, onDelete }: TaskItemP
         </div>
 
         {task.notes && (
-          <p className="text-xs leading-relaxed text-orbit-text-muted whitespace-pre-wrap">
+          <p className="[overflow-wrap:anywhere] text-xs leading-relaxed text-orbit-text-muted whitespace-pre-wrap">
             {task.notes}
           </p>
         )}
@@ -159,11 +163,11 @@ export function SortableTaskItem({ task, onToggle, onEdit, onDelete }: TaskItemP
       </div>
 
       {/* Action buttons */}
-      <div className="flex items-center gap-1 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
+      <div className="flex items-center gap-1 opacity-100 transition-opacity [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-focus-within:opacity-100">
         <button
           type="button"
           onClick={() => onEdit(task)}
-          className="rounded-lg p-1.5 text-orbit-text-muted hover:bg-orbit-subtle hover:text-orbit-text transition-colors"
+          className="flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-orbit-text-muted hover:bg-orbit-subtle hover:text-orbit-text transition-colors"
           title="Edit Task"
           aria-label={`Edit "${task.title}"`}
         >
@@ -172,7 +176,7 @@ export function SortableTaskItem({ task, onToggle, onEdit, onDelete }: TaskItemP
         <button
           type="button"
           onClick={() => onDelete(task.id)}
-          className="rounded-lg p-1.5 text-orbit-text-muted hover:bg-orbit-danger-soft hover:text-orbit-danger transition-colors"
+          className="flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-orbit-text-muted hover:bg-orbit-danger-soft hover:text-orbit-danger transition-colors"
           title="Delete Task"
           aria-label={`Delete "${task.title}"`}
         >

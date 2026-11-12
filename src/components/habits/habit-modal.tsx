@@ -111,7 +111,7 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
         aria-modal="true"
         aria-labelledby="habit-modal-title"
         tabIndex={-1}
-        className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900"
+        className="w-full max-w-md max-h-[90dvh] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900"
       >
         <div className="flex items-center justify-between pb-3">
           <h3 id="habit-modal-title" className="text-lg font-bold text-slate-900 dark:text-white">
@@ -121,7 +121,7 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
             type="button"
             aria-label="Close modal"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
           >
             <X className="h-5 w-5" />
           </button>
@@ -155,7 +155,7 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
               Frequency
             </label>
-            <div className="mt-1.5 grid grid-cols-4 gap-1.5">
+            <div className="mt-1.5 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-1.5">
               {(
                 [
                   { id: "daily", label: "Daily" },
@@ -168,7 +168,7 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
                   key={f.id}
                   type="button"
                   onClick={() => setFrequency(f.id)}
-                  className={`rounded-xl border py-2 text-xs font-semibold transition-all ${
+                  className={`min-h-[40px] rounded-xl border py-2 text-xs font-semibold transition-all ${
                     frequency === f.id
                       ? "border-indigo-600 bg-indigo-50 text-indigo-700 dark:border-indigo-500 dark:bg-indigo-950/60 dark:text-indigo-300"
                       : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400"
@@ -186,7 +186,7 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 Active Days
               </label>
-              <div className="flex justify-between gap-1">
+              <div className="flex flex-wrap gap-1.5 sm:justify-between">
                 {DAYS_OF_WEEK.map((d) => {
                   const isSelected = customDays.includes(d.day);
                   return (
@@ -194,7 +194,7 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
                       key={d.day}
                       type="button"
                       onClick={() => toggleDay(d.day)}
-                      className={`h-9 w-9 rounded-xl text-xs font-bold transition-all ${
+                      className={`min-h-[40px] min-w-[40px] flex-1 sm:flex-none sm:w-9 rounded-xl text-xs font-bold transition-all ${
                         isSelected
                           ? "bg-indigo-600 text-white shadow-xs"
                           : "bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400"
@@ -213,14 +213,14 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
               Highlight Color
             </label>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2.5">
               {PRESET_COLORS.map((c) => (
                 <button
                   key={c}
                   type="button"
                   onClick={() => setColor(c)}
                   style={{ backgroundColor: c }}
-                  className={`h-7 w-7 rounded-full flex items-center justify-center transition-transform hover:scale-110 ${
+                  className={`h-9 w-9 sm:h-7 sm:w-7 rounded-full flex items-center justify-center transition-transform hover:scale-110 ${
                     color === c ? "ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-slate-900" : ""
                   }`}
                 >

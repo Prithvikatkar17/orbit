@@ -99,7 +99,7 @@ function EditInboxModal({ item, onClose, onSave }: EditInboxModalProps) {
         aria-modal="true"
         aria-labelledby="edit-inbox-modal-title"
         tabIndex={-1}
-        className="w-full max-w-md rounded-orbit-card border border-orbit-border bg-orbit-surface p-6 shadow-orbit-elevated outline-hidden animate-in zoom-in-95 duration-150"
+        className="w-full max-w-md max-h-[90dvh] overflow-y-auto rounded-orbit-card border border-orbit-border bg-orbit-surface p-4 sm:p-6 shadow-orbit-elevated outline-hidden animate-in zoom-in-95 duration-150"
       >
         {/* Header */}
         <div className="flex items-center justify-between pb-3">
@@ -111,7 +111,7 @@ function EditInboxModal({ item, onClose, onSave }: EditInboxModalProps) {
             aria-label="Close modal"
             disabled={isSubmitting}
             onClick={onClose}
-            className="rounded-lg p-1.5 text-orbit-text-muted hover:bg-orbit-subtle hover:text-orbit-text disabled:opacity-50"
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-orbit-text-muted hover:bg-orbit-subtle hover:text-orbit-text disabled:opacity-50"
           >
             <X className="h-5 w-5" />
           </button>
@@ -420,7 +420,7 @@ export default function InboxPage() {
                   type="button"
                   aria-selected={active}
                   onClick={() => setTypeFilter(tab.id)}
-                  className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-all ${
+                  className={`min-h-[40px] sm:min-h-[32px] rounded-lg px-3 py-1.5 sm:py-1 text-xs font-semibold transition-all ${
                     active
                       ? "bg-orbit-surface text-orbit-text shadow-orbit-xs"
                       : "text-orbit-text-secondary hover:text-orbit-text"
@@ -446,7 +446,7 @@ export default function InboxPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search inbox..."
-              className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface py-1.5 pr-3 pl-8.5 text-xs text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:outline-hidden transition-colors"
+              className="min-h-[40px] sm:min-h-[34px] w-full rounded-orbit-control border border-orbit-border bg-orbit-surface py-1.5 pr-3 pl-8.5 text-xs text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:outline-hidden transition-colors"
             />
           </div>
 
@@ -455,7 +455,7 @@ export default function InboxPage() {
             size="sm"
             icon={<ArrowUpDown className="h-3.5 w-3.5" />}
             onClick={() => setSortOrder(sortOrder === "newest" ? "oldest" : "newest")}
-            className="h-8 shrink-0"
+            className="h-10 sm:h-8 shrink-0"
           >
             {sortOrder === "newest" ? "Newest" : "Oldest"}
           </Button>
@@ -522,7 +522,7 @@ export default function InboxPage() {
 
                     <div className="min-w-0 flex-1 space-y-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h4 className="text-sm font-semibold text-orbit-text">
+                        <h4 className="[overflow-wrap:anywhere] text-sm font-semibold text-orbit-text">
                           {item.title}
                         </h4>
                         {item.link && (
@@ -541,7 +541,7 @@ export default function InboxPage() {
                       </div>
 
                       {item.notes && (
-                        <p className="line-clamp-2 text-xs leading-relaxed text-orbit-text-muted">
+                        <p className="line-clamp-2 [overflow-wrap:anywhere] text-xs leading-relaxed text-orbit-text-muted">
                           {item.notes}
                         </p>
                       )}
@@ -560,7 +560,7 @@ export default function InboxPage() {
                       trailingIcon={<ArrowRight className="h-3.5 w-3.5" />}
                       onClick={() => setActiveConvertItem(item)}
                       title="Convert this item into a task, habit, or library item"
-                      className="text-orbit-accent border-orbit-accent/25 bg-orbit-accent-soft/50 hover:bg-orbit-accent-soft"
+                      className="min-h-[40px] sm:min-h-[32px] text-orbit-accent border-orbit-accent/25 bg-orbit-accent-soft/50 hover:bg-orbit-accent-soft"
                     >
                       Process
                     </Button>
@@ -568,7 +568,7 @@ export default function InboxPage() {
                     <button
                       type="button"
                       onClick={() => setEditingItem(item)}
-                      className="rounded-lg p-1.5 text-orbit-text-muted hover:bg-orbit-subtle hover:text-orbit-text transition-colors"
+                      className="flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-orbit-text-muted hover:bg-orbit-subtle hover:text-orbit-text transition-colors"
                       title="Edit title and notes"
                       aria-label={`Edit "${item.title}"`}
                     >
@@ -578,7 +578,7 @@ export default function InboxPage() {
                     <button
                       type="button"
                       onClick={() => setDeleteTargetId(item.id)}
-                      className="rounded-lg p-1.5 text-orbit-text-muted hover:bg-orbit-danger-soft hover:text-orbit-danger transition-colors"
+                      className="flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-orbit-text-muted hover:bg-orbit-danger-soft hover:text-orbit-danger transition-colors"
                       title="Delete item"
                       aria-label={`Delete "${item.title}"`}
                     >

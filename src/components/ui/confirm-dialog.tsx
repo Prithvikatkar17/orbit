@@ -79,7 +79,7 @@ export function ConfirmDialog({
         aria-labelledby={titleId}
         aria-describedby={resolved.description ? descId : undefined}
         tabIndex={-1}
-        className="w-full max-w-sm rounded-orbit-card border border-orbit-border/80 bg-orbit-surface-elevated p-6 shadow-orbit-elevated outline-hidden animate-in zoom-in-95 duration-150"
+        className="w-full max-w-sm max-h-[90dvh] overflow-y-auto rounded-orbit-card border border-orbit-border/80 bg-orbit-surface-elevated p-4 sm:p-6 shadow-orbit-elevated outline-hidden animate-in zoom-in-95 duration-150"
       >
         <div className="flex items-start gap-3">
           {danger && (

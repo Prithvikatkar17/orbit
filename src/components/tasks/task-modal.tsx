@@ -75,7 +75,7 @@ export function TaskModal({ initialTask, onClose }: TaskModalProps) {
         aria-modal="true"
         aria-labelledby="task-modal-title"
         tabIndex={-1}
-        className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900"
+        className="w-full max-w-lg max-h-[90dvh] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900"
       >
         <div className="flex items-center justify-between pb-3">
           <h3 id="task-modal-title" className="text-lg font-bold text-slate-900 dark:text-white">
@@ -85,7 +85,7 @@ export function TaskModal({ initialTask, onClose }: TaskModalProps) {
             type="button"
             aria-label="Close modal"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
           >
             <X className="h-5 w-5" />
           </button>
@@ -113,7 +113,7 @@ export function TaskModal({ initialTask, onClose }: TaskModalProps) {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
                 Type / Category
@@ -147,7 +147,7 @@ export function TaskModal({ initialTask, onClose }: TaskModalProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
                 Due Date (Optional)

@@ -321,7 +321,7 @@ export function SearchModal() {
       }}
     >
       <div
-        className="w-full max-w-2xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl transition-all dark:border-slate-800 dark:bg-slate-900 flex flex-col h-[92vh] sm:h-auto max-h-[92vh] sm:max-h-[82vh]"
+        className="w-full max-w-2xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl transition-all dark:border-slate-800 dark:bg-slate-900 flex flex-col h-[92dvh] sm:h-auto max-h-[92dvh] sm:max-h-[82dvh]"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="orbit-search-modal-heading" className="sr-only">

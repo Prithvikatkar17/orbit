@@ -117,7 +117,7 @@ export function LibraryCollectionModal({
         aria-modal="true"
         aria-labelledby="library-collection-modal-title"
         tabIndex={-1}
-        className="w-full max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900"
+        className="w-full max-w-md max-h-[90dvh] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900"
       >
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
@@ -129,7 +129,7 @@ export function LibraryCollectionModal({
             type="button"
             aria-label="Close modal"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
           >
             <X className="h-5 w-5" />
           </button>
@@ -201,14 +201,14 @@ export function LibraryCollectionModal({
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
               Accent Color
             </label>
-            <div className="mt-1.5 flex items-center gap-2">
+            <div className="mt-1.5 flex flex-wrap items-center gap-2.5">
               {COLLECTION_COLORS.map((c) => (
                 <button
                   key={c}
                   type="button"
                   onClick={() => setColor(c)}
                   style={{ backgroundColor: c }}
-                  className={`h-6 w-6 rounded-full transition-transform ${
+                  className={`h-8 w-8 sm:h-6 sm:w-6 rounded-full transition-transform ${
                     color === c
                       ? "ring-2 ring-offset-2 ring-slate-900 dark:ring-white scale-110"
                       : "opacity-80 hover:opacity-100"

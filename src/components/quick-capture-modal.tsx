@@ -224,7 +224,7 @@ export function QuickCaptureModal() {
         aria-modal="true"
         aria-labelledby="quick-capture-modal-title"
         tabIndex={-1}
-        className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900 animate-in fade-in zoom-in-95 duration-150"
+        className="w-full max-w-lg max-h-[90dvh] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900 animate-in fade-in zoom-in-95 duration-150"
       >
         <div className="flex items-center justify-between pb-3">
           <div className="flex items-center gap-2">
@@ -239,7 +239,7 @@ export function QuickCaptureModal() {
             type="button"
             aria-label="Close modal"
             onClick={closeQuickCapture}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
           >
             <X className="h-5 w-5" />
           </button>
@@ -258,7 +258,7 @@ export function QuickCaptureModal() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
                 Type
@@ -313,7 +313,7 @@ export function QuickCaptureModal() {
           </div>
 
           {isLibraryCategory && (
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
                   Status
@@ -344,7 +344,7 @@ export function QuickCaptureModal() {
           )}
 
           {!isLibraryCategory && category.toLowerCase() !== "inbox" && category.toLowerCase() !== "habit" && (
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
                   Date (Optional)

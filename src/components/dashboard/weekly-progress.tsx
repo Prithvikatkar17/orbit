@@ -105,7 +105,7 @@ export function WeeklyProgressWidget({
   const activeHover = hoveredIndex !== null ? dailyTaskCompletions[hoveredIndex] : null;
 
   return (
-    <SurfaceCard as="section" className="p-5 sm:p-6">
+    <SurfaceCard as="section" className="@container p-5 sm:p-6">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-orbit-border pb-4">
         <div className="flex items-center gap-2.5">
@@ -120,7 +120,7 @@ export function WeeklyProgressWidget({
 
         <Link
           href="/insights"
-          className="group inline-flex items-center gap-1 text-xs font-semibold text-orbit-accent hover:text-orbit-accent-hover transition-colors"
+          className="group inline-flex min-h-[36px] items-center gap-1 text-xs font-semibold text-orbit-accent hover:text-orbit-accent-hover transition-colors"
         >
           <span>Insights</span>
           <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -128,9 +128,9 @@ export function WeeklyProgressWidget({
       </div>
 
       {/* Main Content Grid */}
-      <div className="mt-5 grid grid-cols-1 gap-6 md:grid-cols-12 md:items-center">
+      <div className="mt-5 grid grid-cols-1 gap-6 @lg:grid-cols-12 @lg:items-center">
         {/* Left: Summary Metrics (5 columns, tonal surface without nested borders) */}
-        <div className="grid grid-cols-2 gap-3 md:col-span-5">
+        <div className="grid grid-cols-1 gap-3 @[340px]:grid-cols-2 @lg:col-span-5">
           {/* Tasks Completed (7d) */}
           <div className="flex flex-col justify-between rounded-orbit-control bg-orbit-surface-secondary p-3.5">
             <div className="flex items-center justify-between text-xs font-medium text-orbit-text-muted">

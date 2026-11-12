@@ -202,7 +202,7 @@ export default function HabitsPage() {
               role="tab"
               aria-selected={activeTab === "active"}
               onClick={() => setActiveTab("active")}
-              className={`inline-flex items-center gap-1.5 rounded-[calc(var(--orbit-radius-control)-2px)] px-3 py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring ${
+              className={`inline-flex min-h-[40px] sm:min-h-[34px] items-center gap-1.5 rounded-[calc(var(--orbit-radius-control)-2px)] px-3 py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring ${
                 activeTab === "active"
                   ? "bg-orbit-surface text-orbit-text shadow-orbit-xs"
                   : "text-orbit-text-secondary hover:text-orbit-text"
@@ -222,7 +222,7 @@ export default function HabitsPage() {
               role="tab"
               aria-selected={activeTab === "archived"}
               onClick={() => setActiveTab("archived")}
-              className={`inline-flex items-center gap-1.5 rounded-[calc(var(--orbit-radius-control)-2px)] px-3 py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring ${
+              className={`inline-flex min-h-[40px] sm:min-h-[34px] items-center gap-1.5 rounded-[calc(var(--orbit-radius-control)-2px)] px-3 py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring ${
                 activeTab === "archived"
                   ? "bg-orbit-surface text-orbit-text shadow-orbit-xs"
                   : "text-orbit-text-secondary hover:text-orbit-text"

@@ -278,23 +278,25 @@ export default function HomePage() {
                   return (
                     <li
                       key={task.id}
-                      className="flex items-center gap-3.5 px-5 py-3.5 transition-colors hover:bg-orbit-surface-secondary/70 sm:px-6"
+                      className="flex items-center gap-2.5 px-5 py-3 transition-colors hover:bg-orbit-surface-secondary/70 sm:px-6"
                     >
                       <button
                         type="button"
                         aria-label={`Mark "${task.title}" as completed`}
                         onClick={() => toggleTask(task)}
-                        className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-orbit-border-strong transition-colors hover:border-orbit-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[var(--orbit-focus-ring)]"
-                      />
+                        className="group/check -ml-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[var(--orbit-focus-ring)]"
+                      >
+                        <span className="h-5 w-5 rounded-full border-2 border-orbit-border-strong transition-colors group-hover/check:border-orbit-accent" />
+                      </button>
 
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm select-none" aria-hidden>
+                        <div className="flex items-start gap-2">
+                          <span className="mt-0.5 text-sm select-none" aria-hidden>
                             {icon}
                           </span>
                           <Link
                             href={`/tasks?taskId=${task.id}`}
-                            className="truncate text-sm font-medium text-orbit-text hover:text-orbit-accent transition-colors"
+                            className="line-clamp-2 [overflow-wrap:anywhere] text-sm font-medium text-orbit-text hover:text-orbit-accent transition-colors"
                           >
                             {task.title}
                           </Link>
@@ -398,7 +400,7 @@ export default function HomePage() {
                   return (
                     <li
                       key={habit.id}
-                      className="flex items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-orbit-surface-secondary/70 sm:px-6"
+                      className="flex items-center justify-between gap-3 px-5 py-1.5 transition-colors hover:bg-orbit-surface-secondary/70 sm:px-6"
                     >
                       <button
                         type="button"
@@ -409,7 +411,7 @@ export default function HomePage() {
                             : `Mark "${habit.title}" completed`
                         }
                         onClick={() => toggleHabit(habit.id)}
-                        className="flex min-w-0 flex-1 items-center gap-3 text-left focus-visible:outline-hidden group"
+                        className="flex min-h-[44px] min-w-0 flex-1 items-center gap-3 py-2 text-left focus-visible:outline-hidden group"
                       >
                         <span
                           style={
