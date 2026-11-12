@@ -155,13 +155,13 @@ export function NotificationCenter() {
             setIsOpen(false);
           }
         }}
-        className="relative flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white lg:h-10 lg:w-10 transition-colors"
+        className="relative flex h-11 w-11 items-center justify-center rounded-orbit-control border border-orbit-border bg-orbit-surface text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text lg:h-10 lg:w-10 transition-colors"
         title="Notifications"
         aria-label="Open notifications"
       >
         <Bell className="h-4 w-4" />
         {mounted && unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-rose-600 px-1 text-[10px] font-bold text-white shadow-xs animate-in zoom-in-75">
+          <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-orbit-danger px-1 text-[10px] font-bold text-white shadow-xs animate-in zoom-in-75">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}

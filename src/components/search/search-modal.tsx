@@ -581,8 +581,8 @@ export function SearchModal() {
         </div>
 
         {/* Footer Navigation Hints */}
-        <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50/70 px-4 py-2.5 text-[11px] text-slate-500 dark:border-slate-800 dark:bg-slate-900/90 dark:text-slate-400">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 border-t border-slate-100 bg-slate-50/70 px-4 py-2.5 text-[11px] text-slate-500 dark:border-slate-800 dark:bg-slate-900/90 dark:text-slate-400">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <span className="inline-flex items-center gap-1">
               <kbd className="rounded border border-slate-200 bg-white px-1.5 py-0.5 font-mono text-[10px] font-semibold dark:border-slate-700 dark:bg-slate-800">
                 ↑↓
@@ -595,7 +595,7 @@ export function SearchModal() {
               </kbd>
               <span>Open</span>
             </span>
-            <span className="inline-flex items-center gap-1 hidden sm:inline-flex">
+            <span className="hidden items-center gap-1 sm:inline-flex">
               <kbd className="rounded border border-slate-200 bg-white px-1.5 py-0.5 font-mono text-[10px] font-semibold dark:border-slate-700 dark:bg-slate-800">
                 Tab
               </kbd>
@@ -607,7 +607,7 @@ export function SearchModal() {
             <button
               type="button"
               onClick={() => handleOpenQuickCapture(query.trim() || undefined)}
-              className="inline-flex items-center gap-1 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+              className="inline-flex items-center gap-1 whitespace-nowrap hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
             >
               <kbd className="rounded border border-slate-200 bg-white px-1.5 py-0.5 font-mono text-[10px] font-semibold dark:border-slate-700 dark:bg-slate-800">
                 Ctrl+N
