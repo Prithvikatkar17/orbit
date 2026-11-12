@@ -26,10 +26,15 @@ import {
   formatDateDisplay,
 } from "@/lib/utils/dates";
 import { DeepLinkListener } from "@/components/common/deep-link-listener";
+import { Button, EmptyState, SurfaceCard } from "@/components/ui";
+import { Calendar as CalendarIcon, Plus } from "lucide-react";
 
 export default function CalendarPage() {
   const [viewMode, setViewMode] = useState<CalendarViewMode>("month");
   const [currentDateStr, setCurrentDateStr] = useState<string>(() =>
+    getLocalDateString()
+  );
+  const [selectedDateStr, setSelectedDateStr] = useState<string>(() =>
     getLocalDateString()
   );
   const [searchQuery, setSearchQuery] = useState("");
@@ -60,6 +65,7 @@ export default function CalendarPage() {
           const targetDate =
             date && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : event.date;
           setCurrentDateStr(targetDate);
+          setSelectedDateStr(targetDate);
           setActiveDetails({
             event,
             occurrenceDate: targetDate,
@@ -177,6 +183,7 @@ export default function CalendarPage() {
 
   function handleToday() {
     setCurrentDateStr(todayStr);
+    setSelectedDateStr(todayStr);
   }
 
   function handleCreateEvent(dateStr?: string, defaultTime?: string) {
@@ -199,7 +206,7 @@ export default function CalendarPage() {
   }
 
   return (
-    <div className="flex h-full flex-col space-y-4 w-full">
+    <div className="flex h-full flex-col space-y-5 w-full">
       {/* Deep Link Listener */}
       <Suspense fallback={null}>
         <DeepLinkListener
@@ -223,6 +230,27 @@ export default function CalendarPage() {
         onNewEvent={() => handleCreateEvent()}
       />
 
+      {allEvents !== undefined && allEvents.length === 0 && (
+        <SurfaceCard padding="sm" className="border-dashed">
+          <EmptyState
+            icon={<CalendarIcon className="h-5 w-5" />}
+            title="Your calendar is clear"
+            description="Add an event, time block, or reminder to start shaping your schedule."
+            action={
+              <Button
+                type="button"
+                variant="primary"
+                size="sm"
+                onClick={() => handleCreateEvent()}
+              >
+                <Plus className="h-4 w-4" />
+                Create first event
+              </Button>
+            }
+          />
+        </SurfaceCard>
+      )}
+
       {/* Main Calendar View Area */}
       <div className="flex-1 flex flex-col min-h-0">
         {viewMode === "month" && (
@@ -230,6 +258,8 @@ export default function CalendarPage() {
             year={currentYear}
             month={currentMonth}
             todayStr={todayStr}
+            selectedDateStr={selectedDateStr}
+            onSelectDate={setSelectedDateStr}
             occurrences={occurrences}
             weekStartsOn="monday"
             onSelectEvent={handleSelectEvent}
@@ -251,6 +281,7 @@ export default function CalendarPage() {
         {viewMode === "day" && (
           <DayView
             dateStr={currentDateStr}
+            todayStr={todayStr}
             isToday={currentDateStr === todayStr}
             occurrences={occurrences}
             onSelectEvent={handleSelectEvent}

@@ -359,17 +359,25 @@ export function formatMonthYear(dateInput: string | { year: number; month: numbe
   return `${MONTH_NAMES[(dateInput.month || 1) - 1]} ${dateInput.year}`;
 }
 
+const WEEKDAY_NAMES = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
 /**
  * Formats a "YYYY-MM-DD" string into a full date display, e.g. "Wednesday, November 11, 2026".
+ * Uses deterministic month/weekday tables so SSR and client hydration never diverge across locales.
  */
 export function formatDateDisplay(dateStr: string): string {
   if (!dateStr) return "";
   const d = parseLocalDate(dateStr);
-  return d.toLocaleDateString(undefined, {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const weekday = WEEKDAY_NAMES[d.getDay()];
+  const month = MONTH_NAMES[d.getMonth()];
+  return `${weekday}, ${month} ${d.getDate()}, ${d.getFullYear()}`;
 }
 

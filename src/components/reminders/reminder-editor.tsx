@@ -64,11 +64,11 @@ export function ReminderEditor({ reminders, onChange, disabled }: ReminderEditor
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
-          <Bell className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+        <label className="flex items-center gap-1.5 text-xs font-semibold text-[var(--orbit-text)]">
+          <Bell className="h-3.5 w-3.5 text-[var(--orbit-accent)]" />
           <span>Reminders</span>
         </label>
-        <span className="text-[11px] text-slate-400">
+        <span className="text-[11px] text-[var(--orbit-text-muted)]">
           {reminders.length} configured
         </span>
       </div>
@@ -81,8 +81,8 @@ export function ReminderEditor({ reminders, onChange, disabled }: ReminderEditor
               key={reminder.id}
               className={`flex items-center justify-between rounded-xl border p-2.5 text-xs transition-colors ${
                 reminder.isActive
-                  ? "border-slate-200 bg-slate-50/70 dark:border-slate-800 dark:bg-slate-950/50 text-slate-800 dark:text-slate-200"
-                  : "border-slate-200/50 bg-slate-50/30 opacity-60 dark:border-slate-800/40 dark:bg-slate-900/30 line-through text-slate-400"
+                  ? "border-[var(--orbit-border)] bg-[var(--orbit-surface)] text-[var(--orbit-text)]"
+                  : "border-[var(--orbit-border)]/60 bg-[var(--orbit-surface)]/45 opacity-60 line-through text-[var(--orbit-text-muted)]"
               }`}
             >
               <div className="flex items-center gap-2">
@@ -90,16 +90,17 @@ export function ReminderEditor({ reminders, onChange, disabled }: ReminderEditor
                   type="button"
                   onClick={() => handleToggleActive(reminder.id)}
                   disabled={disabled}
-                  className={`flex h-4 w-4 items-center justify-center rounded border transition-colors ${
+                  aria-label={reminder.isActive ? "Disable reminder" : "Enable reminder"}
+                  className={`flex h-4 w-4 items-center justify-center rounded border transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[var(--orbit-focus-ring)] ${
                     reminder.isActive
-                      ? "border-indigo-600 bg-indigo-600 text-white"
-                      : "border-slate-300 dark:border-slate-600"
+                      ? "border-[var(--orbit-accent)] bg-[var(--orbit-accent)] text-[var(--orbit-accent-fg)]"
+                      : "border-[var(--orbit-border-strong)] bg-[var(--orbit-surface)]"
                   }`}
                   title={reminder.isActive ? "Disable reminder" : "Enable reminder"}
                 >
                   {reminder.isActive && <Check className="h-3 w-3 stroke-[3]" />}
                 </button>
-                <Clock className="h-3.5 w-3.5 text-slate-400" />
+                <Clock className="h-3.5 w-3.5 text-[var(--orbit-text-muted)]" />
                 <span className="font-medium">{reminder.label}</span>
               </div>
 
@@ -107,7 +108,8 @@ export function ReminderEditor({ reminders, onChange, disabled }: ReminderEditor
                 type="button"
                 onClick={() => handleRemove(reminder.id)}
                 disabled={disabled}
-                className="rounded-lg p-1 text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40"
+                aria-label="Remove reminder"
+                className="rounded-lg p-1.5 text-[var(--orbit-text-muted)] transition-colors hover:bg-[var(--orbit-danger-soft)] hover:text-[var(--orbit-danger)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[var(--orbit-focus-ring)]"
                 title="Remove reminder"
               >
                 <Trash2 className="h-3.5 w-3.5" />
@@ -120,10 +122,11 @@ export function ReminderEditor({ reminders, onChange, disabled }: ReminderEditor
       {/* Add New Reminder Selector */}
       <div className="flex flex-wrap items-center gap-2 pt-1">
         <select
+          aria-label="Reminder timing preset"
           value={selectedPresetIndex}
           onChange={(e) => setSelectedPresetIndex(Number(e.target.value))}
           disabled={disabled}
-          className="min-w-0 flex-1 min-h-[40px] sm:min-h-[34px] rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 focus:outline-hidden focus:border-indigo-500"
+          className="min-w-0 flex-1 min-h-[40px] sm:min-h-[34px] rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] px-3 py-1.5 text-xs text-[var(--orbit-text)] focus:outline-hidden focus:border-[var(--orbit-accent)]"
         >
           {REMINDER_PRESETS.map((preset, idx) => {
             const alreadyAdded = reminders.some(
@@ -143,7 +146,7 @@ export function ReminderEditor({ reminders, onChange, disabled }: ReminderEditor
           type="button"
           onClick={handleAddPreset}
           disabled={disabled}
-          className="inline-flex min-h-[40px] sm:min-h-[34px] shrink-0 items-center gap-1 rounded-xl bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
+          className="inline-flex min-h-[40px] sm:min-h-[34px] shrink-0 items-center gap-1 rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] px-3 py-1.5 text-xs font-semibold text-[var(--orbit-text)] transition-colors hover:border-[var(--orbit-accent)]/40 hover:bg-[var(--orbit-accent-soft)] hover:text-[var(--orbit-accent)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[var(--orbit-focus-ring)]"
         >
           <Plus className="h-3.5 w-3.5" />
           <span>Add</span>

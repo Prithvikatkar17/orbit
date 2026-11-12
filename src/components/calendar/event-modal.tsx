@@ -9,6 +9,7 @@ import { EVENT_TYPES } from "@/lib/constants";
 import { ReminderEditor, type ReminderDraft } from "@/components/reminders/reminder-editor";
 import { getLocalDateString } from "@/lib/utils/dates";
 import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
+import { Button } from "@/components/ui/button";
 
 interface EventModalProps {
   initialEvent?: Event | null;
@@ -156,26 +157,26 @@ export function EventModal({
         aria-modal="true"
         aria-labelledby="event-modal-title"
         tabIndex={-1}
-        className="max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900 scrollbar-thin"
+        className="max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-2xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] p-4 sm:p-6 shadow-2xl outline-hidden scrollbar-thin"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-          <h3 id="event-modal-title" className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <CalendarIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" aria-hidden="true" />
+        <div className="flex items-center justify-between pb-3 border-b border-[var(--orbit-border)]">
+          <h3 id="event-modal-title" className="font-display text-xl font-medium text-[var(--orbit-text)] flex items-center gap-2.5">
+            <CalendarIcon className="h-5 w-5 text-[var(--orbit-accent)]" aria-hidden="true" />
             <span>{isEditing ? "Edit Event" : "Create Event"}</span>
           </h3>
           <button
             type="button"
             aria-label="Close modal"
             onClick={onClose}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-[var(--orbit-text-muted)] transition-colors hover:bg-[var(--orbit-surface-secondary)] hover:text-[var(--orbit-text)]"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {error && (
-          <div className="mt-3 flex items-center gap-2 rounded-xl bg-rose-50 p-3 text-xs text-rose-700 dark:bg-rose-950 dark:text-rose-300">
+          <div className="mt-3 flex items-center gap-2 rounded-xl border border-[var(--orbit-danger)]/20 bg-[var(--orbit-danger-soft)] p-3 text-xs text-[var(--orbit-danger)]">
             <AlertCircle className="h-4 w-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -184,7 +185,7 @@ export function EventModal({
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           {/* Title */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <label className="block text-xs font-semibold text-[var(--orbit-text)]">
               Event Title *
             </label>
             <input
@@ -194,20 +195,20 @@ export function EventModal({
               placeholder="e.g. Maya's Birthday, Team Standup, History Assignment"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-hidden dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+              className="mt-1.5 w-full rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] px-3.5 py-2 text-xs text-[var(--orbit-text)] placeholder:text-[var(--orbit-text-muted)] focus:border-[var(--orbit-accent)] focus:outline-hidden"
             />
           </div>
 
           {/* Event Type & Date Row */}
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+              <label className="block text-xs font-semibold text-[var(--orbit-text)]">
                 Category
               </label>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as Event["type"])}
-                className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:outline-hidden dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                className="mt-1.5 w-full rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] px-3 py-2 text-xs text-[var(--orbit-text)] focus:border-[var(--orbit-accent)] focus:outline-hidden"
               >
                 {EVENT_TYPES.map((t) => (
                   <option key={t.id} value={t.id}>
@@ -218,7 +219,7 @@ export function EventModal({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+              <label className="block text-xs font-semibold text-[var(--orbit-text)]">
                 Date *
               </label>
               <input
@@ -226,24 +227,24 @@ export function EventModal({
                 required
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:outline-hidden dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                className="mt-1.5 w-full rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] px-3 py-2 text-xs text-[var(--orbit-text)] focus:border-[var(--orbit-accent)] focus:outline-hidden"
               />
             </div>
           </div>
 
           {/* Time & All-Day */}
-          <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3 dark:border-slate-800 dark:bg-slate-950/40 space-y-2.5">
+          <div className="rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface-secondary)]/60 p-3.5 space-y-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                <Clock className="h-3.5 w-3.5 text-slate-400" />
+              <span className="text-xs font-semibold text-[var(--orbit-text)] flex items-center gap-1.5">
+                <Clock className="h-3.5 w-3.5 text-[var(--orbit-text-muted)]" />
                 <span>Time of Day</span>
               </span>
-              <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-slate-600 dark:text-slate-400">
+              <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--orbit-text-muted)]">
                 <input
                   type="checkbox"
                   checked={isAllDay}
                   onChange={(e) => setIsAllDay(e.target.checked)}
-                  className="rounded text-indigo-600 focus:ring-indigo-500 h-3.5 w-3.5"
+                  className="rounded accent-[var(--orbit-accent)] h-4 w-4"
                 />
                 <span>All-day event</span>
               </label>
@@ -252,25 +253,25 @@ export function EventModal({
             {!isAllDay && (
               <div className="grid grid-cols-1 gap-3 pt-1 sm:grid-cols-2">
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                  <label className="block text-[11px] font-medium text-[var(--orbit-text-muted)]">
                     Start Time
                   </label>
                   <input
                     type="time"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-white focus:outline-hidden focus:border-indigo-500"
+                    className="mt-1 w-full rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] px-3 py-1.5 text-xs text-[var(--orbit-text)] focus:outline-hidden focus:border-[var(--orbit-accent)]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                  <label className="block text-[11px] font-medium text-[var(--orbit-text-muted)]">
                     End Time (Optional)
                   </label>
                   <input
                     type="time"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-white focus:outline-hidden focus:border-indigo-500"
+                    className="mt-1 w-full rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] px-3 py-1.5 text-xs text-[var(--orbit-text)] focus:outline-hidden focus:border-[var(--orbit-accent)]"
                   />
                 </div>
               </div>
@@ -280,13 +281,13 @@ export function EventModal({
           {/* Recurrence Configuration */}
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+              <label className="block text-xs font-semibold text-[var(--orbit-text)]">
                 Repeat
               </label>
               <select
                 value={rule}
                 onChange={(e) => setRule(e.target.value as Event["recurrence"]["rule"])}
-                className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:outline-hidden dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                className="mt-1.5 w-full rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] px-3 py-2 text-xs text-[var(--orbit-text)] focus:border-[var(--orbit-accent)] focus:outline-hidden"
               >
                 <option value="none">Does not repeat</option>
                 <option value="daily">Daily</option>
@@ -298,21 +299,21 @@ export function EventModal({
 
             {rule !== "none" && (
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <label className="block text-xs font-semibold text-[var(--orbit-text)]">
                   Ends On (Optional)
                 </label>
                 <input
                   type="date"
                   value={recurrenceEndDate}
                   onChange={(e) => setRecurrenceEndDate(e.target.value)}
-                  className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:outline-hidden dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                  className="mt-1.5 w-full rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] px-3 py-2 text-xs text-[var(--orbit-text)] focus:border-[var(--orbit-accent)] focus:outline-hidden"
                 />
               </div>
             )}
           </div>
 
           {/* Reminders Section */}
-          <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3 dark:border-slate-800 dark:bg-slate-950/40">
+          <div className="rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface-secondary)]/60 p-3.5">
             <ReminderEditor
               reminders={reminders}
               onChange={setReminders}
@@ -322,7 +323,7 @@ export function EventModal({
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <label className="block text-xs font-semibold text-[var(--orbit-text)]">
               Notes / Description (Optional)
             </label>
             <textarea
@@ -330,27 +331,29 @@ export function EventModal({
               placeholder="Location, video link, agenda, or context..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-hidden dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+              className="mt-1.5 w-full rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] px-3.5 py-2 text-xs text-[var(--orbit-text)] placeholder:text-[var(--orbit-text-muted)] focus:border-[var(--orbit-accent)] focus:outline-hidden"
             />
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
-            <button
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--orbit-border)]">
+            <Button
               type="button"
+              variant="secondary"
+              size="sm"
               onClick={onClose}
               disabled={isSubmitting}
-              className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-400 dark:hover:bg-slate-800"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
+              variant="primary"
+              size="sm"
               disabled={isSubmitting || !title.trim()}
-              className="rounded-xl bg-indigo-600 px-5 py-2 text-xs font-semibold text-white shadow-xs hover:bg-indigo-500 disabled:opacity-50 transition-colors"
             >
               {isSubmitting ? "Saving..." : isEditing ? "Save Changes" : "Create Event"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
