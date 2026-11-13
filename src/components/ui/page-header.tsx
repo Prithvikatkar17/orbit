@@ -41,7 +41,7 @@ export function PageHeader({
               </span>
             )}
             {eyebrow && (
-              <span className="text-[11px] font-semibold tracking-[0.14em] text-orbit-accent uppercase">
+              <span className="font-[family-name:var(--orbit-font-eyebrow,var(--orbit-font-sans))] text-[11px] font-semibold tracking-[var(--orbit-eyebrow-tracking,0.14em)] text-orbit-accent uppercase">
                 {eyebrow}
               </span>
             )}
@@ -49,7 +49,7 @@ export function PageHeader({
         )}
         <h1
           className={[
-            "font-display text-2xl font-semibold tracking-[-0.02em] text-orbit-text sm:text-3xl",
+            "font-display text-2xl font-semibold tracking-[var(--orbit-heading-tracking,-0.02em)] text-orbit-text sm:text-3xl",
             icon || eyebrow ? "mt-1.5" : "",
           ]
             .filter(Boolean)

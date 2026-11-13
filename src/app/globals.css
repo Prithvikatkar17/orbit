@@ -59,9 +59,19 @@
   --orbit-focus-ring: rgba(44, 94, 79, 0.38);
 
   /* Radii */
-  --orbit-radius-card: 0.875rem;
-  --orbit-radius-control: 0.625rem;
+  --orbit-radius-card: 0.75rem;
+  --orbit-radius-control: 0.5rem;
   --orbit-radius-pill: 9999px;
+
+  /* Typography Hierarchy Settings */
+  --orbit-heading-tracking: -0.02em;
+  --orbit-font-eyebrow: var(--font-geist-sans);
+  --orbit-eyebrow-tracking: 0.14em;
+
+  /* Surface Atmospheric Treatments */
+  --orbit-bg-pattern: linear-gradient(180deg, #f6f5f1 0%, #f1efe8 100%);
+  --orbit-bg-size: auto;
+  --orbit-card-blur: 0px;
 
   /* Shadows & Elevation */
   --orbit-shadow-xs: 0 1px 2px 0 rgb(38 38 33 / 0.04);
@@ -121,6 +131,16 @@
   --orbit-border-strong: #424036;
   --orbit-focus-ring: rgba(107, 179, 155, 0.45);
 
+  --orbit-radius-card: 0.75rem;
+  --orbit-radius-control: 0.5rem;
+  --orbit-radius-pill: 9999px;
+  --orbit-heading-tracking: -0.02em;
+  --orbit-font-eyebrow: var(--font-geist-sans);
+  --orbit-eyebrow-tracking: 0.14em;
+  --orbit-bg-pattern: linear-gradient(180deg, #161613 0%, #121210 100%);
+  --orbit-bg-size: auto;
+  --orbit-card-blur: 0px;
+
   --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.28);
   --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.34), 0 1px 2px -1px rgb(0 0 0 / 0.25);
   --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.62);
@@ -171,6 +191,16 @@
     --orbit-border-strong: #424036;
     --orbit-focus-ring: rgba(107, 179, 155, 0.45);
 
+    --orbit-radius-card: 0.75rem;
+    --orbit-radius-control: 0.5rem;
+    --orbit-radius-pill: 9999px;
+    --orbit-heading-tracking: -0.02em;
+    --orbit-font-eyebrow: var(--font-geist-sans);
+    --orbit-eyebrow-tracking: 0.14em;
+    --orbit-bg-pattern: linear-gradient(180deg, #161613 0%, #121210 100%);
+    --orbit-bg-size: auto;
+    --orbit-card-blur: 0px;
+
     --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.28);
     --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.34), 0 1px 2px -1px rgb(0 0 0 / 0.25);
     --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.62);
@@ -191,9 +221,24 @@
 :root[data-orbit-theme="futuristic"] {
   color-scheme: light;
 
+  /* Typography */
+  --orbit-font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --orbit-heading-tracking: 0.015em;
+  --orbit-font-eyebrow: var(--font-geist-mono), ui-monospace, monospace;
+  --orbit-eyebrow-tracking: 0.18em;
+
+  /* Radii — Precision Chassis & Tactical Controls */
+  --orbit-radius-card: 0.375rem;
+  --orbit-radius-control: 0.25rem;
+  --orbit-radius-pill: 0.25rem;
+
+  /* Background & Canvas — Technical Slate */
   --orbit-bg: #f0f4f8;
   --orbit-bg-canvas: #f0f4f8;
   --orbit-bg-subtle: #e1e8f0;
+  --orbit-bg-pattern: radial-gradient(rgba(2, 132, 199, 0.1) 1px, transparent 1px), linear-gradient(to right, rgba(203, 213, 225, 0.35) 1px, transparent 1px), linear-gradient(to bottom, rgba(203, 213, 225, 0.35) 1px, transparent 1px);
+  --orbit-bg-size: 32px 32px, 32px 32px, 32px 32px;
+  --orbit-card-blur: 8px;
 
   --orbit-surface: #ffffff;
   --orbit-surface-secondary: #eaf0f7;
@@ -223,8 +268,8 @@
   --orbit-focus-ring: rgba(2, 132, 199, 0.4);
 
   --orbit-shadow-xs: 0 1px 2px 0 rgb(15 23 42 / 0.05);
-  --orbit-shadow-card: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 8px 24px -10px rgb(2 132 199 / 0.08);
-  --orbit-shadow-elevated: 0 20px 45px -16px rgb(15 23 42 / 0.18), 0 2px 8px -2px rgb(2 132 199 / 0.08);
+  --orbit-shadow-card: 0 0 0 1px rgba(2, 132, 199, 0.12), 0 2px 6px -1px rgb(15 23 42 / 0.06);
+  --orbit-shadow-elevated: 0 0 0 1px rgba(2, 132, 199, 0.22), 0 16px 32px -8px rgb(15 23 42 / 0.14);
 
   --orbit-chart-1: #0284c7;
   --orbit-chart-2: #7c3aed;
@@ -239,9 +284,23 @@
 :root[data-orbit-theme="futuristic"] .dark {
   color-scheme: dark;
 
+  /* Typography */
+  --orbit-font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --orbit-heading-tracking: 0.015em;
+  --orbit-font-eyebrow: var(--font-geist-mono), ui-monospace, monospace;
+  --orbit-eyebrow-tracking: 0.18em;
+
+  /* Radii — Precision Chassis & Tactical Controls */
+  --orbit-radius-card: 0.375rem;
+  --orbit-radius-control: 0.25rem;
+  --orbit-radius-pill: 0.25rem;
+
   --orbit-bg: #0a0c12;
   --orbit-bg-canvas: #0a0c12;
   --orbit-bg-subtle: #121722;
+  --orbit-bg-pattern: radial-gradient(rgba(0, 240, 255, 0.12) 1px, transparent 1px), linear-gradient(to right, rgba(30, 41, 59, 0.5) 1px, transparent 1px), linear-gradient(to bottom, rgba(30, 41, 59, 0.5) 1px, transparent 1px);
+  --orbit-bg-size: 32px 32px, 32px 32px, 32px 32px;
+  --orbit-card-blur: 8px;
 
   --orbit-surface: #111624;
   --orbit-surface-secondary: #182032;
@@ -270,9 +329,9 @@
   --orbit-border-strong: #334155;
   --orbit-focus-ring: rgba(0, 240, 255, 0.45);
 
-  --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.35);
-  --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.4), 0 0 12px 0 rgb(0 240 255 / 0.05);
-  --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.7), 0 0 24px 0 rgb(0 240 255 / 0.08);
+  --orbit-shadow-xs: 0 0 0 1px rgba(0, 240, 255, 0.15);
+  --orbit-shadow-card: 0 0 0 1px rgba(0, 240, 255, 0.22), 0 0 16px -2px rgba(0, 240, 255, 0.12), 0 4px 14px 0 rgb(0 0 0 / 0.5);
+  --orbit-shadow-elevated: 0 0 0 1px rgba(0, 240, 255, 0.35), 0 0 28px 0 rgba(0, 240, 255, 0.18), 0 24px 48px -12px rgb(0 0 0 / 0.8);
 
   --orbit-chart-1: #00f0ff;
   --orbit-chart-2: #a855f7;
@@ -287,9 +346,23 @@
   :root[data-orbit-theme="futuristic"]:not(.light) {
     color-scheme: dark;
 
+    /* Typography */
+    --orbit-font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+    --orbit-heading-tracking: 0.015em;
+    --orbit-font-eyebrow: var(--font-geist-mono), ui-monospace, monospace;
+    --orbit-eyebrow-tracking: 0.18em;
+
+    /* Radii — Precision Chassis & Tactical Controls */
+    --orbit-radius-card: 0.375rem;
+    --orbit-radius-control: 0.25rem;
+    --orbit-radius-pill: 0.25rem;
+
     --orbit-bg: #0a0c12;
     --orbit-bg-canvas: #0a0c12;
     --orbit-bg-subtle: #121722;
+    --orbit-bg-pattern: radial-gradient(rgba(0, 240, 255, 0.12) 1px, transparent 1px), linear-gradient(to right, rgba(30, 41, 59, 0.5) 1px, transparent 1px), linear-gradient(to bottom, rgba(30, 41, 59, 0.5) 1px, transparent 1px);
+    --orbit-bg-size: 32px 32px, 32px 32px, 32px 32px;
+    --orbit-card-blur: 8px;
 
     --orbit-surface: #111624;
     --orbit-surface-secondary: #182032;
@@ -318,9 +391,9 @@
     --orbit-border-strong: #334155;
     --orbit-focus-ring: rgba(0, 240, 255, 0.45);
 
-    --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.35);
-    --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.4), 0 0 12px 0 rgb(0 240 255 / 0.05);
-    --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.7), 0 0 24px 0 rgb(0 240 255 / 0.08);
+    --orbit-shadow-xs: 0 0 0 1px rgba(0, 240, 255, 0.15);
+    --orbit-shadow-card: 0 0 0 1px rgba(0, 240, 255, 0.22), 0 0 16px -2px rgba(0, 240, 255, 0.12), 0 4px 14px 0 rgb(0 0 0 / 0.5);
+    --orbit-shadow-elevated: 0 0 0 1px rgba(0, 240, 255, 0.35), 0 0 28px 0 rgba(0, 240, 255, 0.18), 0 24px 48px -12px rgb(0 0 0 / 0.8);
 
     --orbit-chart-1: #00f0ff;
     --orbit-chart-2: #a855f7;
@@ -338,9 +411,23 @@
 :root[data-orbit-theme="aesthetic"] {
   color-scheme: light;
 
+  /* Typography */
+  --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
+  --orbit-heading-tracking: -0.01em;
+  --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
+  --orbit-eyebrow-tracking: 0.14em;
+
+  /* Radii — Pillowy Soft Geometry */
+  --orbit-radius-card: 1.25rem;
+  --orbit-radius-control: 0.875rem;
+  --orbit-radius-pill: 9999px;
+
   --orbit-bg: #fbf7f5;
   --orbit-bg-canvas: #fbf7f5;
   --orbit-bg-subtle: #f3ece8;
+  --orbit-bg-pattern: radial-gradient(circle at 12% 18%, rgba(212, 93, 121, 0.08) 0%, transparent 45%), radial-gradient(circle at 88% 82%, rgba(159, 122, 234, 0.08) 0%, transparent 45%), radial-gradient(circle at 50% 50%, rgba(254, 243, 199, 0.15) 0%, transparent 60%);
+  --orbit-bg-size: auto;
+  --orbit-card-blur: 12px;
 
   --orbit-surface: #ffffff;
   --orbit-surface-secondary: #f7f1ee;
@@ -369,9 +456,9 @@
   --orbit-border-strong: #dac3bc;
   --orbit-focus-ring: rgba(212, 93, 121, 0.35);
 
-  --orbit-shadow-xs: 0 1px 2px 0 rgb(52 39 41 / 0.04);
-  --orbit-shadow-card: 0 1px 3px 0 rgb(52 39 41 / 0.05), 0 8px 24px -10px rgb(212 93 121 / 0.08);
-  --orbit-shadow-elevated: 0 20px 45px -16px rgb(52 39 41 / 0.16), 0 2px 8px -2px rgb(212 93 121 / 0.06);
+  --orbit-shadow-xs: 0 2px 4px 0 rgb(212 93 121 / 0.04);
+  --orbit-shadow-card: 0 4px 20px -4px rgb(212 93 121 / 0.08), 0 1px 3px 0 rgb(52 39 41 / 0.03);
+  --orbit-shadow-elevated: 0 16px 36px -8px rgb(212 93 121 / 0.14), 0 4px 12px 0 rgb(52 39 41 / 0.04);
 
   --orbit-chart-1: #d45d79;
   --orbit-chart-2: #9f7aea;
@@ -386,9 +473,23 @@
 :root[data-orbit-theme="aesthetic"] .dark {
   color-scheme: dark;
 
+  /* Typography */
+  --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
+  --orbit-heading-tracking: -0.01em;
+  --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
+  --orbit-eyebrow-tracking: 0.14em;
+
+  /* Radii — Pillowy Soft Geometry */
+  --orbit-radius-card: 1.25rem;
+  --orbit-radius-control: 0.875rem;
+  --orbit-radius-pill: 9999px;
+
   --orbit-bg: #171315;
   --orbit-bg-canvas: #171315;
   --orbit-bg-subtle: #231c20;
+  --orbit-bg-pattern: radial-gradient(circle at 15% 15%, rgba(251, 113, 133, 0.1) 0%, transparent 50%), radial-gradient(circle at 85% 85%, rgba(192, 132, 252, 0.09) 0%, transparent 50%);
+  --orbit-bg-size: auto;
+  --orbit-card-blur: 12px;
 
   --orbit-surface: #1f191c;
   --orbit-surface-secondary: #282125;
@@ -417,9 +518,9 @@
   --orbit-border-strong: #48373f;
   --orbit-focus-ring: rgba(251, 113, 133, 0.42);
 
-  --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.36), 0 1px 2px -1px rgb(0 0 0 / 0.25);
-  --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.65);
+  --orbit-shadow-xs: 0 2px 4px 0 rgb(0 0 0 / 0.3);
+  --orbit-shadow-card: 0 4px 24px -4px rgb(251 113 133 / 0.12), 0 2px 6px 0 rgb(0 0 0 / 0.4);
+  --orbit-shadow-elevated: 0 20px 44px -8px rgb(251 113 133 / 0.18), 0 8px 16px 0 rgb(0 0 0 / 0.5);
 
   --orbit-chart-1: #fb7185;
   --orbit-chart-2: #c084fc;
@@ -434,9 +535,23 @@
   :root[data-orbit-theme="aesthetic"]:not(.light) {
     color-scheme: dark;
 
+    /* Typography */
+    --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
+    --orbit-heading-tracking: -0.01em;
+    --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
+    --orbit-eyebrow-tracking: 0.14em;
+
+    /* Radii — Pillowy Soft Geometry */
+    --orbit-radius-card: 1.25rem;
+    --orbit-radius-control: 0.875rem;
+    --orbit-radius-pill: 9999px;
+
     --orbit-bg: #171315;
     --orbit-bg-canvas: #171315;
     --orbit-bg-subtle: #231c20;
+    --orbit-bg-pattern: radial-gradient(circle at 15% 15%, rgba(251, 113, 133, 0.1) 0%, transparent 50%), radial-gradient(circle at 85% 85%, rgba(192, 132, 252, 0.09) 0%, transparent 50%);
+    --orbit-bg-size: auto;
+    --orbit-card-blur: 12px;
 
     --orbit-surface: #1f191c;
     --orbit-surface-secondary: #282125;
@@ -465,9 +580,9 @@
     --orbit-border-strong: #48373f;
     --orbit-focus-ring: rgba(251, 113, 133, 0.42);
 
-    --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-    --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.36), 0 1px 2px -1px rgb(0 0 0 / 0.25);
-    --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.65);
+    --orbit-shadow-xs: 0 2px 4px 0 rgb(0 0 0 / 0.3);
+    --orbit-shadow-card: 0 4px 24px -4px rgb(251 113 133 / 0.12), 0 2px 6px 0 rgb(0 0 0 / 0.4);
+    --orbit-shadow-elevated: 0 20px 44px -8px rgb(251 113 133 / 0.18), 0 8px 16px 0 rgb(0 0 0 / 0.5);
 
     --orbit-chart-1: #fb7185;
     --orbit-chart-2: #c084fc;
@@ -485,9 +600,23 @@
 :root[data-orbit-theme="artistic"] {
   color-scheme: light;
 
+  /* Typography */
+  --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
+  --orbit-heading-tracking: -0.015em;
+  --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
+  --orbit-eyebrow-tracking: 0.14em;
+
+  /* Radii — Craft Studio Geometry */
+  --orbit-radius-card: 0.625rem;
+  --orbit-radius-control: 0.5rem;
+  --orbit-radius-pill: 9999px;
+
   --orbit-bg: #faf6ed;
   --orbit-bg-canvas: #faf6ed;
   --orbit-bg-subtle: #f0ebdd;
+  --orbit-bg-pattern: linear-gradient(135deg, rgba(217, 119, 6, 0.04) 0%, transparent 35%, rgba(37, 99, 235, 0.03) 70%, rgba(217, 119, 6, 0.03) 100%);
+  --orbit-bg-size: auto;
+  --orbit-card-blur: 0px;
 
   --orbit-surface: #ffffff;
   --orbit-surface-secondary: #f5eee0;
@@ -516,9 +645,9 @@
   --orbit-border-strong: #d1c5ab;
   --orbit-focus-ring: rgba(217, 119, 6, 0.38);
 
-  --orbit-shadow-xs: 0 1px 2px 0 rgb(43 37 30 / 0.04);
-  --orbit-shadow-card: 0 1px 3px 0 rgb(43 37 30 / 0.05), 0 8px 24px -10px rgb(217 119 6 / 0.08);
-  --orbit-shadow-elevated: 0 20px 45px -16px rgb(43 37 30 / 0.17), 0 2px 8px -2px rgb(217 119 6 / 0.06);
+  --orbit-shadow-xs: 1px 1px 0 rgb(43 37 30 / 0.1);
+  --orbit-shadow-card: 2px 3px 0 rgb(43 37 30 / 0.08), 0 6px 18px -4px rgb(217 119 6 / 0.08);
+  --orbit-shadow-elevated: 3px 4px 0 rgb(43 37 30 / 0.12), 0 16px 36px -8px rgb(217 119 6 / 0.14);
 
   --orbit-chart-1: #d97706;
   --orbit-chart-2: #2563eb;
@@ -533,9 +662,23 @@
 :root[data-orbit-theme="artistic"] .dark {
   color-scheme: dark;
 
+  /* Typography */
+  --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
+  --orbit-heading-tracking: -0.015em;
+  --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
+  --orbit-eyebrow-tracking: 0.14em;
+
+  /* Radii — Craft Studio Geometry */
+  --orbit-radius-card: 0.625rem;
+  --orbit-radius-control: 0.5rem;
+  --orbit-radius-pill: 9999px;
+
   --orbit-bg: #181512;
   --orbit-bg-canvas: #181512;
   --orbit-bg-subtle: #231f1a;
+  --orbit-bg-pattern: linear-gradient(135deg, rgba(245, 158, 11, 0.06) 0%, transparent 40%, rgba(96, 165, 250, 0.04) 75%, rgba(245, 158, 11, 0.04) 100%);
+  --orbit-bg-size: auto;
+  --orbit-card-blur: 0px;
 
   --orbit-surface: #201c18;
   --orbit-surface-secondary: #29241f;
@@ -564,9 +707,9 @@
   --orbit-border-strong: #4d4439;
   --orbit-focus-ring: rgba(245, 158, 11, 0.45);
 
-  --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.36), 0 1px 2px -1px rgb(0 0 0 / 0.25);
-  --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.65);
+  --orbit-shadow-xs: 1px 1px 0 rgb(0 0 0 / 0.4);
+  --orbit-shadow-card: 2px 3px 0 rgb(0 0 0 / 0.35), 0 6px 20px -4px rgb(245 158 11 / 0.12);
+  --orbit-shadow-elevated: 3px 4px 0 rgb(0 0 0 / 0.5), 0 20px 40px -8px rgb(245 158 11 / 0.18);
 
   --orbit-chart-1: #f59e0b;
   --orbit-chart-2: #60a5fa;
@@ -581,9 +724,23 @@
   :root[data-orbit-theme="artistic"]:not(.light) {
     color-scheme: dark;
 
+    /* Typography */
+    --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
+    --orbit-heading-tracking: -0.015em;
+    --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
+    --orbit-eyebrow-tracking: 0.14em;
+
+    /* Radii — Craft Studio Geometry */
+    --orbit-radius-card: 0.625rem;
+    --orbit-radius-control: 0.5rem;
+    --orbit-radius-pill: 9999px;
+
     --orbit-bg: #181512;
     --orbit-bg-canvas: #181512;
     --orbit-bg-subtle: #231f1a;
+    --orbit-bg-pattern: linear-gradient(135deg, rgba(245, 158, 11, 0.06) 0%, transparent 40%, rgba(96, 165, 250, 0.04) 75%, rgba(245, 158, 11, 0.04) 100%);
+    --orbit-bg-size: auto;
+    --orbit-card-blur: 0px;
 
     --orbit-surface: #201c18;
     --orbit-surface-secondary: #29241f;
@@ -612,9 +769,9 @@
     --orbit-border-strong: #4d4439;
     --orbit-focus-ring: rgba(245, 158, 11, 0.45);
 
-    --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-    --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.36), 0 1px 2px -1px rgb(0 0 0 / 0.25);
-    --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.65);
+    --orbit-shadow-xs: 1px 1px 0 rgb(0 0 0 / 0.4);
+    --orbit-shadow-card: 2px 3px 0 rgb(0 0 0 / 0.35), 0 6px 20px -4px rgb(245 158 11 / 0.12);
+    --orbit-shadow-elevated: 3px 4px 0 rgb(0 0 0 / 0.5), 0 20px 40px -8px rgb(245 158 11 / 0.18);
 
     --orbit-chart-1: #f59e0b;
     --orbit-chart-2: #60a5fa;
@@ -632,9 +789,23 @@
 :root[data-orbit-theme="minimalist"] {
   color-scheme: light;
 
+  /* Typography — Swiss Modernist Sans */
+  --orbit-font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --orbit-heading-tracking: -0.035em;
+  --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
+  --orbit-eyebrow-tracking: 0.10em;
+
+  /* Radii — Stark Bauhaus Hairline Geometry */
+  --orbit-radius-card: 0.125rem;
+  --orbit-radius-control: 0.125rem;
+  --orbit-radius-pill: 0.125rem;
+
   --orbit-bg: #ffffff;
   --orbit-bg-canvas: #ffffff;
   --orbit-bg-subtle: #f4f4f5;
+  --orbit-bg-pattern: none;
+  --orbit-bg-size: auto;
+  --orbit-card-blur: 0px;
 
   --orbit-surface: #fafafa;
   --orbit-surface-secondary: #f4f4f5;
@@ -663,9 +834,9 @@
   --orbit-border-strong: #a3a3a3;
   --orbit-focus-ring: rgba(23, 23, 23, 0.35);
 
-  --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --orbit-shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 8px 24px -10px rgb(0 0 0 / 0.06);
-  --orbit-shadow-elevated: 0 20px 45px -16px rgb(0 0 0 / 0.16), 0 2px 8px -2px rgb(0 0 0 / 0.05);
+  --orbit-shadow-xs: none;
+  --orbit-shadow-card: none;
+  --orbit-shadow-elevated: 0 4px 16px -2px rgb(0 0 0 / 0.08);
 
   --orbit-chart-1: #171717;
   --orbit-chart-2: #525252;
@@ -680,9 +851,23 @@
 :root[data-orbit-theme="minimalist"] .dark {
   color-scheme: dark;
 
+  /* Typography — Swiss Modernist Sans */
+  --orbit-font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --orbit-heading-tracking: -0.035em;
+  --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
+  --orbit-eyebrow-tracking: 0.10em;
+
+  /* Radii — Stark Bauhaus Hairline Geometry */
+  --orbit-radius-card: 0.125rem;
+  --orbit-radius-control: 0.125rem;
+  --orbit-radius-pill: 0.125rem;
+
   --orbit-bg: #0a0a0a;
   --orbit-bg-canvas: #0a0a0a;
   --orbit-bg-subtle: #141414;
+  --orbit-bg-pattern: none;
+  --orbit-bg-size: auto;
+  --orbit-card-blur: 0px;
 
   --orbit-surface: #121212;
   --orbit-surface-secondary: #1a1a1a;
@@ -711,9 +896,9 @@
   --orbit-border-strong: #404040;
   --orbit-focus-ring: rgba(245, 245, 245, 0.45);
 
-  --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.35);
-  --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.25);
-  --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.7);
+  --orbit-shadow-xs: none;
+  --orbit-shadow-card: none;
+  --orbit-shadow-elevated: 0 4px 16px -2px rgb(0 0 0 / 0.4);
 
   --orbit-chart-1: #f5f5f5;
   --orbit-chart-2: #a3a3a3;
@@ -728,9 +913,23 @@
   :root[data-orbit-theme="minimalist"]:not(.light) {
     color-scheme: dark;
 
+    /* Typography — Swiss Modernist Sans */
+    --orbit-font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+    --orbit-heading-tracking: -0.035em;
+    --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
+    --orbit-eyebrow-tracking: 0.10em;
+
+    /* Radii — Stark Bauhaus Hairline Geometry */
+    --orbit-radius-card: 0.125rem;
+    --orbit-radius-control: 0.125rem;
+    --orbit-radius-pill: 0.125rem;
+
     --orbit-bg: #0a0a0a;
     --orbit-bg-canvas: #0a0a0a;
     --orbit-bg-subtle: #141414;
+    --orbit-bg-pattern: none;
+    --orbit-bg-size: auto;
+    --orbit-card-blur: 0px;
 
     --orbit-surface: #121212;
     --orbit-surface-secondary: #1a1a1a;
@@ -759,9 +958,9 @@
     --orbit-border-strong: #404040;
     --orbit-focus-ring: rgba(245, 245, 245, 0.45);
 
-    --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.35);
-    --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.25);
-    --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.7);
+    --orbit-shadow-xs: none;
+    --orbit-shadow-card: none;
+    --orbit-shadow-elevated: 0 4px 16px -2px rgb(0 0 0 / 0.4);
 
     --orbit-chart-1: #f5f5f5;
     --orbit-chart-2: #a3a3a3;
@@ -779,9 +978,23 @@
 :root[data-orbit-theme="naturalist"] {
   color-scheme: light;
 
+  /* Typography */
+  --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
+  --orbit-heading-tracking: -0.015em;
+  --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
+  --orbit-eyebrow-tracking: 0.14em;
+
+  /* Radii — Organic Pebble Smoothed Curves */
+  --orbit-radius-card: 1rem;
+  --orbit-radius-control: 0.75rem;
+  --orbit-radius-pill: 9999px;
+
   --orbit-bg: #f3f6f1;
   --orbit-bg-canvas: #f3f6f1;
   --orbit-bg-subtle: #e6ede2;
+  --orbit-bg-pattern: radial-gradient(circle at 8% 12%, rgba(35, 92, 59, 0.05) 0%, transparent 40%), radial-gradient(circle at 92% 88%, rgba(85, 107, 47, 0.05) 0%, transparent 45%), radial-gradient(circle at 50% 90%, rgba(35, 92, 59, 0.03) 0%, transparent 50%);
+  --orbit-bg-size: auto;
+  --orbit-card-blur: 0px;
 
   --orbit-surface: #fafcf8;
   --orbit-surface-secondary: #ebf2e7;
@@ -810,9 +1023,9 @@
   --orbit-border-strong: #bccab6;
   --orbit-focus-ring: rgba(35, 92, 59, 0.38);
 
-  --orbit-shadow-xs: 0 1px 2px 0 rgb(31 41 30 / 0.04);
-  --orbit-shadow-card: 0 1px 3px 0 rgb(31 41 30 / 0.05), 0 8px 24px -10px rgb(35 92 59 / 0.08);
-  --orbit-shadow-elevated: 0 20px 45px -16px rgb(31 41 30 / 0.17), 0 2px 8px -2px rgb(35 92 59 / 0.06);
+  --orbit-shadow-xs: 0 1px 3px 0 rgb(31 41 30 / 0.05);
+  --orbit-shadow-card: 0 3px 12px -2px rgb(35 92 59 / 0.07), 0 1px 3px 0 rgb(31 41 30 / 0.04);
+  --orbit-shadow-elevated: 0 16px 36px -8px rgb(35 92 59 / 0.14), 0 4px 12px 0 rgb(31 41 30 / 0.05);
 
   --orbit-chart-1: #235c3b;
   --orbit-chart-2: #556b2f;
@@ -827,9 +1040,23 @@
 :root[data-orbit-theme="naturalist"] .dark {
   color-scheme: dark;
 
+  /* Typography */
+  --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
+  --orbit-heading-tracking: -0.015em;
+  --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
+  --orbit-eyebrow-tracking: 0.14em;
+
+  /* Radii — Organic Pebble Smoothed Curves */
+  --orbit-radius-card: 1rem;
+  --orbit-radius-control: 0.75rem;
+  --orbit-radius-pill: 9999px;
+
   --orbit-bg: #0f140f;
   --orbit-bg-canvas: #0f140f;
   --orbit-bg-subtle: #171f17;
+  --orbit-bg-pattern: radial-gradient(circle at 10% 15%, rgba(74, 222, 128, 0.07) 0%, transparent 45%), radial-gradient(circle at 90% 85%, rgba(163, 184, 153, 0.06) 0%, transparent 45%);
+  --orbit-bg-size: auto;
+  --orbit-card-blur: 0px;
 
   --orbit-surface: #161e16;
   --orbit-surface-secondary: #1e291e;
@@ -858,9 +1085,9 @@
   --orbit-border-strong: #354c35;
   --orbit-focus-ring: rgba(74, 222, 128, 0.42);
 
-  --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.36), 0 1px 2px -1px rgb(0 0 0 / 0.25);
-  --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.65);
+  --orbit-shadow-xs: 0 1px 3px 0 rgb(0 0 0 / 0.3);
+  --orbit-shadow-card: 0 4px 16px -2px rgb(74 222 128 / 0.1), 0 2px 6px 0 rgb(0 0 0 / 0.4);
+  --orbit-shadow-elevated: 0 20px 40px -8px rgb(74 222 128 / 0.15), 0 6px 16px 0 rgb(0 0 0 / 0.5);
 
   --orbit-chart-1: #4ade80;
   --orbit-chart-2: #86efac;
@@ -875,9 +1102,23 @@
   :root[data-orbit-theme="naturalist"]:not(.light) {
     color-scheme: dark;
 
+    /* Typography */
+    --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
+    --orbit-heading-tracking: -0.015em;
+    --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
+    --orbit-eyebrow-tracking: 0.14em;
+
+    /* Radii — Organic Pebble Smoothed Curves */
+    --orbit-radius-card: 1rem;
+    --orbit-radius-control: 0.75rem;
+    --orbit-radius-pill: 9999px;
+
     --orbit-bg: #0f140f;
     --orbit-bg-canvas: #0f140f;
     --orbit-bg-subtle: #171f17;
+    --orbit-bg-pattern: radial-gradient(circle at 10% 15%, rgba(74, 222, 128, 0.07) 0%, transparent 45%), radial-gradient(circle at 90% 85%, rgba(163, 184, 153, 0.06) 0%, transparent 45%);
+    --orbit-bg-size: auto;
+    --orbit-card-blur: 0px;
 
     --orbit-surface: #161e16;
     --orbit-surface-secondary: #1e291e;
@@ -906,9 +1147,9 @@
     --orbit-border-strong: #354c35;
     --orbit-focus-ring: rgba(74, 222, 128, 0.42);
 
-    --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-    --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.36), 0 1px 2px -1px rgb(0 0 0 / 0.25);
-    --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.65);
+    --orbit-shadow-xs: 0 1px 3px 0 rgb(0 0 0 / 0.3);
+    --orbit-shadow-card: 0 4px 16px -2px rgb(74 222 128 / 0.1), 0 2px 6px 0 rgb(0 0 0 / 0.4);
+    --orbit-shadow-elevated: 0 20px 40px -8px rgb(74 222 128 / 0.15), 0 6px 16px 0 rgb(0 0 0 / 0.5);
 
     --orbit-chart-1: #4ade80;
     --orbit-chart-2: #86efac;
@@ -926,9 +1167,23 @@
 :root[data-orbit-theme="midnight"] {
   color-scheme: light;
 
+  /* Typography */
+  --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
+  --orbit-heading-tracking: 0.005em;
+  --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
+  --orbit-eyebrow-tracking: 0.16em;
+
+  /* Radii — Celestial Observatory Geometry */
+  --orbit-radius-card: 0.875rem;
+  --orbit-radius-control: 0.625rem;
+  --orbit-radius-pill: 9999px;
+
   --orbit-bg: #eef2f9;
   --orbit-bg-canvas: #eef2f9;
   --orbit-bg-subtle: #dde5f3;
+  --orbit-bg-pattern: radial-gradient(circle at 50% -10%, rgba(67, 56, 202, 0.09) 0%, transparent 55%), radial-gradient(circle at 100% 100%, rgba(2, 132, 199, 0.05) 0%, transparent 45%);
+  --orbit-bg-size: auto;
+  --orbit-card-blur: 16px;
 
   --orbit-surface: #ffffff;
   --orbit-surface-secondary: #e4ecf7;
@@ -957,9 +1212,9 @@
   --orbit-border-strong: #94a3b8;
   --orbit-focus-ring: rgba(67, 56, 202, 0.4);
 
-  --orbit-shadow-xs: 0 1px 2px 0 rgb(15 23 42 / 0.05);
-  --orbit-shadow-card: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 8px 24px -10px rgb(67 56 202 / 0.08);
-  --orbit-shadow-elevated: 0 20px 45px -16px rgb(15 23 42 / 0.18), 0 2px 8px -2px rgb(67 56 202 / 0.08);
+  --orbit-shadow-xs: 0 1px 3px 0 rgb(15 23 42 / 0.06);
+  --orbit-shadow-card: 0 4px 16px -2px rgb(67 56 202 / 0.08), 0 1px 3px 0 rgb(15 23 42 / 0.04);
+  --orbit-shadow-elevated: 0 18px 40px -8px rgb(67 56 202 / 0.16), 0 4px 12px 0 rgb(15 23 42 / 0.06);
 
   --orbit-chart-1: #4338ca;
   --orbit-chart-2: #0284c7;
@@ -974,9 +1229,23 @@
 :root[data-orbit-theme="midnight"] .dark {
   color-scheme: dark;
 
+  /* Typography */
+  --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
+  --orbit-heading-tracking: 0.005em;
+  --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
+  --orbit-eyebrow-tracking: 0.16em;
+
+  /* Radii — Celestial Observatory Geometry */
+  --orbit-radius-card: 0.875rem;
+  --orbit-radius-control: 0.625rem;
+  --orbit-radius-pill: 9999px;
+
   --orbit-bg: #0a0d18;
   --orbit-bg-canvas: #0a0d18;
   --orbit-bg-subtle: #111628;
+  --orbit-bg-pattern: radial-gradient(ellipse at 50% -15%, rgba(129, 140, 248, 0.16) 0%, transparent 60%), radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.09) 0%, transparent 50%), radial-gradient(circle at 10% 70%, rgba(99, 102, 241, 0.08) 0%, transparent 40%);
+  --orbit-bg-size: auto;
+  --orbit-card-blur: 16px;
 
   --orbit-surface: #11162b;
   --orbit-surface-secondary: #171e3a;
@@ -1005,9 +1274,9 @@
   --orbit-border-strong: #2c396c;
   --orbit-focus-ring: rgba(129, 140, 248, 0.45);
 
-  --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.35);
-  --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.4), 0 0 12px 0 rgb(129 140 248 / 0.06);
-  --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.7), 0 0 24px 0 rgb(129 140 248 / 0.08);
+  --orbit-shadow-xs: 0 0 0 1px rgba(129, 140, 248, 0.15);
+  --orbit-shadow-card: 0 0 0 1px rgba(129, 140, 248, 0.2), 0 0 20px -2px rgba(129, 140, 248, 0.16), 0 8px 24px 0 rgb(0 0 0 / 0.6);
+  --orbit-shadow-elevated: 0 0 0 1px rgba(129, 140, 248, 0.35), 0 0 36px 0 rgba(129, 140, 248, 0.22), 0 24px 56px -12px rgb(0 0 0 / 0.85);
 
   --orbit-chart-1: #818cf8;
   --orbit-chart-2: #38bdf8;
@@ -1022,9 +1291,23 @@
   :root[data-orbit-theme="midnight"]:not(.light) {
     color-scheme: dark;
 
+    /* Typography */
+    --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
+    --orbit-heading-tracking: 0.005em;
+    --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
+    --orbit-eyebrow-tracking: 0.16em;
+
+    /* Radii — Celestial Observatory Geometry */
+    --orbit-radius-card: 0.875rem;
+    --orbit-radius-control: 0.625rem;
+    --orbit-radius-pill: 9999px;
+
     --orbit-bg: #0a0d18;
     --orbit-bg-canvas: #0a0d18;
     --orbit-bg-subtle: #111628;
+    --orbit-bg-pattern: radial-gradient(ellipse at 50% -15%, rgba(129, 140, 248, 0.16) 0%, transparent 60%), radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.09) 0%, transparent 50%), radial-gradient(circle at 10% 70%, rgba(99, 102, 241, 0.08) 0%, transparent 40%);
+    --orbit-bg-size: auto;
+    --orbit-card-blur: 16px;
 
     --orbit-surface: #11162b;
     --orbit-surface-secondary: #171e3a;
@@ -1053,9 +1336,9 @@
     --orbit-border-strong: #2c396c;
     --orbit-focus-ring: rgba(129, 140, 248, 0.45);
 
-    --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.35);
-    --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.4), 0 0 12px 0 rgb(129 140 248 / 0.06);
-    --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.7), 0 0 24px 0 rgb(129 140 248 / 0.08);
+    --orbit-shadow-xs: 0 0 0 1px rgba(129, 140, 248, 0.15);
+    --orbit-shadow-card: 0 0 0 1px rgba(129, 140, 248, 0.2), 0 0 20px -2px rgba(129, 140, 248, 0.16), 0 8px 24px 0 rgb(0 0 0 / 0.6);
+    --orbit-shadow-elevated: 0 0 0 1px rgba(129, 140, 248, 0.35), 0 0 36px 0 rgba(129, 140, 248, 0.22), 0 24px 56px -12px rgb(0 0 0 / 0.85);
 
     --orbit-chart-1: #818cf8;
     --orbit-chart-2: #38bdf8;
@@ -1119,6 +1402,9 @@
 /* Base Typography & Canvas Defaults */
 body {
   background-color: var(--orbit-bg);
+  background-image: var(--orbit-bg-pattern, none);
+  background-size: var(--orbit-bg-size, auto);
+  background-attachment: fixed;
   color: var(--orbit-text);
   font-family: var(--orbit-font-sans);
 }
@@ -1127,13 +1413,67 @@ h1,
 h2,
 h3 {
   font-family: var(--orbit-font-display);
-  letter-spacing: -0.015em;
+  letter-spacing: var(--orbit-heading-tracking, -0.015em);
 }
 
 code,
 kbd,
 pre {
   font-family: var(--orbit-font-mono);
+}
+
+/* ==========================================================================
+   Personality-Specific Shell & Component Refinements
+   ========================================================================== */
+
+/* 1. Sidebar Navigation Active Indicators */
+[data-orbit-nav-item] {
+  position: relative;
+  transition: all var(--orbit-transition-fast);
+}
+
+[data-orbit-theme="futuristic"] [data-orbit-nav-item][data-active="true"] {
+  border-left: 2px solid var(--orbit-accent);
+  box-shadow: inset 3px 0 10px -2px rgba(0, 240, 255, 0.25);
+}
+
+[data-orbit-theme="archivist"] [data-orbit-nav-item][data-active="true"] {
+  border-left: 2px solid var(--orbit-accent);
+}
+
+[data-orbit-theme="minimalist"] [data-orbit-nav-item][data-active="true"] {
+  border: 1px solid var(--orbit-border-strong);
+  box-shadow: none;
+}
+
+[data-orbit-theme="aesthetic"] [data-orbit-nav-item][data-active="true"] {
+  border-radius: var(--orbit-radius-pill);
+}
+
+[data-orbit-theme="naturalist"] [data-orbit-nav-item][data-active="true"] {
+  border-left: 2px solid var(--orbit-accent);
+}
+
+[data-orbit-theme="midnight"] [data-orbit-nav-item][data-active="true"] {
+  border: 1px solid rgba(129, 140, 248, 0.3);
+  box-shadow: 0 0 12px -2px rgba(129, 140, 248, 0.25);
+}
+
+[data-orbit-theme="artistic"] [data-orbit-nav-item][data-active="true"] {
+  border-left: 3px solid var(--orbit-accent);
+}
+
+/* 2. Glassmorphic Surface Cards for Cosmic & Cybernetic Themes */
+[data-orbit-theme="futuristic"] .bg-orbit-surface-elevated,
+[data-orbit-theme="midnight"] .bg-orbit-surface-elevated {
+  backdrop-filter: blur(var(--orbit-card-blur, 8px));
+  -webkit-backdrop-filter: blur(var(--orbit-card-blur, 8px));
+}
+
+[data-orbit-theme="futuristic"] .bg-orbit-surface,
+[data-orbit-theme="midnight"] .bg-orbit-surface {
+  backdrop-filter: blur(var(--orbit-card-blur, 8px));
+  -webkit-backdrop-filter: blur(var(--orbit-card-blur, 8px));
 }
 
 /* Accessible Reduced Motion Support */

@@ -235,6 +235,8 @@ export function Sidebar() {
               <Link
                 key={item.href}
                 href={item.href}
+                data-orbit-nav-item="true"
+                data-active={active ? "true" : undefined}
                 onClick={() => {
                   if (window.innerWidth < 1024) setSidebarOpen(false);
                 }}
