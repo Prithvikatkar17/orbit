@@ -14,8 +14,11 @@ import {
   BookOpen,
   ShoppingCart,
   Paperclip,
+  ListVideo,
 } from "lucide-react";
 import type { LibraryEntry, LibraryCollection } from "@/lib/schemas";
+import { formatFriendlyDate } from "@/lib/utils/dates";
+import { SurfaceCard } from "@/components/ui/surface-card";
 
 interface LibraryCardProps {
   entry: LibraryEntry;
@@ -34,57 +37,75 @@ export function getTypeConfig(type: LibraryEntry["type"]) {
       return {
         label: "Video",
         icon: Video,
-        colorClass: "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-900/50",
+        colorClass:
+          "border-orbit-danger/20 bg-orbit-danger-soft/75 text-orbit-danger",
+        accentBorder: "var(--orbit-danger)",
       };
     case "playlist":
       return {
         label: "Playlist",
-        icon: Video,
-        colorClass: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-900/50",
+        icon: ListVideo,
+        colorClass:
+          "border-orbit-warning/25 bg-orbit-warning-soft/80 text-orbit-warning",
+        accentBorder: "var(--orbit-warning)",
       };
     case "article":
     case "read":
       return {
         label: "Article",
         icon: FileText,
-        colorClass: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900/50",
+        colorClass:
+          "border-orbit-success/25 bg-orbit-success-soft/80 text-orbit-success",
+        accentBorder: "var(--orbit-success)",
       };
     case "note":
       return {
         label: "Note",
         icon: FileText,
-        colorClass: "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-900/50",
+        colorClass:
+          "border-orbit-accent/25 bg-orbit-accent-soft text-orbit-accent",
+        accentBorder: "var(--orbit-accent)",
       };
     case "file":
       return {
         label: "File",
         icon: File,
-        colorClass: "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
+        colorClass:
+          "border-orbit-border-strong bg-orbit-surface-secondary text-orbit-text-secondary",
+        accentBorder: "var(--orbit-border-strong)",
       };
     case "listen":
       return {
         label: "Audio",
         icon: Headphones,
-        colorClass: "bg-pink-50 text-pink-700 border-pink-200 dark:bg-pink-950/40 dark:text-pink-300 dark:border-pink-900/50",
+        colorClass:
+          "border-orbit-accent-secondary/25 bg-orbit-accent-secondary-soft text-orbit-accent-secondary",
+        accentBorder: "var(--orbit-accent-secondary)",
       };
     case "learn":
       return {
         label: "Course",
         icon: BookOpen,
-        colorClass: "bg-cyan-50 text-cyan-700 border-cyan-200 dark:bg-cyan-950/40 dark:text-cyan-300 dark:border-cyan-900/50",
+        colorClass:
+          "border-orbit-accent/25 bg-orbit-accent-soft/80 text-orbit-accent",
+        accentBorder: "var(--orbit-accent)",
       };
     case "buy":
       return {
         label: "Buy",
         icon: ShoppingCart,
-        colorClass: "bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-950/40 dark:text-teal-300 dark:border-teal-900/50",
+        colorClass:
+          "border-orbit-warning/25 bg-orbit-warning-soft/75 text-orbit-warning",
+        accentBorder: "var(--orbit-warning)",
       };
     case "bookmark":
     default:
       return {
         label: "Bookmark",
         icon: Bookmark,
-        colorClass: "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border-indigo-900/50",
+        colorClass:
+          "border-orbit-accent-secondary/25 bg-orbit-accent-secondary-soft text-orbit-accent-secondary",
+        accentBorder: "var(--orbit-accent-secondary)",
       };
   }
 }
@@ -94,23 +115,23 @@ export function getStatusConfig(status: LibraryEntry["status"]) {
     case "in_progress":
       return {
         label: "In Progress",
-        badgeClass: "bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300",
+        badgeClass: "bg-orbit-accent-soft text-orbit-accent",
       };
     case "completed":
       return {
         label: "Completed",
-        badgeClass: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300",
+        badgeClass: "bg-orbit-success-soft text-orbit-success",
       };
     case "dropped":
       return {
         label: "Dropped",
-        badgeClass: "bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-400",
+        badgeClass: "bg-orbit-surface-secondary text-orbit-text-muted",
       };
     case "saved":
     default:
       return {
         label: "Saved",
-        badgeClass: "bg-slate-100 text-slate-600 dark:bg-slate-800/80 dark:text-slate-400",
+        badgeClass: "bg-orbit-subtle text-orbit-text-secondary",
       };
   }
 }
@@ -127,6 +148,7 @@ export function LibraryCard({
   const typeCfg = getTypeConfig(entry.type);
   const statusCfg = getStatusConfig(entry.status);
   const TypeIcon = typeCfg.icon;
+  const isNote = entry.type === "note";
 
   const hostname = entry.link
     ? (() => {
@@ -139,26 +161,28 @@ export function LibraryCard({
     : null;
 
   return (
-    <div
+    <SurfaceCard
+      interactive
+      padding="md"
       onClick={() => onView(entry)}
-      className="group flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-xs transition-all hover:border-indigo-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-indigo-900/60 cursor-pointer"
+      className="group flex h-full cursor-pointer flex-col justify-between transition-all hover:border-orbit-border-strong"
+      style={{ borderTop: `3px solid ${typeCfg.accentBorder}` }}
     >
       {/* Top Meta Bar */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between gap-2">
-          {/* Type Badge & Collection */}
-          <div className="flex items-center gap-1.5 flex-wrap">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex min-w-0 flex-wrap items-center gap-1.5">
             <span
-              className={`inline-flex items-center gap-1 rounded-lg border px-2 py-0.5 text-[11px] font-semibold ${typeCfg.colorClass}`}
+              className={`inline-flex items-center gap-1 rounded-orbit-control border px-2 py-0.5 text-[11px] font-semibold ${typeCfg.colorClass}`}
             >
-              <TypeIcon className="h-3 w-3" />
+              <TypeIcon className="h-3 w-3 shrink-0" />
               <span>{typeCfg.label}</span>
             </span>
 
             {collection && (
-              <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-                <span>{collection.icon || "📁"}</span>
-                <span className="truncate max-w-[100px]">{collection.name}</span>
+              <span className="inline-flex max-w-[140px] items-center gap-1 rounded-orbit-control bg-orbit-surface-secondary px-2 py-0.5 text-[11px] font-medium text-orbit-text-secondary">
+                <span aria-hidden="true">{collection.icon || "📁"}</span>
+                <span className="truncate">{collection.name}</span>
               </span>
             )}
           </div>
@@ -170,35 +194,42 @@ export function LibraryCard({
               e.stopPropagation();
               onToggleFavorite(entry.id, entry.isFavorite);
             }}
-            className={`rounded-lg p-1.5 transition-colors ${
+            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-orbit-control transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-ring ${
               entry.isFavorite
-                ? "text-amber-500 hover:text-amber-600 bg-amber-50 dark:bg-amber-950/40"
-                : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+                ? "bg-orbit-warning-soft text-orbit-warning"
+                : "text-orbit-text-muted hover:bg-orbit-surface-secondary hover:text-orbit-text"
             }`}
             title={entry.isFavorite ? "Remove from favourites" : "Add to favourites"}
-            aria-label="Toggle favourite"
+            aria-label={entry.isFavorite ? "Remove from favourites" : "Add to favourites"}
+            aria-pressed={entry.isFavorite}
           >
             <Star
-              className={`h-4 w-4 ${entry.isFavorite ? "fill-amber-500" : ""}`}
+              className={`h-4 w-4 ${entry.isFavorite ? "fill-current" : ""}`}
             />
           </button>
         </div>
 
         {/* Title */}
-        <h3 className="text-sm font-bold text-slate-900 dark:text-white line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+        <h3 className="font-display text-base font-semibold leading-snug text-orbit-text line-clamp-2 [overflow-wrap:anywhere] group-hover:text-orbit-accent transition-colors">
           {entry.title}
         </h3>
 
-        {/* Notes preview */}
+        {/* Notes preview (editorial excerpt style for standalone notes) */}
         {entry.notes && (
-          <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+          <p
+            className={`text-xs leading-relaxed text-orbit-text-secondary line-clamp-2 [overflow-wrap:anywhere] ${
+              isNote
+                ? "border-l-2 border-orbit-accent/35 pl-2.5 italic"
+                : ""
+            }`}
+          >
             {entry.notes}
           </p>
         )}
 
         {/* External Link or File indicator */}
         {entry.link && (
-          <div className="pt-0.5">
+          <div className="min-w-0 pt-0.5">
             <a
               href={entry.link}
               target="_blank"
@@ -207,7 +238,7 @@ export function LibraryCard({
                 e.stopPropagation();
                 onView(entry);
               }}
-              className="inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-600 hover:underline dark:text-indigo-400 truncate max-w-full"
+              className="inline-flex max-w-full items-center gap-1.5 font-mono text-[11px] font-medium text-orbit-accent hover:underline"
             >
               <ExternalLink className="h-3 w-3 shrink-0" />
               <span className="truncate">{hostname || entry.link}</span>
@@ -216,52 +247,62 @@ export function LibraryCard({
         )}
 
         {entry.fileMetadata && (
-          <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-            <Paperclip className="h-3 w-3 text-slate-400" />
-            <span className="truncate">{entry.fileMetadata.fileName}</span>
-            <span className="text-[10px] text-slate-400">
-              ({(entry.fileMetadata.fileSize / 1024).toFixed(0)} KB)
+          <div className="flex min-w-0 items-center gap-1.5 rounded-lg bg-orbit-surface-secondary/70 px-2.5 py-1.5 text-[11px] text-orbit-text-secondary">
+            <Paperclip className="h-3 w-3 shrink-0 text-orbit-text-muted" />
+            <span className="truncate font-medium">{entry.fileMetadata.fileName}</span>
+            <span className="shrink-0 font-mono text-[10px] text-orbit-text-muted tabular-nums">
+              {(entry.fileMetadata.fileSize / 1024).toFixed(0)} KB
             </span>
           </div>
         )}
 
         {/* Tags */}
         {entry.tags && entry.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 pt-1">
-            {entry.tags.map((tag) => (
+          <div className="flex flex-wrap gap-1 pt-0.5">
+            {entry.tags.slice(0, 4).map((tag) => (
               <span
                 key={tag}
-                className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                className="rounded-md bg-orbit-surface-secondary px-1.5 py-0.5 text-[10px] font-medium text-orbit-text-secondary [overflow-wrap:anywhere]"
               >
                 #{tag}
               </span>
             ))}
+            {entry.tags.length > 4 && (
+              <span className="px-1 py-0.5 font-mono text-[10px] text-orbit-text-muted">
+                +{entry.tags.length - 4}
+              </span>
+            )}
           </div>
         )}
       </div>
 
       {/* Bottom Footer Action Bar */}
-      <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
-        {/* Status Dropdown / Cycle button */}
-        <select
-          value={entry.status}
-          onClick={(e) => e.stopPropagation()}
-          onChange={(e) => {
-            e.stopPropagation();
-            onStatusChange(entry.id, e.target.value as LibraryEntry["status"]);
-          }}
-          className={`rounded-lg px-2 py-1 text-[11px] font-semibold border-0 cursor-pointer focus:outline-hidden ${statusCfg.badgeClass}`}
-        >
-          <option value="saved">Saved</option>
-          <option value="in_progress">In Progress</option>
-          <option value="completed">Completed</option>
-          <option value="dropped">Dropped</option>
-        </select>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-orbit-border pt-3 text-xs">
+        <div className="flex items-center gap-2">
+          <select
+            aria-label="Reading or watching progress"
+            value={entry.status}
+            onClick={(e) => e.stopPropagation()}
+            onChange={(e) => {
+              e.stopPropagation();
+              onStatusChange(entry.id, e.target.value as LibraryEntry["status"]);
+            }}
+            className={`min-h-[32px] cursor-pointer rounded-orbit-control border-0 px-2 py-1 text-[11px] font-semibold focus:outline-hidden focus:ring-2 focus:ring-orbit-ring ${statusCfg.badgeClass}`}
+          >
+            <option value="saved">Saved</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="dropped">Dropped</option>
+          </select>
 
-        {/* Action icons */}
-        <div className="flex items-center gap-1">
+          <span className="font-mono text-[10px] text-orbit-text-muted tabular-nums">
+            {formatFriendlyDate(entry.createdAt.slice(0, 10))}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-0.5">
           {entry.rating && (
-            <span className="mr-1 text-[11px] font-bold text-amber-500 flex items-center gap-0.5">
+            <span className="mr-1.5 font-mono text-[11px] font-semibold text-orbit-warning tabular-nums">
               ★ {entry.rating}
             </span>
           )}
@@ -272,8 +313,9 @@ export function LibraryCard({
               e.stopPropagation();
               onEdit(entry);
             }}
-            className="rounded-lg p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="flex h-9 w-9 items-center justify-center rounded-orbit-control text-orbit-text-muted transition-colors hover:bg-orbit-surface-secondary hover:text-orbit-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-ring"
             title="Edit resource"
+            aria-label="Edit resource"
           >
             <Edit2 className="h-3.5 w-3.5" />
           </button>
@@ -284,13 +326,14 @@ export function LibraryCard({
               e.stopPropagation();
               onDelete(entry.id);
             }}
-            className="rounded-lg p-1.5 text-slate-400 hover:text-rose-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="flex h-9 w-9 items-center justify-center rounded-orbit-control text-orbit-text-muted transition-colors hover:bg-orbit-danger-soft hover:text-orbit-danger focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-ring"
             title="Delete resource"
+            aria-label="Delete resource"
           >
             <Trash2 className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>
-    </div>
+    </SurfaceCard>
   );
 }

@@ -14,6 +14,7 @@ import {
 } from "@/lib/schemas";
 import { deleteLibraryCollectionAndCleanReferences } from "@/lib/services/library-service";
 import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
+import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface LibraryCollectionModalProps {
@@ -117,26 +118,26 @@ export function LibraryCollectionModal({
         aria-modal="true"
         aria-labelledby="library-collection-modal-title"
         tabIndex={-1}
-        className="w-full max-w-md max-h-[90dvh] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900"
+        className="w-full max-w-md max-h-[90dvh] overflow-y-auto rounded-2xl border border-orbit-border bg-orbit-surface p-4 sm:p-6 shadow-orbit-elevated outline-hidden"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-          <h3 id="library-collection-modal-title" className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <FolderPlus className="h-5 w-5 text-indigo-600 dark:text-indigo-400" aria-hidden="true" />
+        <div className="flex items-center justify-between pb-3 border-b border-orbit-border">
+          <h3 id="library-collection-modal-title" className="font-display text-xl font-medium text-orbit-text flex items-center gap-2">
+            <FolderPlus className="h-5 w-5 text-orbit-accent" aria-hidden="true" />
             <span>{isEditing ? "Edit Collection" : "Create Collection"}</span>
           </h3>
           <button
             type="button"
             aria-label="Close modal"
             onClick={onClose}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
+            className="flex h-10 w-10 items-center justify-center rounded-orbit-control text-orbit-text-muted transition-colors hover:bg-orbit-surface-secondary hover:text-orbit-text"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {error && (
-          <div className="mt-3 flex items-center gap-2 rounded-xl bg-rose-50 p-3 text-xs text-rose-700 dark:bg-rose-950 dark:text-rose-300">
+          <div className="mt-3 flex items-center gap-2 rounded-orbit-control border border-orbit-danger/20 bg-orbit-danger-soft p-3 text-xs text-orbit-danger">
             <AlertCircle className="h-4 w-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -145,7 +146,7 @@ export function LibraryCollectionModal({
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           {/* Collection Name */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <label className="block text-xs font-semibold text-orbit-text">
               Collection Name *
             </label>
             <input
@@ -155,13 +156,13 @@ export function LibraryCollectionModal({
               placeholder="e.g. Computer Science, Recipes, Reading List"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-hidden dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+              className="mt-1.5 w-full rounded-orbit-control border border-orbit-border bg-orbit-surface px-3.5 py-2 text-xs text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:outline-hidden"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <label className="block text-xs font-semibold text-orbit-text">
               Description (Optional)
             </label>
             <input
@@ -169,13 +170,13 @@ export function LibraryCollectionModal({
               placeholder="Short description of this collection"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-hidden dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+              className="mt-1.5 w-full rounded-orbit-control border border-orbit-border bg-orbit-surface px-3.5 py-2 text-xs text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:outline-hidden"
             />
           </div>
 
           {/* Icon Picker */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <label className="block text-xs font-semibold text-orbit-text">
               Icon
             </label>
             <div className="mt-1.5 flex flex-wrap gap-2">
@@ -184,10 +185,10 @@ export function LibraryCollectionModal({
                   key={em}
                   type="button"
                   onClick={() => setIcon(em)}
-                  className={`flex h-8 w-8 items-center justify-center rounded-lg text-base transition-transform ${
+                  className={`flex h-9 w-9 items-center justify-center rounded-orbit-control text-base transition-transform ${
                     icon === em
-                      ? "ring-2 ring-indigo-500 bg-indigo-50 dark:bg-indigo-950/60 scale-110"
-                      : "hover:bg-slate-100 dark:hover:bg-slate-800"
+                      ? "ring-2 ring-orbit-accent bg-orbit-accent-soft scale-105"
+                      : "hover:bg-orbit-surface-secondary"
                   }`}
                 >
                   {em}
@@ -198,7 +199,7 @@ export function LibraryCollectionModal({
 
           {/* Color Picker */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <label className="block text-xs font-semibold text-orbit-text">
               Accent Color
             </label>
             <div className="mt-1.5 flex flex-wrap items-center gap-2.5">
@@ -210,7 +211,7 @@ export function LibraryCollectionModal({
                   style={{ backgroundColor: c }}
                   className={`h-8 w-8 sm:h-6 sm:w-6 rounded-full transition-transform ${
                     color === c
-                      ? "ring-2 ring-offset-2 ring-slate-900 dark:ring-white scale-110"
+                      ? "ring-2 ring-offset-2 ring-orbit-text scale-110"
                       : "opacity-80 hover:opacity-100"
                   }`}
                 />
@@ -219,35 +220,38 @@ export function LibraryCollectionModal({
           </div>
 
           {/* Modal Footer Actions */}
-          <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex items-center justify-between pt-3 border-t border-orbit-border">
             {isEditing ? (
-              <button
+              <Button
                 type="button"
+                variant="danger"
+                size="sm"
+                icon={<Trash2 className="h-3.5 w-3.5" />}
                 onClick={() => setShowDeleteConfirm(true)}
-                className="flex items-center gap-1 rounded-xl px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/40"
               >
-                <Trash2 className="h-3.5 w-3.5" />
-                <span>Delete</span>
-              </button>
+                Delete
+              </Button>
             ) : (
               <div />
             )}
 
             <div className="flex items-center gap-2">
-              <button
+              <Button
                 type="button"
+                variant="secondary"
+                size="sm"
                 onClick={onClose}
-                className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
+                variant="primary"
+                size="sm"
                 disabled={isSubmitting || !name.trim()}
-                className="rounded-xl bg-indigo-600 px-5 py-2 text-xs font-semibold text-white shadow-xs hover:bg-indigo-500 disabled:opacity-50"
               >
                 {isSubmitting ? "Saving..." : isEditing ? "Save" : "Create"}
-              </button>
+              </Button>
             </div>
           </div>
         </form>

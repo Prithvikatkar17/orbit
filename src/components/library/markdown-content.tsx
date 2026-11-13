@@ -35,7 +35,7 @@ function renderInlineMarkdown(text: string): React.ReactNode[] {
             href={isSafe ? url : "#"}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-0.5 text-indigo-600 hover:underline dark:text-indigo-400 font-medium"
+            className="inline-flex items-center gap-0.5 text-orbit-accent hover:underline font-medium"
             onClick={(e) => e.stopPropagation()}
           >
             <span>{label}</span>
@@ -50,7 +50,7 @@ function renderInlineMarkdown(text: string): React.ReactNode[] {
       return (
         <code
           key={idx}
-          className="rounded-md bg-slate-100 px-1.5 py-0.5 font-mono text-[11px] text-indigo-700 dark:bg-slate-800 dark:text-indigo-300"
+          className="rounded-md bg-orbit-surface-secondary px-1.5 py-0.5 font-mono text-[11px] text-orbit-accent"
         >
           {part.slice(1, -1)}
         </code>
@@ -63,7 +63,7 @@ function renderInlineMarkdown(text: string): React.ReactNode[] {
       (part.startsWith("__") && part.endsWith("__") && part.length > 4)
     ) {
       return (
-        <strong key={idx} className="font-bold text-slate-900 dark:text-white">
+        <strong key={idx} className="font-bold text-orbit-text">
           {part.slice(2, -2)}
         </strong>
       );
@@ -75,7 +75,7 @@ function renderInlineMarkdown(text: string): React.ReactNode[] {
       (part.startsWith("_") && part.endsWith("_") && part.length > 2)
     ) {
       return (
-        <em key={idx} className="italic text-slate-800 dark:text-slate-200">
+        <em key={idx} className="italic text-orbit-text">
           {part.slice(1, -1)}
         </em>
       );
@@ -131,10 +131,10 @@ export function MarkdownContent({ content, className = "" }: MarkdownContentProp
           blocks.push(
             <div
               key={`code-${i}`}
-              className="my-3 overflow-x-auto rounded-xl border border-slate-200 bg-slate-900 p-3.5 font-mono text-xs text-slate-100 dark:border-slate-800"
+              className="my-3 overflow-x-auto rounded-orbit-card border border-orbit-border bg-orbit-surface-secondary p-3.5 font-mono text-xs text-orbit-text"
             >
               {codeLanguage && (
-                <div className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                <div className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-orbit-text-muted">
                   {codeLanguage}
                 </div>
               )}
@@ -163,7 +163,7 @@ export function MarkdownContent({ content, className = "" }: MarkdownContentProp
       // Horizontal Rule: --- or ***
       if (/^(\-{3,}|\*{3,})$/.test(trimmed)) {
         flushList(i);
-        blocks.push(<hr key={`hr-${i}`} className="my-4 border-slate-200 dark:border-slate-800" />);
+        blocks.push(<hr key={`hr-${i}`} className="my-4 border-orbit-border" />);
         continue;
       }
 
@@ -171,7 +171,7 @@ export function MarkdownContent({ content, className = "" }: MarkdownContentProp
       if (trimmed.startsWith("# ")) {
         flushList(i);
         blocks.push(
-          <h1 key={`h1-${i}`} className="mt-4 mb-2 text-lg font-bold text-slate-900 dark:text-white">
+          <h1 key={`h1-${i}`} className="mt-4 mb-2 font-display text-lg font-semibold text-orbit-text">
             {renderInlineMarkdown(trimmed.slice(2))}
           </h1>
         );
@@ -181,7 +181,7 @@ export function MarkdownContent({ content, className = "" }: MarkdownContentProp
       if (trimmed.startsWith("## ")) {
         flushList(i);
         blocks.push(
-          <h2 key={`h2-${i}`} className="mt-3.5 mb-1.5 text-base font-bold text-slate-900 dark:text-white">
+          <h2 key={`h2-${i}`} className="mt-3.5 mb-1.5 font-display text-base font-semibold text-orbit-text">
             {renderInlineMarkdown(trimmed.slice(3))}
           </h2>
         );
@@ -191,7 +191,7 @@ export function MarkdownContent({ content, className = "" }: MarkdownContentProp
       if (trimmed.startsWith("### ")) {
         flushList(i);
         blocks.push(
-          <h3 key={`h3-${i}`} className="mt-3 mb-1 text-sm font-bold text-slate-900 dark:text-white">
+          <h3 key={`h3-${i}`} className="mt-3 mb-1 font-display text-sm font-semibold text-orbit-text">
             {renderInlineMarkdown(trimmed.slice(4))}
           </h3>
         );
@@ -201,7 +201,7 @@ export function MarkdownContent({ content, className = "" }: MarkdownContentProp
       if (trimmed.startsWith("#### ")) {
         flushList(i);
         blocks.push(
-          <h4 key={`h4-${i}`} className="mt-2 mb-1 text-xs font-bold text-slate-900 dark:text-white">
+          <h4 key={`h4-${i}`} className="mt-2 mb-1 text-xs font-bold text-orbit-text">
             {renderInlineMarkdown(trimmed.slice(5))}
           </h4>
         );
@@ -214,7 +214,7 @@ export function MarkdownContent({ content, className = "" }: MarkdownContentProp
         blocks.push(
           <blockquote
             key={`quote-${i}`}
-            className="my-2.5 border-l-3 border-indigo-500 bg-indigo-50/40 py-1.5 pl-3 pr-2 text-xs italic text-slate-700 dark:bg-indigo-950/20 dark:text-slate-300 rounded-r-lg"
+            className="my-2.5 border-l-3 border-orbit-accent bg-orbit-accent-soft/35 py-1.5 pl-3 pr-2 text-xs italic text-orbit-text-secondary rounded-r-lg"
           >
             {renderInlineMarkdown(trimmed.slice(2))}
           </blockquote>
@@ -230,12 +230,12 @@ export function MarkdownContent({ content, className = "" }: MarkdownContentProp
         blocks.push(
           <div key={`task-${i}`} className="my-1.5 flex items-center gap-2 text-xs">
             {isChecked ? (
-              <CheckSquare className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <CheckSquare className="h-4 w-4 text-orbit-success shrink-0" />
             ) : (
-              <Square className="h-4 w-4 text-slate-400 shrink-0" />
+              <Square className="h-4 w-4 text-orbit-text-muted shrink-0" />
             )}
             <span
-              className={isChecked ? "line-through text-slate-400 dark:text-slate-500" : "text-slate-800 dark:text-slate-200"}
+              className={isChecked ? "line-through text-orbit-text-muted" : "text-orbit-text"}
             >
               {renderInlineMarkdown(textContent)}
             </span>
@@ -248,7 +248,7 @@ export function MarkdownContent({ content, className = "" }: MarkdownContentProp
       if (/^[\*\-]\s+/.test(trimmed)) {
         isOrderedList = false;
         listItems.push(
-          <li key={`li-${i}`} className="leading-relaxed text-slate-700 dark:text-slate-300">
+          <li key={`li-${i}`} className="leading-relaxed text-orbit-text-secondary">
             {renderInlineMarkdown(trimmed.replace(/^[\*\-]\s+/, ""))}
           </li>
         );
@@ -259,7 +259,7 @@ export function MarkdownContent({ content, className = "" }: MarkdownContentProp
       if (/^\d+\.\s+/.test(trimmed)) {
         isOrderedList = true;
         listItems.push(
-          <li key={`li-${i}`} className="leading-relaxed text-slate-700 dark:text-slate-300">
+          <li key={`li-${i}`} className="leading-relaxed text-orbit-text-secondary">
             {renderInlineMarkdown(trimmed.replace(/^\d+\.\s+/, ""))}
           </li>
         );
@@ -275,7 +275,7 @@ export function MarkdownContent({ content, className = "" }: MarkdownContentProp
       // Regular paragraph line
       flushList(i);
       blocks.push(
-        <p key={`p-${i}`} className="my-1.5 text-xs text-slate-800 dark:text-slate-200 leading-relaxed">
+        <p key={`p-${i}`} className="my-1.5 text-xs text-orbit-text-secondary leading-relaxed">
           {renderInlineMarkdown(line)}
         </p>
       );
@@ -288,7 +288,7 @@ export function MarkdownContent({ content, className = "" }: MarkdownContentProp
       blocks.push(
         <div
           key="code-unclosed"
-          className="my-3 overflow-x-auto rounded-xl border border-slate-200 bg-slate-900 p-3.5 font-mono text-xs text-slate-100 dark:border-slate-800"
+          className="my-3 overflow-x-auto rounded-orbit-card border border-orbit-border bg-orbit-surface-secondary p-3.5 font-mono text-xs text-orbit-text"
         >
           <pre className="text-xs leading-relaxed">
             <code>{codeLines.join("\n")}</code>

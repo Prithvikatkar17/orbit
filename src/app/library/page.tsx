@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useCallback, Suspense } from "react";
+import React, { useState, useMemo, useCallback, useSyncExternalStore, Suspense } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   BookOpen,
@@ -15,23 +15,60 @@ import {
   GraduationCap,
   FileText,
   X,
+  Edit2,
 } from "lucide-react";
 import { db } from "@/lib/db/client";
 import type { LibraryEntry, LibraryCollection } from "@/lib/schemas";
 import { deleteLibraryEntryWithFiles } from "@/lib/services/library-service";
 import { useMounted } from "@/lib/utils/dates";
-import { LibraryCard } from "@/components/library/library-card";
+import { LibraryCard, getTypeConfig } from "@/components/library/library-card";
 import { LibraryRow } from "@/components/library/library-row";
 import { LibraryEntryModal } from "@/components/library/library-entry-modal";
 import { LibraryCollectionModal } from "@/components/library/library-collection-modal";
 import { LibraryDetailModal } from "@/components/library/library-detail-modal";
 import { DeepLinkListener } from "@/components/common/deep-link-listener";
 import {
+  Badge,
   Button,
   ConfirmDialog,
   EmptyState,
   PageHeader,
+  SurfaceCard,
 } from "@/components/ui";
+
+const VIEW_MODE_STORAGE_KEY = "orbit-library-view-mode";
+const VIEW_MODE_EVENT = "orbit-library-view-mode-change";
+
+function subscribeViewMode(callback: () => void) {
+  window.addEventListener("storage", callback);
+  window.addEventListener(VIEW_MODE_EVENT, callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener(VIEW_MODE_EVENT, callback);
+  };
+}
+
+function getStoredViewMode(): ViewMode {
+  try {
+    const saved = window.localStorage.getItem(VIEW_MODE_STORAGE_KEY);
+    if (saved === "grid" || saved === "list") return saved;
+  } catch {
+    // Ignore storage errors
+  }
+  return "grid";
+}
+
+const LIBRARY_CATEGORY_TABS: Array<{ id: string; label: string }> = [
+  { id: "all", label: "All" },
+  { id: "bookmark", label: "Bookmarks" },
+  { id: "article", label: "Articles" },
+  { id: "video", label: "Videos" },
+  { id: "playlist", label: "Playlists" },
+  { id: "note", label: "Notes" },
+  { id: "file", label: "Files" },
+  { id: "learn", label: "Courses" },
+  { id: "listen", label: "Audio" },
+];
 
 type ViewMode = "grid" | "list";
 type SortOption = "recent" | "viewed" | "alpha" | "rating";
@@ -62,14 +99,27 @@ export default function LibraryPage() {
     return map;
   }, [collections]);
 
-  // UI state
-  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  // UI state (persist viewMode preference safely via useSyncExternalStore)
+  const viewMode = useSyncExternalStore<ViewMode>(
+    subscribeViewMode,
+    getStoredViewMode,
+    () => "grid"
+  );
   const [activeSection, setActiveSection] = useState<ActiveSection>("overview");
   const [selectedCollectionId, setSelectedCollectionId] = useState<string>("all");
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("recent");
+
+  function handleViewModeChange(next: ViewMode) {
+    try {
+      window.localStorage.setItem(VIEW_MODE_STORAGE_KEY, next);
+      window.dispatchEvent(new Event(VIEW_MODE_EVENT));
+    } catch {
+      // Ignore storage errors
+    }
+  }
 
   // Delete confirmation state
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
@@ -125,18 +175,22 @@ export default function LibraryPage() {
     [viewingEntryId, entries]
   );
 
-  // Derived metrics
+  // Derived metrics & per-collection counts
   const counts = useMemo(() => {
     let favorites = 0;
     let inProgress = 0;
     let completed = 0;
     let viewed = 0;
+    const byCollection = new Map<string, number>();
 
     entries.forEach((e) => {
       if (e.isFavorite) favorites++;
       if (e.status === "in_progress") inProgress++;
       if (e.status === "completed") completed++;
       if (e.lastViewedAt) viewed++;
+      if (e.collectionId) {
+        byCollection.set(e.collectionId, (byCollection.get(e.collectionId) || 0) + 1);
+      }
     });
 
     return {
@@ -145,8 +199,17 @@ export default function LibraryPage() {
       inProgress,
       completed,
       viewed,
+      byCollection,
     };
   }, [entries]);
+
+  const selectedCollection = useMemo(
+    () =>
+      selectedCollectionId !== "all"
+        ? collectionsMap.get(selectedCollectionId) || null
+        : null,
+    [selectedCollectionId, collectionsMap]
+  );
 
   // Overview groups (for dashboard view)
   const continueLearningItems = useMemo(
@@ -368,110 +431,88 @@ export default function LibraryPage() {
         }
       />
 
-      {/* Top Metric Cards */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <button
-          type="button"
-          onClick={() => setActiveSection("all")}
-          className={`rounded-2xl border p-4 text-left shadow-xs transition-all ${
-            activeSection === "all"
-              ? "border-indigo-600 bg-indigo-50/40 dark:bg-indigo-950/30 ring-2 ring-indigo-500/20"
-              : "border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900"
-          }`}
-        >
-          <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
-            Total Resources
+      {/* Editorial Archive Summary & Quick Filter Strip */}
+      <SurfaceCard variant="tonal" padding="sm">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-1.5">
+            {(
+              [
+                { id: "overview", label: "Curated Shelf", count: null },
+                { id: "all", label: "All Resources", count: counts.total },
+                { id: "learning", label: "In Progress", count: counts.inProgress },
+                { id: "favorites", label: "Favourites", count: counts.favorites },
+              ] as const
+            ).map((tab) => {
+              const isSelected = activeSection === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveSection(tab.id)}
+                  className={`inline-flex min-h-[38px] items-center gap-2 rounded-orbit-control px-3 py-1.5 text-xs font-semibold transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-ring ${
+                    isSelected
+                      ? "bg-orbit-surface text-orbit-text shadow-orbit-xs"
+                      : "text-orbit-text-secondary hover:bg-orbit-surface/60 hover:text-orbit-text"
+                  }`}
+                >
+                  <span>{tab.label}</span>
+                  {tab.count !== null && (
+                    <span className="font-mono text-[11px] text-orbit-text-muted tabular-nums">
+                      {tab.count}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
-          <div className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">
-            {counts.total}
-          </div>
-        </button>
 
-        <button
-          type="button"
-          onClick={() => setActiveSection("learning")}
-          className={`rounded-2xl border p-4 text-left shadow-xs transition-all ${
-            activeSection === "learning"
-              ? "border-indigo-600 bg-indigo-50/40 dark:bg-indigo-950/30 ring-2 ring-indigo-500/20"
-              : "border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900"
-          }`}
-        >
-          <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
-            Continue Learning
-          </div>
-          <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
-              {counts.inProgress}
-            </span>
-            <span className="text-xs text-slate-400">in progress</span>
-          </div>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveSection("favorites")}
-          className={`rounded-2xl border p-4 text-left shadow-xs transition-all ${
-            activeSection === "favorites"
-              ? "border-amber-500 bg-amber-50/40 dark:bg-amber-950/30 ring-2 ring-amber-500/20"
-              : "border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900"
-          }`}
-        >
-          <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
-            Favourites
-          </div>
-          <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-amber-500">
-              {counts.favorites}
-            </span>
-            <span className="text-xs text-slate-400">starred</span>
-          </div>
-        </button>
-
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-          <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
-            Completed
-          </div>
-          <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-              {counts.completed}
-            </span>
-            <span className="text-xs text-slate-400">finished</span>
+          <div className="flex items-center gap-3 font-mono text-[11px] text-orbit-text-muted tabular-nums">
+            <span>{counts.completed} completed</span>
+            <span aria-hidden="true">·</span>
+            <span>{collections.length} {collections.length === 1 ? "collection" : "collections"}</span>
           </div>
         </div>
-      </div>
+      </SurfaceCard>
 
-      {/* Control Toolbar: Collections, Search, Filters, Sorting, and View Toggle */}
-      <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-        {/* Collections Tab Bar */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none border-b border-slate-100 dark:border-slate-800/80">
+      {/* Control Toolbar: Collections, Categories, Search, Filters, Sorting, and View Toggle */}
+      <SurfaceCard padding="sm" className="space-y-3">
+        {/* Collections Shelf Bar */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden border-b border-orbit-border/70">
           <button
             type="button"
             onClick={() => setSelectedCollectionId("all")}
-            className={`rounded-xl px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition-all ${
+            className={`min-h-[36px] shrink-0 rounded-orbit-control px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition-all ${
               selectedCollectionId === "all"
-                ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs"
-                : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                ? "bg-orbit-text text-orbit-bg shadow-orbit-xs"
+                : "text-orbit-text-secondary hover:bg-orbit-surface-secondary hover:text-orbit-text"
             }`}
           >
             All Collections
           </button>
 
           {mounted &&
-            collections.map((col) => (
-              <button
-                key={col.id}
-                type="button"
-                onClick={() => setSelectedCollectionId(col.id)}
-                className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition-all ${
-                  selectedCollectionId === col.id
-                    ? "bg-indigo-600 text-white shadow-xs"
-                    : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
-                }`}
-              >
-                <span>{col.icon || "📁"}</span>
-                <span>{col.name}</span>
-              </button>
-            ))}
+            collections.map((col) => {
+              const colCount = counts.byCollection.get(col.id) || 0;
+              const isSelected = selectedCollectionId === col.id;
+              return (
+                <button
+                  key={col.id}
+                  type="button"
+                  onClick={() => setSelectedCollectionId(col.id)}
+                  className={`inline-flex min-h-[36px] shrink-0 items-center gap-1.5 rounded-orbit-control border px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition-all ${
+                    isSelected
+                      ? "border-orbit-accent/30 bg-orbit-accent-soft text-orbit-accent shadow-orbit-xs"
+                      : "border-transparent text-orbit-text-secondary hover:bg-orbit-surface-secondary hover:text-orbit-text"
+                  }`}
+                >
+                  <span aria-hidden="true">{col.icon || "📁"}</span>
+                  <span>{col.name}</span>
+                  <span className="font-mono text-[10px] opacity-75 tabular-nums">
+                    {colCount}
+                  </span>
+                </button>
+              );
+            })}
 
           {mounted && rawCollections !== undefined && collections.length === 0 && (
             <button
@@ -480,30 +521,53 @@ export default function LibraryPage() {
                 setEditingCollection(null);
                 setIsCollectionModalOpen(true);
               }}
-              className="text-xs text-indigo-600 hover:underline dark:text-indigo-400 whitespace-nowrap px-2"
+              className="min-h-[36px] text-xs font-medium text-orbit-accent hover:underline whitespace-nowrap px-2"
             >
               + Create your first collection
             </button>
           )}
         </div>
 
+        {/* Category Navigation Chips */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {LIBRARY_CATEGORY_TABS.map((cat) => {
+            const isSelected = selectedType === cat.id;
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setSelectedType(cat.id)}
+                className={`min-h-[34px] shrink-0 rounded-orbit-control border px-2.5 py-1 text-xs font-medium whitespace-nowrap transition-colors ${
+                  isSelected
+                    ? "border-orbit-accent/25 bg-orbit-accent-soft text-orbit-accent font-semibold"
+                    : "border-transparent text-orbit-text-secondary hover:bg-orbit-surface-secondary hover:text-orbit-text"
+                }`}
+              >
+                {cat.label}
+              </button>
+            );
+          })}
+        </div>
+
         {/* Search & Filter Row */}
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           {/* Search Input */}
           <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-orbit-text-muted" />
             <input
               type="text"
-              placeholder="Search library titles, notes, tags..."
+              placeholder="Search library titles, notes, tags, or links..."
+              aria-label="Search library"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-9 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-hidden dark:border-slate-800 dark:bg-slate-800/60 dark:text-white dark:focus:bg-slate-900"
+              className="min-h-[40px] sm:min-h-[36px] w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary pl-10 pr-9 py-2 text-xs text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
             />
             {searchQuery && (
               <button
                 type="button"
+                aria-label="Clear search"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-md text-orbit-text-muted hover:text-orbit-text"
               >
                 <X className="h-3.5 w-3.5" />
               </button>
@@ -512,56 +576,12 @@ export default function LibraryPage() {
 
           {/* Filters, Sorting, and View Switcher */}
           <div className="flex flex-wrap items-center gap-2">
-            {/* Navigation Section Pill */}
-            <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 p-0.5 dark:border-slate-800 dark:bg-slate-800/60">
-              <button
-                type="button"
-                onClick={() => setActiveSection("overview")}
-                className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-all ${
-                  activeSection === "overview" && !searchQuery
-                    ? "bg-white text-slate-900 shadow-2xs dark:bg-slate-900 dark:text-white"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-                }`}
-              >
-                Overview
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveSection("all")}
-                className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-all ${
-                  activeSection === "all" || searchQuery
-                    ? "bg-white text-slate-900 shadow-2xs dark:bg-slate-900 dark:text-white"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-                }`}
-              >
-                All Items ({mounted ? entries.length : 0})
-              </button>
-            </div>
-
-            {/* Type Filter */}
-            <select
-              value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
-              className="rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-700 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300 focus:outline-hidden"
-            >
-              <option value="all">All Types</option>
-              <option value="bookmark">🔖 Bookmark</option>
-              <option value="video">📹 Video</option>
-              <option value="playlist">📑 Playlist</option>
-              <option value="article">📰 Article</option>
-              <option value="note">📝 Note</option>
-              <option value="learn">📚 Course/Learn</option>
-              <option value="listen">🎧 Audio</option>
-              <option value="file">📎 File</option>
-              <option value="buy">🛒 Buy</option>
-              <option value="other">📌 Other</option>
-            </select>
-
             {/* Status Filter */}
             <select
+              aria-label="Filter by progress status"
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-700 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300 focus:outline-hidden"
+              className="min-h-[40px] sm:min-h-[36px] rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-2.5 py-1.5 text-xs font-medium text-orbit-text focus:border-orbit-accent focus:outline-hidden"
             >
               <option value="all">All Status</option>
               <option value="saved">Saved</option>
@@ -572,9 +592,10 @@ export default function LibraryPage() {
 
             {/* Sort Dropdown */}
             <select
+              aria-label="Sort resources"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortOption)}
-              className="rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-700 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300 focus:outline-hidden"
+              className="min-h-[40px] sm:min-h-[36px] rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-2.5 py-1.5 text-xs font-medium text-orbit-text focus:border-orbit-accent focus:outline-hidden"
             >
               <option value="recent">Recently Added</option>
               <option value="viewed">Recently Viewed</option>
@@ -583,45 +604,103 @@ export default function LibraryPage() {
             </select>
 
             {/* View Mode Toggle */}
-            <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 p-0.5 dark:border-slate-800 dark:bg-slate-800/60">
+            <div className="flex items-center rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary p-0.5">
               <button
                 type="button"
-                onClick={() => setViewMode("grid")}
-                className={`rounded-lg p-1.5 transition-all ${
+                onClick={() => handleViewModeChange("grid")}
+                className={`flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-lg transition-all ${
                   viewMode === "grid"
-                    ? "bg-white text-indigo-600 shadow-2xs dark:bg-slate-900 dark:text-indigo-400"
-                    : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                    ? "bg-orbit-surface text-orbit-accent shadow-orbit-xs"
+                    : "text-orbit-text-muted hover:text-orbit-text"
                 }`}
                 title="Grid view"
                 aria-label="Switch to grid view"
+                aria-pressed={viewMode === "grid"}
               >
                 <Grid className="h-3.5 w-3.5" />
               </button>
               <button
                 type="button"
-                onClick={() => setViewMode("list")}
-                className={`rounded-lg p-1.5 transition-all ${
+                onClick={() => handleViewModeChange("list")}
+                className={`flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-lg transition-all ${
                   viewMode === "list"
-                    ? "bg-white text-indigo-600 shadow-2xs dark:bg-slate-900 dark:text-indigo-400"
-                    : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                    ? "bg-orbit-surface text-orbit-accent shadow-orbit-xs"
+                    : "text-orbit-text-muted hover:text-orbit-text"
                 }`}
                 title="List view"
                 aria-label="Switch to list view"
+                aria-pressed={viewMode === "list"}
               >
                 <List className="h-3.5 w-3.5" />
               </button>
             </div>
           </div>
         </div>
-      </div>
+      </SurfaceCard>
+
+      {/* Curated Collection Header Banner when viewing a specific collection */}
+      {mounted && selectedCollection && (
+        <SurfaceCard variant="tonal" padding="md">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-start gap-3">
+              <div
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-orbit-card border border-orbit-border bg-orbit-surface text-xl shadow-orbit-xs"
+                style={{ borderTop: `3px solid ${selectedCollection.color}` }}
+              >
+                {selectedCollection.icon || "📁"}
+              </div>
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2 className="font-display text-lg font-semibold text-orbit-text [overflow-wrap:anywhere]">
+                    {selectedCollection.name}
+                  </h2>
+                  <Badge variant="neutral">
+                    {counts.byCollection.get(selectedCollection.id) || 0}{" "}
+                    {(counts.byCollection.get(selectedCollection.id) || 0) === 1
+                      ? "resource"
+                      : "resources"}
+                  </Badge>
+                </div>
+                <p className="mt-0.5 text-xs text-orbit-text-secondary">
+                  {selectedCollection.description || "Curated collection shelf"}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                icon={<Edit2 className="h-3.5 w-3.5" />}
+                onClick={() => {
+                  setEditingCollection(selectedCollection);
+                  setIsCollectionModalOpen(true);
+                }}
+              >
+                Edit Collection
+              </Button>
+              <Button
+                type="button"
+                variant="primary"
+                size="sm"
+                icon={<Plus className="h-3.5 w-3.5" />}
+                onClick={() => handleOpenAddModal(selectedCollection.id)}
+              >
+                Add to Collection
+              </Button>
+            </div>
+          </div>
+        </SurfaceCard>
+      )}
 
       {/* Main Content Area */}
       {!mounted ? (
-        <div className="rounded-2xl border border-slate-200 bg-white py-16 px-6 text-center dark:border-slate-800 dark:bg-slate-900 animate-pulse">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800" />
-          <div className="mx-auto mt-4 h-4 w-48 rounded-md bg-slate-100 dark:bg-slate-800" />
-          <div className="mx-auto mt-2 h-3 w-64 rounded-md bg-slate-100 dark:bg-slate-800" />
-        </div>
+        <SurfaceCard className="py-16 px-6 text-center animate-pulse">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-orbit-surface-secondary" />
+          <div className="mx-auto mt-4 h-4 w-48 rounded-md bg-orbit-surface-secondary" />
+          <div className="mx-auto mt-2 h-3 w-64 rounded-md bg-orbit-surface-secondary" />
+        </SurfaceCard>
       ) : entries.length === 0 ? (
         /* Empty State: Library is completely empty */
         <EmptyState
@@ -642,9 +721,10 @@ export default function LibraryPage() {
       ) : isBrowsingAll ? (
         /* Filtered / Browse View */
         <div className="space-y-4">
-          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+          <div className="flex items-center justify-between text-xs text-orbit-text-secondary">
             <span>
-              Showing {sortedEntries.length} of {entries.length} resources
+              Showing <span className="font-mono font-semibold text-orbit-text">{sortedEntries.length}</span> of{" "}
+              <span className="font-mono">{entries.length}</span> resources
             </span>
             {(searchQuery ||
               selectedCollectionId !== "all" ||
@@ -654,7 +734,7 @@ export default function LibraryPage() {
               <button
                 type="button"
                 onClick={handleClearFilters}
-                className="text-xs font-semibold text-indigo-600 hover:underline dark:text-indigo-400"
+                className="text-xs font-semibold text-orbit-accent hover:underline"
               >
                 Clear filters
               </button>
@@ -662,16 +742,81 @@ export default function LibraryPage() {
           </div>
 
           {sortedEntries.length === 0 ? (
-            <EmptyState
-              icon={<Search className="h-6 w-6" />}
-              title="No resources match your filters"
-              description="Try searching for a different keyword or resetting your filters."
-              action={
-                <Button variant="primary" size="md" onClick={handleClearFilters}>
-                  Reset filters
-                </Button>
-              }
-            />
+            selectedCollection &&
+            (counts.byCollection.get(selectedCollection.id) || 0) === 0 &&
+            !searchQuery &&
+            selectedType === "all" &&
+            selectedStatus === "all" ? (
+              <EmptyState
+                icon={<span className="text-xl">{selectedCollection.icon || "📁"}</span>}
+                title={`${selectedCollection.name} is empty`}
+                description="Add your first bookmark, note, article, or file to start curating this collection."
+                action={
+                  <div className="flex flex-wrap items-center justify-center gap-2">
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      icon={<Plus className="h-4 w-4" />}
+                      onClick={() => handleOpenAddModal(selectedCollection.id)}
+                    >
+                      Add to collection
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={handleClearFilters}
+                    >
+                      View all resources
+                    </Button>
+                  </div>
+                }
+              />
+            ) : selectedType !== "all" && !searchQuery ? (
+              <EmptyState
+                icon={<BookOpen className="h-6 w-6" />}
+                title={`No ${getTypeConfig(selectedType as LibraryEntry["type"]).label.toLowerCase()}s saved yet`}
+                description={`Save a ${getTypeConfig(selectedType as LibraryEntry["type"]).label.toLowerCase()} to your archive or switch back to all resource types.`}
+                action={
+                  <div className="flex flex-wrap items-center justify-center gap-2">
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      icon={<Plus className="h-4 w-4" />}
+                      onClick={() =>
+                        handleOpenAddModal(
+                          selectedCollectionId !== "all" ? selectedCollectionId : undefined,
+                          selectedType as LibraryEntry["type"]
+                        )
+                      }
+                    >
+                      Add {getTypeConfig(selectedType as LibraryEntry["type"]).label}
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => setSelectedType("all")}
+                    >
+                      Show all types
+                    </Button>
+                  </div>
+                }
+              />
+            ) : (
+              <EmptyState
+                icon={<Search className="h-6 w-6" />}
+                title={
+                  searchQuery.trim()
+                    ? `No results for "${searchQuery.trim()}"`
+                    : "No resources match your filters"
+                }
+                description="Try searching for a different keyword or resetting your active filters."
+                action={
+                  <Button variant="primary" size="md" onClick={handleClearFilters}>
+                    Reset filters
+                  </Button>
+                }
+              />
+            )
           ) : viewMode === "grid" ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {sortedEntries.map((entry) => (
@@ -712,18 +857,16 @@ export default function LibraryPage() {
             <section className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <GraduationCap className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-                  <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                  <GraduationCap className="h-4 w-4 text-orbit-accent" />
+                  <h2 className="font-display text-lg font-semibold text-orbit-text">
                     Continue Learning
                   </h2>
-                  <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-bold text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
-                    {counts.inProgress}
-                  </span>
+                  <Badge variant="accent">{counts.inProgress}</Badge>
                 </div>
                 <button
                   type="button"
                   onClick={() => setActiveSection("learning")}
-                  className="text-xs font-semibold text-indigo-600 hover:underline dark:text-indigo-400"
+                  className="text-xs font-semibold text-orbit-accent hover:underline"
                 >
                   View all
                 </button>
@@ -768,18 +911,16 @@ export default function LibraryPage() {
             <section className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                  <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                  <Star className="h-4 w-4 fill-orbit-warning text-orbit-warning" />
+                  <h2 className="font-display text-lg font-semibold text-orbit-text">
                     Favourites
                   </h2>
-                  <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-950/60 dark:text-amber-300">
-                    {counts.favorites}
-                  </span>
+                  <Badge variant="warning">{counts.favorites}</Badge>
                 </div>
                 <button
                   type="button"
                   onClick={() => setActiveSection("favorites")}
-                  className="text-xs font-semibold text-indigo-600 hover:underline dark:text-indigo-400"
+                  className="text-xs font-semibold text-orbit-accent hover:underline"
                 >
                   View all
                 </button>
@@ -824,8 +965,8 @@ export default function LibraryPage() {
             <section className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-                  <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                  <Clock className="h-4 w-4 text-orbit-text-muted" />
+                  <h2 className="font-display text-lg font-semibold text-orbit-text">
                     Recently Viewed
                   </h2>
                 </div>
@@ -869,15 +1010,15 @@ export default function LibraryPage() {
           <section className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-                <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                <Sparkles className="h-4 w-4 text-orbit-accent" />
+                <h2 className="font-display text-lg font-semibold text-orbit-text">
                   Recently Added
                 </h2>
               </div>
               <button
                 type="button"
                 onClick={() => setActiveSection("all")}
-                className="text-xs font-semibold text-indigo-600 hover:underline dark:text-indigo-400"
+                className="text-xs font-semibold text-orbit-accent hover:underline"
               >
                 View all ({entries.length})
               </button>
