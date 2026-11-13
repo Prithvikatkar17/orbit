@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   Calendar,
   Clock,
+  Palette,
 } from "lucide-react";
 import { db } from "@/lib/db/client";
 import {
@@ -31,6 +32,10 @@ import {
   EMPTY_STORAGE_COUNTS,
 } from "@/lib/services/workspace-queries";
 import {
+  THEME_PERSONALITIES,
+} from "@/lib/schemas/settings";
+import { useThemePersonality } from "@/components/theme-personality-provider";
+import {
   Badge,
   Button,
   ConfirmDialog,
@@ -40,6 +45,7 @@ import {
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
+  const { themePersonality, setThemePersonality } = useThemePersonality();
   const mounted = useMounted();
   const [permission, setPermission] = useState<NotificationPermission>("default");
   const [defaultReminderTime, setDefaultReminderTime] = useState("09:00");
@@ -100,6 +106,7 @@ export default function SettingsPage() {
         await db.settings.add({
           id: "user_settings",
           theme: (theme as "light" | "dark" | "system") || "system",
+          themePersonality: themePersonality || "archivist",
           defaultPriority: "medium",
           defaultReminderTime: updates.defaultReminderTime || "09:00",
           weekStartsOn: updates.weekStartsOn || "monday",
@@ -316,7 +323,95 @@ export default function SettingsPage() {
         </div>
       )}
 
-      {/* Section 1: Appearance & Theme */}
+      {/* Section 1: Theme Personality */}
+      <SurfaceCard padding="md" className="space-y-4">
+        <div className="flex items-center gap-2.5 pb-3 border-b border-orbit-border">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-orbit-surface-secondary border border-orbit-border text-orbit-accent">
+            <Palette className="h-4 w-4" />
+          </div>
+          <div>
+            <h2 className="font-display text-base font-semibold text-orbit-text tracking-tight">
+              Theme Personality
+            </h2>
+            <p className="text-xs text-orbit-text-muted">
+              Select one of ORBIT&apos;s seven bespoke visual personalities. Independent from light or dark mode.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {THEME_PERSONALITIES.map((meta) => {
+            const isSelected = mounted && themePersonality === meta.id;
+            return (
+              <button
+                key={meta.id}
+                type="button"
+                onClick={() => setThemePersonality(meta.id)}
+                className={`relative flex flex-col justify-between text-left p-3.5 rounded-xl border transition-all cursor-pointer ${
+                  isSelected
+                    ? "border-orbit-accent bg-orbit-accent-soft/40 shadow-orbit-card ring-2 ring-orbit-accent/40"
+                    : "border-orbit-border bg-orbit-surface-secondary/30 hover:bg-orbit-surface-secondary/70 hover:border-orbit-border-strong"
+                }`}
+                aria-pressed={isSelected}
+                data-theme-option={meta.id}
+              >
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-display text-sm font-semibold text-orbit-text">
+                      {meta.name}
+                    </span>
+                    {isSelected ? (
+                      <Badge variant="accent" className="gap-1 px-1.5 py-0.5 text-[10px]">
+                        <Check className="h-3 w-3" />
+                        Active
+                      </Badge>
+                    ) : (
+                      <span className="h-2 w-2 rounded-full border border-orbit-border-strong bg-orbit-surface-secondary" />
+                    )}
+                  </div>
+                  <p className="text-[11px] font-medium text-orbit-accent">
+                    {meta.tagline}
+                  </p>
+                  <p className="text-[11px] text-orbit-text-muted line-clamp-2 leading-relaxed">
+                    {meta.description}
+                  </p>
+                </div>
+
+                {/* 4-Swatch Palette Preview */}
+                <div className="mt-3.5 pt-2.5 border-t border-orbit-border/60 flex items-center justify-between">
+                  <span className="text-[10px] uppercase font-mono tracking-wider text-orbit-text-muted">
+                    Palette
+                  </span>
+                  <div className="flex items-center -space-x-1" aria-hidden="true">
+                    <span
+                      title="Canvas Background"
+                      className="h-4 w-4 rounded-full border border-black/10 dark:border-white/20 shadow-xs"
+                      style={{ backgroundColor: meta.swatches.bg }}
+                    />
+                    <span
+                      title="Card Surface"
+                      className="h-4 w-4 rounded-full border border-black/10 dark:border-white/20 shadow-xs"
+                      style={{ backgroundColor: meta.swatches.surface }}
+                    />
+                    <span
+                      title="Primary Accent"
+                      className="h-4 w-4 rounded-full border border-black/10 dark:border-white/20 shadow-xs"
+                      style={{ backgroundColor: meta.swatches.accent }}
+                    />
+                    <span
+                      title="Secondary Accent"
+                      className="h-4 w-4 rounded-full border border-black/10 dark:border-white/20 shadow-xs"
+                      style={{ backgroundColor: meta.swatches.secondary }}
+                    />
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </SurfaceCard>
+
+      {/* Section 2: Appearance & Theme Mode */}
       <SurfaceCard padding="md" className="space-y-4">
         <div className="flex items-center gap-2.5 pb-3 border-b border-orbit-border">
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-orbit-surface-secondary border border-orbit-border text-orbit-warning">
@@ -324,7 +419,7 @@ export default function SettingsPage() {
           </div>
           <div>
             <h2 className="font-display text-base font-semibold text-orbit-text tracking-tight">
-              Appearance &amp; Theme
+              Appearance Mode
             </h2>
             <p className="text-xs text-orbit-text-muted">
               Choose your preferred display mode across light, dark, or system defaults
@@ -359,7 +454,7 @@ export default function SettingsPage() {
         </div>
       </SurfaceCard>
 
-      {/* Section 2: Calendar & Reminders Preferences */}
+      {/* Section 3: Calendar & Reminders Preferences */}
       <SurfaceCard padding="md" className="space-y-4">
         <div className="flex items-center gap-2.5 pb-3 border-b border-orbit-border">
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-orbit-surface-secondary border border-orbit-border text-orbit-accent">
@@ -458,7 +553,7 @@ export default function SettingsPage() {
         </div>
       </SurfaceCard>
 
-      {/* Section 3: Local Storage Status & Statistics */}
+      {/* Section 4: Local Storage Status & Statistics */}
       <SurfaceCard padding="md" className="space-y-4">
         <div className="flex items-center gap-2.5 pb-3 border-b border-orbit-border">
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-orbit-surface-secondary border border-orbit-border text-orbit-accent-secondary">
@@ -505,7 +600,7 @@ export default function SettingsPage() {
         </div>
       </SurfaceCard>
 
-      {/* Section 4: Backup & Restore */}
+      {/* Section 5: Backup & Restore */}
       <SurfaceCard padding="md" className="space-y-4">
         <div className="flex items-center gap-2.5 pb-3 border-b border-orbit-border">
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-orbit-surface-secondary border border-orbit-border text-orbit-accent">
@@ -571,7 +666,7 @@ export default function SettingsPage() {
         </p>
       </SurfaceCard>
 
-      {/* Section 5: Danger Zone */}
+      {/* Section 6: Danger Zone */}
       <SurfaceCard
         variant="outlined"
         padding="md"
