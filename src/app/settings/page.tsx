@@ -30,7 +30,13 @@ import {
   fetchDatabaseStorageCounts,
   EMPTY_STORAGE_COUNTS,
 } from "@/lib/services/workspace-queries";
-import { Button, ConfirmDialog, PageHeader } from "@/components/ui";
+import {
+  Badge,
+  Button,
+  ConfirmDialog,
+  PageHeader,
+  SurfaceCard,
+} from "@/components/ui";
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
@@ -287,35 +293,46 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto w-full pb-16 animate-in fade-in duration-200">
-      {/* Page Header */}
+      {/* Editorial Page Header */}
       <PageHeader
+        eyebrow="PREFERENCES & DATA"
+        icon="⚙️"
         title="Settings"
         description="Manage your personal workspace preferences, notification alerts, and local backups."
       />
 
       {/* Status Messages */}
       {statusMessage && (
-        <div className="flex items-center gap-2 rounded-xl bg-emerald-50 p-4 text-xs font-semibold text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900">
-          <Check className="h-4 w-4 shrink-0 text-emerald-600" />
+        <div className="flex items-center gap-2 rounded-lg border border-orbit-success/30 bg-orbit-success-soft p-3.5 text-xs font-medium text-orbit-success">
+          <Check className="h-4 w-4 shrink-0 text-orbit-success" />
           <span>{statusMessage}</span>
         </div>
       )}
 
       {errorMessage && (
-        <div className="flex items-center gap-2 rounded-xl bg-rose-50 p-4 text-xs font-semibold text-rose-800 dark:bg-rose-950/40 dark:text-rose-300 border border-rose-200 dark:border-rose-900">
-          <AlertTriangle className="h-4 w-4 shrink-0 text-rose-600" />
+        <div className="flex items-center gap-2 rounded-lg border border-orbit-danger/30 bg-orbit-danger-soft p-3.5 text-xs font-medium text-orbit-danger">
+          <AlertTriangle className="h-4 w-4 shrink-0 text-orbit-danger" />
           <span>{errorMessage}</span>
         </div>
       )}
 
-      {/* Theme & Display */}
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
-        <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <Sun className="h-4 w-4 text-amber-500" />
-          <span>Appearance & Theme</span>
-        </h2>
+      {/* Section 1: Appearance & Theme */}
+      <SurfaceCard padding="md" className="space-y-4">
+        <div className="flex items-center gap-2.5 pb-3 border-b border-orbit-border">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-orbit-surface-secondary border border-orbit-border text-orbit-warning">
+            <Sun className="h-4 w-4" />
+          </div>
+          <div>
+            <h2 className="font-display text-base font-semibold text-orbit-text tracking-tight">
+              Appearance &amp; Theme
+            </h2>
+            <p className="text-xs text-orbit-text-muted">
+              Choose your preferred display mode across light, dark, or system defaults
+            </p>
+          </div>
+        </div>
 
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
           {[
             { id: "light", label: "Light", icon: Sun },
             { id: "dark", label: "Dark", icon: Moon },
@@ -328,10 +345,10 @@ export default function SettingsPage() {
                 key={mode.id}
                 type="button"
                 onClick={() => setTheme(mode.id)}
-                className={`flex flex-col items-center justify-center gap-2 rounded-xl border p-4 text-xs font-semibold transition-all ${
+                className={`flex flex-col items-center justify-center gap-2 rounded-lg border p-3.5 sm:p-4 text-xs font-medium transition-all ${
                   isSelected
-                    ? "border-indigo-600 bg-indigo-50/50 text-indigo-700 ring-2 ring-indigo-500/20 dark:bg-indigo-950/40 dark:text-indigo-300"
-                    : "border-slate-200 hover:bg-slate-50 text-slate-700 dark:border-slate-800 dark:hover:bg-slate-800 dark:text-slate-300"
+                    ? "border-orbit-accent bg-orbit-accent-soft text-orbit-accent ring-1 ring-orbit-accent/40 shadow-orbit-xs font-semibold"
+                    : "border-orbit-border bg-orbit-surface-secondary/40 hover:bg-orbit-surface-secondary text-orbit-text-secondary hover:text-orbit-text"
                 }`}
               >
                 <Icon className="h-5 w-5" />
@@ -340,20 +357,29 @@ export default function SettingsPage() {
             );
           })}
         </div>
-      </section>
+      </SurfaceCard>
 
-      {/* Calendar & Reminders Preferences */}
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
-        <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <Calendar className="h-4 w-4 text-indigo-600" />
-          <span>Calendar & Reminders</span>
-        </h2>
+      {/* Section 2: Calendar & Reminders Preferences */}
+      <SurfaceCard padding="md" className="space-y-4">
+        <div className="flex items-center gap-2.5 pb-3 border-b border-orbit-border">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-orbit-surface-secondary border border-orbit-border text-orbit-accent">
+            <Calendar className="h-4 w-4" />
+          </div>
+          <div>
+            <h2 className="font-display text-base font-semibold text-orbit-text tracking-tight">
+              Calendar &amp; Reminders
+            </h2>
+            <p className="text-xs text-orbit-text-muted">
+              Configure default all-day event trigger times, week start day, and desktop alerts
+            </p>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Default All-Day Reminder Time */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5 text-slate-400" />
+            <label className="text-xs font-medium text-orbit-text flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5 text-orbit-text-muted" />
               <span>Default All-Day Reminder Time</span>
             </label>
             <input
@@ -363,16 +389,16 @@ export default function SettingsPage() {
                 setDefaultReminderTime(e.target.value);
                 handleSavePreference({ defaultReminderTime: e.target.value });
               }}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+              className="w-full rounded-lg border border-orbit-border bg-orbit-surface px-3 py-2 text-xs font-mono text-orbit-text focus:border-orbit-accent focus:outline-hidden"
             />
-            <p className="text-[11px] text-slate-400">
+            <p className="text-[11px] text-orbit-text-muted">
               When all-day events will trigger reminders (e.g. 09:00 AM).
             </p>
           </div>
 
           {/* Week Start Day */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <label className="text-xs font-medium text-orbit-text">
               Week Starts On
             </label>
             <select
@@ -382,145 +408,153 @@ export default function SettingsPage() {
                 setWeekStartsOn(val);
                 handleSavePreference({ weekStartsOn: val });
               }}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+              className="w-full rounded-lg border border-orbit-border bg-orbit-surface px-3 py-2 text-xs font-sans text-orbit-text focus:border-orbit-accent focus:outline-hidden"
             >
               <option value="monday">Monday</option>
               <option value="sunday">Sunday</option>
             </select>
-            <p className="text-[11px] text-slate-400">
+            <p className="text-[11px] text-orbit-text-muted">
               First column displayed on calendar views.
             </p>
           </div>
         </div>
 
         {/* Browser Notifications Control */}
-        <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+        <div className="pt-3 border-t border-orbit-border/70 flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-0.5">
-            <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-              <Bell className="h-3.5 w-3.5 text-indigo-600" />
-              <span>Desktop Notifications</span>
-            </span>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400">
-              Current browser status: <span className="font-semibold capitalize">{permission}</span>
+            <div className="flex items-center gap-2">
+              <Bell className="h-3.5 w-3.5 text-orbit-accent" />
+              <span className="text-xs font-semibold text-orbit-text">
+                Desktop Notifications
+              </span>
+              <Badge variant={permission === "granted" ? "success" : "neutral"}>
+                {permission}
+              </Badge>
+            </div>
+            <p className="text-[11px] text-orbit-text-muted">
+              Get notified of upcoming events, deadlines, and daily reminders in this browser.
             </p>
           </div>
 
           <div className="flex items-center gap-2">
             {permission !== "granted" ? (
-              <button
-                type="button"
+              <Button
+                variant="primary"
+                size="sm"
                 onClick={handleEnableNotifications}
-                className="rounded-xl bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-500 transition-colors"
               >
                 Enable Notifications
-              </button>
+              </Button>
             ) : (
-              <button
-                type="button"
+              <Button
+                variant="secondary"
+                size="sm"
                 onClick={handleSendTestNotification}
-                className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
               >
                 Send Test Alert
-              </button>
+              </Button>
             )}
           </div>
         </div>
-      </section>
+      </SurfaceCard>
 
-      {/* Storage & Record Counters */}
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
-        <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <ShieldCheck className="h-4 w-4 text-emerald-600" />
-          <span>Local Storage Status</span>
-        </h2>
-        <p className="text-xs text-slate-500 dark:text-slate-400">
-          All data is persisted client-side in IndexedDB within your browser.
-        </p>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-          <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
-            <span className="text-[11px] font-medium text-slate-500">Inbox Items</span>
-            <p className="text-xl font-bold text-slate-800 dark:text-slate-200 mt-1">{mounted ? itemsCount : 0}</p>
+      {/* Section 3: Local Storage Status & Statistics */}
+      <SurfaceCard padding="md" className="space-y-4">
+        <div className="flex items-center gap-2.5 pb-3 border-b border-orbit-border">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-orbit-surface-secondary border border-orbit-border text-orbit-accent-secondary">
+            <ShieldCheck className="h-4 w-4" />
           </div>
-          <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
-            <span className="text-[11px] font-medium text-slate-500">Tasks</span>
-            <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400 mt-1">{mounted ? tasksCount : 0}</p>
-          </div>
-          <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
-            <span className="text-[11px] font-medium text-slate-500">Events</span>
-            <p className="text-xl font-bold text-pink-600 dark:text-pink-400 mt-1">{mounted ? eventsCount : 0}</p>
-          </div>
-          <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
-            <span className="text-[11px] font-medium text-slate-500">Reminders</span>
-            <p className="text-xl font-bold text-purple-600 dark:text-purple-400 mt-1">{mounted ? remindersCount : 0}</p>
-          </div>
-          <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
-            <span className="text-[11px] font-medium text-slate-500">Habits</span>
-            <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">{mounted ? habitsCount : 0}</p>
-          </div>
-          <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
-            <span className="text-[11px] font-medium text-slate-500">Habit Logs</span>
-            <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">{mounted ? habitLogsCount : 0}</p>
-          </div>
-          <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
-            <span className="text-[11px] font-medium text-slate-500">Library Items</span>
-            <p className="text-xl font-bold text-cyan-600 dark:text-cyan-400 mt-1">{mounted ? libraryCount : 0}</p>
-          </div>
-          <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
-            <span className="text-[11px] font-medium text-slate-500">Collections</span>
-            <p className="text-xl font-bold text-teal-600 dark:text-teal-400 mt-1">{mounted ? collectionsCount : 0}</p>
-          </div>
-          <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
-            <span className="text-[11px] font-medium text-slate-500">Attachments</span>
-            <p className="text-xl font-bold text-blue-600 dark:text-blue-400 mt-1">{mounted ? filesCount : 0}</p>
+          <div>
+            <h2 className="font-display text-base font-semibold text-orbit-text tracking-tight">
+              Local Storage Status
+            </h2>
+            <p className="text-xs text-orbit-text-muted">
+              Autonomous client-side storage persisted in IndexedDB within your browser
+            </p>
           </div>
         </div>
-      </section>
 
-      {/* Backup and Restore */}
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
-        <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <Download className="h-4 w-4 text-indigo-600" />
-          <span>Backup & Restore (11 Tables & Attachments)</span>
-        </h2>
-        <p className="text-xs text-slate-500 dark:text-slate-400">
-          Export your complete workspace into a portable ZIP archive containing all 11 tables and binary file attachments, or restore from a ZIP or legacy JSON backup.
-        </p>
+        {/* Responsive Grid with Min-Width & Fluid Layout (eliminates 320px awkward text wrapping) */}
+        <div className="grid grid-cols-2 min-[400px]:grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-2.5 text-center">
+          {[
+            { label: "Inbox Items", count: itemsCount },
+            { label: "Tasks", count: tasksCount },
+            { label: "Events", count: eventsCount },
+            { label: "Reminders", count: remindersCount },
+            { label: "Habits", count: habitsCount },
+            { label: "Habit Logs", count: habitLogsCount },
+            { label: "Library Items", count: libraryCount },
+            { label: "Collections", count: collectionsCount },
+            { label: "Attachments", count: filesCount },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className="rounded-lg border border-orbit-border bg-orbit-surface-secondary/40 p-2.5 flex flex-col justify-between"
+            >
+              <span
+                className="font-sans text-[11px] font-medium text-orbit-text-muted truncate"
+                title={item.label}
+              >
+                {item.label}
+              </span>
+              <p className="font-mono text-lg sm:text-xl font-semibold text-orbit-text tabular-nums mt-1">
+                {mounted ? item.count : 0}
+              </p>
+            </div>
+          ))}
+        </div>
+      </SurfaceCard>
 
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Primary Export: ZIP */}
-          <button
-            type="button"
-            onClick={handleBackupZipDownload}
-            className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-indigo-500 transition-colors"
-          >
+      {/* Section 4: Backup & Restore */}
+      <SurfaceCard padding="md" className="space-y-4">
+        <div className="flex items-center gap-2.5 pb-3 border-b border-orbit-border">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-orbit-surface-secondary border border-orbit-border text-orbit-accent">
             <Download className="h-4 w-4" />
-            <span>Export Full Backup (.zip)</span>
-          </button>
+          </div>
+          <div>
+            <h2 className="font-display text-base font-semibold text-orbit-text tracking-tight">
+              Backup &amp; Restore
+            </h2>
+            <p className="text-xs text-orbit-text-muted">
+              Export your complete workspace into a portable archive or restore an existing backup
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+          {/* Primary Export: ZIP */}
+          <Button
+            variant="primary"
+            size="sm"
+            icon={<Download className="h-4 w-4" />}
+            onClick={handleBackupZipDownload}
+          >
+            Export Full Backup (.zip)
+          </Button>
 
           {/* Secondary Export: JSON Data Only */}
-          <button
-            type="button"
+          <Button
+            variant="secondary"
+            size="sm"
+            icon={<Download className="h-4 w-4 text-orbit-text-muted" />}
             onClick={handleBackupJsonDownload}
-            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
           >
-            <Download className="h-4 w-4 text-slate-400" />
-            <span>Export JSON (Data Only)</span>
-          </button>
+            Export JSON (Data Only)
+          </Button>
 
           {/* Import Controls */}
           <div className="flex items-center gap-2">
             <select
               value={restoreMode}
               onChange={(e) => setRestoreMode(e.target.value as "replace" | "merge")}
-              className="rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+              className="rounded-lg border border-orbit-border bg-orbit-surface px-2.5 py-1.5 text-xs font-sans text-orbit-text focus:border-orbit-accent focus:outline-hidden"
             >
               <option value="replace">Replace All</option>
               <option value="merge">Merge</option>
             </select>
 
-            <label className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-xs hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 cursor-pointer transition-colors">
-              <Upload className="h-4 w-4 text-indigo-600" />
+            <label className="inline-flex min-h-[38px] items-center justify-center gap-2 rounded-lg border border-orbit-border bg-orbit-surface px-3.5 py-1.5 text-xs font-medium text-orbit-text shadow-orbit-xs hover:bg-orbit-surface-secondary cursor-pointer transition-colors">
+              <Upload className="h-4 w-4 text-orbit-accent" />
               <span>Restore from Backup</span>
               <input
                 type="file"
@@ -532,31 +566,44 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <div className="text-[11px] text-slate-400 dark:text-slate-500">
+        <p className="font-mono text-[11px] text-orbit-text-muted">
           * Full ZIP backups include all records and binary file attachments. Legacy JSON backups contain database records only (attachments are excluded).
-        </div>
-      </section>
+        </p>
+      </SurfaceCard>
 
-      {/* Danger Zone: Database Reset */}
-      <section className="rounded-2xl border border-rose-200 bg-rose-50/40 p-6 shadow-xs dark:border-rose-950/60 dark:bg-rose-950/20 space-y-4">
-        <h2 className="text-base font-bold text-rose-800 dark:text-rose-400 flex items-center gap-2">
-          <Trash2 className="h-4 w-4 text-rose-600" />
-          <span>Danger Zone</span>
-        </h2>
-        <p className="text-xs text-rose-700/80 dark:text-rose-300/80">
-          Resetting the database will permanently delete all local items, tasks, habits, events, and reminders from IndexedDB.
+      {/* Section 5: Danger Zone */}
+      <SurfaceCard
+        variant="outlined"
+        padding="md"
+        className="border-orbit-danger/35 bg-orbit-danger-soft/20 space-y-3"
+      >
+        <div className="flex items-center gap-2.5 pb-2 border-b border-orbit-danger/20">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-orbit-surface border border-orbit-danger/30 text-orbit-danger">
+            <Trash2 className="h-4 w-4" />
+          </div>
+          <div>
+            <h2 className="font-display text-base font-semibold text-orbit-danger tracking-tight">
+              Danger Zone
+            </h2>
+            <p className="text-xs text-orbit-danger/80">
+              Irreversible destructive actions
+            </p>
+          </div>
+        </div>
+
+        <p className="text-xs text-orbit-danger/80">
+          Resetting the database will permanently delete all local items, tasks, habits, events, reminders, and library resources from IndexedDB on this device.
         </p>
 
         <Button
-          variant="secondary"
-          size="md"
-          icon={<Trash2 className="h-4 w-4 text-orbit-danger" />}
+          variant="danger"
+          size="sm"
+          icon={<Trash2 className="h-4 w-4" />}
           onClick={() => setIsResetConfirmOpen(true)}
-          className="border-rose-300 text-rose-600 hover:bg-rose-50 dark:border-rose-900 dark:text-rose-400 dark:hover:bg-rose-950/40"
         >
           Reset Local Database
         </Button>
-      </section>
+      </SurfaceCard>
 
       {/* Legacy JSON Restore Attachment Replacement Confirmation */}
       <ConfirmDialog
