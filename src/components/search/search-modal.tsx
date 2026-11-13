@@ -20,6 +20,7 @@ import {
   type SearchResultItem as SearchResultItemType,
 } from "@/lib/services/search-service";
 import { SearchResultItem } from "./search-result-item";
+import { Badge } from "@/components/ui/badge";
 
 const FILTER_TABS: { id: SearchFilterTab; label: string }[] = [
   { id: "all", label: "All" },
@@ -315,13 +316,13 @@ export function SearchModal() {
       role="dialog"
       aria-modal="true"
       aria-labelledby="orbit-search-modal-heading"
-      className="fixed inset-0 z-50 flex items-start justify-center p-2 sm:p-4 pt-3 sm:pt-16 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex items-start justify-center p-2 sm:p-4 pt-3 sm:pt-16 bg-black/45 backdrop-blur-xs animate-in fade-in duration-150"
       onClick={(e) => {
         if (e.target === e.currentTarget) closeSearch();
       }}
     >
       <div
-        className="w-full max-w-2xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl transition-all dark:border-slate-800 dark:bg-slate-900 flex flex-col h-[92dvh] sm:h-auto max-h-[92dvh] sm:max-h-[82dvh]"
+        className="w-full max-w-2xl overflow-hidden rounded-2xl border border-orbit-border bg-orbit-surface shadow-orbit-elevated transition-all flex flex-col h-[92dvh] sm:h-auto max-h-[92dvh] sm:max-h-[82dvh]"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="orbit-search-modal-heading" className="sr-only">
@@ -334,8 +335,8 @@ export function SearchModal() {
         </div>
 
         {/* Search Input Bar */}
-        <div className="flex items-center gap-3 border-b border-slate-100 px-3.5 sm:px-4 py-3 sm:py-3.5 dark:border-slate-800/80">
-          <Search className="h-5 w-5 shrink-0 text-slate-400 dark:text-slate-500" />
+        <div className="flex items-center gap-3 border-b border-orbit-border px-3.5 sm:px-4 py-3 sm:py-3.5 bg-orbit-surface">
+          <Search className="h-5 w-5 shrink-0 text-orbit-accent" />
           <input
             ref={inputRef}
             type="text"
@@ -354,7 +355,7 @@ export function SearchModal() {
             }}
             onKeyDown={handleInputKeyDown}
             placeholder="Search ORBIT... (e.g. 'planning', '#books', 'gym')"
-            className="flex-1 bg-transparent text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-hidden dark:text-white dark:placeholder-slate-500 min-w-0"
+            className="flex-1 bg-transparent text-sm sm:text-base font-normal text-orbit-text placeholder:text-orbit-text-muted focus:outline-hidden min-w-0"
           />
 
           {query && (
@@ -365,7 +366,7 @@ export function SearchModal() {
                 setSelectedRecentIndex(-1);
                 inputRef.current?.focus();
               }}
-              className="flex items-center justify-center min-w-[36px] min-h-[36px] sm:min-w-0 sm:min-h-0 rounded-lg p-1.5 sm:p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors"
+              className="flex items-center justify-center min-w-[36px] min-h-[36px] sm:min-w-0 sm:min-h-0 rounded-md p-1.5 sm:p-1 text-orbit-text-muted hover:bg-orbit-subtle hover:text-orbit-text transition-colors"
               title="Clear search query"
               aria-label="Clear search query"
             >
@@ -377,14 +378,14 @@ export function SearchModal() {
           <button
             type="button"
             onClick={closeSearch}
-            className="sm:hidden flex items-center justify-center min-w-[36px] min-h-[36px] rounded-lg px-2 py-1 text-xs font-semibold text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors"
+            className="sm:hidden flex items-center justify-center min-w-[36px] min-h-[36px] rounded-md px-2.5 py-1 text-xs font-medium text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text transition-colors"
             title="Close search"
             aria-label="Close search dialog"
           >
             Done
           </button>
 
-          <div className="hidden sm:flex items-center gap-1 text-[11px] font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md select-none">
+          <div className="hidden sm:flex items-center gap-1 text-[11px] font-mono text-orbit-text-muted bg-orbit-surface-secondary border border-orbit-border px-2 py-0.5 rounded select-none">
             <span>ESC</span>
           </div>
         </div>
@@ -393,7 +394,7 @@ export function SearchModal() {
         <div
           role="tablist"
           aria-label="Filter search results by module"
-          className="flex items-center gap-1 overflow-x-auto px-3.5 sm:px-4 py-2 border-b border-slate-100 dark:border-slate-800/60 no-scrollbar"
+          className="flex items-center gap-1.5 overflow-x-auto px-3.5 sm:px-4 py-2 border-b border-orbit-border bg-orbit-surface-secondary/40 no-scrollbar"
         >
           {FILTER_TABS.map((tab) => {
             const isActive = activeFilter === tab.id;
@@ -404,10 +405,10 @@ export function SearchModal() {
                 role="tab"
                 aria-selected={isActive}
                 onClick={() => setActiveFilter(tab.id)}
-                className={`rounded-lg px-2.5 py-1 text-xs font-semibold whitespace-nowrap transition-all focus:outline-hidden focus-visible:ring-2 focus-visible:ring-indigo-500 ${
+                className={`rounded-md px-2.5 py-1 text-xs whitespace-nowrap transition-all focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-accent ${
                   isActive
-                    ? "bg-indigo-600 text-white shadow-xs"
-                    : "text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                    ? "bg-orbit-accent text-orbit-accent-fg shadow-orbit-xs font-medium"
+                    : "text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text"
                 }`}
               >
                 {tab.label}
@@ -424,23 +425,23 @@ export function SearchModal() {
           className="flex-1 overflow-y-auto overscroll-contain p-2 sm:p-3 min-h-[160px] max-h-[55vh]"
         >
           {isLoadingSnapshot ? (
-            <div className="flex flex-col items-center justify-center py-12 text-slate-400">
-              <div className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent mb-2" />
-              <span className="text-xs font-medium">Indexing local database...</span>
+            <div className="flex flex-col items-center justify-center py-12 text-orbit-text-muted">
+              <div className="h-5 w-5 animate-spin rounded-full border-2 border-orbit-accent border-t-transparent mb-2" />
+              <span className="font-mono text-xs text-orbit-text-muted">Indexing local database...</span>
             </div>
           ) : !query.trim() ? (
             /* Empty Query State: Recent Searches & Hints */
             <div className="py-2 sm:py-3 px-1 sm:px-2">
               {recentSearches.length > 0 ? (
                 <div>
-                  <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100 dark:border-slate-800/60">
-                    <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  <div className="flex items-center justify-between pb-2 mb-2 border-b border-orbit-border">
+                    <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-orbit-text-muted">
                       Recent Searches
                     </span>
                     <button
                       type="button"
                       onClick={clearRecentSearches}
-                      className="text-xs font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                      className="text-xs font-medium text-orbit-text-muted hover:text-orbit-text transition-colors"
                       aria-label="Clear all recent searches"
                     >
                       Clear all
@@ -453,10 +454,10 @@ export function SearchModal() {
                       return (
                         <div
                           key={term}
-                          className={`group flex items-center justify-between rounded-xl px-3 py-2 text-sm transition-colors ${
+                          className={`group flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors ${
                             isRecentSelected
-                              ? "bg-indigo-50/90 text-indigo-900 dark:bg-indigo-950/60 dark:text-indigo-200 ring-1 ring-indigo-500/30"
-                              : "text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800/40"
+                              ? "bg-orbit-surface-secondary border border-orbit-border text-orbit-text shadow-orbit-xs"
+                              : "text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text border border-transparent"
                           }`}
                         >
                           <button
@@ -467,7 +468,7 @@ export function SearchModal() {
                             }}
                             className="flex items-center gap-2.5 flex-1 text-left min-w-0"
                           >
-                            <Clock className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                            <Clock className="h-3.5 w-3.5 text-orbit-text-muted shrink-0" />
                             <span className="truncate">{term}</span>
                           </button>
                           <button
@@ -476,7 +477,7 @@ export function SearchModal() {
                               e.stopPropagation();
                               removeRecentSearch(term);
                             }}
-                            className="opacity-80 sm:opacity-0 sm:group-hover:opacity-100 min-w-[32px] min-h-[32px] sm:min-w-0 sm:min-h-0 flex items-center justify-center p-1 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-opacity"
+                            className="opacity-80 sm:opacity-0 sm:group-hover:opacity-100 min-w-[32px] min-h-[32px] sm:min-w-0 sm:min-h-0 flex items-center justify-center p-1 text-orbit-text-muted hover:text-orbit-danger transition-colors"
                             title={`Remove ${term} from history`}
                             aria-label={`Remove ${term} from search history`}
                           >
@@ -489,24 +490,26 @@ export function SearchModal() {
                 </div>
               ) : (
                 <div className="py-8 text-center">
-                  <Sparkles className="mx-auto h-7 w-7 text-indigo-500/70" />
-                  <p className="mt-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orbit-surface-secondary border border-orbit-border mx-auto text-orbit-accent">
+                    <Sparkles className="h-5 w-5" />
+                  </div>
+                  <h3 className="mt-3 font-display text-base font-semibold text-orbit-text">
                     Universal Search
-                  </p>
-                  <p className="mt-1 text-xs text-slate-400 max-w-sm mx-auto">
+                  </h3>
+                  <p className="mt-1 text-xs text-orbit-text-muted max-w-sm mx-auto">
                     Search across all your tasks, notes, documents, habits, and calendar events.
                   </p>
                 </div>
               )}
 
               {/* Quick Navigation Hint Cards */}
-              <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/60 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-slate-400">
-                <div className="rounded-lg bg-slate-50 dark:bg-slate-800/30 p-2.5">
-                  <span className="font-semibold text-slate-700 dark:text-slate-300">#tags: </span>
+              <div className="mt-4 pt-3 border-t border-orbit-border grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-orbit-text-muted">
+                <div className="rounded-lg border border-orbit-border bg-orbit-surface-secondary/50 p-2.5">
+                  <span className="font-semibold text-orbit-text">#tags: </span>
                   Type a tag name to filter tagged resources and tasks.
                 </div>
-                <div className="rounded-lg bg-slate-50 dark:bg-slate-800/30 p-2.5">
-                  <span className="font-semibold text-slate-700 dark:text-slate-300">Ctrl + N: </span>
+                <div className="rounded-lg border border-orbit-border bg-orbit-surface-secondary/50 p-2.5">
+                  <span className="font-semibold text-orbit-text">Ctrl + N: </span>
                   Instantly open Quick Capture from search.
                 </div>
               </div>
@@ -514,11 +517,11 @@ export function SearchModal() {
           ) : itemsCount === 0 ? (
             /* No Results State */
             <div className="py-10 text-center px-4">
-              <SearchX className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600" />
-              <p className="mt-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
+              <SearchX className="mx-auto h-8 w-8 text-orbit-text-muted/60" />
+              <h3 className="mt-2 font-display text-base font-semibold text-orbit-text">
                 No results found for &ldquo;{debouncedQuery}&rdquo;
-              </p>
-              <p className="mt-1 text-xs text-slate-400 max-w-xs mx-auto">
+              </h3>
+              <p className="mt-1 text-xs text-orbit-text-muted max-w-xs mx-auto">
                 Check for typos or try searching with different keywords.
               </p>
 
@@ -527,7 +530,7 @@ export function SearchModal() {
                 <button
                   type="button"
                   onClick={() => setActiveFilter("all")}
-                  className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:underline dark:text-indigo-400"
+                  className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-orbit-accent hover:underline"
                 >
                   <span>Search all categories instead</span>
                   <ArrowRight className="h-3 w-3" />
@@ -539,11 +542,11 @@ export function SearchModal() {
                 <button
                   type="button"
                   onClick={() => handleOpenQuickCapture(debouncedQuery.trim())}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-50 px-3.5 py-2 text-xs font-semibold text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:text-indigo-400 dark:hover:bg-indigo-900/50 transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-orbit-border bg-orbit-surface-secondary hover:bg-orbit-subtle px-3.5 py-2 text-xs font-medium text-orbit-text transition-colors shadow-orbit-xs"
                 >
-                  <Plus className="h-3.5 w-3.5" />
+                  <Plus className="h-3.5 w-3.5 text-orbit-accent" />
                   <span>Create task &ldquo;{debouncedQuery.trim()}&rdquo;</span>
-                  <ArrowRight className="h-3 w-3 ml-0.5" />
+                  <ArrowRight className="h-3 w-3 ml-0.5 text-orbit-text-muted" />
                 </button>
               </div>
             </div>
@@ -552,11 +555,11 @@ export function SearchModal() {
             <div className="space-y-4">
               {searchResults.groups.map((group) => (
                 <div key={group.module}>
-                  <div className="flex items-center justify-between px-2 pb-1.5 text-[11px] font-bold tracking-wider text-slate-400 uppercase">
+                  <div className="flex items-center justify-between px-2 pb-1.5 text-[11px] font-mono font-semibold tracking-wider text-orbit-accent uppercase">
                     <span>{group.label}</span>
-                    <span className="text-[10px] font-semibold text-slate-400">
+                    <Badge variant="neutral">
                       {group.items.length}
-                    </span>
+                    </Badge>
                   </div>
 
                   <div className="space-y-1">
@@ -581,22 +584,22 @@ export function SearchModal() {
         </div>
 
         {/* Footer Navigation Hints */}
-        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 border-t border-slate-100 bg-slate-50/70 px-4 py-2.5 text-[11px] text-slate-500 dark:border-slate-800 dark:bg-slate-900/90 dark:text-slate-400">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 border-t border-orbit-border bg-orbit-surface-secondary/40 px-4 py-2 text-[11px] text-orbit-text-muted">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <span className="inline-flex items-center gap-1">
-              <kbd className="rounded border border-slate-200 bg-white px-1.5 py-0.5 font-mono text-[10px] font-semibold dark:border-slate-700 dark:bg-slate-800">
+              <kbd className="rounded border border-orbit-border bg-orbit-surface px-1.5 py-0.5 font-mono text-[10px] text-orbit-text">
                 ↑↓
               </kbd>
               <span>Navigate</span>
             </span>
             <span className="inline-flex items-center gap-1">
-              <kbd className="rounded border border-slate-200 bg-white px-1.5 py-0.5 font-mono text-[10px] font-semibold dark:border-slate-700 dark:bg-slate-800">
+              <kbd className="rounded border border-orbit-border bg-orbit-surface px-1.5 py-0.5 font-mono text-[10px] text-orbit-text">
                 ↵
               </kbd>
               <span>Open</span>
             </span>
             <span className="hidden items-center gap-1 sm:inline-flex">
-              <kbd className="rounded border border-slate-200 bg-white px-1.5 py-0.5 font-mono text-[10px] font-semibold dark:border-slate-700 dark:bg-slate-800">
+              <kbd className="rounded border border-orbit-border bg-orbit-surface px-1.5 py-0.5 font-mono text-[10px] text-orbit-text">
                 Tab
               </kbd>
               <span>Filter</span>
@@ -607,9 +610,9 @@ export function SearchModal() {
             <button
               type="button"
               onClick={() => handleOpenQuickCapture(query.trim() || undefined)}
-              className="inline-flex items-center gap-1 whitespace-nowrap hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+              className="inline-flex items-center gap-1 whitespace-nowrap hover:text-orbit-accent transition-colors"
             >
-              <kbd className="rounded border border-slate-200 bg-white px-1.5 py-0.5 font-mono text-[10px] font-semibold dark:border-slate-700 dark:bg-slate-800">
+              <kbd className="rounded border border-orbit-border bg-orbit-surface px-1.5 py-0.5 font-mono text-[10px] text-orbit-text">
                 Ctrl+N
               </kbd>
               <span>Quick Capture</span>

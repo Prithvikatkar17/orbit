@@ -13,6 +13,7 @@ import {
   Folder,
   CornerDownLeft,
 } from "lucide-react";
+import { Badge, type BadgeVariant } from "@/components/ui/badge";
 import type {
   SearchResultItem as SearchResultItemType,
   SearchSnippet,
@@ -54,11 +55,11 @@ function HighlightedText({
       );
     }
 
-    // Highlighted match
+    // Highlighted match - warm paper editorial highlighter
     elements.push(
       <mark
         key={`mark-${i}-${interval.start}`}
-        className="rounded bg-amber-200/90 px-0.5 font-bold text-amber-950 dark:bg-amber-900/60 dark:text-amber-200 not-italic"
+        className="rounded bg-orbit-warning/20 px-0.5 font-semibold text-orbit-text not-italic"
       >
         {text.substring(interval.start, interval.end)}
       </mark>
@@ -86,9 +87,9 @@ function HighlightedSnippet({ snippet }: { snippet: SearchSnippet }) {
   const after = snippet.text.substring(snippet.matchEnd);
 
   return (
-    <p className="mt-1 line-clamp-2 text-[11px] font-mono text-slate-500 dark:text-slate-400">
+    <p className="mt-1 line-clamp-2 text-[11px] font-mono text-orbit-text-muted">
       {before}
-      <mark className="rounded bg-amber-200/90 px-0.5 font-bold text-amber-950 dark:bg-amber-900/60 dark:text-amber-200 not-italic">
+      <mark className="rounded bg-orbit-warning/20 px-0.5 font-semibold text-orbit-text not-italic">
         {match}
       </mark>
       {after}
@@ -114,62 +115,62 @@ export function SearchResultItem({
     }
   }, [isSelected]);
 
-  // Module iconography & styling
-  const { icon, badgeClass, containerBg } = (() => {
+  // Module iconography & styling using Quiet Desk semantic palette
+  const { icon, badgeVariant, containerBg } = (() => {
     switch (item.module) {
       case "task":
         return {
-          icon: <CheckSquare className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />,
-          badgeClass: "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300",
-          containerBg: "bg-indigo-50/50 dark:bg-indigo-950/30",
+          icon: <CheckSquare className="h-4 w-4 text-orbit-accent" />,
+          badgeVariant: "accent" as BadgeVariant,
+          containerBg: "bg-orbit-accent-soft text-orbit-accent",
         };
       case "goal":
         return {
-          icon: <Target className="h-4 w-4 text-pink-600 dark:text-pink-400" />,
-          badgeClass: "bg-pink-50 text-pink-700 dark:bg-pink-950/60 dark:text-pink-300",
-          containerBg: "bg-pink-50/50 dark:bg-pink-950/30",
+          icon: <Target className="h-4 w-4 text-orbit-warning" />,
+          badgeVariant: "warning" as BadgeVariant,
+          containerBg: "bg-orbit-warning-soft text-orbit-warning",
         };
       case "note":
         return {
-          icon: <FileText className="h-4 w-4 text-purple-600 dark:text-purple-400" />,
-          badgeClass: "bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300",
-          containerBg: "bg-purple-50/50 dark:bg-purple-950/30",
+          icon: <FileText className="h-4 w-4 text-orbit-accent-secondary" />,
+          badgeVariant: "info" as BadgeVariant,
+          containerBg: "bg-orbit-accent-secondary-soft text-orbit-accent-secondary",
         };
       case "library":
         return {
-          icon: <BookOpen className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />,
-          badgeClass: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300",
-          containerBg: "bg-emerald-50/50 dark:bg-emerald-950/30",
+          icon: <BookOpen className="h-4 w-4 text-orbit-accent" />,
+          badgeVariant: "accent" as BadgeVariant,
+          containerBg: "bg-orbit-accent-soft text-orbit-accent",
         };
       case "file":
         return {
-          icon: <Paperclip className="h-4 w-4 text-amber-600 dark:text-amber-400" />,
-          badgeClass: "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300",
-          containerBg: "bg-amber-50/50 dark:bg-amber-950/30",
+          icon: <Paperclip className="h-4 w-4 text-orbit-text-secondary" />,
+          badgeVariant: "neutral" as BadgeVariant,
+          containerBg: "bg-orbit-subtle text-orbit-text-secondary",
         };
       case "habit":
         return {
-          icon: <Repeat className="h-4 w-4 text-violet-600 dark:text-violet-400" />,
-          badgeClass: "bg-violet-50 text-violet-700 dark:bg-violet-950/60 dark:text-violet-300",
-          containerBg: "bg-violet-50/50 dark:bg-violet-950/30",
+          icon: <Repeat className="h-4 w-4 text-orbit-accent-secondary" />,
+          badgeVariant: "info" as BadgeVariant,
+          containerBg: "bg-orbit-accent-secondary-soft text-orbit-accent-secondary",
         };
       case "event":
         return {
-          icon: <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400" />,
-          badgeClass: "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300",
-          containerBg: "bg-blue-50/50 dark:bg-blue-950/30",
+          icon: <Calendar className="h-4 w-4 text-orbit-warning" />,
+          badgeVariant: "warning" as BadgeVariant,
+          containerBg: "bg-orbit-warning-soft text-orbit-warning",
         };
       case "inbox":
         return {
-          icon: <Inbox className="h-4 w-4 text-slate-600 dark:text-slate-400" />,
-          badgeClass: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
-          containerBg: "bg-slate-100/50 dark:bg-slate-800/30",
+          icon: <Inbox className="h-4 w-4 text-orbit-text-secondary" />,
+          badgeVariant: "neutral" as BadgeVariant,
+          containerBg: "bg-orbit-subtle text-orbit-text-secondary",
         };
       case "collection":
         return {
-          icon: <Folder className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />,
-          badgeClass: "bg-cyan-50 text-cyan-700 dark:bg-cyan-950/60 dark:text-cyan-300",
-          containerBg: "bg-cyan-50/50 dark:bg-cyan-950/30",
+          icon: <Folder className="h-4 w-4 text-orbit-accent-secondary" />,
+          badgeVariant: "info" as BadgeVariant,
+          containerBg: "bg-orbit-accent-secondary-soft text-orbit-accent-secondary",
         };
     }
   })();
@@ -185,23 +186,23 @@ export function SearchResultItem({
       type="button"
       onClick={() => onSelect(item)}
       onMouseEnter={onMouseEnter}
-      className={`group w-full text-left rounded-xl p-2.5 sm:p-3 min-h-[48px] sm:min-h-[44px] transition-all flex items-start gap-2.5 sm:gap-3 select-none relative focus:outline-hidden focus-visible:ring-2 focus-visible:ring-indigo-500 ${
+      className={`group w-full text-left rounded-lg p-2.5 sm:p-3 min-h-[48px] sm:min-h-[44px] transition-all flex items-start gap-2.5 sm:gap-3 select-none relative focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-accent ${
         isSelected
-          ? "bg-indigo-50/90 dark:bg-indigo-950/60 ring-1 ring-indigo-500/40 shadow-xs"
-          : "hover:bg-slate-50 dark:hover:bg-slate-800/40"
+          ? "bg-orbit-surface-secondary border border-orbit-border shadow-orbit-xs"
+          : "hover:bg-orbit-subtle/80 border border-transparent"
       }`}
     >
       {/* Left Active Accent Pill */}
       {isSelected && (
         <span
-          className="absolute left-1 top-2.5 bottom-2.5 w-1 rounded-full bg-indigo-600 dark:bg-indigo-400"
+          className="absolute left-1 top-2.5 bottom-2.5 w-1 rounded-full bg-orbit-accent"
           aria-hidden="true"
         />
       )}
 
       {/* Icon Capsule */}
       <div
-        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg mt-0.5 transition-colors ${containerBg}`}
+        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md mt-0.5 border border-orbit-border/40 transition-colors ${containerBg}`}
       >
         {icon}
       </div>
@@ -209,7 +210,7 @@ export function SearchResultItem({
       {/* Main Content Info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="font-semibold text-sm text-slate-900 dark:text-white truncate">
+          <span className="font-medium text-sm text-orbit-text truncate">
             <HighlightedText
               text={item.title}
               offsets={titleHighlight?.offsets}
@@ -217,17 +218,15 @@ export function SearchResultItem({
           </span>
 
           {item.badge && (
-            <span
-              className={`text-[10px] font-bold px-1.5 py-0.5 rounded capitalize shrink-0 ${badgeClass}`}
-            >
+            <Badge variant={badgeVariant} className="capitalize shrink-0">
               {item.badge}
-            </span>
+            </Badge>
           )}
         </div>
 
         {/* Subtitle if present */}
         {item.subtitle && (
-          <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400 truncate">
+          <p className="mt-0.5 text-xs text-orbit-text-secondary truncate">
             {item.subtitle}
           </p>
         )}
@@ -238,9 +237,9 @@ export function SearchResultItem({
 
       {/* Enter Action Indicator (visible when selected) */}
       <div
-        className={`shrink-0 flex items-center gap-1 text-[11px] font-medium transition-opacity ${
+        className={`shrink-0 flex items-center gap-1 font-mono text-[11px] font-medium transition-opacity ${
           isSelected
-            ? "opacity-100 text-indigo-600 dark:text-indigo-400"
+            ? "opacity-100 text-orbit-accent"
             : "opacity-0"
         }`}
       >
@@ -250,4 +249,3 @@ export function SearchResultItem({
     </button>
   );
 }
-
