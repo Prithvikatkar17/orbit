@@ -142,7 +142,7 @@ export function LibraryDetailModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs animate-in fade-in"
+      className="orbit-modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs animate-in fade-in"
       onClick={onClose}
     >
       <div
@@ -151,7 +151,7 @@ export function LibraryDetailModal({
         aria-modal="true"
         aria-labelledby="library-detail-modal-title"
         tabIndex={-1}
-        className="max-h-[90dvh] w-full max-w-xl overflow-y-auto rounded-2xl border border-orbit-border bg-orbit-surface p-4 sm:p-6 shadow-orbit-elevated outline-hidden scrollbar-thin animate-in zoom-in-95 duration-150"
+        className="orbit-modal-dialog max-h-[90dvh] w-full max-w-xl overflow-y-auto rounded-2xl border border-orbit-border bg-orbit-surface p-4 sm:p-6 shadow-orbit-elevated outline-hidden scrollbar-thin animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Navigation & Type Badge */}

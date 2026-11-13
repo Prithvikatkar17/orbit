@@ -65,7 +65,7 @@ export function ConfirmDialog({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs animate-in fade-in"
+      className="orbit-modal-backdrop fixed inset-0 z-[200] flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs animate-in fade-in"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget && canDismissConfirmDialog(loading)) {
           onClose();
@@ -79,7 +79,7 @@ export function ConfirmDialog({
         aria-labelledby={titleId}
         aria-describedby={resolved.description ? descId : undefined}
         tabIndex={-1}
-        className="w-full max-w-sm max-h-[90dvh] overflow-y-auto rounded-orbit-card border border-orbit-border/80 bg-orbit-surface-elevated p-4 sm:p-6 shadow-orbit-elevated outline-hidden animate-in zoom-in-95 duration-150"
+        className="orbit-modal-dialog w-full max-w-sm max-h-[90dvh] overflow-y-auto rounded-orbit-card border border-orbit-border/80 bg-orbit-surface-elevated p-4 sm:p-6 shadow-orbit-elevated outline-hidden animate-in zoom-in-95 duration-150"
       >
         <div className="flex items-start gap-3">
           {danger && (

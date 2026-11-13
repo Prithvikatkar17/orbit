@@ -317,13 +317,13 @@ export function SearchModal() {
       role="dialog"
       aria-modal="true"
       aria-labelledby="orbit-search-modal-heading"
-      className="fixed inset-0 z-50 flex items-start justify-center p-2 sm:p-4 pt-3 sm:pt-16 bg-black/45 backdrop-blur-xs animate-in fade-in duration-150"
+      className="orbit-modal-backdrop fixed inset-0 z-50 flex items-start justify-center p-2 sm:p-4 pt-3 sm:pt-16 bg-black/45 backdrop-blur-xs animate-in fade-in duration-150"
       onClick={(e) => {
         if (e.target === e.currentTarget) closeSearch();
       }}
     >
       <div
-        className="w-full max-w-2xl overflow-hidden rounded-2xl border border-orbit-border bg-orbit-surface shadow-orbit-elevated transition-all flex flex-col h-[92dvh] sm:h-auto max-h-[92dvh] sm:max-h-[82dvh]"
+        className="orbit-modal-dialog w-full max-w-2xl overflow-hidden rounded-2xl border border-orbit-border bg-orbit-surface shadow-orbit-elevated transition-all flex flex-col h-[92dvh] sm:h-auto max-h-[92dvh] sm:max-h-[82dvh]"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="orbit-search-modal-heading" className="sr-only">
@@ -405,8 +405,9 @@ export function SearchModal() {
                 type="button"
                 role="tab"
                 aria-selected={isActive}
+                data-active={isActive ? "true" : "false"}
                 onClick={() => setActiveFilter(tab.id)}
-                className={`rounded-md px-2.5 py-1 text-xs whitespace-nowrap transition-all focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-accent ${
+                className={`orbit-filter-tab rounded-md px-2.5 py-1 text-xs whitespace-nowrap transition-all focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-accent ${
                   isActive
                     ? "bg-orbit-accent text-orbit-accent-fg shadow-orbit-xs font-medium"
                     : "text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text"

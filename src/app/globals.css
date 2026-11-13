@@ -1953,6 +1953,420 @@ pre {
   filter: drop-shadow(0 0 16px rgba(129, 140, 248, 0.3));
 }
 
+/* ==========================================================================
+   Phase 9C: Personality-Specific Interactive Components System
+   ========================================================================== */
+
+/* 1. Modal & Dialog Backdrop Treatments */
+.orbit-modal-backdrop {
+  transition: background-color var(--orbit-transition-normal), backdrop-filter var(--orbit-transition-normal);
+}
+
+:root[data-orbit-theme="archivist"] .orbit-modal-backdrop,
+:root[data-orbit-theme="default"] .orbit-modal-backdrop,
+:root:not([data-orbit-theme]) .orbit-modal-backdrop {
+  background-color: rgba(38, 38, 33, 0.48);
+}
+.dark:root[data-orbit-theme="archivist"] .orbit-modal-backdrop,
+.dark:root[data-orbit-theme="default"] .orbit-modal-backdrop,
+.dark:not([data-orbit-theme]) .orbit-modal-backdrop {
+  background-color: rgba(12, 12, 10, 0.72);
+}
+
+:root[data-orbit-theme="futuristic"] .orbit-modal-backdrop {
+  background-color: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(10px) brightness(0.9);
+  background-image: radial-gradient(rgba(2, 132, 199, 0.15) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.dark:root[data-orbit-theme="futuristic"] .orbit-modal-backdrop {
+  background-color: rgba(2, 6, 23, 0.85);
+  backdrop-filter: blur(12px) brightness(0.85);
+  background-image: radial-gradient(rgba(0, 240, 255, 0.16) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+:root[data-orbit-theme="aesthetic"] .orbit-modal-backdrop {
+  background-color: rgba(76, 29, 149, 0.2);
+  backdrop-filter: blur(10px) saturate(1.2);
+}
+.dark:root[data-orbit-theme="aesthetic"] .orbit-modal-backdrop {
+  background-color: rgba(30, 27, 75, 0.65);
+  backdrop-filter: blur(12px);
+}
+
+:root[data-orbit-theme="artistic"] .orbit-modal-backdrop {
+  background-color: rgba(39, 39, 42, 0.55);
+  backdrop-filter: blur(6px);
+}
+.dark:root[data-orbit-theme="artistic"] .orbit-modal-backdrop {
+  background-color: rgba(18, 18, 20, 0.78);
+  backdrop-filter: blur(8px);
+}
+
+:root[data-orbit-theme="minimalist"] .orbit-modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: none !important;
+}
+.dark:root[data-orbit-theme="minimalist"] .orbit-modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: none !important;
+}
+
+:root[data-orbit-theme="naturalist"] .orbit-modal-backdrop {
+  background-color: rgba(20, 36, 28, 0.42);
+  backdrop-filter: blur(8px);
+}
+.dark:root[data-orbit-theme="naturalist"] .orbit-modal-backdrop {
+  background-color: rgba(10, 22, 16, 0.72);
+  backdrop-filter: blur(10px);
+}
+
+:root[data-orbit-theme="midnight"] .orbit-modal-backdrop {
+  background-color: rgba(5, 5, 18, 0.8);
+  backdrop-filter: blur(12px);
+  background-image: radial-gradient(circle at 50% 25%, rgba(129, 140, 248, 0.12) 0%, transparent 65%);
+}
+
+/* 2. Modal & Dialog Surfaces & Elevation */
+.orbit-modal-dialog {
+  transition: box-shadow var(--orbit-transition-normal), border-color var(--orbit-transition-normal), transform var(--orbit-transition-fast);
+}
+
+:root[data-orbit-theme="archivist"] .orbit-modal-dialog,
+:root[data-orbit-theme="default"] .orbit-modal-dialog,
+:root:not([data-orbit-theme]) .orbit-modal-dialog {
+  border: 1px solid var(--orbit-border);
+  box-shadow: 0 20px 45px -16px rgb(38 38 33 / 0.18), 0 2px 8px -2px rgb(38 38 33 / 0.06);
+}
+
+:root[data-orbit-theme="futuristic"] .orbit-modal-dialog {
+  border: 1px solid var(--orbit-border-strong);
+  border-radius: var(--orbit-radius-card);
+  box-shadow: 0 0 0 1px rgba(2, 132, 199, 0.25), 0 20px 50px -10px rgba(2, 132, 199, 0.2);
+}
+.dark:root[data-orbit-theme="futuristic"] .orbit-modal-dialog {
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.2), 0 0 35px -5px rgba(0, 240, 255, 0.22);
+}
+
+:root[data-orbit-theme="aesthetic"] .orbit-modal-dialog {
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 50px -15px rgba(244, 63, 94, 0.15), 0 6px 20px -2px rgba(168, 85, 247, 0.1);
+}
+
+:root[data-orbit-theme="artistic"] .orbit-modal-dialog {
+  border-radius: 1rem;
+  box-shadow: 4px 6px 0px 0px var(--orbit-border-strong), 0 20px 40px -15px rgba(0, 0, 0, 0.15);
+}
+
+:root[data-orbit-theme="minimalist"] .orbit-modal-dialog {
+  border: 1px solid var(--orbit-border-strong);
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
+  border-radius: 0.25rem;
+}
+
+:root[data-orbit-theme="naturalist"] .orbit-modal-dialog {
+  border: 1px solid var(--orbit-border);
+  border-radius: 1.25rem;
+  box-shadow: 0 18px 45px -12px rgba(35, 92, 59, 0.18);
+}
+
+:root[data-orbit-theme="midnight"] .orbit-modal-dialog {
+  border: 1px solid rgba(129, 140, 248, 0.35);
+  box-shadow: 0 0 35px -5px rgba(129, 140, 248, 0.25), 0 25px 60px -15px rgba(0, 0, 0, 0.85);
+}
+
+/* 3. Button Interactions across Personalities */
+.orbit-button {
+  position: relative;
+  transition: all var(--orbit-transition-fast);
+}
+
+/* Archivist: Refined paper-like surfaces and editorial transitions */
+:root[data-orbit-theme="archivist"] .orbit-button:active:not(:disabled),
+:root[data-orbit-theme="default"] .orbit-button:active:not(:disabled),
+:root:not([data-orbit-theme]) .orbit-button:active:not(:disabled) {
+  transform: translateY(1px) scale(0.99);
+}
+
+/* Futuristic: Precise borders, technical highlights and restrained glow */
+:root[data-orbit-theme="futuristic"] .orbit-button:focus-visible {
+  outline: 2px solid var(--orbit-accent) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 12px var(--orbit-accent) !important;
+}
+:root[data-orbit-theme="futuristic"] .orbit-button:hover:not(:disabled) {
+  box-shadow: 0 0 8px rgba(2, 132, 199, 0.35);
+}
+.dark:root[data-orbit-theme="futuristic"] .orbit-button:hover:not(:disabled) {
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.45);
+}
+:root[data-orbit-theme="futuristic"] .orbit-button:active:not(:disabled) {
+  box-shadow: 0 0 4px var(--orbit-accent);
+}
+
+/* Aesthetic: Soft transitions, gentle shadows and rounded surfaces */
+:root[data-orbit-theme="aesthetic"] .orbit-button {
+  border-radius: var(--orbit-radius-pill);
+}
+:root[data-orbit-theme="aesthetic"] .orbit-button:hover:not(:disabled) {
+  box-shadow: 0 4px 16px -2px rgba(244, 63, 94, 0.25);
+  transform: translateY(-1px);
+}
+:root[data-orbit-theme="aesthetic"] .orbit-button:active:not(:disabled) {
+  transform: translateY(0.5px) scale(0.98);
+}
+
+/* Artistic: Expressive accents and creative interaction details */
+:root[data-orbit-theme="artistic"] .orbit-button:hover:not(:disabled) {
+  transform: translateY(-1.5px) rotate(-0.5deg);
+  box-shadow: 2px 3px 0px 0px var(--orbit-border-strong);
+}
+:root[data-orbit-theme="artistic"] .orbit-button:active:not(:disabled) {
+  transform: translateY(1px) rotate(0deg);
+  box-shadow: 0px 0px 0px 0px var(--orbit-border-strong);
+}
+
+/* Minimalist: Restrained, immediate feedback with minimal decoration */
+:root[data-orbit-theme="minimalist"] .orbit-button {
+  transition: none !important;
+  box-shadow: none !important;
+  border-radius: var(--orbit-radius-control);
+}
+:root[data-orbit-theme="minimalist"] .orbit-button:focus-visible {
+  outline: 1.5px solid var(--orbit-text) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+}
+:root[data-orbit-theme="minimalist"] .orbit-button:active:not(:disabled) {
+  transform: none !important;
+  filter: contrast(1.4);
+}
+
+/* Naturalist: Organic highlights and earthy interaction states */
+:root[data-orbit-theme="naturalist"] .orbit-button {
+  border-radius: 0.625rem;
+}
+:root[data-orbit-theme="naturalist"] .orbit-button:focus-visible {
+  outline: 2px solid var(--orbit-accent) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 8px rgba(35, 92, 59, 0.3) !important;
+}
+:root[data-orbit-theme="naturalist"] .orbit-button:hover:not(:disabled) {
+  box-shadow: 0 3px 12px -2px rgba(35, 92, 59, 0.2);
+}
+
+/* Midnight: Atmospheric surfaces and subtle luminous highlights */
+:root[data-orbit-theme="midnight"] .orbit-button:focus-visible {
+  outline: 2px solid var(--orbit-accent) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 16px rgba(129, 140, 248, 0.6) !important;
+}
+:root[data-orbit-theme="midnight"] .orbit-button:hover:not(:disabled) {
+  box-shadow: 0 0 14px -1px rgba(129, 140, 248, 0.45);
+}
+:root[data-orbit-theme="midnight"] .orbit-button:active:not(:disabled) {
+  box-shadow: 0 0 8px rgba(129, 140, 248, 0.7);
+}
+
+/* 4. Form Control Focus & Interaction States */
+.orbit-input,
+.orbit-textarea,
+.orbit-select {
+  transition: border-color var(--orbit-transition-fast), box-shadow var(--orbit-transition-fast), background-color var(--orbit-transition-fast);
+}
+
+:root[data-orbit-theme="futuristic"] .orbit-input:focus,
+:root[data-orbit-theme="futuristic"] .orbit-textarea:focus,
+:root[data-orbit-theme="futuristic"] .orbit-select:focus {
+  border-color: var(--orbit-accent) !important;
+  box-shadow: 0 0 8px rgba(2, 132, 199, 0.35) !important;
+}
+.dark:root[data-orbit-theme="futuristic"] .orbit-input:focus,
+.dark:root[data-orbit-theme="futuristic"] .orbit-textarea:focus,
+.dark:root[data-orbit-theme="futuristic"] .orbit-select:focus {
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4) !important;
+}
+
+:root[data-orbit-theme="aesthetic"] .orbit-input,
+:root[data-orbit-theme="aesthetic"] .orbit-textarea,
+:root[data-orbit-theme="aesthetic"] .orbit-select {
+  border-radius: 0.75rem;
+}
+:root[data-orbit-theme="aesthetic"] .orbit-input:focus,
+:root[data-orbit-theme="aesthetic"] .orbit-textarea:focus,
+:root[data-orbit-theme="aesthetic"] .orbit-select:focus {
+  border-color: var(--orbit-accent) !important;
+  box-shadow: 0 0 10px rgba(244, 63, 94, 0.2) !important;
+}
+
+:root[data-orbit-theme="minimalist"] .orbit-input,
+:root[data-orbit-theme="minimalist"] .orbit-textarea,
+:root[data-orbit-theme="minimalist"] .orbit-select {
+  transition: none !important;
+}
+:root[data-orbit-theme="minimalist"] .orbit-input:focus,
+:root[data-orbit-theme="minimalist"] .orbit-textarea:focus,
+:root[data-orbit-theme="minimalist"] .orbit-select:focus {
+  border-color: var(--orbit-text) !important;
+  box-shadow: none !important;
+}
+
+:root[data-orbit-theme="midnight"] .orbit-input:focus,
+:root[data-orbit-theme="midnight"] .orbit-textarea:focus,
+:root[data-orbit-theme="midnight"] .orbit-select:focus {
+  border-color: var(--orbit-accent) !important;
+  box-shadow: 0 0 12px rgba(129, 140, 248, 0.4) !important;
+}
+
+/* 5. Interactive Cards */
+.orbit-card-interactive {
+  transition: all var(--orbit-transition-fast);
+}
+
+:root[data-orbit-theme="futuristic"] .orbit-card-interactive:hover {
+  border-color: rgba(2, 132, 199, 0.5) !important;
+  box-shadow: 0 0 12px rgba(2, 132, 199, 0.2) !important;
+}
+.dark:root[data-orbit-theme="futuristic"] .orbit-card-interactive:hover {
+  border-color: rgba(0, 240, 255, 0.6) !important;
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.25) !important;
+}
+
+:root[data-orbit-theme="aesthetic"] .orbit-card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -6px rgba(244, 63, 94, 0.12);
+}
+
+:root[data-orbit-theme="artistic"] .orbit-card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 3px 4px 0px 0px var(--orbit-border-strong);
+}
+
+:root[data-orbit-theme="minimalist"] .orbit-card-interactive:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  border-color: var(--orbit-text) !important;
+}
+
+:root[data-orbit-theme="naturalist"] .orbit-card-interactive:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px -4px rgba(35, 92, 59, 0.15);
+}
+
+:root[data-orbit-theme="midnight"] .orbit-card-interactive:hover {
+  border-color: rgba(129, 140, 248, 0.5) !important;
+  box-shadow: 0 0 20px -2px rgba(129, 140, 248, 0.28) !important;
+}
+
+/* 6. Notification Center Popover & Item Treatments */
+.orbit-notification-panel {
+  transition: box-shadow var(--orbit-transition-normal), border-color var(--orbit-transition-normal);
+}
+
+:root[data-orbit-theme="futuristic"] .orbit-notification-panel {
+  border-radius: var(--orbit-radius-card);
+  box-shadow: 0 0 0 1px rgba(2, 132, 199, 0.25), 0 16px 40px -10px rgba(2, 132, 199, 0.25);
+}
+.dark:root[data-orbit-theme="futuristic"] .orbit-notification-panel {
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.25);
+}
+
+:root[data-orbit-theme="aesthetic"] .orbit-notification-panel {
+  border-radius: 1.5rem;
+  box-shadow: 0 16px 40px -10px rgba(244, 63, 94, 0.14);
+}
+
+:root[data-orbit-theme="artistic"] .orbit-notification-panel {
+  border-radius: 1rem;
+  box-shadow: 3px 4px 0px 0px var(--orbit-border-strong), 0 12px 30px -8px rgba(0, 0, 0, 0.12);
+}
+
+:root[data-orbit-theme="minimalist"] .orbit-notification-panel {
+  border-radius: 0.25rem;
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
+}
+
+:root[data-orbit-theme="midnight"] .orbit-notification-panel {
+  border: 1px solid rgba(129, 140, 248, 0.35);
+  box-shadow: 0 0 28px rgba(129, 140, 248, 0.25), 0 20px 45px -10px rgba(0, 0, 0, 0.8);
+}
+
+/* Unread Notification Beacon Dot */
+.orbit-notification-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+  display: inline-block;
+  background-color: var(--orbit-accent);
+}
+
+:root[data-orbit-theme="futuristic"] .orbit-notification-dot {
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--orbit-accent);
+}
+
+:root[data-orbit-theme="minimalist"] .orbit-notification-dot {
+  border-radius: 0px;
+  background-color: var(--orbit-text);
+}
+
+:root[data-orbit-theme="midnight"] .orbit-notification-dot {
+  box-shadow: 0 0 8px rgba(129, 140, 248, 0.9);
+}
+
+/* 7. Universal Search Result Items & Filters */
+.orbit-search-item {
+  transition: all var(--orbit-transition-fast);
+}
+
+:root[data-orbit-theme="futuristic"] .orbit-search-item[aria-selected="true"] {
+  border-color: var(--orbit-accent) !important;
+  box-shadow: 0 0 10px rgba(2, 132, 199, 0.25) !important;
+}
+.dark:root[data-orbit-theme="futuristic"] .orbit-search-item[aria-selected="true"] {
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.35) !important;
+}
+
+:root[data-orbit-theme="aesthetic"] .orbit-search-item[aria-selected="true"] {
+  border-radius: 0.875rem;
+  box-shadow: 0 4px 14px -2px rgba(244, 63, 94, 0.12);
+}
+
+:root[data-orbit-theme="artistic"] .orbit-search-item[aria-selected="true"] {
+  box-shadow: 2px 2px 0px 0px var(--orbit-accent);
+}
+
+:root[data-orbit-theme="minimalist"] .orbit-search-item[aria-selected="true"] {
+  border: 1px solid var(--orbit-text) !important;
+  box-shadow: none !important;
+}
+
+:root[data-orbit-theme="midnight"] .orbit-search-item[aria-selected="true"] {
+  border-color: rgba(129, 140, 248, 0.5) !important;
+  box-shadow: 0 0 16px -2px rgba(129, 140, 248, 0.35) !important;
+}
+
+/* Filter Tabs */
+.orbit-filter-tab {
+  transition: all var(--orbit-transition-fast);
+}
+:root[data-orbit-theme="futuristic"] .orbit-filter-tab[data-active="true"] {
+  border-bottom: 2px solid var(--orbit-accent);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+}
+:root[data-orbit-theme="minimalist"] .orbit-filter-tab[data-active="true"] {
+  border: 1px solid var(--orbit-text);
+  box-shadow: none !important;
+}
+:root[data-orbit-theme="midnight"] .orbit-filter-tab[data-active="true"] {
+  box-shadow: 0 0 10px rgba(129, 140, 248, 0.4);
+}
+
+
 /* Accessible Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
   :root {

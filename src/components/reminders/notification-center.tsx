@@ -19,6 +19,7 @@ import {
 } from "@/lib/services/reminder-service";
 import { EVENT_TYPE_MAP } from "@/lib/constants";
 import { useMounted } from "@/lib/utils/dates";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
@@ -175,7 +176,7 @@ export function NotificationCenter() {
           aria-label="Notifications"
           tabIndex={-1}
           style={panelStyle}
-          className="flex flex-col rounded-2xl border border-orbit-border bg-orbit-surface shadow-orbit-elevated outline-hidden overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150"
+          className="orbit-notification-panel flex flex-col rounded-2xl border border-orbit-border bg-orbit-surface shadow-orbit-elevated outline-hidden overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150"
         >
           {/* Header */}
           <div className="shrink-0 flex items-center justify-between border-b border-orbit-border p-3.5 bg-orbit-surface">
@@ -230,16 +231,13 @@ export function NotificationCenter() {
           {/* Notification List (Scrollable Area) */}
           <div className="flex-1 overflow-y-auto divide-y divide-orbit-border">
             {notifications.length === 0 ? (
-              <div className="flex flex-col items-center justify-center p-8 text-center text-orbit-text-muted">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-orbit-surface-secondary mb-2">
-                  <Check className="h-5 w-5 text-orbit-accent" />
-                </div>
-                <p className="text-xs font-semibold text-orbit-text">
-                  All caught up!
-                </p>
-                <p className="text-[11px] text-orbit-text-muted mt-0.5">
-                  No pending reminders or alerts right now.
-                </p>
+              <div className="p-6">
+                <EmptyState
+                  compact
+                  eyebrow="DISPATCH LOG"
+                  title="All caught up"
+                  description="No pending reminders or alerts right now."
+                />
               </div>
             ) : (
               notifications.map((item) => {
@@ -249,14 +247,22 @@ export function NotificationCenter() {
                 return (
                   <div
                     key={item.id}
-                    className={`flex items-start justify-between p-3.5 text-xs transition-colors ${
+                    className={`orbit-notification-item flex items-start justify-between p-3.5 text-xs transition-colors hover:bg-orbit-subtle/50 ${
                       item.read
                         ? "bg-orbit-surface opacity-75"
-                        : "bg-orbit-accent-soft/30 font-medium"
+                        : "bg-orbit-accent-soft/25 font-medium"
                     }`}
                   >
                     <div className="flex items-start gap-2.5 flex-1 pr-2">
-                      <span className="text-sm mt-0.5 select-none">{typeCfg.icon}</span>
+                      <div className="relative mt-0.5">
+                        <span className="text-sm select-none">{typeCfg.icon}</span>
+                        {!item.read && (
+                          <span
+                            className="orbit-notification-dot absolute -top-1 -right-1"
+                            aria-label="Unread notification"
+                          />
+                        )}
+                      </div>
                       <div className="space-y-1">
                         <div className="flex items-center gap-1.5 flex-wrap">
                           <span className="font-semibold text-orbit-text">

@@ -333,3 +333,86 @@ test("Phase 9A: Settings Page Theme Integration", async (t) => {
   });
 });
 
+test("Phase 9C: Personality-Specific Interactive Components System", async (t) => {
+  const cssPath = path.join(projectRoot, "src/app/globals.css");
+  const css = fs.readFileSync(cssPath, "utf-8");
+
+  await t.test("globals.css defines interactive component rules across all personalities", () => {
+    const requiredRules = [
+      ".orbit-modal-backdrop",
+      ".orbit-modal-dialog",
+      ".orbit-button",
+      ".orbit-input",
+      ".orbit-textarea",
+      ".orbit-select",
+      ".orbit-card-interactive",
+      ".orbit-notification-panel",
+      ".orbit-notification-dot",
+      ".orbit-search-item",
+      ".orbit-filter-tab",
+    ];
+
+    for (const rule of requiredRules) {
+      assert.ok(
+        css.includes(rule),
+        `globals.css must define interactive component class "${rule}"`
+      );
+    }
+  });
+
+  await t.test("Shared UI components adopt interactive classes", () => {
+    const buttonSrc = fs.readFileSync(path.join(projectRoot, "src/components/ui/button.tsx"), "utf-8");
+    assert.ok(buttonSrc.includes("orbit-button"), "button.tsx adopts orbit-button");
+
+    const surfaceCardSrc = fs.readFileSync(path.join(projectRoot, "src/components/ui/surface-card.tsx"), "utf-8");
+    assert.ok(surfaceCardSrc.includes("orbit-card-interactive"), "surface-card.tsx adopts orbit-card-interactive");
+
+    const formFieldSrc = fs.readFileSync(path.join(projectRoot, "src/components/ui/form-field.tsx"), "utf-8");
+    assert.ok(formFieldSrc.includes("orbit-input"), "form-field.tsx adopts orbit-input");
+    assert.ok(formFieldSrc.includes("orbit-textarea"), "form-field.tsx adopts orbit-textarea");
+    assert.ok(formFieldSrc.includes("orbit-select"), "form-field.tsx adopts orbit-select");
+
+    const confirmSrc = fs.readFileSync(path.join(projectRoot, "src/components/ui/confirm-dialog.tsx"), "utf-8");
+    assert.ok(confirmSrc.includes("orbit-modal-backdrop"), "confirm-dialog.tsx adopts orbit-modal-backdrop");
+    assert.ok(confirmSrc.includes("orbit-modal-dialog"), "confirm-dialog.tsx adopts orbit-modal-dialog");
+
+    const notifSrc = fs.readFileSync(path.join(projectRoot, "src/components/reminders/notification-center.tsx"), "utf-8");
+    assert.ok(notifSrc.includes("orbit-notification-panel"), "notification-center.tsx adopts orbit-notification-panel");
+    assert.ok(notifSrc.includes("orbit-notification-dot"), "notification-center.tsx adopts orbit-notification-dot");
+
+    const searchSrc = fs.readFileSync(path.join(projectRoot, "src/components/search/search-modal.tsx"), "utf-8");
+    assert.ok(searchSrc.includes("orbit-modal-backdrop"), "search-modal.tsx adopts orbit-modal-backdrop");
+    assert.ok(searchSrc.includes("orbit-modal-dialog"), "search-modal.tsx adopts orbit-modal-dialog");
+    assert.ok(searchSrc.includes("orbit-filter-tab"), "search-modal.tsx adopts orbit-filter-tab");
+
+    const searchItemSrc = fs.readFileSync(path.join(projectRoot, "src/components/search/search-result-item.tsx"), "utf-8");
+    assert.ok(searchItemSrc.includes("orbit-search-item"), "search-result-item.tsx adopts orbit-search-item");
+  });
+
+  await t.test("Application modals adopt standardized orbit-modal-backdrop and orbit-modal-dialog", () => {
+    const modals = [
+      "src/components/quick-capture-modal.tsx",
+      "src/components/tasks/task-modal.tsx",
+      "src/components/habits/habit-modal.tsx",
+      "src/components/calendar/event-modal.tsx",
+      "src/components/inbox/convert-modal.tsx",
+      "src/components/library/library-entry-modal.tsx",
+      "src/components/library/library-collection-modal.tsx",
+      "src/components/library/library-detail-modal.tsx",
+    ];
+
+    for (const modalRelPath of modals) {
+      const modalSrc = fs.readFileSync(path.join(projectRoot, modalRelPath), "utf-8");
+      assert.ok(
+        modalSrc.includes("orbit-modal-backdrop"),
+        `${modalRelPath} must include "orbit-modal-backdrop"`
+      );
+      assert.ok(
+        modalSrc.includes("orbit-modal-dialog"),
+        `${modalRelPath} must include "orbit-modal-dialog"`
+      );
+    }
+  });
+});
+
+

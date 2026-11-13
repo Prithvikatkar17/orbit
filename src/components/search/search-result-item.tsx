@@ -186,7 +186,7 @@ export function SearchResultItem({
       type="button"
       onClick={() => onSelect(item)}
       onMouseEnter={onMouseEnter}
-      className={`group w-full text-left rounded-lg p-2.5 sm:p-3 min-h-[48px] sm:min-h-[44px] transition-all flex items-start gap-2.5 sm:gap-3 select-none relative focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-accent ${
+      className={`orbit-search-item group w-full text-left rounded-lg p-2.5 sm:p-3 min-h-[48px] sm:min-h-[44px] transition-all flex items-start gap-2.5 sm:gap-3 select-none relative focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-accent ${
         isSelected
           ? "bg-orbit-surface-secondary border border-orbit-border shadow-orbit-xs"
           : "hover:bg-orbit-subtle/80 border border-transparent"

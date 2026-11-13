@@ -26,13 +26,13 @@ const variantClasses: Record<SurfaceCardVariant, string> = {
 
 const interactiveVariantClasses: Record<SurfaceCardVariant, string> = {
   outlined:
-    "transition-all hover:border-orbit-border-strong hover:shadow-orbit-card cursor-pointer",
+    "orbit-card-interactive transition-all hover:border-orbit-border-strong hover:shadow-orbit-card cursor-pointer",
   elevated:
-    "transition-all hover:border-orbit-border-strong hover:shadow-orbit-elevated cursor-pointer",
+    "orbit-card-interactive transition-all hover:border-orbit-border-strong hover:shadow-orbit-elevated cursor-pointer",
   tonal:
-    "transition-colors hover:bg-orbit-subtle cursor-pointer",
+    "orbit-card-interactive transition-colors hover:bg-orbit-subtle cursor-pointer",
   flat:
-    "transition-colors hover:bg-orbit-surface-secondary/60 cursor-pointer",
+    "orbit-card-interactive transition-colors hover:bg-orbit-surface-secondary/60 cursor-pointer",
 };
 
 const paddingClasses: Record<SurfaceCardPadding, string> = {

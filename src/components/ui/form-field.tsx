@@ -2,13 +2,13 @@ import React from "react";
 
 /** Standardized token-backed classes for ORBIT form inputs, textareas, and selects. */
 export const inputClass =
-  "w-full rounded-orbit-control border border-orbit-border bg-orbit-surface px-3.5 py-2.5 text-sm text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:ring-2 focus:ring-orbit-ring/35 focus:outline-hidden disabled:opacity-50 transition-colors";
+  "orbit-input w-full rounded-orbit-control border border-orbit-border bg-orbit-surface px-3.5 py-2.5 text-sm text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:ring-2 focus:ring-orbit-ring/35 focus:outline-hidden disabled:opacity-50 transition-colors";
 
 export const textareaClass =
-  "w-full rounded-orbit-control border border-orbit-border bg-orbit-surface p-3 text-sm text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:ring-2 focus:ring-orbit-ring/35 focus:outline-hidden disabled:opacity-50 transition-colors";
+  "orbit-textarea w-full rounded-orbit-control border border-orbit-border bg-orbit-surface p-3 text-sm text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:ring-2 focus:ring-orbit-ring/35 focus:outline-hidden disabled:opacity-50 transition-colors";
 
 export const selectClass =
-  "w-full rounded-orbit-control border border-orbit-border bg-orbit-surface px-3 py-2 text-sm text-orbit-text focus:border-orbit-accent focus:ring-2 focus:ring-orbit-ring/35 focus:outline-hidden disabled:opacity-50 transition-colors";
+  "orbit-select w-full rounded-orbit-control border border-orbit-border bg-orbit-surface px-3 py-2 text-sm text-orbit-text focus:border-orbit-accent focus:ring-2 focus:ring-orbit-ring/35 focus:outline-hidden disabled:opacity-50 transition-colors";
 
 export const labelClass =
   "mb-1.5 block text-xs font-medium text-orbit-text-secondary";

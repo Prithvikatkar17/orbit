@@ -111,14 +111,14 @@ export function LibraryCollectionModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs animate-in fade-in">
+    <div className="orbit-modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs animate-in fade-in">
       <div
         ref={modalRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="library-collection-modal-title"
         tabIndex={-1}
-        className="w-full max-w-md max-h-[90dvh] overflow-y-auto rounded-2xl border border-orbit-border bg-orbit-surface p-4 sm:p-6 shadow-orbit-elevated outline-hidden"
+        className="orbit-modal-dialog w-full max-w-md max-h-[90dvh] overflow-y-auto rounded-2xl border border-orbit-border bg-orbit-surface p-4 sm:p-6 shadow-orbit-elevated outline-hidden"
       >
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-orbit-border">
