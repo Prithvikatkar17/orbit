@@ -10,8 +10,11 @@ import {
   TrendingUp,
   TrendingDown,
   Minus,
+  Flame,
 } from "lucide-react";
 import type { AnalyticsSnapshot } from "@/lib/services/analytics-service";
+import { SurfaceCard } from "@/components/ui/surface-card";
+import { Badge } from "@/components/ui/badge";
 
 interface OverviewCardsProps {
   snapshot: AnalyticsSnapshot;
@@ -23,204 +26,270 @@ export function OverviewCards({ snapshot }: OverviewCardsProps) {
     tasksCompletedInRange,
     taskPeriodComparison,
     habitConsistency,
+    habitStreaks,
+    goalProgress,
     range,
   } = snapshot;
 
   const isOverdue = taskOverview.overdueTasks > 0;
+  const bestActiveStreak = habitStreaks.longestCurrentStreak;
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-      {/* 1. Tasks Completed */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 flex flex-col justify-between">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-            Tasks Completed
-          </span>
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400">
-            <CheckCircle2 className="h-4 w-4" />
-          </div>
-        </div>
-
-        <div className="mt-3">
-          <div className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            {tasksCompletedInRange}
-          </div>
-
-          <div className="mt-2 flex items-center gap-1.5 text-xs">
-            {range.type === "all" ? (
-              <span className="text-slate-400 dark:text-slate-500 font-medium">
-                Total completed all time
+    <div className="space-y-4">
+      {/* Editorial Narrative Summary Strip */}
+      <SurfaceCard variant="tonal" padding="md">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-orbit-accent">
+                Rhythm & Output
               </span>
-            ) : taskPeriodComparison.percentageChange !== null ? (
-              <span
-                className={`inline-flex items-center gap-0.5 font-semibold ${
-                  taskPeriodComparison.trend === "up"
-                    ? "text-emerald-600 dark:text-emerald-400"
-                    : taskPeriodComparison.trend === "down"
-                    ? "text-rose-600 dark:text-rose-400"
-                    : "text-slate-500 dark:text-slate-400"
-                }`}
-              >
-                {taskPeriodComparison.trend === "up" && <TrendingUp className="h-3.5 w-3.5" />}
-                {taskPeriodComparison.trend === "down" && <TrendingDown className="h-3.5 w-3.5" />}
-                {taskPeriodComparison.trend === "neutral" && <Minus className="h-3.5 w-3.5" />}
-                {taskPeriodComparison.percentageChange > 0 ? "+" : ""}
-                {taskPeriodComparison.percentageChange}%
-                <span className="text-slate-400 font-normal ml-0.5">vs prev {range.daysCount}d</span>
-              </span>
-            ) : (
-              <span className="text-slate-400">No prior period</span>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* 2. Pending Tasks */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 flex flex-col justify-between">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-            Pending Tasks
-          </span>
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400">
-            <Clock className="h-4 w-4" />
-          </div>
-        </div>
-
-        <div className="mt-3">
-          <div className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            {taskOverview.pendingTasks}
-          </div>
-          <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-            {taskOverview.dueTodayTasks > 0 ? (
-              <span className="font-medium text-amber-600 dark:text-amber-400">
-                {taskOverview.dueTodayTasks} due today
-              </span>
-            ) : (
-              <span>0 due today</span>
-            )}
-            <span className="mx-1 text-slate-300 dark:text-slate-700">·</span>
-            <span>{taskOverview.upcomingTasks} upcoming</span>
-          </div>
-        </div>
-      </div>
-
-      {/* 3. Task Completion Rate */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 flex flex-col justify-between">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-            Completion Rate
-          </span>
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400">
-            <Target className="h-4 w-4" />
-          </div>
-        </div>
-
-        <div className="mt-3">
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              {taskOverview.completionRate}%
-            </span>
-          </div>
-
-          <div className="mt-2.5">
-            <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
-              <div
-                className="h-full rounded-full bg-emerald-500 transition-all duration-300"
-                style={{ width: `${Math.min(100, Math.max(0, taskOverview.completionRate))}%` }}
-              />
+              <Badge variant="neutral">
+                {range.type === "all" ? "All Time" : `Past ${range.daysCount} Days`}
+              </Badge>
             </div>
-            <p className="mt-1.5 text-[11px] text-slate-400">
-              {taskOverview.completedTasks} of {taskOverview.totalTasks} active tasks done
+            <p className="font-display text-lg font-semibold text-orbit-text">
+              {tasksCompletedInRange > 0
+                ? `${tasksCompletedInRange} ${
+                    tasksCompletedInRange === 1 ? "task" : "tasks"
+                  } completed with ${habitConsistency.consistencyRate}% habit consistency.`
+                : "A calm period. Ready when you want to begin tracking momentum."}
             </p>
           </div>
-        </div>
-      </div>
 
-      {/* 4. Overdue Tasks */}
-      <div
-        className={`rounded-2xl border p-5 shadow-xs flex flex-col justify-between transition-colors ${
-          isOverdue
-            ? "border-rose-200 bg-rose-50/20 dark:border-rose-900/40 dark:bg-rose-950/20"
-            : "border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900"
-        }`}
-      >
-        <div className="flex items-center justify-between">
-          <span
-            className={`text-xs font-semibold ${
-              isOverdue
-                ? "text-rose-600 dark:text-rose-400"
-                : "text-slate-500 dark:text-slate-400"
-            }`}
-          >
-            Overdue Tasks
-          </span>
-          <div
-            className={`flex h-8 w-8 items-center justify-center rounded-xl ${
-              isOverdue
-                ? "bg-rose-100 text-rose-600 dark:bg-rose-900/50 dark:text-rose-300"
-                : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
-            }`}
-          >
-            <AlertCircle className="h-4 w-4" />
-          </div>
-        </div>
-
-        <div className="mt-3">
-          <div
-            className={`text-3xl font-extrabold tracking-tight ${
-              isOverdue
-                ? "text-rose-600 dark:text-rose-400"
-                : "text-slate-900 dark:text-white"
-            }`}
-          >
-            {taskOverview.overdueTasks}
-          </div>
-          <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-            {isOverdue ? (
-              <span className="font-semibold text-rose-600 dark:text-rose-400">
-                Needs your attention
-              </span>
-            ) : (
-              <span className="text-emerald-600 dark:text-emerald-400 font-medium">
-                All caught up!
+          <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-orbit-text-secondary tabular-nums">
+            <span className="inline-flex items-center gap-1.5 rounded-orbit-control bg-orbit-surface px-2.5 py-1 border border-orbit-border/80">
+              <CheckCircle2 className="h-3.5 w-3.5 text-orbit-success" />
+              <span>{taskOverview.completionRate}% task rate</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-orbit-control bg-orbit-surface px-2.5 py-1 border border-orbit-border/80">
+              <Flame className="h-3.5 w-3.5 text-orbit-warning" />
+              <span>{bestActiveStreak}d active streak</span>
+            </span>
+            {goalProgress.totalGoals > 0 && (
+              <span className="inline-flex items-center gap-1.5 rounded-orbit-control bg-orbit-surface px-2.5 py-1 border border-orbit-border/80">
+                <Target className="h-3.5 w-3.5 text-orbit-accent" />
+                <span>{goalProgress.completedGoals}/{goalProgress.totalGoals} goals</span>
               </span>
             )}
-          </p>
-        </div>
-      </div>
-
-      {/* 5. Habit Consistency */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 flex flex-col justify-between">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-            Habit Consistency
-          </span>
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-50 text-violet-600 dark:bg-violet-950/50 dark:text-violet-400">
-            <Repeat className="h-4 w-4" />
           </div>
         </div>
+      </SurfaceCard>
 
-        <div className="mt-3">
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              {habitConsistency.consistencyRate}%
+      {/* 5 Distinct Metric Cards */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        {/* 1. Tasks Completed in Range */}
+        <SurfaceCard padding="md" className="flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-orbit-text-muted">
+              Tasks Completed
             </span>
+            <div className="flex h-8 w-8 items-center justify-center rounded-orbit-control bg-orbit-accent-soft text-orbit-accent">
+              <CheckCircle2 className="h-4 w-4" />
+            </div>
           </div>
 
-          <div className="mt-2.5">
-            <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
-              <div
-                className="h-full rounded-full bg-violet-500 transition-all duration-300"
-                style={{ width: `${Math.min(100, Math.max(0, habitConsistency.consistencyRate))}%` }}
-              />
+          <div className="mt-3">
+            <div className="font-display text-3xl font-semibold tracking-tight text-orbit-text tabular-nums">
+              {tasksCompletedInRange}
             </div>
-            <p className="mt-1.5 text-[11px] text-slate-400 truncate">
-              {habitConsistency.totalCompleted} / {habitConsistency.totalScheduled} check-ins
+
+            <div className="mt-2 flex items-center gap-1.5 text-xs">
+              {range.type === "all" ? (
+                <span className="font-medium text-orbit-text-muted">
+                  Total completed all time
+                </span>
+              ) : taskPeriodComparison.percentageChange !== null ? (
+                <span
+                  className={`inline-flex items-center gap-0.5 font-medium ${
+                    taskPeriodComparison.trend === "up"
+                      ? "text-orbit-success"
+                      : taskPeriodComparison.trend === "down"
+                      ? "text-orbit-danger"
+                      : "text-orbit-text-muted"
+                  }`}
+                >
+                  {taskPeriodComparison.trend === "up" && (
+                    <TrendingUp className="h-3.5 w-3.5" />
+                  )}
+                  {taskPeriodComparison.trend === "down" && (
+                    <TrendingDown className="h-3.5 w-3.5" />
+                  )}
+                  {taskPeriodComparison.trend === "neutral" && (
+                    <Minus className="h-3.5 w-3.5" />
+                  )}
+                  <span className="font-mono tabular-nums">
+                    {taskPeriodComparison.percentageChange > 0 ? "+" : ""}
+                    {taskPeriodComparison.percentageChange}%
+                  </span>
+                  <span className="ml-0.5 text-orbit-text-muted">
+                    vs prev {range.daysCount}d
+                  </span>
+                </span>
+              ) : (
+                <span className="text-orbit-text-muted">No prior period</span>
+              )}
+            </div>
+          </div>
+        </SurfaceCard>
+
+        {/* 2. Pending Tasks */}
+        <SurfaceCard padding="md" className="flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-orbit-text-muted">
+              Pending Tasks
+            </span>
+            <div className="flex h-8 w-8 items-center justify-center rounded-orbit-control bg-orbit-warning-soft text-orbit-warning">
+              <Clock className="h-4 w-4" />
+            </div>
+          </div>
+
+          <div className="mt-3">
+            <div className="font-display text-3xl font-semibold tracking-tight text-orbit-text tabular-nums">
+              {taskOverview.pendingTasks}
+            </div>
+            <div className="mt-2 text-xs text-orbit-text-secondary">
+              {taskOverview.dueTodayTasks > 0 ? (
+                <span className="font-medium text-orbit-warning">
+                  {taskOverview.dueTodayTasks} due today
+                </span>
+              ) : (
+                <span>0 due today</span>
+              )}
+              <span className="mx-1 text-orbit-border-strong">·</span>
+              <span className="font-mono tabular-nums">
+                {taskOverview.upcomingTasks} upcoming
+              </span>
+            </div>
+          </div>
+        </SurfaceCard>
+
+        {/* 3. Task Completion Rate */}
+        <SurfaceCard padding="md" className="flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-orbit-text-muted">
+              Completion Rate
+            </span>
+            <div className="flex h-8 w-8 items-center justify-center rounded-orbit-control bg-orbit-success-soft text-orbit-success">
+              <Target className="h-4 w-4" />
+            </div>
+          </div>
+
+          <div className="mt-3">
+            <div className="flex items-baseline gap-2">
+              <span className="font-display text-3xl font-semibold tracking-tight text-orbit-text tabular-nums">
+                {taskOverview.completionRate}%
+              </span>
+            </div>
+
+            <div className="mt-2.5">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-orbit-surface-secondary">
+                <div
+                  className="h-full rounded-full bg-orbit-success transition-all duration-300"
+                  style={{
+                    width: `${Math.min(
+                      100,
+                      Math.max(0, taskOverview.completionRate)
+                    )}%`,
+                  }}
+                />
+              </div>
+              <p className="mt-1.5 font-mono text-[11px] text-orbit-text-muted tabular-nums">
+                {taskOverview.completedTasks} / {taskOverview.totalTasks} active tasks done
+              </p>
+            </div>
+          </div>
+        </SurfaceCard>
+
+        {/* 4. Overdue Tasks */}
+        <SurfaceCard
+          padding="md"
+          className={`flex flex-col justify-between transition-colors ${
+            isOverdue
+              ? "border-orbit-danger/35 bg-orbit-danger-soft/30"
+              : ""
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <span
+              className={`text-xs font-semibold ${
+                isOverdue
+                  ? "text-orbit-danger"
+                  : "text-orbit-text-muted"
+              }`}
+            >
+              Overdue Tasks
+            </span>
+            <div
+              className={`flex h-8 w-8 items-center justify-center rounded-orbit-control ${
+                isOverdue
+                  ? "bg-orbit-danger-soft text-orbit-danger"
+                  : "bg-orbit-surface-secondary text-orbit-text-muted"
+              }`}
+            >
+              <AlertCircle className="h-4 w-4" />
+            </div>
+          </div>
+
+          <div className="mt-3">
+            <div
+              className={`font-display text-3xl font-semibold tracking-tight tabular-nums ${
+                isOverdue ? "text-orbit-danger" : "text-orbit-text"
+              }`}
+            >
+              {taskOverview.overdueTasks}
+            </div>
+            <p className="mt-2 text-xs">
+              {isOverdue ? (
+                <span className="font-medium text-orbit-danger">
+                  Needs your attention
+                </span>
+              ) : (
+                <span className="font-medium text-orbit-success">
+                  All caught up!
+                </span>
+              )}
             </p>
           </div>
-        </div>
+        </SurfaceCard>
+
+        {/* 5. Habit Consistency */}
+        <SurfaceCard padding="md" className="flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-orbit-text-muted">
+              Habit Consistency
+            </span>
+            <div className="flex h-8 w-8 items-center justify-center rounded-orbit-control bg-orbit-accent-secondary-soft text-orbit-accent-secondary">
+              <Repeat className="h-4 w-4" />
+            </div>
+          </div>
+
+          <div className="mt-3">
+            <div className="flex items-baseline gap-2">
+              <span className="font-display text-3xl font-semibold tracking-tight text-orbit-text tabular-nums">
+                {habitConsistency.consistencyRate}%
+              </span>
+            </div>
+
+            <div className="mt-2.5">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-orbit-surface-secondary">
+                <div
+                  className="h-full rounded-full bg-orbit-accent-secondary transition-all duration-300"
+                  style={{
+                    width: `${Math.min(
+                      100,
+                      Math.max(0, habitConsistency.consistencyRate)
+                    )}%`,
+                  }}
+                />
+              </div>
+              <p className="mt-1.5 font-mono text-[11px] text-orbit-text-muted tabular-nums truncate">
+                {habitConsistency.totalCompleted} / {habitConsistency.totalScheduled} check-ins
+              </p>
+            </div>
+          </div>
+        </SurfaceCard>
       </div>
     </div>
   );
 }
-

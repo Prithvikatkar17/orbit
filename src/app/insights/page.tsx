@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { BarChart2, Calendar } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { db } from "@/lib/db/client";
 import type { Task, Habit, HabitLog } from "@/lib/schemas";
 import { useMounted, useTodayDate } from "@/lib/utils/dates";
@@ -10,6 +10,7 @@ import {
   calculateAnalyticsSnapshot,
   type DateRangeType,
 } from "@/lib/services/analytics-service";
+import { PageHeader } from "@/components/ui/page-header";
 import { OverviewCards } from "@/components/insights/overview-cards";
 import { ActivityChart } from "@/components/insights/activity-chart";
 import { HabitBreakdown } from "@/components/insights/habit-breakdown";
@@ -73,43 +74,33 @@ export default function InsightsPage() {
   ]);
 
   return (
-    <div className="space-y-6 pb-12 animate-in fade-in duration-200">
-      {/* Header & Date Range Selector */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <BarChart2 className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-            <span className="text-xs font-bold tracking-widest text-indigo-600 uppercase dark:text-indigo-400">
-              INSIGHTS & ANALYTICS
-            </span>
+    <div className="space-y-6 pb-16 animate-in fade-in duration-200">
+      {/* Editorial Page Header with Date Range Selector */}
+      <PageHeader
+        eyebrow="INSIGHTS & ANALYTICS"
+        icon="📊"
+        title="Personal Insights"
+        description="Reflect on your momentum, output velocity, and habit consistency over time."
+        actions={
+          <div className="flex items-center gap-1 rounded-lg border border-orbit-border bg-orbit-surface p-1 shadow-orbit-xs">
+            <Calendar className="ml-2 mr-1 h-3.5 w-3.5 text-orbit-text-muted shrink-0" />
+            {RANGE_OPTIONS.map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => setRangeType(opt.id)}
+                className={`rounded-md px-3 py-1 text-xs font-medium transition-all ${
+                  rangeType === opt.id
+                    ? "bg-orbit-accent text-orbit-accent-fg shadow-orbit-xs font-semibold"
+                    : "text-orbit-text-muted hover:text-orbit-text hover:bg-orbit-surface-secondary/60"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
           </div>
-          <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl dark:text-white">
-            Performance Overview
-          </h1>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Track your output velocity, habit consistency, and personal momentum offline.
-          </p>
-        </div>
-
-        {/* Date Range Segmented Control */}
-        <div className="flex items-center gap-1 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xs dark:border-slate-800 dark:bg-slate-900 self-start sm:self-auto">
-          <Calendar className="ml-2 mr-1 h-3.5 w-3.5 text-slate-400 shrink-0" />
-          {RANGE_OPTIONS.map((opt) => (
-            <button
-              key={opt.id}
-              type="button"
-              onClick={() => setRangeType(opt.id)}
-              className={`rounded-xl px-3 py-1.5 text-xs font-semibold transition-all ${
-                rangeType === opt.id
-                  ? "bg-indigo-600 text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      </div>
+        }
+      />
 
       {/* Loading Skeleton */}
       {!snapshot ? (
@@ -118,14 +109,14 @@ export default function InsightsPage() {
             {[...Array(5)].map((_, i) => (
               <div
                 key={`skel-${i}`}
-                className="h-28 rounded-2xl bg-slate-100 dark:bg-slate-800/40 animate-pulse border border-slate-200/50 dark:border-slate-800"
+                className="h-28 rounded-xl bg-orbit-surface-secondary/70 animate-pulse border border-orbit-border/60"
               />
             ))}
           </div>
-          <div className="h-64 rounded-2xl bg-slate-100 dark:bg-slate-800/40 animate-pulse border border-slate-200/50 dark:border-slate-800" />
+          <div className="h-64 rounded-xl bg-orbit-surface-secondary/70 animate-pulse border border-orbit-border/60" />
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <div className="h-80 rounded-2xl bg-slate-100 dark:bg-slate-800/40 animate-pulse border border-slate-200/50 dark:border-slate-800" />
-            <div className="h-80 rounded-2xl bg-slate-100 dark:bg-slate-800/40 animate-pulse border border-slate-200/50 dark:border-slate-800" />
+            <div className="h-80 rounded-xl bg-orbit-surface-secondary/70 animate-pulse border border-orbit-border/60" />
+            <div className="h-80 rounded-xl bg-orbit-surface-secondary/70 animate-pulse border border-orbit-border/60" />
           </div>
         </div>
       ) : (

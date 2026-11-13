@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { Layers, AlertTriangle, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { SurfaceCard } from "@/components/ui/surface-card";
+import { Badge } from "@/components/ui/badge";
 import type { TaskDistributions } from "@/lib/services/analytics-service";
 import { CATEGORY_ICONS } from "@/lib/constants";
 
@@ -14,25 +16,32 @@ export function TaskDistribution({ distributions }: TaskDistributionProps) {
   const { byCategory, byPriority, totalEligibleTasks } = distributions;
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 flex flex-col h-full">
-      {/* Header with View Tabs */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-100 dark:border-slate-800/60">
-        <div className="flex items-center gap-2">
-          <Layers className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-          <h2 className="text-base font-bold text-slate-900 dark:text-white">
-            Task Distribution
-          </h2>
+    <SurfaceCard padding="md" className="flex flex-col h-full">
+      {/* Editorial Header with View Tabs */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-orbit-border">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-orbit-surface-secondary border border-orbit-border text-orbit-accent">
+            <Layers className="h-4 w-4" />
+          </div>
+          <div>
+            <h2 className="font-display text-base font-semibold text-orbit-text tracking-tight">
+              Task Distribution
+            </h2>
+            <p className="text-xs text-orbit-text-muted">
+              Allocation across work streams and urgency
+            </p>
+          </div>
         </div>
 
         {/* Tab Buttons */}
-        <div className="flex items-center gap-1 rounded-xl bg-slate-100 p-1 dark:bg-slate-800 self-start sm:self-auto">
+        <div className="flex items-center gap-1 rounded-lg bg-orbit-surface-secondary border border-orbit-border p-1 self-start sm:self-auto">
           <button
             type="button"
             onClick={() => setViewTab("category")}
-            className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${
+            className={`rounded-md px-3 py-1 text-xs font-medium transition-all ${
               viewTab === "category"
-                ? "bg-white text-indigo-600 shadow-xs dark:bg-slate-700 dark:text-indigo-300"
-                : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                ? "bg-orbit-surface text-orbit-accent shadow-orbit-xs font-semibold"
+                : "text-orbit-text-muted hover:text-orbit-text"
             }`}
           >
             By Category
@@ -40,10 +49,10 @@ export function TaskDistribution({ distributions }: TaskDistributionProps) {
           <button
             type="button"
             onClick={() => setViewTab("priority")}
-            className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${
+            className={`rounded-md px-3 py-1 text-xs font-medium transition-all ${
               viewTab === "priority"
-                ? "bg-white text-indigo-600 shadow-xs dark:bg-slate-700 dark:text-indigo-300"
-                : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                ? "bg-orbit-surface text-orbit-accent shadow-orbit-xs font-semibold"
+                : "text-orbit-text-muted hover:text-orbit-text"
             }`}
           >
             By Priority
@@ -54,19 +63,19 @@ export function TaskDistribution({ distributions }: TaskDistributionProps) {
       {/* Content */}
       <div className="mt-4 flex-1">
         {totalEligibleTasks === 0 ? (
-          <div className="rounded-xl border border-dashed border-slate-200 py-12 text-center dark:border-slate-800">
-            <CheckCircle2 className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600" />
-            <p className="mt-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
+          <div className="rounded-xl border border-dashed border-orbit-border bg-orbit-surface-secondary/40 py-12 text-center">
+            <CheckCircle2 className="mx-auto h-8 w-8 text-orbit-text-muted/50" />
+            <p className="mt-2 text-sm font-medium text-orbit-text">
               No active tasks to distribute
             </p>
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1 text-xs text-orbit-text-muted">
               Add tasks to see category and priority breakdowns.
             </p>
           </div>
         ) : viewTab === "category" ? (
           <div className="space-y-3.5">
             {byCategory.length === 0 ? (
-              <p className="text-xs text-slate-400">No categories found.</p>
+              <p className="text-xs text-orbit-text-muted">No categories found.</p>
             ) : (
               byCategory.map((cat) => {
                 const icon = CATEGORY_ICONS[cat.category.toLowerCase()] || "📌";
@@ -75,21 +84,21 @@ export function TaskDistribution({ distributions }: TaskDistributionProps) {
                     <div className="flex items-center justify-between text-xs">
                       <div className="flex items-center gap-1.5 min-w-0">
                         <span className="text-sm">{icon}</span>
-                        <span className="font-semibold text-slate-900 dark:text-white truncate">
+                        <span className="font-medium text-orbit-text truncate">
                           {cat.category}
                         </span>
-                        <span className="text-[11px] text-slate-400">
+                        <span className="font-mono text-[11px] text-orbit-text-muted">
                           ({cat.totalCount} {cat.totalCount === 1 ? "task" : "tasks"} · {cat.completedCount} done)
                         </span>
                       </div>
-                      <span className="font-bold text-slate-700 dark:text-slate-300 shrink-0">
+                      <span className="font-mono font-semibold text-orbit-text shrink-0 tabular-nums">
                         {cat.percentageOfTotal}%
                       </span>
                     </div>
 
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-orbit-border/50">
                       <div
-                        className="h-full rounded-full bg-indigo-600 dark:bg-indigo-500 transition-all duration-300"
+                        className="h-full rounded-full bg-orbit-accent transition-all duration-300"
                         style={{ width: `${Math.min(100, Math.max(0, cat.percentageOfTotal))}%` }}
                       />
                     </div>
@@ -99,7 +108,7 @@ export function TaskDistribution({ distributions }: TaskDistributionProps) {
             )}
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {byPriority.map((item) => {
               const label =
                 item.priority === "high"
@@ -110,51 +119,54 @@ export function TaskDistribution({ distributions }: TaskDistributionProps) {
 
               const colorClass =
                 item.priority === "high"
-                  ? "bg-rose-500"
+                  ? "bg-orbit-danger"
                   : item.priority === "medium"
-                  ? "bg-amber-500"
-                  : "bg-blue-500";
+                  ? "bg-orbit-warning"
+                  : "bg-orbit-accent-secondary";
 
-              const badgeColor =
+              const badgeVariant: "danger" | "warning" | "info" =
                 item.priority === "high"
-                  ? "bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300"
+                  ? "danger"
                   : item.priority === "medium"
-                  ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300"
-                  : "bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300";
+                  ? "warning"
+                  : "info";
 
               const icon =
                 item.priority === "high" ? (
-                  <AlertTriangle className="h-3.5 w-3.5 text-rose-500" />
+                  <AlertTriangle className="h-3.5 w-3.5 text-orbit-danger" />
                 ) : (
-                  <ShieldCheck className="h-3.5 w-3.5 text-slate-400" />
+                  <ShieldCheck className="h-3.5 w-3.5 text-orbit-text-muted" />
                 );
 
               return (
-                <div key={item.priority} className="rounded-xl border border-slate-100 p-3.5 dark:border-slate-800/60 dark:bg-slate-800/20">
+                <div
+                  key={item.priority}
+                  className="rounded-lg border border-orbit-border bg-orbit-surface-secondary/40 p-3.5"
+                >
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
                       {icon}
-                      <span className="font-semibold text-slate-900 dark:text-white">
+                      <span className="font-medium text-orbit-text">
                         {label}
                       </span>
-                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${badgeColor}`}>
+                      <Badge variant={badgeVariant}>
                         {item.totalCount} {item.totalCount === 1 ? "task" : "tasks"}
-                      </span>
+                      </Badge>
                     </div>
 
-                    <span className="font-extrabold text-slate-900 dark:text-white">
+                    <span className="font-mono font-semibold text-orbit-text tabular-nums">
                       {item.percentageOfTotal}%
                     </span>
                   </div>
 
-                  <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                  <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-orbit-border/50">
                     <div
                       className={`h-full rounded-full transition-all duration-300 ${colorClass}`}
                       style={{ width: `${Math.min(100, Math.max(0, item.percentageOfTotal))}%` }}
                     />
                   </div>
 
-                  <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
+                  <div className="mt-2 flex items-center justify-between font-mono text-[11px] text-orbit-text-muted">
                     <span>{item.completedCount} completed</span>
                     <span>{item.pendingCount} pending</span>
                   </div>
@@ -164,7 +176,6 @@ export function TaskDistribution({ distributions }: TaskDistributionProps) {
           </div>
         )}
       </div>
-    </div>
+    </SurfaceCard>
   );
 }
-
