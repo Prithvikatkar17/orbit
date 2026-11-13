@@ -111,7 +111,7 @@ export function ActivityChart({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-orbit-border">
         <div>
           <div className="flex items-center gap-2">
-            <BarChart3 className="h-4 w-4 text-orbit-accent" />
+            <BarChart3 className="h-4 w-4 text-orbit-chart-1" />
             <h2 className="font-display text-base font-semibold text-orbit-text">
               Daily Activity Throughput
             </h2>
@@ -133,7 +133,7 @@ export function ActivityChart({
             }}
             className={`flex min-h-[34px] items-center gap-1.5 rounded-md px-3 py-1 text-xs font-semibold transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-ring ${
               metricMode === "tasks"
-                ? "bg-orbit-surface text-orbit-accent shadow-orbit-xs"
+                ? "bg-orbit-surface text-orbit-chart-1 shadow-orbit-xs"
                 : "text-orbit-text-secondary hover:text-orbit-text"
             }`}
           >
@@ -148,7 +148,7 @@ export function ActivityChart({
             }}
             className={`flex min-h-[34px] items-center gap-1.5 rounded-md px-3 py-1 text-xs font-semibold transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-ring ${
               metricMode === "habits"
-                ? "bg-orbit-surface text-orbit-accent-secondary shadow-orbit-xs"
+                ? "bg-orbit-surface text-orbit-chart-2 shadow-orbit-xs"
                 : "text-orbit-text-secondary hover:text-orbit-text"
             }`}
           >
@@ -190,11 +190,11 @@ export function ActivityChart({
       <div className="h-7 flex items-center justify-between text-xs px-1 text-orbit-text-secondary">
         {activeHoverItem ? (
           <div className="flex items-center gap-2 animate-in fade-in duration-150">
-            <Calendar className="h-3.5 w-3.5 text-orbit-accent" />
+            <Calendar className={`h-3.5 w-3.5 ${metricMode === "tasks" ? "text-orbit-chart-1" : "text-orbit-chart-2"}`} />
             <span className="font-semibold text-orbit-text">
               {formatFriendlyDate(activeHoverItem.date)}:
             </span>
-            <span className="font-bold text-orbit-accent font-mono tabular-nums">
+            <span className={`font-bold font-mono tabular-nums ${metricMode === "tasks" ? "text-orbit-chart-1" : "text-orbit-chart-2"}`}>
               {activeHoverItem.count} {metricMode === "tasks" ? "task" : "habit"}
               {activeHoverItem.count === 1 ? "" : "s"} completed
             </span>
@@ -226,15 +226,15 @@ export function ActivityChart({
                   y1={yPos}
                   x2={viewBoxWidth - padRight}
                   y2={yPos}
-                  stroke="currentColor"
+                  stroke="var(--orbit-chart-grid)"
                   strokeDasharray="3 3"
-                  className="text-orbit-border/70"
                 />
                 <text
                   x={padLeft - 8}
                   y={yPos + 3.5}
                   textAnchor="end"
-                  className="fill-orbit-text-muted text-[10px] font-mono tabular-nums"
+                  fill="var(--orbit-chart-axis, var(--orbit-text-muted))"
+                  className="text-[10px] font-mono tabular-nums"
                 >
                   {lineVal}
                 </text>
@@ -275,17 +275,16 @@ export function ActivityChart({
                   width={barWidth}
                   height={barHeight}
                   rx={Math.min(3, barWidth / 2)}
-                  className={`transition-colors duration-150 ${
+                  className="transition-colors duration-150"
+                  fill={
                     item.count === 0
-                      ? "fill-orbit-border-strong/40"
+                      ? "var(--orbit-heatmap-0, var(--orbit-progress-track))"
                       : isHovered
-                      ? metricMode === "tasks"
-                        ? "fill-orbit-accent-hover"
-                        : "fill-orbit-accent-secondary"
+                      ? "var(--orbit-chart-highlight)"
                       : metricMode === "tasks"
-                      ? "fill-orbit-accent"
-                      : "fill-orbit-accent-secondary"
-                  }`}
+                      ? "var(--orbit-chart-1)"
+                      : "var(--orbit-chart-2)"
+                  }
                 />
               </g>
             );
@@ -310,7 +309,8 @@ export function ActivityChart({
                 x={labelX}
                 y={labelY}
                 textAnchor="middle"
-                className="fill-orbit-text-muted text-[10px] font-mono tabular-nums select-none"
+                fill="var(--orbit-chart-axis, var(--orbit-text-muted))"
+                className="text-[10px] font-mono tabular-nums select-none"
               >
                 {formatDateShort(item.date)}
               </text>

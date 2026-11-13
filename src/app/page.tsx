@@ -366,9 +366,9 @@ export default function HomePage() {
 
               {habitsTotalCount > 0 && (
                 <div className="mt-3 flex items-center gap-3">
-                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-orbit-subtle">
+                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-orbit-progress-track">
                     <div
-                      className="h-full rounded-full bg-orbit-success transition-all duration-300"
+                      className="h-full rounded-full bg-orbit-chart-2 transition-all duration-300"
                       style={{ width: `${habitsProgressPct}%` }}
                     />
                   </div>

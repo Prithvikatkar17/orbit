@@ -37,7 +37,7 @@ export function HabitBreakdown({
       {/* Editorial Header */}
       <div className="flex items-center justify-between pb-4 border-b border-orbit-border">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-orbit-surface-secondary border border-orbit-border text-orbit-accent-secondary">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-orbit-surface-secondary border border-orbit-border text-orbit-chart-2">
             <Repeat className="h-4 w-4" />
           </div>
           <div>
@@ -115,9 +115,9 @@ export function HabitBreakdown({
                   </div>
 
                   {/* Progress bar */}
-                  <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-orbit-border/50">
+                  <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-orbit-progress-track">
                     <div
-                      className="h-full rounded-full bg-orbit-accent-secondary transition-all duration-300"
+                      className="h-full rounded-full bg-orbit-chart-2 transition-all duration-300"
                       style={{
                         width: `${Math.min(100, Math.max(0, habit.consistencyRate))}%`,
                       }}

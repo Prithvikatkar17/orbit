@@ -183,9 +183,9 @@ export function OverviewCards({ snapshot }: OverviewCardsProps) {
             </div>
 
             <div className="mt-2.5">
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-orbit-surface-secondary">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-orbit-progress-track">
                 <div
-                  className="h-full rounded-full bg-orbit-success transition-all duration-300"
+                  className="h-full rounded-full bg-orbit-progress-fill transition-all duration-300"
                   style={{
                     width: `${Math.min(
                       100,
@@ -272,9 +272,9 @@ export function OverviewCards({ snapshot }: OverviewCardsProps) {
             </div>
 
             <div className="mt-2.5">
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-orbit-surface-secondary">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-orbit-progress-track">
                 <div
-                  className="h-full rounded-full bg-orbit-accent-secondary transition-all duration-300"
+                  className="h-full rounded-full bg-orbit-chart-2 transition-all duration-300"
                   style={{
                     width: `${Math.min(
                       100,

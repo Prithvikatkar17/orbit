@@ -172,7 +172,7 @@ export function WeeklyProgressWidget({
           <div className="flex flex-col justify-between rounded-orbit-control bg-orbit-surface-secondary p-3.5">
             <div className="flex items-center justify-between text-xs font-medium text-orbit-text-muted">
               <span>Habits (7d)</span>
-              <Repeat className="h-3.5 w-3.5 text-orbit-success" aria-hidden />
+              <Repeat className="h-3.5 w-3.5 text-orbit-chart-2" aria-hidden />
             </div>
 
             <div className="mt-2">
@@ -180,9 +180,9 @@ export function WeeklyProgressWidget({
                 {habitConsistency.consistencyRate}%
               </div>
 
-              <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-orbit-subtle">
+              <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-orbit-progress-track">
                 <div
-                  className="h-full rounded-full bg-orbit-success transition-all duration-300"
+                  className="h-full rounded-full bg-orbit-chart-2 transition-all duration-300"
                   style={{
                     width: `${Math.min(100, Math.max(0, habitConsistency.consistencyRate))}%`,
                   }}
@@ -203,7 +203,7 @@ export function WeeklyProgressWidget({
               Daily Task Activity
             </span>
             {activeHover ? (
-              <span className="text-xs font-semibold text-orbit-accent animate-in fade-in duration-100">
+              <span className="text-xs font-semibold text-orbit-chart-1 animate-in fade-in duration-100">
                 {activeHover.date}: {activeHover.count}{" "}
                 {activeHover.count === 1 ? "task" : "tasks"}
               </span>
@@ -261,7 +261,7 @@ export function WeeklyProgressWidget({
                         x={barX + barWidth / 2}
                         y={barY - 3}
                         textAnchor="middle"
-                        fill={isHovered ? "var(--orbit-accent)" : "var(--orbit-text-muted)"}
+                        fill={isHovered ? "var(--orbit-chart-highlight)" : "var(--orbit-chart-axis, var(--orbit-text-muted))"}
                         className="text-[9px] font-bold"
                       >
                         {item.count}
@@ -277,9 +277,9 @@ export function WeeklyProgressWidget({
                       rx={4}
                       fill={
                         item.count === 0
-                          ? "var(--orbit-bg-subtle)"
+                          ? "var(--orbit-heatmap-0, var(--orbit-progress-track))"
                           : isHovered
-                          ? "var(--orbit-accent-hover)"
+                          ? "var(--orbit-chart-highlight)"
                           : "var(--orbit-chart-1)"
                       }
                       opacity={item.count === 0 ? 1 : isToday || isHovered ? 1 : 0.78}
@@ -291,7 +291,7 @@ export function WeeklyProgressWidget({
                       x={barX + barWidth / 2}
                       y={svgHeight - 6}
                       textAnchor="middle"
-                      fill={isToday ? "var(--orbit-accent)" : "var(--orbit-text-muted)"}
+                      fill={isToday ? "var(--orbit-chart-1)" : "var(--orbit-chart-axis, var(--orbit-text-muted))"}
                       className={`text-[10px] select-none ${isToday ? "font-bold" : ""}`}
                     >
                       {getWeekdayShort(item.date)}

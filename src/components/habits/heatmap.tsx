@@ -105,12 +105,16 @@ export function HabitHeatmap({ completedDates, color = "#10b981", today: propTod
           </button>
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1 font-mono text-[10px]">
           <span>Less</span>
-          <div className="h-2.5 w-2.5 rounded-[3px] bg-orbit-subtle" />
+          <div className="h-2.5 w-2.5 rounded-[2px] bg-orbit-heatmap-0 border border-orbit-border/50" title="No activity" />
+          <div className="h-2.5 w-2.5 rounded-[2px] bg-orbit-heatmap-1" title="Low activity" />
+          <div className="h-2.5 w-2.5 rounded-[2px] bg-orbit-heatmap-2" title="Medium activity" />
+          <div className="h-2.5 w-2.5 rounded-[2px] bg-orbit-heatmap-3" title="High activity" />
           <div
-            className="h-2.5 w-2.5 rounded-[3px]"
-            style={{ backgroundColor: color }}
+            className="h-2.5 w-2.5 rounded-[2px] bg-orbit-heatmap-4"
+            style={color && color !== "#10b981" ? { backgroundColor: color } : undefined}
+            title="Completed"
           />
           <span>More</span>
         </div>
@@ -120,20 +124,27 @@ export function HabitHeatmap({ completedDates, color = "#10b981", today: propTod
         <div className="grid grid-cols-[repeat(14,minmax(0,1fr))] gap-1.5 @[540px]:grid-cols-[repeat(28,minmax(0,1fr))]">
           {recentDays.map((day) => {
             const friendlyLabel = formatFriendlyDate(day.dateStr);
+            const isCustomColor = color && color !== "#10b981";
             return (
               <div
                 key={day.dateStr}
                 title={`${friendlyLabel} (${day.dateStr}): ${
                   day.isCompleted ? "Completed" : "Not logged"
                 }`}
-                style={day.isCompleted ? { backgroundColor: color } : undefined}
+                style={
+                  day.isCompleted && isCustomColor
+                    ? { backgroundColor: color }
+                    : undefined
+                }
                 className={`aspect-square w-full rounded-[3px] transition-transform hover:scale-110 ${
                   day.isCompleted
-                    ? "shadow-orbit-xs"
-                    : "bg-orbit-subtle hover:bg-orbit-border-strong"
+                    ? isCustomColor
+                      ? "shadow-orbit-xs"
+                      : "bg-orbit-heatmap-4 shadow-orbit-xs"
+                    : "bg-orbit-heatmap-0 border border-orbit-border/30 hover:bg-orbit-heatmap-1"
                 } ${
                   day.isToday
-                    ? "ring-1 ring-orbit-accent ring-offset-1 ring-offset-orbit-surface"
+                    ? "ring-1 ring-orbit-chart-highlight ring-offset-1 ring-offset-orbit-surface"
                     : ""
                 }`}
               />
@@ -169,6 +180,7 @@ export function HabitHeatmap({ completedDates, color = "#10b981", today: propTod
                   }
 
                   const friendlyLabel = formatFriendlyDate(day.dateStr);
+                  const isCustomColor = color && color !== "#10b981";
 
                   return (
                     <div
@@ -177,17 +189,19 @@ export function HabitHeatmap({ completedDates, color = "#10b981", today: propTod
                         day.isCompleted ? "Completed" : "Not logged"
                       }`}
                       style={
-                        day.isCompleted
+                        day.isCompleted && isCustomColor
                           ? { backgroundColor: color }
                           : undefined
                       }
                       className={`h-3 w-3 cursor-pointer rounded-[3px] transition-transform hover:scale-125 ${
                         day.isCompleted
-                          ? "shadow-orbit-xs"
-                          : "bg-orbit-subtle hover:bg-orbit-border-strong"
+                          ? isCustomColor
+                            ? "shadow-orbit-xs"
+                            : "bg-orbit-heatmap-4 shadow-orbit-xs"
+                          : "bg-orbit-heatmap-0 border border-orbit-border/30 hover:bg-orbit-heatmap-1"
                       } ${
                         day.isToday
-                          ? "ring-1 ring-orbit-accent ring-offset-1 ring-offset-orbit-surface"
+                          ? "ring-1 ring-orbit-chart-highlight ring-offset-1 ring-offset-orbit-surface"
                           : ""
                       }`}
                     />

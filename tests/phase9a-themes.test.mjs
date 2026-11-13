@@ -172,6 +172,45 @@ test("Phase 9A: CSS Design Tokens in globals.css", async (t) => {
     assert.ok(css.includes("--orbit-card-blur"), "globals.css defines --orbit-card-blur glassmorphic tokens");
     assert.ok(css.includes("[data-orbit-nav-item]"), "globals.css defines personality navigation treatments");
   });
+
+  await t.test("Phase 9B.2: Visualisation and Chart Design Tokens are defined across all 7 personalities", () => {
+    const vizTokens = [
+      "--orbit-chart-1",
+      "--orbit-chart-2",
+      "--orbit-chart-3",
+      "--orbit-chart-4",
+      "--orbit-chart-5",
+      "--orbit-chart-positive",
+      "--orbit-chart-neutral",
+      "--orbit-chart-negative",
+      "--orbit-chart-grid",
+      "--orbit-chart-axis",
+      "--orbit-chart-tooltip-bg",
+      "--orbit-chart-tooltip-border",
+      "--orbit-chart-tooltip-text",
+      "--orbit-progress-track",
+      "--orbit-progress-fill",
+      "--orbit-chart-highlight",
+      "--orbit-heatmap-0",
+      "--orbit-heatmap-1",
+      "--orbit-heatmap-2",
+      "--orbit-heatmap-3",
+      "--orbit-heatmap-4",
+    ];
+
+    for (const token of vizTokens) {
+      assert.ok(
+        css.includes(token),
+        `globals.css must define visualisation token "${token}"`
+      );
+    }
+
+    // Verify Tailwind v4 inline theme mappings
+    assert.ok(css.includes("--color-orbit-chart-1: var(--orbit-chart-1)"));
+    assert.ok(css.includes("--color-orbit-progress-track: var(--orbit-progress-track)"));
+    assert.ok(css.includes("--color-orbit-heatmap-0: var(--orbit-heatmap-0)"));
+    assert.ok(css.includes("--color-orbit-heatmap-4: var(--orbit-heatmap-4)"));
+  });
 });
 
 test("Phase 9A: Layout & Pre-hydration Flash Prevention", async (t) => {

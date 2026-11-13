@@ -7,6 +7,14 @@ import { Badge } from "@/components/ui/badge";
 import type { TaskDistributions } from "@/lib/services/analytics-service";
 import { CATEGORY_ICONS } from "@/lib/constants";
 
+const CATEGORY_PALETTE = [
+  "bg-orbit-chart-1",
+  "bg-orbit-chart-2",
+  "bg-orbit-chart-3",
+  "bg-orbit-chart-4",
+  "bg-orbit-chart-5",
+];
+
 interface TaskDistributionProps {
   distributions: TaskDistributions;
 }
@@ -77,8 +85,9 @@ export function TaskDistribution({ distributions }: TaskDistributionProps) {
             {byCategory.length === 0 ? (
               <p className="text-xs text-orbit-text-muted">No categories found.</p>
             ) : (
-              byCategory.map((cat) => {
+              byCategory.map((cat, idx) => {
                 const icon = CATEGORY_ICONS[cat.category.toLowerCase()] || "📌";
+                const barColor = CATEGORY_PALETTE[idx % CATEGORY_PALETTE.length];
                 return (
                   <div key={cat.category} className="space-y-1.5">
                     <div className="flex items-center justify-between text-xs">
@@ -96,9 +105,9 @@ export function TaskDistribution({ distributions }: TaskDistributionProps) {
                       </span>
                     </div>
 
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-orbit-border/50">
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-orbit-progress-track">
                       <div
-                        className="h-full rounded-full bg-orbit-accent transition-all duration-300"
+                        className={`h-full rounded-full ${barColor} transition-all duration-300`}
                         style={{ width: `${Math.min(100, Math.max(0, cat.percentageOfTotal))}%` }}
                       />
                     </div>
@@ -119,10 +128,10 @@ export function TaskDistribution({ distributions }: TaskDistributionProps) {
 
               const colorClass =
                 item.priority === "high"
-                  ? "bg-orbit-danger"
+                  ? "bg-orbit-chart-negative"
                   : item.priority === "medium"
-                  ? "bg-orbit-warning"
-                  : "bg-orbit-accent-secondary";
+                  ? "bg-orbit-chart-2"
+                  : "bg-orbit-chart-3";
 
               const badgeVariant: "danger" | "warning" | "info" =
                 item.priority === "high"
@@ -133,7 +142,7 @@ export function TaskDistribution({ distributions }: TaskDistributionProps) {
 
               const icon =
                 item.priority === "high" ? (
-                  <AlertTriangle className="h-3.5 w-3.5 text-orbit-danger" />
+                  <AlertTriangle className="h-3.5 w-3.5 text-orbit-chart-negative" />
                 ) : (
                   <ShieldCheck className="h-3.5 w-3.5 text-orbit-text-muted" />
                 );
@@ -159,7 +168,7 @@ export function TaskDistribution({ distributions }: TaskDistributionProps) {
                     </span>
                   </div>
 
-                  <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-orbit-border/50">
+                  <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-orbit-progress-track">
                     <div
                       className={`h-full rounded-full transition-all duration-300 ${colorClass}`}
                       style={{ width: `${Math.min(100, Math.max(0, item.percentageOfTotal))}%` }}

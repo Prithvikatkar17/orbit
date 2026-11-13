@@ -78,11 +78,28 @@
   --orbit-shadow-card: 0 1px 3px 0 rgb(38 38 33 / 0.05), 0 8px 24px -10px rgb(38 38 33 / 0.08);
   --orbit-shadow-elevated: 0 20px 45px -16px rgb(38 38 33 / 0.18), 0 2px 8px -2px rgb(38 38 33 / 0.06);
 
-  /* Charts */
+  /* Visualisation & Charts */
   --orbit-chart-1: #2c5e4f;
-  --orbit-chart-2: #4a8b71;
-  --orbit-chart-3: #b67b3e;
+  --orbit-chart-2: #b67b3e;
+  --orbit-chart-3: #366c75;
+  --orbit-chart-4: #8b263e;
+  --orbit-chart-5: #4a8b71;
+  --orbit-chart-positive: #2f7a57;
+  --orbit-chart-neutral: #67655b;
+  --orbit-chart-negative: #b8403a;
   --orbit-chart-grid: #e3dfd4;
+  --orbit-chart-axis: #cac4b6;
+  --orbit-chart-tooltip-bg: #fcfbf8;
+  --orbit-chart-tooltip-border: #cac4b6;
+  --orbit-chart-tooltip-text: #262621;
+  --orbit-progress-track: #ebe8de;
+  --orbit-progress-fill: #2c5e4f;
+  --orbit-chart-highlight: #224b3e;
+  --orbit-heatmap-0: #ebe8de;
+  --orbit-heatmap-1: #d1e2db;
+  --orbit-heatmap-2: #8ab8a6;
+  --orbit-heatmap-3: #4a8b71;
+  --orbit-heatmap-4: #2c5e4f;
 
   /* Motion */
   --orbit-transition-fast: 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -145,10 +162,28 @@
   --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.34), 0 1px 2px -1px rgb(0 0 0 / 0.25);
   --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.62);
 
+  /* Visualisation & Charts */
   --orbit-chart-1: #6bb39b;
-  --orbit-chart-2: #82c59f;
-  --orbit-chart-3: #e0a34d;
+  --orbit-chart-2: #e0a34d;
+  --orbit-chart-3: #6eb2ba;
+  --orbit-chart-4: #d4738c;
+  --orbit-chart-5: #82c59f;
+  --orbit-chart-positive: #52b788;
+  --orbit-chart-neutral: #969385;
+  --orbit-chart-negative: #e06d67;
   --orbit-chart-grid: #2e2d26;
+  --orbit-chart-axis: #3d3b33;
+  --orbit-chart-tooltip-bg: #25241e;
+  --orbit-chart-tooltip-border: #3d3b33;
+  --orbit-chart-tooltip-text: #f1efe7;
+  --orbit-progress-track: #22211c;
+  --orbit-progress-fill: #6bb39b;
+  --orbit-chart-highlight: #7fc1aa;
+  --orbit-heatmap-0: #22211c;
+  --orbit-heatmap-1: #233830;
+  --orbit-heatmap-2: #35594b;
+  --orbit-heatmap-3: #4e826e;
+  --orbit-heatmap-4: #6bb39b;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -205,10 +240,28 @@
     --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.34), 0 1px 2px -1px rgb(0 0 0 / 0.25);
     --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.62);
 
+    /* Visualisation & Charts */
     --orbit-chart-1: #6bb39b;
-    --orbit-chart-2: #82c59f;
-    --orbit-chart-3: #e0a34d;
+    --orbit-chart-2: #e0a34d;
+    --orbit-chart-3: #6eb2ba;
+    --orbit-chart-4: #d4738c;
+    --orbit-chart-5: #82c59f;
+    --orbit-chart-positive: #52b788;
+    --orbit-chart-neutral: #969385;
+    --orbit-chart-negative: #e06d67;
     --orbit-chart-grid: #2e2d26;
+    --orbit-chart-axis: #3d3b33;
+    --orbit-chart-tooltip-bg: #25241e;
+    --orbit-chart-tooltip-border: #3d3b33;
+    --orbit-chart-tooltip-text: #f1efe7;
+    --orbit-progress-track: #22211c;
+    --orbit-progress-fill: #6bb39b;
+    --orbit-chart-highlight: #7fc1aa;
+    --orbit-heatmap-0: #22211c;
+    --orbit-heatmap-1: #233830;
+    --orbit-heatmap-2: #35594b;
+    --orbit-heatmap-3: #4e826e;
+    --orbit-heatmap-4: #6bb39b;
 
     --background: var(--orbit-bg);
     --foreground: var(--orbit-text);
@@ -271,10 +324,28 @@
   --orbit-shadow-card: 0 0 0 1px rgba(2, 132, 199, 0.12), 0 2px 6px -1px rgb(15 23 42 / 0.06);
   --orbit-shadow-elevated: 0 0 0 1px rgba(2, 132, 199, 0.22), 0 16px 32px -8px rgb(15 23 42 / 0.14);
 
+  /* Visualisation & Charts */
   --orbit-chart-1: #0284c7;
   --orbit-chart-2: #7c3aed;
-  --orbit-chart-3: #06b6d4;
-  --orbit-chart-grid: #cbd5e1;
+  --orbit-chart-3: #0d9488;
+  --orbit-chart-4: #d97706;
+  --orbit-chart-5: #db2777;
+  --orbit-chart-positive: #059669;
+  --orbit-chart-neutral: #64748b;
+  --orbit-chart-negative: #e11d48;
+  --orbit-chart-grid: #e2e8f0;
+  --orbit-chart-axis: #cbd5e1;
+  --orbit-chart-tooltip-bg: #ffffff;
+  --orbit-chart-tooltip-border: #38bdf8;
+  --orbit-chart-tooltip-text: #0f172a;
+  --orbit-progress-track: #f1f5f9;
+  --orbit-progress-fill: #0284c7;
+  --orbit-chart-highlight: #0369a1;
+  --orbit-heatmap-0: #f1f5f9;
+  --orbit-heatmap-1: #bae6fd;
+  --orbit-heatmap-2: #38bdf8;
+  --orbit-heatmap-3: #0284c7;
+  --orbit-heatmap-4: #0369a1;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -333,10 +404,28 @@
   --orbit-shadow-card: 0 0 0 1px rgba(0, 240, 255, 0.22), 0 0 16px -2px rgba(0, 240, 255, 0.12), 0 4px 14px 0 rgb(0 0 0 / 0.5);
   --orbit-shadow-elevated: 0 0 0 1px rgba(0, 240, 255, 0.35), 0 0 28px 0 rgba(0, 240, 255, 0.18), 0 24px 48px -12px rgb(0 0 0 / 0.8);
 
+  /* Visualisation & Charts */
   --orbit-chart-1: #00f0ff;
   --orbit-chart-2: #a855f7;
-  --orbit-chart-3: #38bdf8;
+  --orbit-chart-3: #2dd4bf;
+  --orbit-chart-4: #fbbf24;
+  --orbit-chart-5: #f43f5e;
+  --orbit-chart-positive: #10b981;
+  --orbit-chart-neutral: #64748b;
+  --orbit-chart-negative: #ff0055;
   --orbit-chart-grid: #1e293b;
+  --orbit-chart-axis: #334155;
+  --orbit-chart-tooltip-bg: #090d16;
+  --orbit-chart-tooltip-border: #00f0ff;
+  --orbit-chart-tooltip-text: #f8fafc;
+  --orbit-progress-track: #0f172a;
+  --orbit-progress-fill: #00f0ff;
+  --orbit-chart-highlight: #38bdf8;
+  --orbit-heatmap-0: #0f172a;
+  --orbit-heatmap-1: #083344;
+  --orbit-heatmap-2: #0e7490;
+  --orbit-heatmap-3: #06b6d4;
+  --orbit-heatmap-4: #00f0ff;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -395,10 +484,28 @@
     --orbit-shadow-card: 0 0 0 1px rgba(0, 240, 255, 0.22), 0 0 16px -2px rgba(0, 240, 255, 0.12), 0 4px 14px 0 rgb(0 0 0 / 0.5);
     --orbit-shadow-elevated: 0 0 0 1px rgba(0, 240, 255, 0.35), 0 0 28px 0 rgba(0, 240, 255, 0.18), 0 24px 48px -12px rgb(0 0 0 / 0.8);
 
+    /* Visualisation & Charts */
     --orbit-chart-1: #00f0ff;
     --orbit-chart-2: #a855f7;
-    --orbit-chart-3: #38bdf8;
+    --orbit-chart-3: #2dd4bf;
+    --orbit-chart-4: #fbbf24;
+    --orbit-chart-5: #f43f5e;
+    --orbit-chart-positive: #10b981;
+    --orbit-chart-neutral: #64748b;
+    --orbit-chart-negative: #ff0055;
     --orbit-chart-grid: #1e293b;
+    --orbit-chart-axis: #334155;
+    --orbit-chart-tooltip-bg: #090d16;
+    --orbit-chart-tooltip-border: #00f0ff;
+    --orbit-chart-tooltip-text: #f8fafc;
+    --orbit-progress-track: #0f172a;
+    --orbit-progress-fill: #00f0ff;
+    --orbit-chart-highlight: #38bdf8;
+    --orbit-heatmap-0: #0f172a;
+    --orbit-heatmap-1: #083344;
+    --orbit-heatmap-2: #0e7490;
+    --orbit-heatmap-3: #06b6d4;
+    --orbit-heatmap-4: #00f0ff;
 
     --background: var(--orbit-bg);
     --foreground: var(--orbit-text);
@@ -460,10 +567,28 @@
   --orbit-shadow-card: 0 4px 20px -4px rgb(212 93 121 / 0.08), 0 1px 3px 0 rgb(52 39 41 / 0.03);
   --orbit-shadow-elevated: 0 16px 36px -8px rgb(212 93 121 / 0.14), 0 4px 12px 0 rgb(52 39 41 / 0.04);
 
+  /* Visualisation & Charts */
   --orbit-chart-1: #d45d79;
   --orbit-chart-2: #9f7aea;
   --orbit-chart-3: #e28743;
+  --orbit-chart-4: #4299e1;
+  --orbit-chart-5: #48bb78;
+  --orbit-chart-positive: #38a169;
+  --orbit-chart-neutral: #718096;
+  --orbit-chart-negative: #e53e3e;
   --orbit-chart-grid: #ebdcd7;
+  --orbit-chart-axis: #dac6bf;
+  --orbit-chart-tooltip-bg: #fffaf9;
+  --orbit-chart-tooltip-border: #e8cecb;
+  --orbit-chart-tooltip-text: #2d2325;
+  --orbit-progress-track: #f6ece9;
+  --orbit-progress-fill: #d45d79;
+  --orbit-chart-highlight: #b83253;
+  --orbit-heatmap-0: #f6ece9;
+  --orbit-heatmap-1: #fed7e2;
+  --orbit-heatmap-2: #f687b3;
+  --orbit-heatmap-3: #d45d79;
+  --orbit-heatmap-4: #97266d;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -522,10 +647,28 @@
   --orbit-shadow-card: 0 4px 24px -4px rgb(251 113 133 / 0.12), 0 2px 6px 0 rgb(0 0 0 / 0.4);
   --orbit-shadow-elevated: 0 20px 44px -8px rgb(251 113 133 / 0.18), 0 8px 16px 0 rgb(0 0 0 / 0.5);
 
+  /* Visualisation & Charts */
   --orbit-chart-1: #fb7185;
   --orbit-chart-2: #c084fc;
   --orbit-chart-3: #fbbf24;
+  --orbit-chart-4: #60a5fa;
+  --orbit-chart-5: #6ee7b7;
+  --orbit-chart-positive: #4ade80;
+  --orbit-chart-neutral: #a89ca0;
+  --orbit-chart-negative: #f87171;
   --orbit-chart-grid: #33272d;
+  --orbit-chart-axis: #44353c;
+  --orbit-chart-tooltip-bg: #22181c;
+  --orbit-chart-tooltip-border: #44353c;
+  --orbit-chart-tooltip-text: #fbf7f8;
+  --orbit-progress-track: #291d22;
+  --orbit-progress-fill: #fb7185;
+  --orbit-chart-highlight: #fda4af;
+  --orbit-heatmap-0: #291d22;
+  --orbit-heatmap-1: #501d2d;
+  --orbit-heatmap-2: #882444;
+  --orbit-heatmap-3: #be3460;
+  --orbit-heatmap-4: #fb7185;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -584,10 +727,28 @@
     --orbit-shadow-card: 0 4px 24px -4px rgb(251 113 133 / 0.12), 0 2px 6px 0 rgb(0 0 0 / 0.4);
     --orbit-shadow-elevated: 0 20px 44px -8px rgb(251 113 133 / 0.18), 0 8px 16px 0 rgb(0 0 0 / 0.5);
 
+    /* Visualisation & Charts */
     --orbit-chart-1: #fb7185;
     --orbit-chart-2: #c084fc;
     --orbit-chart-3: #fbbf24;
+    --orbit-chart-4: #60a5fa;
+    --orbit-chart-5: #6ee7b7;
+    --orbit-chart-positive: #4ade80;
+    --orbit-chart-neutral: #a89ca0;
+    --orbit-chart-negative: #f87171;
     --orbit-chart-grid: #33272d;
+    --orbit-chart-axis: #44353c;
+    --orbit-chart-tooltip-bg: #22181c;
+    --orbit-chart-tooltip-border: #44353c;
+    --orbit-chart-tooltip-text: #fbf7f8;
+    --orbit-progress-track: #291d22;
+    --orbit-progress-fill: #fb7185;
+    --orbit-chart-highlight: #fda4af;
+    --orbit-heatmap-0: #291d22;
+    --orbit-heatmap-1: #501d2d;
+    --orbit-heatmap-2: #882444;
+    --orbit-heatmap-3: #be3460;
+    --orbit-heatmap-4: #fb7185;
 
     --background: var(--orbit-bg);
     --foreground: var(--orbit-text);
@@ -649,10 +810,28 @@
   --orbit-shadow-card: 2px 3px 0 rgb(43 37 30 / 0.08), 0 6px 18px -4px rgb(217 119 6 / 0.08);
   --orbit-shadow-elevated: 3px 4px 0 rgb(43 37 30 / 0.12), 0 16px 36px -8px rgb(217 119 6 / 0.14);
 
+  /* Visualisation & Charts */
   --orbit-chart-1: #d97706;
   --orbit-chart-2: #2563eb;
   --orbit-chart-3: #059669;
+  --orbit-chart-4: #dc2626;
+  --orbit-chart-5: #7c3aed;
+  --orbit-chart-positive: #16a34a;
+  --orbit-chart-neutral: #57534e;
+  --orbit-chart-negative: #dc2626;
   --orbit-chart-grid: #e6decb;
+  --orbit-chart-axis: #d1c7af;
+  --orbit-chart-tooltip-bg: #fffcf5;
+  --orbit-chart-tooltip-border: #d1c7af;
+  --orbit-chart-tooltip-text: #292524;
+  --orbit-progress-track: #ede5d5;
+  --orbit-progress-fill: #d97706;
+  --orbit-chart-highlight: #b45309;
+  --orbit-heatmap-0: #ede5d5;
+  --orbit-heatmap-1: #fde68a;
+  --orbit-heatmap-2: #f59e0b;
+  --orbit-heatmap-3: #d97706;
+  --orbit-heatmap-4: #92400e;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -711,10 +890,28 @@
   --orbit-shadow-card: 2px 3px 0 rgb(0 0 0 / 0.35), 0 6px 20px -4px rgb(245 158 11 / 0.12);
   --orbit-shadow-elevated: 3px 4px 0 rgb(0 0 0 / 0.5), 0 20px 40px -8px rgb(245 158 11 / 0.18);
 
+  /* Visualisation & Charts */
   --orbit-chart-1: #f59e0b;
   --orbit-chart-2: #60a5fa;
   --orbit-chart-3: #4ade80;
+  --orbit-chart-4: #f87171;
+  --orbit-chart-5: #a78bfa;
+  --orbit-chart-positive: #22c55e;
+  --orbit-chart-neutral: #a8a29e;
+  --orbit-chart-negative: #ef4444;
   --orbit-chart-grid: #383129;
+  --orbit-chart-axis: #4d4338;
+  --orbit-chart-tooltip-bg: #241e17;
+  --orbit-chart-tooltip-border: #4d4338;
+  --orbit-chart-tooltip-text: #fafaf9;
+  --orbit-progress-track: #2e261f;
+  --orbit-progress-fill: #f59e0b;
+  --orbit-chart-highlight: #fbbf24;
+  --orbit-heatmap-0: #2e261f;
+  --orbit-heatmap-1: #4a3512;
+  --orbit-heatmap-2: #7c5512;
+  --orbit-heatmap-3: #b45309;
+  --orbit-heatmap-4: #f59e0b;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -773,10 +970,28 @@
     --orbit-shadow-card: 2px 3px 0 rgb(0 0 0 / 0.35), 0 6px 20px -4px rgb(245 158 11 / 0.12);
     --orbit-shadow-elevated: 3px 4px 0 rgb(0 0 0 / 0.5), 0 20px 40px -8px rgb(245 158 11 / 0.18);
 
+    /* Visualisation & Charts */
     --orbit-chart-1: #f59e0b;
     --orbit-chart-2: #60a5fa;
     --orbit-chart-3: #4ade80;
+    --orbit-chart-4: #f87171;
+    --orbit-chart-5: #a78bfa;
+    --orbit-chart-positive: #22c55e;
+    --orbit-chart-neutral: #a8a29e;
+    --orbit-chart-negative: #ef4444;
     --orbit-chart-grid: #383129;
+    --orbit-chart-axis: #4d4338;
+    --orbit-chart-tooltip-bg: #241e17;
+    --orbit-chart-tooltip-border: #4d4338;
+    --orbit-chart-tooltip-text: #fafaf9;
+    --orbit-progress-track: #2e261f;
+    --orbit-progress-fill: #f59e0b;
+    --orbit-chart-highlight: #fbbf24;
+    --orbit-heatmap-0: #2e261f;
+    --orbit-heatmap-1: #4a3512;
+    --orbit-heatmap-2: #7c5512;
+    --orbit-heatmap-3: #b45309;
+    --orbit-heatmap-4: #f59e0b;
 
     --background: var(--orbit-bg);
     --foreground: var(--orbit-text);
@@ -838,10 +1053,28 @@
   --orbit-shadow-card: none;
   --orbit-shadow-elevated: 0 4px 16px -2px rgb(0 0 0 / 0.08);
 
+  /* Visualisation & Charts */
   --orbit-chart-1: #171717;
   --orbit-chart-2: #525252;
-  --orbit-chart-3: #a3a3a3;
+  --orbit-chart-3: #737373;
+  --orbit-chart-4: #a3a3a3;
+  --orbit-chart-5: #d4d4d4;
+  --orbit-chart-positive: #262626;
+  --orbit-chart-neutral: #737373;
+  --orbit-chart-negative: #171717;
   --orbit-chart-grid: #e5e5e5;
+  --orbit-chart-axis: #d4d4d4;
+  --orbit-chart-tooltip-bg: #ffffff;
+  --orbit-chart-tooltip-border: #171717;
+  --orbit-chart-tooltip-text: #171717;
+  --orbit-progress-track: #f5f5f5;
+  --orbit-progress-fill: #171717;
+  --orbit-chart-highlight: #000000;
+  --orbit-heatmap-0: #f5f5f5;
+  --orbit-heatmap-1: #d4d4d4;
+  --orbit-heatmap-2: #a3a3a3;
+  --orbit-heatmap-3: #525252;
+  --orbit-heatmap-4: #171717;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -900,10 +1133,28 @@
   --orbit-shadow-card: none;
   --orbit-shadow-elevated: 0 4px 16px -2px rgb(0 0 0 / 0.4);
 
+  /* Visualisation & Charts */
   --orbit-chart-1: #f5f5f5;
   --orbit-chart-2: #a3a3a3;
   --orbit-chart-3: #737373;
+  --orbit-chart-4: #525252;
+  --orbit-chart-5: #404040;
+  --orbit-chart-positive: #e5e5e5;
+  --orbit-chart-neutral: #737373;
+  --orbit-chart-negative: #f5f5f5;
   --orbit-chart-grid: #262626;
+  --orbit-chart-axis: #404040;
+  --orbit-chart-tooltip-bg: #0a0a0a;
+  --orbit-chart-tooltip-border: #f5f5f5;
+  --orbit-chart-tooltip-text: #f5f5f5;
+  --orbit-progress-track: #171717;
+  --orbit-progress-fill: #f5f5f5;
+  --orbit-chart-highlight: #ffffff;
+  --orbit-heatmap-0: #171717;
+  --orbit-heatmap-1: #404040;
+  --orbit-heatmap-2: #737373;
+  --orbit-heatmap-3: #a3a3a3;
+  --orbit-heatmap-4: #f5f5f5;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -962,10 +1213,28 @@
     --orbit-shadow-card: none;
     --orbit-shadow-elevated: 0 4px 16px -2px rgb(0 0 0 / 0.4);
 
+    /* Visualisation & Charts */
     --orbit-chart-1: #f5f5f5;
     --orbit-chart-2: #a3a3a3;
     --orbit-chart-3: #737373;
+    --orbit-chart-4: #525252;
+    --orbit-chart-5: #404040;
+    --orbit-chart-positive: #e5e5e5;
+    --orbit-chart-neutral: #737373;
+    --orbit-chart-negative: #f5f5f5;
     --orbit-chart-grid: #262626;
+    --orbit-chart-axis: #404040;
+    --orbit-chart-tooltip-bg: #0a0a0a;
+    --orbit-chart-tooltip-border: #f5f5f5;
+    --orbit-chart-tooltip-text: #f5f5f5;
+    --orbit-progress-track: #171717;
+    --orbit-progress-fill: #f5f5f5;
+    --orbit-chart-highlight: #ffffff;
+    --orbit-heatmap-0: #171717;
+    --orbit-heatmap-1: #404040;
+    --orbit-heatmap-2: #737373;
+    --orbit-heatmap-3: #a3a3a3;
+    --orbit-heatmap-4: #f5f5f5;
 
     --background: var(--orbit-bg);
     --foreground: var(--orbit-text);
@@ -1027,10 +1296,28 @@
   --orbit-shadow-card: 0 3px 12px -2px rgb(35 92 59 / 0.07), 0 1px 3px 0 rgb(31 41 30 / 0.04);
   --orbit-shadow-elevated: 0 16px 36px -8px rgb(35 92 59 / 0.14), 0 4px 12px 0 rgb(31 41 30 / 0.05);
 
+  /* Visualisation & Charts */
   --orbit-chart-1: #235c3b;
-  --orbit-chart-2: #556b2f;
-  --orbit-chart-3: #84a98c;
+  --orbit-chart-2: #8b5e3c;
+  --orbit-chart-3: #556b2f;
+  --orbit-chart-4: #2d7f7b;
+  --orbit-chart-5: #b08958;
+  --orbit-chart-positive: #2e7d32;
+  --orbit-chart-neutral: #5d6b5e;
+  --orbit-chart-negative: #b23a22;
   --orbit-chart-grid: #dbe5d7;
+  --orbit-chart-axis: #c5d4c0;
+  --orbit-chart-tooltip-bg: #fcfdfb;
+  --orbit-chart-tooltip-border: #c5d4c0;
+  --orbit-chart-tooltip-text: #1e261e;
+  --orbit-progress-track: #edf4ec;
+  --orbit-progress-fill: #235c3b;
+  --orbit-chart-highlight: #1a472d;
+  --orbit-heatmap-0: #edf4ec;
+  --orbit-heatmap-1: #cbe1ca;
+  --orbit-heatmap-2: #86c285;
+  --orbit-heatmap-3: #4e9b4d;
+  --orbit-heatmap-4: #235c3b;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -1089,10 +1376,28 @@
   --orbit-shadow-card: 0 4px 16px -2px rgb(74 222 128 / 0.1), 0 2px 6px 0 rgb(0 0 0 / 0.4);
   --orbit-shadow-elevated: 0 20px 40px -8px rgb(74 222 128 / 0.15), 0 6px 16px 0 rgb(0 0 0 / 0.5);
 
+  /* Visualisation & Charts */
   --orbit-chart-1: #4ade80;
-  --orbit-chart-2: #86efac;
-  --orbit-chart-3: #a3b899;
+  --orbit-chart-2: #fb923c;
+  --orbit-chart-3: #86efac;
+  --orbit-chart-4: #2dd4bf;
+  --orbit-chart-5: #ca8a04;
+  --orbit-chart-positive: #4ade80;
+  --orbit-chart-neutral: #8e9d8f;
+  --orbit-chart-negative: #f87171;
   --orbit-chart-grid: #243324;
+  --orbit-chart-axis: #324532;
+  --orbit-chart-tooltip-bg: #151d15;
+  --orbit-chart-tooltip-border: #324532;
+  --orbit-chart-tooltip-text: #eef5ee;
+  --orbit-progress-track: #1c281c;
+  --orbit-progress-fill: #4ade80;
+  --orbit-chart-highlight: #86efac;
+  --orbit-heatmap-0: #1c281c;
+  --orbit-heatmap-1: #1d4122;
+  --orbit-heatmap-2: #276731;
+  --orbit-heatmap-3: #369443;
+  --orbit-heatmap-4: #4ade80;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -1151,10 +1456,28 @@
     --orbit-shadow-card: 0 4px 16px -2px rgb(74 222 128 / 0.1), 0 2px 6px 0 rgb(0 0 0 / 0.4);
     --orbit-shadow-elevated: 0 20px 40px -8px rgb(74 222 128 / 0.15), 0 6px 16px 0 rgb(0 0 0 / 0.5);
 
+    /* Visualisation & Charts */
     --orbit-chart-1: #4ade80;
-    --orbit-chart-2: #86efac;
-    --orbit-chart-3: #a3b899;
+    --orbit-chart-2: #fb923c;
+    --orbit-chart-3: #86efac;
+    --orbit-chart-4: #2dd4bf;
+    --orbit-chart-5: #ca8a04;
+    --orbit-chart-positive: #4ade80;
+    --orbit-chart-neutral: #8e9d8f;
+    --orbit-chart-negative: #f87171;
     --orbit-chart-grid: #243324;
+    --orbit-chart-axis: #324532;
+    --orbit-chart-tooltip-bg: #151d15;
+    --orbit-chart-tooltip-border: #324532;
+    --orbit-chart-tooltip-text: #eef5ee;
+    --orbit-progress-track: #1c281c;
+    --orbit-progress-fill: #4ade80;
+    --orbit-chart-highlight: #86efac;
+    --orbit-heatmap-0: #1c281c;
+    --orbit-heatmap-1: #1d4122;
+    --orbit-heatmap-2: #276731;
+    --orbit-heatmap-3: #369443;
+    --orbit-heatmap-4: #4ade80;
 
     --background: var(--orbit-bg);
     --foreground: var(--orbit-text);
@@ -1216,10 +1539,28 @@
   --orbit-shadow-card: 0 4px 16px -2px rgb(67 56 202 / 0.08), 0 1px 3px 0 rgb(15 23 42 / 0.04);
   --orbit-shadow-elevated: 0 18px 40px -8px rgb(67 56 202 / 0.16), 0 4px 12px 0 rgb(15 23 42 / 0.06);
 
+  /* Visualisation & Charts */
   --orbit-chart-1: #4338ca;
   --orbit-chart-2: #0284c7;
-  --orbit-chart-3: #818cf8;
+  --orbit-chart-3: #9333ea;
+  --orbit-chart-4: #d97706;
+  --orbit-chart-5: #059669;
+  --orbit-chart-positive: #15803d;
+  --orbit-chart-neutral: #64748b;
+  --orbit-chart-negative: #be123c;
   --orbit-chart-grid: #cbd5e1;
+  --orbit-chart-axis: #94a3b8;
+  --orbit-chart-tooltip-bg: #ffffff;
+  --orbit-chart-tooltip-border: #818cf8;
+  --orbit-chart-tooltip-text: #0f172a;
+  --orbit-progress-track: #e2e8f0;
+  --orbit-progress-fill: #4338ca;
+  --orbit-chart-highlight: #3730a3;
+  --orbit-heatmap-0: #e2e8f0;
+  --orbit-heatmap-1: #c7d2fe;
+  --orbit-heatmap-2: #818cf8;
+  --orbit-heatmap-3: #4338ca;
+  --orbit-heatmap-4: #3730a3;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -1278,10 +1619,28 @@
   --orbit-shadow-card: 0 0 0 1px rgba(129, 140, 248, 0.2), 0 0 20px -2px rgba(129, 140, 248, 0.16), 0 8px 24px 0 rgb(0 0 0 / 0.6);
   --orbit-shadow-elevated: 0 0 0 1px rgba(129, 140, 248, 0.35), 0 0 36px 0 rgba(129, 140, 248, 0.22), 0 24px 56px -12px rgb(0 0 0 / 0.85);
 
+  /* Visualisation & Charts */
   --orbit-chart-1: #818cf8;
   --orbit-chart-2: #38bdf8;
-  --orbit-chart-3: #a5b4fc;
+  --orbit-chart-3: #c084fc;
+  --orbit-chart-4: #fbbf24;
+  --orbit-chart-5: #34d399;
+  --orbit-chart-positive: #34d399;
+  --orbit-chart-neutral: #94a3b8;
+  --orbit-chart-negative: #fb7185;
   --orbit-chart-grid: #1d2649;
+  --orbit-chart-axis: #2e3a6a;
+  --orbit-chart-tooltip-bg: #0d1326;
+  --orbit-chart-tooltip-border: #818cf8;
+  --orbit-chart-tooltip-text: #f1f5f9;
+  --orbit-progress-track: #141d3b;
+  --orbit-progress-fill: #818cf8;
+  --orbit-chart-highlight: #a5b4fc;
+  --orbit-heatmap-0: #141d3b;
+  --orbit-heatmap-1: #1e2b58;
+  --orbit-heatmap-2: #374384;
+  --orbit-heatmap-3: #5968b5;
+  --orbit-heatmap-4: #818cf8;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -1340,10 +1699,28 @@
     --orbit-shadow-card: 0 0 0 1px rgba(129, 140, 248, 0.2), 0 0 20px -2px rgba(129, 140, 248, 0.16), 0 8px 24px 0 rgb(0 0 0 / 0.6);
     --orbit-shadow-elevated: 0 0 0 1px rgba(129, 140, 248, 0.35), 0 0 36px 0 rgba(129, 140, 248, 0.22), 0 24px 56px -12px rgb(0 0 0 / 0.85);
 
+    /* Visualisation & Charts */
     --orbit-chart-1: #818cf8;
     --orbit-chart-2: #38bdf8;
-    --orbit-chart-3: #a5b4fc;
+    --orbit-chart-3: #c084fc;
+    --orbit-chart-4: #fbbf24;
+    --orbit-chart-5: #34d399;
+    --orbit-chart-positive: #34d399;
+    --orbit-chart-neutral: #94a3b8;
+    --orbit-chart-negative: #fb7185;
     --orbit-chart-grid: #1d2649;
+    --orbit-chart-axis: #2e3a6a;
+    --orbit-chart-tooltip-bg: #0d1326;
+    --orbit-chart-tooltip-border: #818cf8;
+    --orbit-chart-tooltip-text: #f1f5f9;
+    --orbit-progress-track: #141d3b;
+    --orbit-progress-fill: #818cf8;
+    --orbit-chart-highlight: #a5b4fc;
+    --orbit-heatmap-0: #141d3b;
+    --orbit-heatmap-1: #1e2b58;
+    --orbit-heatmap-2: #374384;
+    --orbit-heatmap-3: #5968b5;
+    --orbit-heatmap-4: #818cf8;
 
     --background: var(--orbit-bg);
     --foreground: var(--orbit-text);
@@ -1397,6 +1774,28 @@
   --shadow-orbit-xs: var(--orbit-shadow-xs);
   --shadow-orbit-card: var(--orbit-shadow-card);
   --shadow-orbit-elevated: var(--orbit-shadow-elevated);
+
+  --color-orbit-chart-1: var(--orbit-chart-1);
+  --color-orbit-chart-2: var(--orbit-chart-2);
+  --color-orbit-chart-3: var(--orbit-chart-3);
+  --color-orbit-chart-4: var(--orbit-chart-4);
+  --color-orbit-chart-5: var(--orbit-chart-5);
+  --color-orbit-chart-positive: var(--orbit-chart-positive);
+  --color-orbit-chart-neutral: var(--orbit-chart-neutral);
+  --color-orbit-chart-negative: var(--orbit-chart-negative);
+  --color-orbit-chart-grid: var(--orbit-chart-grid);
+  --color-orbit-chart-axis: var(--orbit-chart-axis);
+  --color-orbit-chart-tooltip-bg: var(--orbit-chart-tooltip-bg);
+  --color-orbit-chart-tooltip-border: var(--orbit-chart-tooltip-border);
+  --color-orbit-chart-tooltip-text: var(--orbit-chart-tooltip-text);
+  --color-orbit-progress-track: var(--orbit-progress-track);
+  --color-orbit-progress-fill: var(--orbit-progress-fill);
+  --color-orbit-chart-highlight: var(--orbit-chart-highlight);
+  --color-orbit-heatmap-0: var(--orbit-heatmap-0);
+  --color-orbit-heatmap-1: var(--orbit-heatmap-1);
+  --color-orbit-heatmap-2: var(--orbit-heatmap-2);
+  --color-orbit-heatmap-3: var(--orbit-heatmap-3);
+  --color-orbit-heatmap-4: var(--orbit-heatmap-4);
 }
 
 /* Base Typography & Canvas Defaults */
