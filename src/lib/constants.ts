@@ -1,17 +1,17 @@
 export const DEFAULT_CATEGORIES = [
-  { name: "Inbox", icon: "📥", color: "#64748b", module: "inbox" as const },
-  { name: "Task", icon: "📌", color: "#6366f1", module: "task" as const },
-  { name: "Goal", icon: "🎯", color: "#ec4899", module: "task" as const },
-  { name: "Idea", icon: "💡", color: "#f59e0b", module: "task" as const },
-  { name: "Bookmark", icon: "🔖", color: "#6366f1", module: "library" as const },
-  { name: "Article", icon: "📰", color: "#10b981", module: "library" as const },
-  { name: "Video", icon: "📹", color: "#ef4444", module: "library" as const },
-  { name: "Note", icon: "📝", color: "#a855f7", module: "library" as const },
-  { name: "Watch", icon: "🎬", color: "#8b5cf6", module: "library" as const },
-  { name: "YouTube", icon: "▶️", color: "#ef4444", module: "library" as const },
-  { name: "Learn", icon: "📚", color: "#10b981", module: "library" as const },
-  { name: "Buy", icon: "🛒", color: "#06b6d4", module: "library" as const },
-  { name: "Habit", icon: "🌱", color: "#22c55e", module: "habit" as const },
+  { name: "Inbox", icon: "📥", color: "#57564c", module: "inbox" as const },
+  { name: "Task", icon: "📌", color: "#2c5e4f", module: "task" as const },
+  { name: "Goal", icon: "🎯", color: "#366c75", module: "task" as const },
+  { name: "Idea", icon: "💡", color: "#a86214", module: "task" as const },
+  { name: "Bookmark", icon: "🔖", color: "#2c5e4f", module: "library" as const },
+  { name: "Article", icon: "📰", color: "#2f7a57", module: "library" as const },
+  { name: "Video", icon: "📹", color: "#b8403a", module: "library" as const },
+  { name: "Note", icon: "📝", color: "#57564c", module: "library" as const },
+  { name: "Watch", icon: "🎬", color: "#366c75", module: "library" as const },
+  { name: "YouTube", icon: "▶️", color: "#b8403a", module: "library" as const },
+  { name: "Learn", icon: "📚", color: "#2f7a57", module: "library" as const },
+  { name: "Buy", icon: "🛒", color: "#a86214", module: "library" as const },
+  { name: "Habit", icon: "🌱", color: "#2f7a57", module: "habit" as const },
 ];
 
 export const CATEGORY_ICONS: Record<string, string> = {
@@ -43,29 +43,29 @@ export const CATEGORY_ICONS: Record<string, string> = {
 };
 
 export const EVENT_TYPES = [
-  { id: "birthday", label: "Birthday", icon: "🎂", color: "#ec4899", badgeClass: "bg-pink-100 text-pink-700 dark:bg-pink-950 dark:text-pink-300" },
-  { id: "anniversary", label: "Anniversary", icon: "💍", color: "#8b5cf6", badgeClass: "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300" },
-  { id: "assignment", label: "Assignment", icon: "📝", color: "#3b82f6", badgeClass: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300" },
-  { id: "deadline", label: "Deadline", icon: "⏰", color: "#ef4444", badgeClass: "bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300" },
-  { id: "meeting", label: "Meeting", icon: "👥", color: "#10b981", badgeClass: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" },
-  { id: "personal", label: "Personal", icon: "👤", color: "#06b6d4", badgeClass: "bg-cyan-100 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300" },
-  { id: "other", label: "Other", icon: "📌", color: "#64748b", badgeClass: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300" },
+  { id: "birthday", label: "Birthday", icon: "🎂", color: "#b8403a", badgeClass: "bg-orbit-danger-soft text-orbit-danger" },
+  { id: "anniversary", label: "Anniversary", icon: "💍", color: "#366c75", badgeClass: "bg-orbit-accent-secondary-soft text-orbit-accent-secondary" },
+  { id: "assignment", label: "Assignment", icon: "📝", color: "#2c5e4f", badgeClass: "bg-orbit-accent-soft text-orbit-accent" },
+  { id: "deadline", label: "Deadline", icon: "⏰", color: "#b8403a", badgeClass: "bg-orbit-danger-soft text-orbit-danger" },
+  { id: "meeting", label: "Meeting", icon: "👥", color: "#2f7a57", badgeClass: "bg-orbit-success-soft text-orbit-success" },
+  { id: "personal", label: "Personal", icon: "👤", color: "#366c75", badgeClass: "bg-orbit-accent-secondary-soft text-orbit-accent-secondary" },
+  { id: "other", label: "Other", icon: "📌", color: "#57564c", badgeClass: "bg-orbit-surface-secondary text-orbit-text-secondary" },
 ] as const;
 
 export const EVENT_TYPE_MAP: Record<
   string,
   { label: string; icon: string; color: string; badgeClass: string }
 > = {
-  birthday: { label: "Birthday", icon: "🎂", color: "#ec4899", badgeClass: "bg-pink-100 text-pink-700 dark:bg-pink-950 dark:text-pink-300" },
-  anniversary: { label: "Anniversary", icon: "💍", color: "#8b5cf6", badgeClass: "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300" },
-  assignment: { label: "Assignment", icon: "📝", color: "#3b82f6", badgeClass: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300" },
-  deadline: { label: "Deadline", icon: "⏰", color: "#ef4444", badgeClass: "bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300" },
-  meeting: { label: "Meeting", icon: "👥", color: "#10b981", badgeClass: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" },
-  personal: { label: "Personal", icon: "👤", color: "#06b6d4", badgeClass: "bg-cyan-100 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300" },
-  holiday: { label: "Holiday", icon: "🏖️", color: "#f59e0b", badgeClass: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300" },
-  milestone: { label: "Milestone", icon: "🚩", color: "#6366f1", badgeClass: "bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300" },
-  general: { label: "General", icon: "📅", color: "#64748b", badgeClass: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300" },
-  other: { label: "Other", icon: "📌", color: "#64748b", badgeClass: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300" },
+  birthday: { label: "Birthday", icon: "🎂", color: "#b8403a", badgeClass: "bg-orbit-danger-soft text-orbit-danger" },
+  anniversary: { label: "Anniversary", icon: "💍", color: "#366c75", badgeClass: "bg-orbit-accent-secondary-soft text-orbit-accent-secondary" },
+  assignment: { label: "Assignment", icon: "📝", color: "#2c5e4f", badgeClass: "bg-orbit-accent-soft text-orbit-accent" },
+  deadline: { label: "Deadline", icon: "⏰", color: "#b8403a", badgeClass: "bg-orbit-danger-soft text-orbit-danger" },
+  meeting: { label: "Meeting", icon: "👥", color: "#2f7a57", badgeClass: "bg-orbit-success-soft text-orbit-success" },
+  personal: { label: "Personal", icon: "👤", color: "#366c75", badgeClass: "bg-orbit-accent-secondary-soft text-orbit-accent-secondary" },
+  holiday: { label: "Holiday", icon: "🏖️", color: "#a86214", badgeClass: "bg-orbit-warning-soft text-orbit-warning" },
+  milestone: { label: "Milestone", icon: "🚩", color: "#2c5e4f", badgeClass: "bg-orbit-accent-soft text-orbit-accent" },
+  general: { label: "General", icon: "📅", color: "#57564c", badgeClass: "bg-orbit-surface-secondary text-orbit-text-secondary" },
+  other: { label: "Other", icon: "📌", color: "#57564c", badgeClass: "bg-orbit-surface-secondary text-orbit-text-secondary" },
 };
 
 export const REMINDER_PRESETS = [
@@ -79,4 +79,3 @@ export const REMINDER_PRESETS = [
 ];
 
 export const MAX_LIBRARY_FILE_SIZE = 20 * 1024 * 1024; // 20 MB in bytes
-

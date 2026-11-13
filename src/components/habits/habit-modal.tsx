@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Check } from "lucide-react";
+import { X, Check, Flame, AlertCircle } from "lucide-react";
 import { db } from "@/lib/db/client";
 import { type Habit, HabitSchema } from "@/lib/schemas";
 import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
+import { Button } from "@/components/ui/button";
 
 interface HabitModalProps {
   initialHabit?: Habit | null;
@@ -12,14 +13,14 @@ interface HabitModalProps {
 }
 
 const PRESET_COLORS = [
-  "#10b981", // Emerald
-  "#06b6d4", // Cyan
-  "#3b82f6", // Blue
+  "#10b981", // Emerald / Mint
+  "#06b6d4", // Cyan / Mineral
+  "#3b82f6", // Blue / Sky
   "#6366f1", // Indigo
   "#8b5cf6", // Violet
   "#ec4899", // Pink
   "#f43f5e", // Rose
-  "#f59e0b", // Amber
+  "#f59e0b", // Amber / Warm ochre
 ];
 
 const DAYS_OF_WEEK = [
@@ -111,51 +112,54 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
         aria-modal="true"
         aria-labelledby="habit-modal-title"
         tabIndex={-1}
-        className="w-full max-w-md max-h-[90dvh] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900"
+        className="max-h-[90dvh] w-full max-w-md overflow-y-auto rounded-2xl border border-orbit-border bg-orbit-surface p-4 sm:p-6 shadow-orbit-elevated outline-hidden scrollbar-thin"
       >
-        <div className="flex items-center justify-between pb-3">
-          <h3 id="habit-modal-title" className="text-lg font-bold text-slate-900 dark:text-white">
-            {isEditing ? "Edit Habit" : "Create New Habit"}
+        {/* Header */}
+        <div className="flex items-center justify-between pb-3 border-b border-orbit-border">
+          <h3 id="habit-modal-title" className="font-display text-xl font-medium text-orbit-text flex items-center gap-2.5">
+            <Flame className="h-5 w-5 text-orbit-accent" aria-hidden="true" />
+            <span>{isEditing ? "Edit Habit" : "Create New Habit"}</span>
           </h3>
           <button
             type="button"
             aria-label="Close modal"
             onClick={onClose}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
+            className="flex h-10 w-10 items-center justify-center rounded-orbit-control text-orbit-text-muted hover:bg-orbit-surface-secondary hover:text-orbit-text transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {error && (
-          <div className="mb-3 rounded-xl bg-rose-50 p-3 text-xs text-rose-700 dark:bg-rose-950 dark:text-rose-300">
-            {error}
+          <div className="mt-4 flex items-center gap-2 rounded-orbit-card border border-orbit-danger/30 bg-orbit-danger/10 p-3 text-xs text-orbit-danger">
+            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+            <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
           {/* Title */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
               Habit Name *
             </label>
             <input
               type="text"
               required
               autoFocus
-              placeholder="e.g. Read 20 pages, Morning Jog, Meditate"
+              placeholder="e.g. Read 20 pages, Morning Walk, Meditate"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-hidden dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+              className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-3.5 py-2.5 text-sm text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
             />
           </div>
 
           {/* Frequency */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
               Frequency
             </label>
-            <div className="mt-1.5 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-1.5">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-1.5">
               {(
                 [
                   { id: "daily", label: "Daily" },
@@ -163,27 +167,30 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
                   { id: "weekly", label: "Weekly" },
                   { id: "custom", label: "Custom" },
                 ] as const
-              ).map((f) => (
-                <button
-                  key={f.id}
-                  type="button"
-                  onClick={() => setFrequency(f.id)}
-                  className={`min-h-[40px] rounded-xl border py-2 text-xs font-semibold transition-all ${
-                    frequency === f.id
-                      ? "border-indigo-600 bg-indigo-50 text-indigo-700 dark:border-indigo-500 dark:bg-indigo-950/60 dark:text-indigo-300"
-                      : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400"
-                  }`}
-                >
-                  {f.label}
-                </button>
-              ))}
+              ).map((f) => {
+                const isActive = frequency === f.id;
+                return (
+                  <button
+                    key={f.id}
+                    type="button"
+                    onClick={() => setFrequency(f.id)}
+                    className={`min-h-[40px] rounded-orbit-control border py-2 text-xs font-medium transition-all ${
+                      isActive
+                        ? "border-orbit-accent bg-orbit-accent text-orbit-accent-fg font-semibold shadow-orbit-xs"
+                        : "border-orbit-border bg-orbit-surface-secondary text-orbit-text-secondary hover:text-orbit-text hover:bg-orbit-surface"
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
           {/* Custom Days Selector */}
           {frequency === "custom" && (
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
                 Active Days
               </label>
               <div className="flex flex-wrap gap-1.5 sm:justify-between">
@@ -194,10 +201,10 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
                       key={d.day}
                       type="button"
                       onClick={() => toggleDay(d.day)}
-                      className={`min-h-[40px] min-w-[40px] flex-1 sm:flex-none sm:w-9 rounded-xl text-xs font-bold transition-all ${
+                      className={`min-h-[40px] min-w-[40px] flex-1 sm:flex-none sm:w-9 rounded-orbit-control text-xs font-medium transition-all ${
                         isSelected
-                          ? "bg-indigo-600 text-white shadow-xs"
-                          : "bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400"
+                          ? "bg-orbit-accent text-orbit-accent-fg shadow-orbit-xs font-semibold"
+                          : "border border-orbit-border bg-orbit-surface-secondary text-orbit-text-secondary hover:bg-orbit-surface hover:text-orbit-text"
                       }`}
                     >
                       {d.label}
@@ -210,7 +217,7 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
 
           {/* Color Picker */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+            <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
               Highlight Color
             </label>
             <div className="flex flex-wrap items-center gap-2.5">
@@ -218,10 +225,11 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
                 <button
                   key={c}
                   type="button"
+                  aria-label={`Select color ${c}`}
                   onClick={() => setColor(c)}
                   style={{ backgroundColor: c }}
                   className={`h-9 w-9 sm:h-7 sm:w-7 rounded-full flex items-center justify-center transition-transform hover:scale-110 ${
-                    color === c ? "ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-slate-900" : ""
+                    color === c ? "ring-2 ring-orbit-accent ring-offset-2 ring-offset-orbit-surface" : ""
                   }`}
                 >
                   {color === c && <Check className="h-4 w-4 text-white stroke-[3]" />}
@@ -232,7 +240,7 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
               Notes or Motivation (Optional)
             </label>
             <textarea
@@ -240,30 +248,30 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
               placeholder="Why this habit matters, rules, or tips..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-hidden dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+              className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary p-3 text-sm text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
             />
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-            <button
+          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-orbit-border">
+            <Button
               type="button"
+              variant="secondary"
               onClick={onClose}
-              className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-400 dark:hover:bg-slate-800"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
+              variant="primary"
+              loading={isSubmitting}
               disabled={isSubmitting || !title.trim()}
-              className="rounded-xl bg-indigo-600 px-5 py-2 text-xs font-semibold text-white shadow-xs hover:bg-indigo-500 disabled:opacity-50"
             >
-              {isSubmitting ? "Saving..." : isEditing ? "Save Changes" : "Create Habit"}
-            </button>
+              {isEditing ? "Save Changes" : "Create Habit"}
+            </Button>
           </div>
         </form>
       </div>
     </div>
   );
 }
-

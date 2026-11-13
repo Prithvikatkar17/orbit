@@ -161,7 +161,7 @@ export function NotificationCenter() {
       >
         <Bell className="h-4 w-4" />
         {mounted && unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-orbit-danger px-1 text-[10px] font-bold text-white shadow-xs animate-in zoom-in-75">
+          <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-orbit-danger px-1 text-[10px] font-bold text-orbit-danger-fg shadow-xs animate-in zoom-in-75">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
@@ -175,16 +175,16 @@ export function NotificationCenter() {
           aria-label="Notifications"
           tabIndex={-1}
           style={panelStyle}
-          className="flex flex-col rounded-2xl border border-slate-200 bg-white shadow-xl outline-hidden dark:border-slate-800 dark:bg-slate-900 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150"
+          className="flex flex-col rounded-2xl border border-orbit-border bg-orbit-surface shadow-orbit-elevated outline-hidden overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150"
         >
           {/* Header */}
-          <div className="shrink-0 flex items-center justify-between border-b border-slate-100 p-3.5 dark:border-slate-800">
+          <div className="shrink-0 flex items-center justify-between border-b border-orbit-border p-3.5 bg-orbit-surface">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-slate-200">
+              <span className="font-display font-medium text-sm text-orbit-text tracking-tight">
                 Notifications
               </span>
               {unreadCount > 0 && (
-                <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-semibold text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
+                <span className="rounded-full bg-orbit-accent-soft px-2 py-0.5 text-[10px] font-semibold text-orbit-accent">
                   {unreadCount} new
                 </span>
               )}
@@ -196,15 +196,15 @@ export function NotificationCenter() {
                   <button
                     type="button"
                     onClick={() => void markAllAsRead()}
-                    className="text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors"
+                    className="text-orbit-text-muted hover:text-orbit-accent transition-colors"
                   >
                     Mark all read
                   </button>
-                  <span className="text-slate-300 dark:text-slate-700">•</span>
+                  <span className="text-orbit-border-strong">•</span>
                   <button
                     type="button"
                     onClick={() => void clearAll()}
-                    className="text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 transition-colors"
+                    className="text-orbit-text-muted hover:text-orbit-danger transition-colors"
                   >
                     Clear
                   </button>
@@ -215,12 +215,12 @@ export function NotificationCenter() {
 
           {/* Browser Permission Banner (if not granted) */}
           {permission === "default" && (
-            <div className="shrink-0 flex items-center justify-between bg-amber-50 px-3.5 py-2 text-xs text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 border-b border-amber-100 dark:border-amber-900/50">
+            <div className="shrink-0 flex items-center justify-between bg-orbit-warning-soft px-3.5 py-2 text-xs text-orbit-warning border-b border-orbit-warning/30">
               <span className="text-[11px] font-medium">Enable desktop alerts</span>
               <button
                 type="button"
                 onClick={handleRequestPermission}
-                className="rounded-lg bg-amber-600 px-2.5 py-1 text-[10px] font-bold text-white hover:bg-amber-500"
+                className="rounded-orbit-control bg-orbit-warning px-2.5 py-1 text-[10px] font-semibold text-white shadow-xs hover:brightness-95 transition-all"
               >
                 Enable
               </button>
@@ -228,16 +228,16 @@ export function NotificationCenter() {
           )}
 
           {/* Notification List (Scrollable Area) */}
-          <div className="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/60">
+          <div className="flex-1 overflow-y-auto divide-y divide-orbit-border">
             {notifications.length === 0 ? (
-              <div className="flex flex-col items-center justify-center p-8 text-center text-slate-400">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 mb-2">
-                  <Check className="h-5 w-5 text-slate-400" />
+              <div className="flex flex-col items-center justify-center p-8 text-center text-orbit-text-muted">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-orbit-surface-secondary mb-2">
+                  <Check className="h-5 w-5 text-orbit-accent" />
                 </div>
-                <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                <p className="text-xs font-semibold text-orbit-text">
                   All caught up!
                 </p>
-                <p className="text-[11px] text-slate-400 mt-0.5">
+                <p className="text-[11px] text-orbit-text-muted mt-0.5">
                   No pending reminders or alerts right now.
                 </p>
               </div>
@@ -251,26 +251,26 @@ export function NotificationCenter() {
                     key={item.id}
                     className={`flex items-start justify-between p-3.5 text-xs transition-colors ${
                       item.read
-                        ? "bg-white opacity-70 dark:bg-slate-900"
-                        : "bg-indigo-50/20 dark:bg-indigo-950/20 font-medium"
+                        ? "bg-orbit-surface opacity-75"
+                        : "bg-orbit-accent-soft/30 font-medium"
                     }`}
                   >
                     <div className="flex items-start gap-2.5 flex-1 pr-2">
-                      <span className="text-sm mt-0.5">{typeCfg.icon}</span>
+                      <span className="text-sm mt-0.5 select-none">{typeCfg.icon}</span>
                       <div className="space-y-1">
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="font-bold text-slate-900 dark:text-white">
+                          <span className="font-semibold text-orbit-text">
                             {item.eventTitle}
                           </span>
                           {item.isMissed && (
-                            <span className="inline-flex items-center gap-0.5 rounded-full bg-rose-100 px-1.5 py-0.2 text-[9px] font-bold text-rose-700 dark:bg-rose-950 dark:text-rose-300">
+                            <span className="inline-flex items-center gap-0.5 rounded-full bg-orbit-danger-soft px-1.5 py-0.5 text-[9px] font-bold text-orbit-danger">
                               <AlertCircle className="h-2.5 w-2.5" />
                               Missed
                             </span>
                           )}
                         </div>
 
-                        <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+                        <div className="flex items-center gap-2 text-[11px] text-orbit-text-muted font-mono">
                           <span className="flex items-center gap-1">
                             <Clock className="h-3 w-3" />
                             {item.scheduledTime}
@@ -283,9 +283,9 @@ export function NotificationCenter() {
                           <button
                             type="button"
                             onClick={() => handleAcknowledge(item)}
-                            className="flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
+                            className="flex items-center gap-1 rounded-orbit-control bg-orbit-surface-secondary px-2.5 py-1 text-[10px] font-semibold text-orbit-text-secondary hover:text-orbit-text hover:bg-orbit-subtle transition-colors"
                           >
-                            <Check className="h-3 w-3 text-emerald-600" />
+                            <Check className="h-3 w-3 text-orbit-success" />
                             <span>Acknowledge</span>
                           </button>
                         </div>
@@ -295,7 +295,7 @@ export function NotificationCenter() {
                     <button
                       type="button"
                       onClick={() => dismissNotification(item.id)}
-                      className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5"
+                      className="text-orbit-text-muted hover:text-orbit-text p-1 rounded-md transition-colors"
                       title="Dismiss"
                       aria-label={`Dismiss notification for ${item.eventTitle}`}
                     >

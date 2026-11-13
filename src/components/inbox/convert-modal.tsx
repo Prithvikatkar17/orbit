@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { CheckSquare, Repeat, BookOpen, X, ArrowRight, Star } from "lucide-react";
+import { CheckSquare, Repeat, BookOpen, X, ArrowRight, Star, AlertCircle, Sparkles } from "lucide-react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db/client";
 import {
@@ -13,6 +13,7 @@ import {
 import { saveTaskWithSync } from "@/lib/services/task-sync-service";
 import { normalizeUrl } from "@/lib/utils/dates";
 import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
+import { Button } from "@/components/ui/button";
 
 interface ConvertModalProps {
   item: Item;
@@ -144,71 +145,62 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
         aria-modal="true"
         aria-labelledby="convert-modal-title"
         tabIndex={-1}
-        className="w-full max-w-lg max-h-[90dvh] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900"
+        className="max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-2xl border border-orbit-border bg-orbit-surface p-4 sm:p-6 shadow-orbit-elevated outline-hidden scrollbar-thin"
       >
-        <div className="flex items-center justify-between pb-3">
-          <h3 id="convert-modal-title" className="text-lg font-bold text-slate-900 dark:text-white">
-            Process Inbox Item
+        {/* Header */}
+        <div className="flex items-center justify-between pb-3 border-b border-orbit-border">
+          <h3 id="convert-modal-title" className="font-display text-xl font-medium text-orbit-text flex items-center gap-2.5">
+            <Sparkles className="h-5 w-5 text-orbit-accent" aria-hidden="true" />
+            <span>Process Inbox Item</span>
           </h3>
           <button
             type="button"
             aria-label="Close modal"
             onClick={onClose}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
+            className="flex h-10 w-10 items-center justify-center rounded-orbit-control text-orbit-text-muted hover:bg-orbit-surface-secondary hover:text-orbit-text transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* Destination selector tabs */}
-        <div className="mb-4 grid grid-cols-3 gap-2 rounded-xl bg-slate-100 p-1 dark:bg-slate-800">
-          <button
-            type="button"
-            onClick={() => setDestination("task")}
-            className={`flex min-h-[40px] items-center justify-center gap-2 rounded-lg py-2 text-xs font-semibold transition-all ${
-              destination === "task"
-                ? "bg-white text-indigo-600 shadow-xs dark:bg-slate-900 dark:text-indigo-400"
-                : "text-slate-600 hover:text-slate-900 dark:text-slate-400"
-            }`}
-          >
-            <CheckSquare className="h-4 w-4" />
-            <span>Task</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setDestination("habit")}
-            className={`flex min-h-[40px] items-center justify-center gap-2 rounded-lg py-2 text-xs font-semibold transition-all ${
-              destination === "habit"
-                ? "bg-white text-emerald-600 shadow-xs dark:bg-slate-900 dark:text-emerald-400"
-                : "text-slate-600 hover:text-slate-900 dark:text-slate-400"
-            }`}
-          >
-            <Repeat className="h-4 w-4" />
-            <span>Habit</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setDestination("library")}
-            className={`flex min-h-[40px] items-center justify-center gap-2 rounded-lg py-2 text-xs font-semibold transition-all ${
-              destination === "library"
-                ? "bg-white text-purple-600 shadow-xs dark:bg-slate-900 dark:text-purple-400"
-                : "text-slate-600 hover:text-slate-900 dark:text-slate-400"
-            }`}
-          >
-            <BookOpen className="h-4 w-4" />
-            <span>Library</span>
-          </button>
+        {/* Destination selector tabs - Optimized for compact screens like 320px */}
+        <div className="mt-4 mb-4 grid grid-cols-3 gap-1 rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary/70 p-1">
+          {(
+            [
+              { id: "task", label: "Task", icon: CheckSquare },
+              { id: "habit", label: "Habit", icon: Repeat },
+              { id: "library", label: "Library", icon: BookOpen },
+            ] as const
+          ).map(({ id, label, icon: Icon }) => {
+            const isActive = destination === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setDestination(id)}
+                className={`flex min-h-[40px] sm:min-h-[36px] items-center justify-center gap-1.5 rounded-orbit-control px-2 py-1.5 text-xs transition-all ${
+                  isActive
+                    ? "bg-orbit-accent text-orbit-accent-fg shadow-orbit-xs font-semibold"
+                    : "text-orbit-text-secondary hover:text-orbit-text hover:bg-orbit-surface"
+                }`}
+              >
+                <Icon className="h-3.5 w-3.5 shrink-0" />
+                <span className="truncate">{label}</span>
+              </button>
+            );
+          })}
         </div>
 
         {error && (
-          <div className="mb-3 rounded-xl bg-rose-50 p-3 text-xs text-rose-700 dark:bg-rose-950/50 dark:text-rose-300">
-            {error}
+          <div className="mb-4 flex items-center gap-2 rounded-orbit-card border border-orbit-danger/30 bg-orbit-danger/10 p-3 text-xs text-orbit-danger">
+            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+            <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={handleConvert} className="space-y-4">
           <div>
-            <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+            <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
               Title
             </label>
             <input
@@ -216,20 +208,20 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+              className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-3.5 py-2.5 text-sm text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
             />
           </div>
 
           {destination === "task" && (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
                   Priority
                 </label>
                 <select
                   value={priority}
                   onChange={(e) => setPriority(e.target.value as "low" | "medium" | "high")}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                  className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-3 py-2 text-sm text-orbit-text focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
                 >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
@@ -237,25 +229,25 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
                 </select>
               </div>
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
                   Due Date
                 </label>
                 <input
                   type="date"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                  className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-3 py-2 text-sm text-orbit-text focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
                   Due Time
                 </label>
                 <input
                   type="time"
                   value={dueTime}
                   onChange={(e) => setDueTime(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                  className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-3 py-2 text-sm text-orbit-text focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
                 />
               </div>
             </div>
@@ -265,13 +257,13 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
             <>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
                     Resource Type
                   </label>
                   <select
                     value={libraryType}
                     onChange={(e) => setLibraryType(e.target.value as LibraryEntry["type"])}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                    className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-3 py-2 text-sm text-orbit-text focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
                   >
                     <option value="bookmark">🔖 Bookmark</option>
                     <option value="video">📹 Video</option>
@@ -288,13 +280,13 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
                     Collection (Optional)
                   </label>
                   <select
                     value={collectionId}
                     onChange={(e) => setCollectionId(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                    className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-3 py-2 text-sm text-orbit-text focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
                   >
                     <option value="">No Collection</option>
                     {collections.map((col) => (
@@ -308,13 +300,13 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
 
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
                     Learning Status
                   </label>
                   <select
                     value={libraryStatus}
                     onChange={(e) => setLibraryStatus(e.target.value as LibraryEntry["status"])}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                    className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-3 py-2 text-sm text-orbit-text focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
                   >
                     <option value="saved">Saved (Not Started)</option>
                     <option value="in_progress">In Progress</option>
@@ -323,7 +315,7 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
                     Tags (Optional)
                   </label>
                   <input
@@ -331,7 +323,7 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
                     placeholder="e.g. react, tutorial"
                     value={libraryTags}
                     onChange={(e) => setLibraryTags(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                    className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-3.5 py-2 text-sm text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
                   />
                 </div>
               </div>
@@ -342,15 +334,15 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
                   id="convert-library-favorite"
                   checked={isFavorite}
                   onChange={(e) => setIsFavorite(e.target.checked)}
-                  className="h-4 w-4 rounded-md border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                  className="h-4 w-4 rounded-md border-orbit-border bg-orbit-surface text-orbit-accent focus:ring-orbit-ring"
                 />
                 <label
                   htmlFor="convert-library-favorite"
-                  className="text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer flex items-center gap-1.5"
+                  className="text-xs font-medium text-orbit-text-secondary cursor-pointer flex items-center gap-1.5 select-none"
                 >
                   <Star
                     className={`h-3.5 w-3.5 ${
-                      isFavorite ? "fill-amber-400 text-amber-400" : "text-slate-400"
+                      isFavorite ? "fill-amber-400 text-amber-400" : "text-orbit-text-muted"
                     }`}
                   />
                   <span>Mark as Favourite</span>
@@ -360,47 +352,48 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
           )}
 
           <div>
-            <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
-              Link (optional)
+            <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
+              Link (Optional)
             </label>
             <input
               type="url"
               value={link}
               onChange={(e) => setLink(e.target.value)}
               placeholder="https://..."
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+              className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-3.5 py-2 text-sm text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
-              Notes (optional)
+            <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
+              Notes (Optional)
             </label>
             <textarea
               rows={3}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Additional details..."
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+              className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary p-3 text-sm text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-2">
-            <button
+          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-orbit-border">
+            <Button
               type="button"
+              variant="secondary"
               onClick={onClose}
-              className="rounded-xl px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
+              variant="primary"
+              loading={isSubmitting}
               disabled={isSubmitting || !title.trim()}
-              className="flex items-center gap-1.5 rounded-xl bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-md hover:bg-indigo-700 disabled:opacity-50"
+              trailingIcon={<ArrowRight className="h-4 w-4" />}
             >
-              <span>Convert to {destination.toUpperCase()}</span>
-              <ArrowRight className="h-4 w-4" />
-            </button>
+              Convert to {destination === "task" ? "Task" : destination === "habit" ? "Habit" : "Library"}
+            </Button>
           </div>
         </form>
       </div>

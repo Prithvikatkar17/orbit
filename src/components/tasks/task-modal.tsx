@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { X } from "lucide-react";
+import { CheckSquare, X, AlertCircle } from "lucide-react";
 import { db } from "@/lib/db/client";
 import { type Task } from "@/lib/schemas";
 import { saveTaskWithSync } from "@/lib/services/task-sync-service";
 import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
+import { Button } from "@/components/ui/button";
 
 interface TaskModalProps {
   initialTask?: Task | null;
@@ -75,31 +76,34 @@ export function TaskModal({ initialTask, onClose }: TaskModalProps) {
         aria-modal="true"
         aria-labelledby="task-modal-title"
         tabIndex={-1}
-        className="w-full max-w-lg max-h-[90dvh] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl outline-hidden dark:border-slate-800 dark:bg-slate-900"
+        className="max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-2xl border border-orbit-border bg-orbit-surface p-4 sm:p-6 shadow-orbit-elevated outline-hidden scrollbar-thin"
       >
-        <div className="flex items-center justify-between pb-3">
-          <h3 id="task-modal-title" className="text-lg font-bold text-slate-900 dark:text-white">
-            {isEditing ? "Edit Task / Goal" : "Create New Task"}
+        {/* Header */}
+        <div className="flex items-center justify-between pb-3 border-b border-orbit-border">
+          <h3 id="task-modal-title" className="font-display text-xl font-medium text-orbit-text flex items-center gap-2.5">
+            <CheckSquare className="h-5 w-5 text-orbit-accent" aria-hidden="true" />
+            <span>{isEditing ? "Edit Task / Goal" : "Create New Task"}</span>
           </h3>
           <button
             type="button"
             aria-label="Close modal"
             onClick={onClose}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
+            className="flex h-10 w-10 items-center justify-center rounded-orbit-control text-orbit-text-muted hover:bg-orbit-surface-secondary hover:text-orbit-text transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {error && (
-          <div className="mb-3 rounded-xl bg-rose-50 p-3 text-xs text-rose-700 dark:bg-rose-950 dark:text-rose-300">
-            {error}
+          <div className="mt-4 flex items-center gap-2 rounded-orbit-card border border-orbit-danger/30 bg-orbit-danger/10 p-3 text-xs text-orbit-danger">
+            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+            <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4 pt-1">
+        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
           <div>
-            <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+            <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
               Title
             </label>
             <input
@@ -109,19 +113,19 @@ export function TaskModal({ initialTask, onClose }: TaskModalProps) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Finish project roadmap"
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-hidden dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+              className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-3.5 py-2.5 text-sm text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
             />
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+              <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
                 Type / Category
               </label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-3 py-2 text-sm text-orbit-text focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
               >
                 <option value="task">📌 Task</option>
                 <option value="goal">🎯 Goal (Milestone)</option>
@@ -132,13 +136,13 @@ export function TaskModal({ initialTask, onClose }: TaskModalProps) {
             </div>
 
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+              <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
                 Priority
               </label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as "low" | "medium" | "high")}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-3 py-2 text-sm text-orbit-text focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -149,32 +153,33 @@ export function TaskModal({ initialTask, onClose }: TaskModalProps) {
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+              <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
                 Due Date (Optional)
               </label>
               <input
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
-              />
+                className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-3 py-2 text-sm text-orbit-text focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
+              >
+              </input>
             </div>
 
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+              <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
                 Time (Optional)
               </label>
               <input
                 type="time"
                 value={dueTime}
                 onChange={(e) => setDueTime(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+                className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-3 py-2 text-sm text-orbit-text focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
               />
             </div>
           </div>
 
           <div>
-            <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+            <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
               Link / Reference URL (Optional)
             </label>
             <input
@@ -182,12 +187,12 @@ export function TaskModal({ initialTask, onClose }: TaskModalProps) {
               value={link}
               onChange={(e) => setLink(e.target.value)}
               placeholder="https://..."
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+              className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary px-3 py-2 text-sm text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+            <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
               Notes & Description (Optional)
             </label>
             <textarea
@@ -195,25 +200,26 @@ export function TaskModal({ initialTask, onClose }: TaskModalProps) {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Additional thoughts or sub-items..."
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-900 placeholder-slate-400 dark:border-slate-800 dark:bg-slate-800 dark:text-white"
+              className="w-full rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary p-3 text-sm text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-2">
-            <button
+          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-orbit-border">
+            <Button
               type="button"
+              variant="secondary"
               onClick={onClose}
-              className="rounded-xl px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
+              variant="primary"
+              loading={isSubmitting}
               disabled={isSubmitting || !title.trim()}
-              className="flex items-center gap-1.5 rounded-xl bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-md hover:bg-indigo-700 disabled:opacity-50"
             >
-              <span>{isEditing ? "Save Changes" : "Create Task"}</span>
-            </button>
+              {isEditing ? "Save Changes" : "Create Task"}
+            </Button>
           </div>
         </form>
       </div>

@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import Link from "next/link";
 import { AlertTriangle, RotateCcw, Home } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface ErrorBoundaryProps {
   error: Error & { digest?: string };
@@ -19,33 +20,34 @@ export default function RouteError({ error, reset }: ErrorBoundaryProps) {
     <div className="flex min-h-[60vh] items-center justify-center p-4">
       <div
         role="alert"
-        className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900"
+        aria-live="assertive"
+        className="w-full max-w-md rounded-2xl border border-orbit-border bg-orbit-surface p-6 sm:p-8 text-center shadow-orbit-card"
       >
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-orbit-danger/10 text-orbit-danger">
           <AlertTriangle className="h-6 w-6" aria-hidden="true" />
         </div>
 
-        <h1 className="mt-4 text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="mt-4 font-display text-2xl font-medium tracking-tight text-orbit-text">
           Something went wrong
         </h1>
 
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+        <p className="mt-2 text-sm text-orbit-text-secondary leading-relaxed">
           ORBIT encountered an unexpected error rendering this view. Your local workspace data remains safely stored on your device.
         </p>
 
         <div className="mt-6 flex flex-col gap-2.5 sm:flex-row sm:justify-center">
-          <button
+          <Button
             type="button"
+            variant="primary"
             onClick={() => reset()}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            icon={<RotateCcw className="h-4 w-4" aria-hidden="true" />}
           >
-            <RotateCcw className="h-4 w-4" aria-hidden="true" />
-            <span>Try again</span>
-          </button>
+            Try again
+          </Button>
 
           <Link
             href="/"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+            className="inline-flex min-h-[44px] sm:min-h-[36px] items-center justify-center gap-2 rounded-orbit-control border border-orbit-border bg-orbit-surface px-4 py-2 text-xs font-semibold text-orbit-text-secondary shadow-orbit-xs hover:border-orbit-border-strong hover:bg-orbit-surface-secondary hover:text-orbit-text focus-visible:ring-2 focus-visible:ring-orbit-ring focus-visible:ring-offset-2 transition-colors"
           >
             <Home className="h-4 w-4" aria-hidden="true" />
             <span>Back to Dashboard</span>
@@ -55,4 +57,3 @@ export default function RouteError({ error, reset }: ErrorBoundaryProps) {
     </div>
   );
 }
-
