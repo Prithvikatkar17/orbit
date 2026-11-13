@@ -13,7 +13,8 @@
    -------------------------------------------------------------------------- */
 :root,
 :root[data-orbit-theme="archivist"],
-:root[data-orbit-theme="default"] {
+:root[data-orbit-theme="default"],
+[data-orbit-theme-preview="archivist"] {
   color-scheme: light;
 
   /* Typography */
@@ -114,7 +115,9 @@
 :root[data-orbit-theme="archivist"].dark,
 :root[data-orbit-theme="default"].dark,
 :root[data-orbit-theme="archivist"] .dark,
-:root[data-orbit-theme="default"] .dark {
+:root[data-orbit-theme="default"] .dark,
+.dark [data-orbit-theme-preview="archivist"],
+[data-orbit-theme-preview="archivist"].dark {
   color-scheme: dark;
 
   --orbit-bg: #161613;
@@ -271,7 +274,8 @@
 /* --------------------------------------------------------------------------
    THEME PERSONALITY 2: FUTURISTIC (Neo-Cybernetic & Tech Glow)
    -------------------------------------------------------------------------- */
-:root[data-orbit-theme="futuristic"] {
+:root[data-orbit-theme="futuristic"],
+[data-orbit-theme-preview="futuristic"] {
   color-scheme: light;
 
   /* Typography */
@@ -352,7 +356,9 @@
 }
 
 :root[data-orbit-theme="futuristic"].dark,
-:root[data-orbit-theme="futuristic"] .dark {
+:root[data-orbit-theme="futuristic"] .dark,
+.dark [data-orbit-theme-preview="futuristic"],
+[data-orbit-theme-preview="futuristic"].dark {
   color-scheme: dark;
 
   /* Typography */
@@ -515,7 +521,8 @@
 /* --------------------------------------------------------------------------
    THEME PERSONALITY 3: AESTHETIC (Soft Pastel Dream)
    -------------------------------------------------------------------------- */
-:root[data-orbit-theme="aesthetic"] {
+:root[data-orbit-theme="aesthetic"],
+[data-orbit-theme-preview="aesthetic"] {
   color-scheme: light;
 
   /* Typography */
@@ -595,7 +602,9 @@
 }
 
 :root[data-orbit-theme="aesthetic"].dark,
-:root[data-orbit-theme="aesthetic"] .dark {
+:root[data-orbit-theme="aesthetic"] .dark,
+.dark [data-orbit-theme-preview="aesthetic"],
+[data-orbit-theme-preview="aesthetic"].dark {
   color-scheme: dark;
 
   /* Typography */
@@ -758,7 +767,8 @@
 /* --------------------------------------------------------------------------
    THEME PERSONALITY 4: ARTISTIC (Creative Studio & Pigment)
    -------------------------------------------------------------------------- */
-:root[data-orbit-theme="artistic"] {
+:root[data-orbit-theme="artistic"],
+[data-orbit-theme-preview="artistic"] {
   color-scheme: light;
 
   /* Typography */
@@ -838,7 +848,9 @@
 }
 
 :root[data-orbit-theme="artistic"].dark,
-:root[data-orbit-theme="artistic"] .dark {
+:root[data-orbit-theme="artistic"] .dark,
+.dark [data-orbit-theme-preview="artistic"],
+[data-orbit-theme-preview="artistic"].dark {
   color-scheme: dark;
 
   /* Typography */
@@ -1001,7 +1013,8 @@
 /* --------------------------------------------------------------------------
    THEME PERSONALITY 5: MINIMALIST (Monochrome Bauhaus)
    -------------------------------------------------------------------------- */
-:root[data-orbit-theme="minimalist"] {
+:root[data-orbit-theme="minimalist"],
+[data-orbit-theme-preview="minimalist"] {
   color-scheme: light;
 
   /* Typography — Swiss Modernist Sans */
@@ -1081,7 +1094,9 @@
 }
 
 :root[data-orbit-theme="minimalist"].dark,
-:root[data-orbit-theme="minimalist"] .dark {
+:root[data-orbit-theme="minimalist"] .dark,
+.dark [data-orbit-theme-preview="minimalist"],
+[data-orbit-theme-preview="minimalist"].dark {
   color-scheme: dark;
 
   /* Typography — Swiss Modernist Sans */
@@ -1244,7 +1259,8 @@
 /* --------------------------------------------------------------------------
    THEME PERSONALITY 6: NATURALIST (Botanical Forest & Moss)
    -------------------------------------------------------------------------- */
-:root[data-orbit-theme="naturalist"] {
+:root[data-orbit-theme="naturalist"],
+[data-orbit-theme-preview="naturalist"] {
   color-scheme: light;
 
   /* Typography */
@@ -1324,7 +1340,9 @@
 }
 
 :root[data-orbit-theme="naturalist"].dark,
-:root[data-orbit-theme="naturalist"] .dark {
+:root[data-orbit-theme="naturalist"] .dark,
+.dark [data-orbit-theme-preview="naturalist"],
+[data-orbit-theme-preview="naturalist"].dark {
   color-scheme: dark;
 
   /* Typography */
@@ -1487,7 +1505,8 @@
 /* --------------------------------------------------------------------------
    THEME PERSONALITY 7: MIDNIGHT (Cosmic Indigo & Starlight)
    -------------------------------------------------------------------------- */
-:root[data-orbit-theme="midnight"] {
+:root[data-orbit-theme="midnight"],
+[data-orbit-theme-preview="midnight"] {
   color-scheme: light;
 
   /* Typography */
@@ -1567,7 +1586,9 @@
 }
 
 :root[data-orbit-theme="midnight"].dark,
-:root[data-orbit-theme="midnight"] .dark {
+:root[data-orbit-theme="midnight"] .dark,
+.dark [data-orbit-theme-preview="midnight"],
+[data-orbit-theme-preview="midnight"].dark {
   color-scheme: dark;
 
   /* Typography */
@@ -1888,31 +1909,38 @@ pre {
 
 :root[data-orbit-theme="archivist"] .orbit-empty-motif-archivist,
 :root[data-orbit-theme="default"] .orbit-empty-motif-archivist,
-:root:not([data-orbit-theme]) .orbit-empty-motif-archivist {
+:root:not([data-orbit-theme]) .orbit-empty-motif-archivist,
+[data-orbit-theme-preview="archivist"] .orbit-empty-motif-archivist {
   display: block;
 }
 
-:root[data-orbit-theme="futuristic"] .orbit-empty-motif-futuristic {
+:root[data-orbit-theme="futuristic"] .orbit-empty-motif-futuristic,
+[data-orbit-theme-preview="futuristic"] .orbit-empty-motif-futuristic {
   display: block;
 }
 
-:root[data-orbit-theme="aesthetic"] .orbit-empty-motif-aesthetic {
+:root[data-orbit-theme="aesthetic"] .orbit-empty-motif-aesthetic,
+[data-orbit-theme-preview="aesthetic"] .orbit-empty-motif-aesthetic {
   display: block;
 }
 
-:root[data-orbit-theme="artistic"] .orbit-empty-motif-artistic {
+:root[data-orbit-theme="artistic"] .orbit-empty-motif-artistic,
+[data-orbit-theme-preview="artistic"] .orbit-empty-motif-artistic {
   display: block;
 }
 
-:root[data-orbit-theme="minimalist"] .orbit-empty-motif-minimalist {
+:root[data-orbit-theme="minimalist"] .orbit-empty-motif-minimalist,
+[data-orbit-theme-preview="minimalist"] .orbit-empty-motif-minimalist {
   display: block;
 }
 
-:root[data-orbit-theme="naturalist"] .orbit-empty-motif-naturalist {
+:root[data-orbit-theme="naturalist"] .orbit-empty-motif-naturalist,
+[data-orbit-theme-preview="naturalist"] .orbit-empty-motif-naturalist {
   display: block;
 }
 
-:root[data-orbit-theme="midnight"] .orbit-empty-motif-midnight {
+:root[data-orbit-theme="midnight"] .orbit-empty-motif-midnight,
+[data-orbit-theme-preview="midnight"] .orbit-empty-motif-midnight {
   display: block;
 }
 

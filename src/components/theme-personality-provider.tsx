@@ -79,6 +79,7 @@ export function ThemePersonalityProvider({
 
   const setThemePersonality = React.useCallback(
     async (next: ThemePersonality) => {
+      const prev = personality;
       setPersonality(next);
 
       // Instant DOM update (no page reload)
@@ -119,9 +120,20 @@ export function ThemePersonalityProvider({
         }
       } catch (err) {
         console.error("Failed to persist theme personality to DB:", err);
+        // Revert in-memory state, DOM, and localStorage if database persistence fails
+        setPersonality(prev);
+        if (typeof document !== "undefined") {
+          document.documentElement.setAttribute("data-orbit-theme", prev);
+        }
+        try {
+          localStorage.setItem(THEME_PERSONALITY_STORAGE_KEY, prev);
+        } catch {
+          // ignore
+        }
+        throw err;
       }
     },
-    []
+    [personality]
   );
 
   return (

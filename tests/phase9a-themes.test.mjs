@@ -331,6 +331,25 @@ test("Phase 9A: Settings Page Theme Integration", async (t) => {
       "settings page must have distinct Appearance Mode section"
     );
   });
+
+  await t.test("Phase 9D: Settings theme cards feature live scoped UI preview windows", () => {
+    assert.ok(
+      settings.includes("data-orbit-theme-preview"),
+      "settings page must include data-orbit-theme-preview scoped containers"
+    );
+    assert.ok(
+      settings.includes("ThemeMiniMotif"),
+      "settings page must render theme-specific decorative mini motifs"
+    );
+    assert.ok(
+      settings.includes("THEME_SAMPLE_HEADINGS"),
+      "settings page must display distinctive typography headings per theme"
+    );
+    assert.ok(
+      settings.includes("role=\"radiogroup\""),
+      "settings page must define accessible radiogroup for theme options"
+    );
+  });
 });
 
 test("Phase 9C: Personality-Specific Interactive Components System", async (t) => {

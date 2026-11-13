@@ -160,23 +160,23 @@ export function EventModal({
         className="orbit-modal-dialog max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-2xl border border-orbit-border bg-orbit-surface p-4 sm:p-6 shadow-orbit-elevated outline-hidden scrollbar-thin"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-[var(--orbit-border)]">
-          <h3 id="event-modal-title" className="font-display text-xl font-medium text-[var(--orbit-text)] flex items-center gap-2.5">
-            <CalendarIcon className="h-5 w-5 text-[var(--orbit-accent)]" aria-hidden="true" />
+        <div className="flex items-center justify-between pb-3 border-b border-orbit-border">
+          <h3 id="event-modal-title" className="font-display text-xl font-medium text-orbit-text flex items-center gap-2.5">
+            <CalendarIcon className="h-5 w-5 text-orbit-accent" aria-hidden="true" />
             <span>{isEditing ? "Edit Event" : "Create Event"}</span>
           </h3>
           <button
             type="button"
             aria-label="Close modal"
             onClick={onClose}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-[var(--orbit-text-muted)] transition-colors hover:bg-[var(--orbit-surface-secondary)] hover:text-[var(--orbit-text)]"
+            className="flex h-10 w-10 items-center justify-center rounded-orbit-control text-orbit-text-muted transition-colors hover:bg-orbit-surface-secondary hover:text-orbit-text"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {error && (
-          <div className="mt-3 flex items-center gap-2 rounded-xl border border-[var(--orbit-danger)]/20 bg-[var(--orbit-danger-soft)] p-3 text-xs text-[var(--orbit-danger)]">
+          <div className="mt-3 flex items-center gap-2 rounded-orbit-control border border-orbit-danger/20 bg-orbit-danger-soft p-3 text-xs text-orbit-danger">
             <AlertCircle className="h-4 w-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -185,7 +185,7 @@ export function EventModal({
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           {/* Title */}
           <div>
-            <label className="block text-xs font-semibold text-[var(--orbit-text)]">
+            <label className="block text-xs font-semibold text-orbit-text">
               Event Title *
             </label>
             <input
@@ -195,20 +195,20 @@ export function EventModal({
               placeholder="e.g. Maya's Birthday, Team Standup, History Assignment"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="mt-1.5 w-full rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] px-3.5 py-2 text-xs text-[var(--orbit-text)] placeholder:text-[var(--orbit-text-muted)] focus:border-[var(--orbit-accent)] focus:outline-hidden"
+              className="orbit-input mt-1.5 w-full rounded-orbit-control border border-orbit-border bg-orbit-surface px-3.5 py-2 text-xs text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:outline-hidden"
             />
           </div>
 
           {/* Event Type & Date Row */}
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-semibold text-[var(--orbit-text)]">
+              <label className="block text-xs font-semibold text-orbit-text">
                 Category
               </label>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as Event["type"])}
-                className="mt-1.5 w-full rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] px-3 py-2 text-xs text-[var(--orbit-text)] focus:border-[var(--orbit-accent)] focus:outline-hidden"
+                className="orbit-select mt-1.5 w-full rounded-orbit-control border border-orbit-border bg-orbit-surface px-3 py-2 text-xs text-orbit-text focus:border-orbit-accent focus:outline-hidden"
               >
                 {EVENT_TYPES.map((t) => (
                   <option key={t.id} value={t.id}>
@@ -219,7 +219,7 @@ export function EventModal({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[var(--orbit-text)]">
+              <label className="block text-xs font-semibold text-orbit-text">
                 Date *
               </label>
               <input
@@ -227,24 +227,24 @@ export function EventModal({
                 required
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="mt-1.5 w-full rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] px-3 py-2 text-xs text-[var(--orbit-text)] focus:border-[var(--orbit-accent)] focus:outline-hidden"
+                className="orbit-input mt-1.5 w-full rounded-orbit-control border border-orbit-border bg-orbit-surface px-3 py-2 text-xs text-orbit-text focus:border-orbit-accent focus:outline-hidden"
               />
             </div>
           </div>
 
           {/* Time & All-Day */}
-          <div className="rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface-secondary)]/60 p-3.5 space-y-2.5">
+          <div className="rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary/60 p-3.5 space-y-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-[var(--orbit-text)] flex items-center gap-1.5">
-                <Clock className="h-3.5 w-3.5 text-[var(--orbit-text-muted)]" />
+              <span className="text-xs font-semibold text-orbit-text flex items-center gap-1.5">
+                <Clock className="h-3.5 w-3.5 text-orbit-text-muted" />
                 <span>Time of Day</span>
               </span>
-              <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--orbit-text-muted)]">
+              <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-orbit-text-muted">
                 <input
                   type="checkbox"
                   checked={isAllDay}
                   onChange={(e) => setIsAllDay(e.target.checked)}
-                  className="rounded accent-[var(--orbit-accent)] h-4 w-4"
+                  className="rounded accent-orbit-accent h-4 w-4"
                 />
                 <span>All-day event</span>
               </label>
@@ -253,25 +253,25 @@ export function EventModal({
             {!isAllDay && (
               <div className="grid grid-cols-1 gap-3 pt-1 sm:grid-cols-2">
                 <div>
-                  <label className="block text-[11px] font-medium text-[var(--orbit-text-muted)]">
+                  <label className="block text-[11px] font-medium text-orbit-text-muted">
                     Start Time
                   </label>
                   <input
                     type="time"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    className="mt-1 w-full rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] px-3 py-1.5 text-xs text-[var(--orbit-text)] focus:outline-hidden focus:border-[var(--orbit-accent)]"
+                    className="orbit-input mt-1 w-full rounded-orbit-control border border-orbit-border bg-orbit-surface px-3 py-1.5 text-xs text-orbit-text focus:outline-hidden focus:border-orbit-accent"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-medium text-[var(--orbit-text-muted)]">
+                  <label className="block text-[11px] font-medium text-orbit-text-muted">
                     End Time (Optional)
                   </label>
                   <input
                     type="time"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    className="mt-1 w-full rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] px-3 py-1.5 text-xs text-[var(--orbit-text)] focus:outline-hidden focus:border-[var(--orbit-accent)]"
+                    className="orbit-input mt-1 w-full rounded-orbit-control border border-orbit-border bg-orbit-surface px-3 py-1.5 text-xs text-orbit-text focus:outline-hidden focus:border-orbit-accent"
                   />
                 </div>
               </div>
@@ -281,13 +281,13 @@ export function EventModal({
           {/* Recurrence Configuration */}
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-semibold text-[var(--orbit-text)]">
+              <label className="block text-xs font-semibold text-orbit-text">
                 Repeat
               </label>
               <select
                 value={rule}
                 onChange={(e) => setRule(e.target.value as Event["recurrence"]["rule"])}
-                className="mt-1.5 w-full rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] px-3 py-2 text-xs text-[var(--orbit-text)] focus:border-[var(--orbit-accent)] focus:outline-hidden"
+                className="orbit-select mt-1.5 w-full rounded-orbit-control border border-orbit-border bg-orbit-surface px-3 py-2 text-xs text-orbit-text focus:border-orbit-accent focus:outline-hidden"
               >
                 <option value="none">Does not repeat</option>
                 <option value="daily">Daily</option>
@@ -299,21 +299,21 @@ export function EventModal({
 
             {rule !== "none" && (
               <div>
-                <label className="block text-xs font-semibold text-[var(--orbit-text)]">
+                <label className="block text-xs font-semibold text-orbit-text">
                   Ends On (Optional)
                 </label>
                 <input
                   type="date"
                   value={recurrenceEndDate}
                   onChange={(e) => setRecurrenceEndDate(e.target.value)}
-                  className="mt-1.5 w-full rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] px-3 py-2 text-xs text-[var(--orbit-text)] focus:border-[var(--orbit-accent)] focus:outline-hidden"
+                  className="orbit-input mt-1.5 w-full rounded-orbit-control border border-orbit-border bg-orbit-surface px-3 py-2 text-xs text-orbit-text focus:border-orbit-accent focus:outline-hidden"
                 />
               </div>
             )}
           </div>
 
           {/* Reminders Section */}
-          <div className="rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface-secondary)]/60 p-3.5">
+          <div className="rounded-orbit-control border border-orbit-border bg-orbit-surface-secondary/60 p-3.5">
             <ReminderEditor
               reminders={reminders}
               onChange={setReminders}
@@ -323,7 +323,7 @@ export function EventModal({
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-semibold text-[var(--orbit-text)]">
+            <label className="block text-xs font-semibold text-orbit-text">
               Notes / Description (Optional)
             </label>
             <textarea
@@ -331,12 +331,12 @@ export function EventModal({
               placeholder="Location, video link, agenda, or context..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="mt-1.5 w-full rounded-xl border border-[var(--orbit-border)] bg-[var(--orbit-surface)] px-3.5 py-2 text-xs text-[var(--orbit-text)] placeholder:text-[var(--orbit-text-muted)] focus:border-[var(--orbit-accent)] focus:outline-hidden"
+              className="orbit-textarea mt-1.5 w-full rounded-orbit-control border border-orbit-border bg-orbit-surface px-3.5 py-2 text-xs text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:outline-hidden"
             />
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--orbit-border)]">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-orbit-border">
             <Button
               type="button"
               variant="secondary"
