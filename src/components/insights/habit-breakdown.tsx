@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { Repeat, Flame, Trophy, CheckCircle2 } from "lucide-react";
+import { Repeat, Flame, Trophy } from "lucide-react";
 import { SurfaceCard } from "@/components/ui/surface-card";
 import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/ui/empty-state";
 import type {
   OverallHabitConsistency,
   GlobalStreakMetrics,
@@ -57,15 +58,14 @@ export function HabitBreakdown({
       {/* Content */}
       <div className="mt-4 flex-1">
         {habits.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-orbit-border bg-orbit-surface-secondary/40 py-12 text-center">
-            <CheckCircle2 className="mx-auto h-8 w-8 text-orbit-text-muted/50" />
-            <p className="mt-2 text-sm font-medium text-orbit-text">
-              No habits scheduled in this period
-            </p>
-            <p className="mt-1 text-xs text-orbit-text-muted">
-              Create habits in the Habit Tracker to start tracking consistency.
-            </p>
-          </div>
+          <EmptyState
+            compact
+            dashed
+            icon={<Repeat className="h-5 w-5" />}
+            eyebrow="CADENCE"
+            title="No habits scheduled in this period"
+            description="Create habits in the Habit Tracker to start tracking steady consistency."
+          />
         ) : (
           <div className="space-y-3">
             {habits.map((habit) => {

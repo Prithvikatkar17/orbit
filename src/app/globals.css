@@ -1875,6 +1875,84 @@ pre {
   -webkit-backdrop-filter: blur(var(--orbit-card-blur, 8px));
 }
 
+/* 3. Personality-Specific Empty State Illustrations & Badges */
+.orbit-empty-motif-archivist,
+.orbit-empty-motif-futuristic,
+.orbit-empty-motif-aesthetic,
+.orbit-empty-motif-artistic,
+.orbit-empty-motif-minimalist,
+.orbit-empty-motif-naturalist,
+.orbit-empty-motif-midnight {
+  display: none;
+}
+
+:root[data-orbit-theme="archivist"] .orbit-empty-motif-archivist,
+:root[data-orbit-theme="default"] .orbit-empty-motif-archivist,
+:root:not([data-orbit-theme]) .orbit-empty-motif-archivist {
+  display: block;
+}
+
+:root[data-orbit-theme="futuristic"] .orbit-empty-motif-futuristic {
+  display: block;
+}
+
+:root[data-orbit-theme="aesthetic"] .orbit-empty-motif-aesthetic {
+  display: block;
+}
+
+:root[data-orbit-theme="artistic"] .orbit-empty-motif-artistic {
+  display: block;
+}
+
+:root[data-orbit-theme="minimalist"] .orbit-empty-motif-minimalist {
+  display: block;
+}
+
+:root[data-orbit-theme="naturalist"] .orbit-empty-motif-naturalist {
+  display: block;
+}
+
+:root[data-orbit-theme="midnight"] .orbit-empty-motif-midnight {
+  display: block;
+}
+
+/* Empty State Aura Backgrounds */
+.orbit-empty-aura {
+  transition: all var(--orbit-transition-normal);
+}
+
+:root[data-orbit-theme="archivist"] .orbit-empty-aura,
+:root[data-orbit-theme="default"] .orbit-empty-aura,
+:root:not([data-orbit-theme]) .orbit-empty-aura {
+  background: radial-gradient(circle, var(--orbit-accent-soft) 0%, transparent 72%);
+}
+
+:root[data-orbit-theme="futuristic"] .orbit-empty-aura {
+  background: radial-gradient(circle, rgba(2, 132, 199, 0.16) 0%, transparent 72%);
+  filter: drop-shadow(0 0 12px rgba(2, 132, 199, 0.25));
+}
+
+:root[data-orbit-theme="aesthetic"] .orbit-empty-aura {
+  background: radial-gradient(circle, rgba(244, 63, 94, 0.14) 0%, rgba(168, 85, 247, 0.08) 45%, transparent 72%);
+}
+
+:root[data-orbit-theme="artistic"] .orbit-empty-aura {
+  background: radial-gradient(circle, rgba(217, 119, 6, 0.15) 0%, rgba(37, 99, 235, 0.08) 55%, transparent 75%);
+}
+
+:root[data-orbit-theme="minimalist"] .orbit-empty-aura {
+  background: transparent;
+}
+
+:root[data-orbit-theme="naturalist"] .orbit-empty-aura {
+  background: radial-gradient(circle, rgba(35, 92, 59, 0.15) 0%, transparent 72%);
+}
+
+:root[data-orbit-theme="midnight"] .orbit-empty-aura {
+  background: radial-gradient(circle, rgba(129, 140, 248, 0.22) 0%, rgba(56, 189, 248, 0.08) 50%, transparent 75%);
+  filter: drop-shadow(0 0 16px rgba(129, 140, 248, 0.3));
+}
+
 /* Accessible Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
   :root {

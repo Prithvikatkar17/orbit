@@ -233,6 +233,7 @@ export default function CalendarPage() {
       {allEvents !== undefined && allEvents.length === 0 && (
         <SurfaceCard padding="sm" className="border-dashed">
           <EmptyState
+            eyebrow="SCHEDULE HORIZON"
             icon={<CalendarIcon className="h-5 w-5" />}
             title="Your calendar is clear"
             description="Add an event, time block, or reminder to start shaping your schedule."

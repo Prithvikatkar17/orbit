@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Layers, AlertTriangle, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { SurfaceCard } from "@/components/ui/surface-card";
 import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/ui/empty-state";
 import type { TaskDistributions } from "@/lib/services/analytics-service";
 import { CATEGORY_ICONS } from "@/lib/constants";
 
@@ -71,15 +72,14 @@ export function TaskDistribution({ distributions }: TaskDistributionProps) {
       {/* Content */}
       <div className="mt-4 flex-1">
         {totalEligibleTasks === 0 ? (
-          <div className="rounded-xl border border-dashed border-orbit-border bg-orbit-surface-secondary/40 py-12 text-center">
-            <CheckCircle2 className="mx-auto h-8 w-8 text-orbit-text-muted/50" />
-            <p className="mt-2 text-sm font-medium text-orbit-text">
-              No active tasks to distribute
-            </p>
-            <p className="mt-1 text-xs text-orbit-text-muted">
-              Add tasks to see category and priority breakdowns.
-            </p>
-          </div>
+          <EmptyState
+            compact
+            dashed
+            icon={<CheckCircle2 className="h-5 w-5" />}
+            eyebrow="ALLOCATION"
+            title="No active tasks to distribute"
+            description="Add tasks to see category and priority breakdowns across your active work streams."
+          />
         ) : viewTab === "category" ? (
           <div className="space-y-3.5">
             {byCategory.length === 0 ? (

@@ -399,6 +399,7 @@ export default function TasksPage() {
       {/* Task List with DnD */}
       {sortedTasks.length === 0 ? (
         <EmptyState
+          eyebrow="WORK STREAM"
           icon={
             activeTab === "completed" ? (
               <CheckCircle2 className="h-6 w-6 text-orbit-success" />

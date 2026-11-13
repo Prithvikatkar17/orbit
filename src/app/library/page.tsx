@@ -704,6 +704,7 @@ export default function LibraryPage() {
       ) : entries.length === 0 ? (
         /* Empty State: Library is completely empty */
         <EmptyState
+          eyebrow="CATALOGUE ARCHIVE"
           icon={<BookOpen className="h-6 w-6" />}
           title="Your personal library is waiting"
           description="Curate articles, videos, bookmarks, and notes. Organize everything into custom collections and track your learning progress."
@@ -748,6 +749,7 @@ export default function LibraryPage() {
             selectedType === "all" &&
             selectedStatus === "all" ? (
               <EmptyState
+                eyebrow="COLLECTION"
                 icon={<span className="text-xl">{selectedCollection.icon || "📁"}</span>}
                 title={`${selectedCollection.name} is empty`}
                 description="Add your first bookmark, note, article, or file to start curating this collection."
@@ -773,6 +775,7 @@ export default function LibraryPage() {
               />
             ) : selectedType !== "all" && !searchQuery ? (
               <EmptyState
+                eyebrow="RESOURCE FILTER"
                 icon={<BookOpen className="h-6 w-6" />}
                 title={`No ${getTypeConfig(selectedType as LibraryEntry["type"]).label.toLowerCase()}s saved yet`}
                 description={`Save a ${getTypeConfig(selectedType as LibraryEntry["type"]).label.toLowerCase()} to your archive or switch back to all resource types.`}
@@ -803,6 +806,7 @@ export default function LibraryPage() {
               />
             ) : (
               <EmptyState
+                eyebrow="SEARCH RESULTS"
                 icon={<Search className="h-6 w-6" />}
                 title={
                   searchQuery.trim()

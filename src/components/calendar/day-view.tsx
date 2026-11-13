@@ -83,6 +83,7 @@ export function DayView({
           <EmptyState
             dashed={false}
             className="border-0 py-6"
+            eyebrow="DAY AGENDA"
             icon={<CalendarIcon className="h-6 w-6" />}
             title="Nothing scheduled for this day"
             description="Keep this day open for deep work, or add an event, deadline, or reminder."

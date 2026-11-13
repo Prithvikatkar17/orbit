@@ -254,6 +254,7 @@ export default function HomePage() {
                   dashed={false}
                   className="border-0 py-6"
                   icon={<CheckCircle2 className="h-6 w-6 text-orbit-success" />}
+                  eyebrow="MOMENTUM"
                   title="All clear for now"
                   description="You have no open tasks waiting. Capture a thought or add something for today."
                   action={
@@ -385,6 +386,7 @@ export default function HomePage() {
                   dashed={false}
                   className="border-0 py-6"
                   icon={<Repeat className="h-6 w-6" />}
+                  eyebrow="DAILY RHYTHM"
                   title="No active routines yet"
                   description="Create daily or weekly habits to track consistency at a glance."
                   action={

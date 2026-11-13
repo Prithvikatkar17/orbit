@@ -466,6 +466,7 @@ export default function InboxPage() {
       {filteredItems.length === 0 ? (
         <EmptyState
           icon={<Sparkles className="h-6 w-6" />}
+          eyebrow={search || typeFilter !== "all" ? "FILTER RESULT" : "CAPTURE DISPATCH"}
           title={search || typeFilter !== "all" ? "No matching items" : "Inbox Zero"}
           description={
             search || typeFilter !== "all"

@@ -55,6 +55,7 @@ export function UpcomingEventsWidget() {
           <EmptyState
             dashed={false}
             className="border-0 py-6"
+            eyebrow="UPCOMING"
             icon={<CalendarIcon className="h-6 w-6" />}
             title="Clear schedule ahead"
             description="No upcoming events or reminders in the next 7 days."

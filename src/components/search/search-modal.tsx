@@ -21,6 +21,7 @@ import {
 } from "@/lib/services/search-service";
 import { SearchResultItem } from "./search-result-item";
 import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/ui/empty-state";
 
 const FILTER_TABS: { id: SearchFilterTab; label: string }[] = [
   { id: "all", label: "All" },
@@ -516,39 +517,38 @@ export function SearchModal() {
             </div>
           ) : itemsCount === 0 ? (
             /* No Results State */
-            <div className="py-10 text-center px-4">
-              <SearchX className="mx-auto h-8 w-8 text-orbit-text-muted/60" />
-              <h3 className="mt-2 font-display text-base font-semibold text-orbit-text">
-                No results found for &ldquo;{debouncedQuery}&rdquo;
-              </h3>
-              <p className="mt-1 text-xs text-orbit-text-muted max-w-xs mx-auto">
-                Check for typos or try searching with different keywords.
-              </p>
-
-              {/* Suggest searching all categories if currently filtered */}
-              {activeFilter !== "all" && (
-                <button
-                  type="button"
-                  onClick={() => setActiveFilter("all")}
-                  className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-orbit-accent hover:underline"
-                >
-                  <span>Search all categories instead</span>
-                  <ArrowRight className="h-3 w-3" />
-                </button>
-              )}
-
-              {/* Quick Capture action button */}
-              <div className="mt-4">
-                <button
-                  type="button"
-                  onClick={() => handleOpenQuickCapture(debouncedQuery.trim())}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-orbit-border bg-orbit-surface-secondary hover:bg-orbit-subtle px-3.5 py-2 text-xs font-medium text-orbit-text transition-colors shadow-orbit-xs"
-                >
-                  <Plus className="h-3.5 w-3.5 text-orbit-accent" />
-                  <span>Create task &ldquo;{debouncedQuery.trim()}&rdquo;</span>
-                  <ArrowRight className="h-3 w-3 ml-0.5 text-orbit-text-muted" />
-                </button>
-              </div>
+            <div className="py-6 px-4">
+              <EmptyState
+                dashed={false}
+                compact
+                icon={<SearchX className="h-5 w-5" />}
+                eyebrow="SEARCH INDEX"
+                title={`No results found for "${debouncedQuery}"`}
+                description="Check for typos or try searching with different keywords."
+                action={
+                  <button
+                    type="button"
+                    onClick={() => handleOpenQuickCapture(debouncedQuery.trim())}
+                    className="inline-flex min-h-[36px] items-center gap-1.5 rounded-orbit-control border border-orbit-border bg-orbit-surface px-3.5 py-1.5 text-xs font-semibold text-orbit-text transition-colors hover:bg-orbit-surface-secondary shadow-orbit-xs"
+                  >
+                    <Plus className="h-3.5 w-3.5 text-orbit-accent" />
+                    <span>Create task &ldquo;{debouncedQuery.trim()}&rdquo;</span>
+                    <ArrowRight className="h-3 w-3 ml-0.5 text-orbit-text-muted" />
+                  </button>
+                }
+                secondaryAction={
+                  activeFilter !== "all" ? (
+                    <button
+                      type="button"
+                      onClick={() => setActiveFilter("all")}
+                      className="inline-flex min-h-[36px] items-center gap-1 text-xs font-semibold text-orbit-accent hover:underline px-2"
+                    >
+                      <span>Search all categories</span>
+                      <ArrowRight className="h-3 w-3" />
+                    </button>
+                  ) : undefined
+                }
+              />
             </div>
           ) : (
             /* Grouped Results Display */

@@ -244,6 +244,7 @@ export default function HabitsPage() {
       {/* Habit Cards List */}
       {displayedHabits.length === 0 ? (
         <EmptyState
+          eyebrow="DAILY CADENCE"
           icon={activeTab === "archived" ? <Archive className="h-6 w-6" /> : <Sparkles className="h-6 w-6" />}
           title={activeTab === "archived" ? "No archived habits" : "No active habits yet"}
           description={

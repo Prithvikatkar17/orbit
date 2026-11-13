@@ -4,6 +4,7 @@ import React from "react";
 import { Sparkles, CheckCircle2, Target, Calendar } from "lucide-react";
 import { SurfaceCard } from "@/components/ui/surface-card";
 import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/ui/empty-state";
 import type { AccomplishmentItem } from "@/lib/services/analytics-service";
 import { formatFriendlyDate } from "@/lib/utils/dates";
 
@@ -39,15 +40,14 @@ export function RecentAccomplishments({
       {/* Content */}
       <div className="mt-4">
         {accomplishments.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-orbit-border bg-orbit-surface-secondary/40 py-10 text-center">
-            <CheckCircle2 className="mx-auto h-8 w-8 text-orbit-text-muted/50" />
-            <p className="mt-2 text-sm font-medium text-orbit-text">
-              No accomplishments in this period
-            </p>
-            <p className="mt-1 text-xs text-orbit-text-muted">
-              Complete tasks and reach your goals to see them celebrated here.
-            </p>
-          </div>
+          <EmptyState
+            compact
+            dashed
+            icon={<CheckCircle2 className="h-5 w-5" />}
+            eyebrow="MILESTONES"
+            title="No accomplishments in this period"
+            description="Complete tasks and reach your goals to see them celebrated here."
+          />
         ) : (
           <div className="divide-y divide-orbit-border/60">
             {accomplishments.map((item) => {

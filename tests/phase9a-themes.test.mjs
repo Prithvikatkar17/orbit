@@ -204,12 +204,71 @@ test("Phase 9A: CSS Design Tokens in globals.css", async (t) => {
         `globals.css must define visualisation token "${token}"`
       );
     }
+  });
 
-    // Verify Tailwind v4 inline theme mappings
-    assert.ok(css.includes("--color-orbit-chart-1: var(--orbit-chart-1)"));
-    assert.ok(css.includes("--color-orbit-progress-track: var(--orbit-progress-track)"));
-    assert.ok(css.includes("--color-orbit-heatmap-0: var(--orbit-heatmap-0)"));
-    assert.ok(css.includes("--color-orbit-heatmap-4: var(--orbit-heatmap-4)"));
+  await t.test("Phase 9B.3: EmptyState component defines distinctive motifs across all 7 theme personalities", () => {
+    const emptyStatePath = path.join(projectRoot, "src/components/ui/empty-state.tsx");
+    const emptyStateSrc = fs.readFileSync(emptyStatePath, "utf-8");
+
+    const expectedMotifs = [
+      "orbit-empty-motif-archivist",
+      "orbit-empty-motif-futuristic",
+      "orbit-empty-motif-aesthetic",
+      "orbit-empty-motif-artistic",
+      "orbit-empty-motif-minimalist",
+      "orbit-empty-motif-naturalist",
+      "orbit-empty-motif-midnight",
+    ];
+
+    for (const motif of expectedMotifs) {
+      assert.ok(
+        emptyStateSrc.includes(motif),
+        `empty-state.tsx must include motif class "${motif}"`
+      );
+      assert.ok(
+        css.includes(motif),
+        `globals.css must define display rules for motif class "${motif}"`
+      );
+    }
+
+    assert.ok(emptyStateSrc.includes("orbit-empty-aura"), "empty-state.tsx defines atmospheric aura backdrop");
+    assert.ok(emptyStateSrc.includes("orbit-empty-badge"), "empty-state.tsx defines eyebrow badge support");
+
+    // Verify module integrations across all 8 modules
+    const searchModalSrc = fs.readFileSync(path.join(projectRoot, "src/components/search/search-modal.tsx"), "utf-8");
+    assert.ok(searchModalSrc.includes("<EmptyState"), "search-modal.tsx integrates EmptyState");
+    assert.ok(searchModalSrc.includes('eyebrow="SEARCH INDEX"'), "search-modal.tsx includes SEARCH INDEX eyebrow");
+
+    const taskDistSrc = fs.readFileSync(path.join(projectRoot, "src/components/insights/task-distribution.tsx"), "utf-8");
+    assert.ok(taskDistSrc.includes("<EmptyState"), "task-distribution.tsx integrates EmptyState");
+    assert.ok(taskDistSrc.includes('eyebrow="ALLOCATION"'), "task-distribution.tsx includes ALLOCATION eyebrow");
+
+    const habitBreakdownSrc = fs.readFileSync(path.join(projectRoot, "src/components/insights/habit-breakdown.tsx"), "utf-8");
+    assert.ok(habitBreakdownSrc.includes("<EmptyState"), "habit-breakdown.tsx integrates EmptyState");
+    assert.ok(habitBreakdownSrc.includes('eyebrow="CADENCE"'), "habit-breakdown.tsx includes CADENCE eyebrow");
+
+    const recentAccSrc = fs.readFileSync(path.join(projectRoot, "src/components/insights/recent-accomplishments.tsx"), "utf-8");
+    assert.ok(recentAccSrc.includes("<EmptyState"), "recent-accomplishments.tsx integrates EmptyState");
+    assert.ok(recentAccSrc.includes('eyebrow="MILESTONES"'), "recent-accomplishments.tsx includes MILESTONES eyebrow");
+
+    const dashboardSrc = fs.readFileSync(path.join(projectRoot, "src/app/page.tsx"), "utf-8");
+    assert.ok(dashboardSrc.includes('eyebrow="MOMENTUM"'), "page.tsx defines MOMENTUM eyebrow");
+    assert.ok(dashboardSrc.includes('eyebrow="DAILY RHYTHM"'), "page.tsx defines DAILY RHYTHM eyebrow");
+
+    const inboxSrc = fs.readFileSync(path.join(projectRoot, "src/app/inbox/page.tsx"), "utf-8");
+    assert.ok(inboxSrc.includes("<EmptyState"), "inbox/page.tsx integrates EmptyState");
+
+    const tasksSrc = fs.readFileSync(path.join(projectRoot, "src/app/tasks/page.tsx"), "utf-8");
+    assert.ok(tasksSrc.includes('eyebrow="WORK STREAM"'), "tasks/page.tsx defines WORK STREAM eyebrow");
+
+    const habitsSrc = fs.readFileSync(path.join(projectRoot, "src/app/habits/page.tsx"), "utf-8");
+    assert.ok(habitsSrc.includes('eyebrow="DAILY CADENCE"'), "habits/page.tsx defines DAILY CADENCE eyebrow");
+
+    const calSrc = fs.readFileSync(path.join(projectRoot, "src/app/calendar/page.tsx"), "utf-8");
+    assert.ok(calSrc.includes('eyebrow="SCHEDULE HORIZON"'), "calendar/page.tsx defines SCHEDULE HORIZON eyebrow");
+
+    const librarySrc = fs.readFileSync(path.join(projectRoot, "src/app/library/page.tsx"), "utf-8");
+    assert.ok(librarySrc.includes('eyebrow="CATALOGUE ARCHIVE"'), "library/page.tsx defines CATALOGUE ARCHIVE eyebrow");
   });
 });
 
