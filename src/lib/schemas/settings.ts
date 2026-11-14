@@ -114,6 +114,8 @@ export const THEME_PERSONALITIES: readonly ThemePersonalityMeta[] = [
   },
 ] as const;
 
+export const ONBOARDING_CURRENT_VERSION = 1;
+
 export const SettingsSchema = z.object({
   id:                  z.literal("user_settings"),
   theme:               z.enum(["light", "dark", "system"]).default("system"),
@@ -126,6 +128,8 @@ export const SettingsSchema = z.object({
   heatmapDays:         z.number().min(30).max(365).default(180),
   lastBackupAt:        z.string().datetime().optional(),
   schemaVersion:       z.number().int().default(1),
+  onboardingCompletedVersion: z.number().int().optional(),
+  onboardingCompletedAt: z.string().datetime().optional(),
   updatedAt:           z.string().datetime(),
 });
 

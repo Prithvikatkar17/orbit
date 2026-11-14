@@ -6,6 +6,7 @@ import { ThemePersonalityProvider } from "@/components/theme-personality-provide
 import { Sidebar, MobileHeader } from "@/components/sidebar";
 import { QuickCaptureModal } from "@/components/quick-capture-modal";
 import { SearchModal } from "@/components/search/search-modal";
+import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
 import { ReminderProvider } from "@/components/reminders/reminder-provider";
 
 const geistSans = Geist({
@@ -80,6 +81,9 @@ export default function RootLayout({
 
               {/* Global Quick Capture Modal (Ctrl+Shift+K / Cmd+Shift+K) */}
               <QuickCaptureModal />
+
+              {/* First-Time User Onboarding Experience (Phase 10B.3) */}
+              <OnboardingWizard />
             </ReminderProvider>
           </ThemePersonalityProvider>
         </ThemeProvider>
