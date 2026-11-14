@@ -105,48 +105,60 @@ export default function InsightsPage() {
       {/* Loading Skeleton */}
       {!snapshot ? (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {[...Array(5)].map((_, i) => (
-              <div
-                key={`skel-${i}`}
-                className="h-28 rounded-xl bg-orbit-surface-secondary/70 animate-pulse border border-orbit-border/60"
-              />
-            ))}
+          <div className="h-24 rounded-xl bg-orbit-surface-secondary/70 animate-pulse border border-orbit-border/60" />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-12">
+            <div className="h-36 rounded-xl bg-orbit-surface-secondary/70 animate-pulse border border-orbit-border/60 sm:col-span-2 lg:col-span-7" />
+            <div className="h-36 rounded-xl bg-orbit-surface-secondary/70 animate-pulse border border-orbit-border/60 sm:col-span-2 lg:col-span-5" />
+            <div className="h-32 rounded-xl bg-orbit-surface-secondary/70 animate-pulse border border-orbit-border/60 sm:col-span-1 lg:col-span-4" />
+            <div className="h-32 rounded-xl bg-orbit-surface-secondary/70 animate-pulse border border-orbit-border/60 sm:col-span-1 lg:col-span-4" />
+            <div className="h-32 rounded-xl bg-orbit-surface-secondary/70 animate-pulse border border-orbit-border/60 sm:col-span-2 lg:col-span-4" />
           </div>
-          <div className="h-64 rounded-xl bg-orbit-surface-secondary/70 animate-pulse border border-orbit-border/60" />
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <div className="h-80 rounded-xl bg-orbit-surface-secondary/70 animate-pulse border border-orbit-border/60" />
-            <div className="h-80 rounded-xl bg-orbit-surface-secondary/70 animate-pulse border border-orbit-border/60" />
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+            <div className="h-72 rounded-xl bg-orbit-surface-secondary/70 animate-pulse border border-orbit-border/60 lg:col-span-12" />
+            <div className="h-80 rounded-xl bg-orbit-surface-secondary/70 animate-pulse border border-orbit-border/60 lg:col-span-7" />
+            <div className="h-80 rounded-xl bg-orbit-surface-secondary/70 animate-pulse border border-orbit-border/60 lg:col-span-5" />
+            <div className="h-64 rounded-xl bg-orbit-surface-secondary/70 animate-pulse border border-orbit-border/60 lg:col-span-12" />
           </div>
         </div>
       ) : (
-        <>
-          {/* Section 1: Overview Cards */}
+        <div className="space-y-6">
+          {/* Section 1: Overview Cards (Editorial Strip + Hero & Supporting Bento Grid) */}
           <OverviewCards snapshot={snapshot} />
 
-          {/* Section 2: Daily Activity Throughput Chart */}
-          <ActivityChart
-            dailyTaskCompletions={snapshot.dailyTaskCompletions}
-            dailyHabitCompletions={snapshot.dailyHabitCompletions}
-            dateRangeType={
-              RANGE_OPTIONS.find((o) => o.id === rangeType)?.label || rangeType
-            }
-          />
+          {/* Section 2: Analytics Workspace Bento Grid */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+            {/* Activity Chart: Prominent Visual Time-Series Area */}
+            <div className="lg:col-span-12">
+              <ActivityChart
+                dailyTaskCompletions={snapshot.dailyTaskCompletions}
+                dailyHabitCompletions={snapshot.dailyHabitCompletions}
+                dateRangeType={
+                  RANGE_OPTIONS.find((o) => o.id === rangeType)?.label || rangeType
+                }
+              />
+            </div>
 
-          {/* Section 3: Habit Consistency & Task Distribution Two-Column Grid */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <HabitBreakdown
-              habitConsistency={snapshot.habitConsistency}
-              habitStreaks={snapshot.habitStreaks}
-            />
-            <TaskDistribution distributions={snapshot.distributions} />
+            {/* Habit Breakdown: Deeper Habit Cadence & Streaks */}
+            <div className="lg:col-span-7 flex flex-col">
+              <HabitBreakdown
+                habitConsistency={snapshot.habitConsistency}
+                habitStreaks={snapshot.habitStreaks}
+              />
+            </div>
+
+            {/* Task Distribution: Categorical & Priority Allocations */}
+            <div className="lg:col-span-5 flex flex-col">
+              <TaskDistribution distributions={snapshot.distributions} />
+            </div>
+
+            {/* Recent Accomplishments: Full-Width Milestone Ledger */}
+            <div className="lg:col-span-12">
+              <RecentAccomplishments
+                accomplishments={snapshot.recentAccomplishments}
+              />
+            </div>
           </div>
-
-          {/* Section 4: Recent Accomplishments */}
-          <RecentAccomplishments
-            accomplishments={snapshot.recentAccomplishments}
-          />
-        </>
+        </div>
       )}
     </div>
   );

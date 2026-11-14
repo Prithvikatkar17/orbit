@@ -146,10 +146,10 @@ export default function HomePage() {
           </h1>
 
           {/* Calm Inline Summary Strip (replaces 4 KPI boxes) */}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-1 text-xs text-orbit-text-secondary">
+          <div className="flex flex-wrap items-center gap-2 pt-1 text-xs text-orbit-text-secondary">
             <Link
               href="/tasks"
-              className="inline-flex items-center gap-1.5 hover:text-orbit-text transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-md border border-orbit-border/70 bg-orbit-surface px-2.5 py-1 transition-colors hover:border-orbit-border-strong hover:text-orbit-text"
             >
               <span className="h-1.5 w-1.5 rounded-full bg-orbit-accent" aria-hidden />
               <span>
@@ -161,7 +161,7 @@ export default function HomePage() {
             {overdueCount > 0 && (
               <Link
                 href="/tasks"
-                className="inline-flex items-center gap-1.5 text-orbit-danger hover:underline"
+                className="inline-flex items-center gap-1.5 rounded-md border border-orbit-danger/30 bg-orbit-danger/10 px-2.5 py-1 text-orbit-danger transition-colors hover:bg-orbit-danger/15"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-orbit-danger" aria-hidden />
                 <span>
@@ -172,7 +172,7 @@ export default function HomePage() {
 
             <Link
               href="/tasks"
-              className="inline-flex items-center gap-1.5 hover:text-orbit-text transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-md border border-orbit-border/70 bg-orbit-surface px-2.5 py-1 transition-colors hover:border-orbit-border-strong hover:text-orbit-text"
             >
               <span>
                 <strong className="font-semibold text-orbit-text">{openTasks.length}</strong> open
@@ -182,7 +182,7 @@ export default function HomePage() {
 
             <Link
               href="/habits"
-              className="inline-flex items-center gap-1.5 hover:text-orbit-text transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-md border border-orbit-border/70 bg-orbit-surface px-2.5 py-1 transition-colors hover:border-orbit-border-strong hover:text-orbit-text"
             >
               <span className="h-1.5 w-1.5 rounded-full bg-orbit-success" aria-hidden />
               <span>
@@ -206,7 +206,7 @@ export default function HomePage() {
           </Button>
           <Link
             href="/inbox"
-            className="inline-flex h-9 items-center justify-center gap-2 rounded-orbit-control border border-orbit-border bg-orbit-surface px-3.5 text-xs font-semibold text-orbit-text-secondary shadow-orbit-xs transition-colors hover:border-orbit-border-strong hover:bg-orbit-subtle hover:text-orbit-text"
+            className="inline-flex min-h-[44px] sm:min-h-[36px] items-center justify-center gap-2 rounded-orbit-control border border-orbit-border bg-orbit-surface px-3.5 text-xs font-semibold text-orbit-text-secondary shadow-orbit-xs transition-colors hover:border-orbit-border-strong hover:bg-orbit-subtle hover:text-orbit-text"
           >
             <Inbox className="h-3.5 w-3.5 text-orbit-text-muted" />
             <span>Inbox</span>
@@ -222,11 +222,11 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* Main Workspace Asymmetric Grid */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-start">
-        {/* Left Column (7 cols): Today's Focus + Weekly Progress */}
-        <div className="space-y-6 lg:col-span-7">
-          <SurfaceCard as="section" className="overflow-hidden">
+      {/* Main Workspace Bento Grid Composition */}
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-12 lg:gap-6">
+        {/* Bento Tile 1: Today's Focus (Primary Actionable Focus) */}
+        <div className="md:col-span-2 lg:col-span-7 xl:col-span-7 flex flex-col">
+          <SurfaceCard as="section" className="overflow-hidden flex flex-col flex-1 h-full">
             <div className="flex items-center justify-between gap-2 border-b border-orbit-border px-5 py-4 sm:px-6">
               <div className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-0.5">
                 <Clock className="h-4 w-4 shrink-0 text-orbit-accent" aria-hidden />
@@ -241,7 +241,7 @@ export default function HomePage() {
               </div>
               <Link
                 href="/tasks"
-                className="inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-orbit-accent hover:text-orbit-accent-hover transition-colors"
+                className="inline-flex min-h-[44px] shrink-0 items-center gap-1 text-xs font-semibold text-orbit-accent hover:text-orbit-accent-hover transition-colors py-1"
               >
                 <span>All tasks</span>
                 <ArrowRight className="h-3.5 w-3.5" />
@@ -249,7 +249,7 @@ export default function HomePage() {
             </div>
 
             {focusTasks.length === 0 ? (
-              <div className="p-5 sm:p-6">
+              <div className="p-5 sm:p-6 flex-1 flex items-center justify-center">
                 <EmptyState
                   dashed={false}
                   className="border-0 py-6"
@@ -270,7 +270,7 @@ export default function HomePage() {
                 />
               </div>
             ) : (
-              <ul className="divide-y divide-orbit-border">
+              <ul className="divide-y divide-orbit-border flex-1">
                 {focusTasks.map((task) => {
                   const icon = CATEGORY_ICONS[task.category] || "📌";
                   const isOverdue = Boolean(task.dueDate && todayStr && task.dueDate < todayStr);
@@ -286,7 +286,7 @@ export default function HomePage() {
                           type="button"
                           aria-label={`Mark "${task.title}" as completed`}
                           onClick={() => toggleTask(task)}
-                          className="group/check -ml-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[var(--orbit-focus-ring)]"
+                          className="group/check -ml-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[var(--orbit-focus-ring)] cursor-pointer"
                         >
                           <span className="h-5 w-5 rounded-full border-2 border-orbit-border-strong transition-colors group-hover/check:border-orbit-accent" />
                         </button>
@@ -307,7 +307,7 @@ export default function HomePage() {
                             <p
                               className={`mt-0.5 text-xs ${
                                 isOverdue
-                                  ? "font-semibold text-orbit-danger"
+                                   ? "font-semibold text-orbit-danger"
                                   : isDueToday
                                   ? "font-medium text-orbit-accent"
                                   : "text-orbit-text-muted"
@@ -336,18 +336,11 @@ export default function HomePage() {
               </ul>
             )}
           </SurfaceCard>
-
-          <WeeklyProgressWidget
-            tasks={dashboardData.tasks}
-            habits={dashboardData.habits}
-            habitLogs={dashboardData.habitLogs}
-            isLoaded={Boolean(rawDashboardData)}
-          />
         </div>
 
-        {/* Right Column (5 cols): Daily Routines + Upcoming Schedule */}
-        <div className="space-y-6 lg:col-span-5">
-          <SurfaceCard as="section" className="overflow-hidden">
+        {/* Bento Tile 2: Daily Routines (Habit Cadence) */}
+        <div className="md:col-span-1 lg:col-span-5 xl:col-span-5 flex flex-col">
+          <SurfaceCard as="section" className="overflow-hidden flex flex-col flex-1 h-full">
             <div className="border-b border-orbit-border px-5 py-4 sm:px-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
@@ -358,7 +351,7 @@ export default function HomePage() {
                 </div>
                 <Link
                   href="/habits"
-                  className="inline-flex items-center gap-1 text-xs font-semibold text-orbit-accent hover:text-orbit-accent-hover transition-colors"
+                  className="inline-flex min-h-[44px] shrink-0 items-center gap-1 text-xs font-semibold text-orbit-accent hover:text-orbit-accent-hover transition-colors py-1"
                 >
                   <span>All habits</span>
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -381,7 +374,7 @@ export default function HomePage() {
             </div>
 
             {activeHabits.length === 0 ? (
-              <div className="p-5 sm:p-6">
+              <div className="p-5 sm:p-6 flex-1 flex items-center justify-center">
                 <EmptyState
                   dashed={false}
                   className="border-0 py-6"
@@ -402,7 +395,7 @@ export default function HomePage() {
                 />
               </div>
             ) : (
-              <ul className="divide-y divide-orbit-border">
+              <ul className="divide-y divide-orbit-border flex-1">
                 {activeHabits.map((habit) => {
                   const done = completedTodayHabitIds.has(habit.id);
                   return (
@@ -419,7 +412,7 @@ export default function HomePage() {
                             : `Mark "${habit.title}" completed`
                         }
                         onClick={() => toggleHabit(habit.id)}
-                        className="flex min-h-[44px] min-w-0 flex-1 items-center gap-3 py-2 text-left focus-visible:outline-hidden group"
+                        className="flex min-h-[44px] min-w-0 flex-1 items-center gap-3 py-2 text-left focus-visible:outline-hidden group cursor-pointer"
                       >
                         <span
                           style={
@@ -453,7 +446,20 @@ export default function HomePage() {
               </ul>
             )}
           </SurfaceCard>
+        </div>
 
+        {/* Bento Tile 3: Weekly Momentum Throughput Chart */}
+        <div className="md:col-span-1 lg:col-span-7 xl:col-span-7 flex flex-col">
+          <WeeklyProgressWidget
+            tasks={dashboardData.tasks}
+            habits={dashboardData.habits}
+            habitLogs={dashboardData.habitLogs}
+            isLoaded={Boolean(rawDashboardData)}
+          />
+        </div>
+
+        {/* Bento Tile 4: Upcoming Schedule Occurrences */}
+        <div className="md:col-span-2 lg:col-span-5 xl:col-span-5 flex flex-col">
           <UpcomingEventsWidget />
         </div>
       </div>

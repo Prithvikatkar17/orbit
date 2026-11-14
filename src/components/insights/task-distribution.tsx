@@ -27,23 +27,23 @@ export function TaskDistribution({ distributions }: TaskDistributionProps) {
   return (
     <SurfaceCard padding="md" className="flex flex-col h-full">
       {/* Editorial Header with View Tabs */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-orbit-border">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-orbit-surface-secondary border border-orbit-border text-orbit-accent">
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-orbit-border">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-orbit-surface-secondary border border-orbit-border text-orbit-accent">
             <Layers className="h-4 w-4" />
           </div>
-          <div>
-            <h2 className="font-display text-base font-semibold text-orbit-text tracking-tight">
+          <div className="min-w-0">
+            <h2 className="font-display text-base font-semibold text-orbit-text tracking-tight truncate">
               Task Distribution
             </h2>
-            <p className="text-xs text-orbit-text-muted">
+            <p className="text-xs text-orbit-text-muted truncate">
               Allocation across work streams and urgency
             </p>
           </div>
         </div>
 
         {/* Tab Buttons */}
-        <div className="flex items-center gap-1 rounded-lg bg-orbit-surface-secondary border border-orbit-border p-1 self-start sm:self-auto">
+        <div className="flex items-center gap-1 rounded-lg bg-orbit-surface-secondary border border-orbit-border p-1 shrink-0">
           <button
             type="button"
             onClick={() => setViewTab("category")}
