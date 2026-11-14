@@ -22,15 +22,15 @@
   --orbit-font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --orbit-font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  /* Background & Canvas — Warm Uncoated Paper */
+  /* Background & Canvas — Warm Ivory Editorial Paper */
   --orbit-bg: #f6f5f1;
   --orbit-bg-canvas: #f6f5f1;
-  --orbit-bg-subtle: #ebe8de;
+  --orbit-bg-subtle: #eae4d4;
 
-  /* Surfaces — Layered Warm Stationery */
-  --orbit-surface: #fcfbf8;
-  --orbit-surface-secondary: #efece3;
-  --orbit-surface-elevated: #ffffff;
+  /* Surfaces — Translucent Frosted Vellum & Solid Desk Rail */
+  --orbit-surface: rgba(254, 252, 247, 0.74);
+  --orbit-surface-secondary: #eee8db;
+  --orbit-surface-elevated: rgba(255, 254, 250, 0.88);
 
   /* Text Hierarchy — Warm Charcoal Ink */
   --orbit-text: #262621;
@@ -54,9 +54,9 @@
   --orbit-danger-fg: #faf9f5;
   --orbit-danger-soft: #faeae9;
 
-  /* Borders & Focus Rings */
-  --orbit-border: #e3dfd4;
-  --orbit-border-strong: #cac4b6;
+  /* Borders & Focus Rings — Delicate Vellum Rim & Subtle Framing */
+  --orbit-border: rgba(200, 188, 168, 0.6);
+  --orbit-border-strong: #c2b9a5;
   --orbit-focus-ring: rgba(44, 94, 79, 0.38);
 
   /* Radii */
@@ -69,15 +69,22 @@
   --orbit-font-eyebrow: var(--font-geist-sans);
   --orbit-eyebrow-tracking: 0.14em;
 
-  /* Surface Atmospheric Treatments */
-  --orbit-bg-pattern: linear-gradient(180deg, #f6f5f1 0%, #f1efe8 100%);
+  /* Surface Atmospheric Treatments — Organic Laid Paper with Fractal Fiber Tooth & Desk Lighting */
+  --orbit-bg-pattern:
+    radial-gradient(120% 90% at 50% 0%, #faf8f2 0%, #f4efe4 45%, #eae1d0 85%, #dfd4bf 100%),
+    radial-gradient(circle at 18% 28%, rgba(215, 198, 172, 0.28) 0%, transparent 45%),
+    radial-gradient(circle at 82% 65%, rgba(210, 192, 164, 0.24) 0%, transparent 50%),
+    radial-gradient(circle at 45% 85%, rgba(225, 210, 185, 0.2) 0%, transparent 40%),
+    repeating-linear-gradient(90deg, transparent 0px, transparent 95px, rgba(160, 140, 110, 0.04) 95px, rgba(160, 140, 110, 0.04) 96px),
+    repeating-linear-gradient(0deg, rgba(165, 145, 115, 0.035) 0px, rgba(165, 145, 115, 0.035) 1px, transparent 1px, transparent 8px),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.55  0 0 0 0 0.48  0 0 0 0 0.38  0 0 0 0.055 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paperNoise)'/%3E%3C/svg%3E");
   --orbit-bg-size: auto;
-  --orbit-card-blur: 0px;
+  --orbit-card-blur: 16px;
 
-  /* Shadows & Elevation */
-  --orbit-shadow-xs: 0 1px 2px 0 rgb(38 38 33 / 0.04);
-  --orbit-shadow-card: 0 1px 3px 0 rgb(38 38 33 / 0.05), 0 8px 24px -10px rgb(38 38 33 / 0.08);
-  --orbit-shadow-elevated: 0 20px 45px -16px rgb(38 38 33 / 0.18), 0 2px 8px -2px rgb(38 38 33 / 0.06);
+  /* Shadows & Elevation — Layered Glassmorphic Edge Light & Warm Diffuse Depth */
+  --orbit-shadow-xs: inset 0 1px 0 0 rgba(255, 255, 255, 0.8), 0 1px 2px 0 rgba(45, 38, 28, 0.04);
+  --orbit-shadow-card: inset 0 1px 0 0 rgba(255, 255, 255, 0.9), inset 0 0 0 1px rgba(255, 255, 255, 0.25), 0 6px 24px -4px rgba(45, 38, 28, 0.09), 0 1px 3px 0 rgba(45, 38, 28, 0.04);
+  --orbit-shadow-elevated: inset 0 1px 0 0 rgba(255, 255, 255, 0.95), inset 0 0 0 1px rgba(255, 255, 255, 0.4), 0 24px 60px -12px rgba(45, 35, 20, 0.22), 0 8px 20px -4px rgba(45, 35, 20, 0.08);
 
   /* Visualisation & Charts */
   --orbit-chart-1: #2c5e4f;
@@ -120,17 +127,19 @@
 [data-orbit-theme-preview="archivist"].dark {
   color-scheme: dark;
 
+  /* Background & Canvas — Warm Charcoal Bound Paper */
   --orbit-bg: #161613;
   --orbit-bg-canvas: #161613;
   --orbit-bg-subtle: #22211c;
 
-  --orbit-surface: #1d1c18;
-  --orbit-surface-secondary: #25241e;
-  --orbit-surface-elevated: #282721;
+  /* Surfaces — Frosted Charcoal Stationery & Solid Editorial Spine */
+  --orbit-surface: rgba(28, 26, 22, 0.72);
+  --orbit-surface-secondary: #181713;
+  --orbit-surface-elevated: rgba(36, 34, 28, 0.88);
 
-  --orbit-text: #f1efe7;
-  --orbit-text-secondary: #c6c3b7;
-  --orbit-text-muted: #969385;
+  --orbit-text: #f3efe6;
+  --orbit-text-secondary: #c9c5b7;
+  --orbit-text-muted: #999484;
 
   --orbit-accent: #6bb39b;
   --orbit-accent-hover: #7fc1aa;
@@ -147,8 +156,8 @@
   --orbit-danger-fg: #1d0e0d;
   --orbit-danger-soft: rgba(224, 115, 107, 0.16);
 
-  --orbit-border: #2e2d26;
-  --orbit-border-strong: #424036;
+  --orbit-border: rgba(90, 84, 70, 0.55);
+  --orbit-border-strong: #625c4e;
   --orbit-focus-ring: rgba(107, 179, 155, 0.45);
 
   --orbit-radius-card: 0.75rem;
@@ -157,13 +166,23 @@
   --orbit-heading-tracking: -0.02em;
   --orbit-font-eyebrow: var(--font-geist-sans);
   --orbit-eyebrow-tracking: 0.14em;
-  --orbit-bg-pattern: linear-gradient(180deg, #161613 0%, #121210 100%);
-  --orbit-bg-size: auto;
-  --orbit-card-blur: 0px;
 
-  --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.28);
-  --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.34), 0 1px 2px -1px rgb(0 0 0 / 0.25);
-  --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.62);
+  /* Surface Atmospheric Treatments — Dark Parchment with Fractal Fiber Tooth & Ambient Vignette */
+  --orbit-bg-pattern:
+    radial-gradient(120% 90% at 50% 0%, #23211c 0%, #1a1915 45%, #141310 85%, #0e0d0b 100%),
+    radial-gradient(circle at 18% 25%, rgba(45, 42, 34, 0.45) 0%, transparent 45%),
+    radial-gradient(circle at 82% 65%, rgba(40, 38, 30, 0.4) 0%, transparent 50%),
+    radial-gradient(circle at 45% 85%, rgba(50, 46, 37, 0.35) 0%, transparent 40%),
+    repeating-linear-gradient(90deg, transparent 0px, transparent 95px, rgba(210, 195, 165, 0.03) 95px, rgba(210, 195, 165, 0.03) 96px),
+    repeating-linear-gradient(0deg, rgba(210, 195, 165, 0.025) 0px, rgba(210, 195, 165, 0.025) 1px, transparent 1px, transparent 8px),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperNoiseDark'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.8  0 0 0 0 0.75  0 0 0 0 0.65  0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paperNoiseDark)'/%3E%3C/svg%3E");
+  --orbit-bg-size: auto;
+  --orbit-card-blur: 16px;
+
+  /* Shadows & Elevation — Layered Dark Glass Top Rim & Ambient Charcoal Depth */
+  --orbit-shadow-xs: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --orbit-shadow-card: inset 0 1px 0 0 rgba(255, 255, 255, 0.16), inset 0 0 0 1px rgba(255, 255, 255, 0.05), 0 8px 28px -4px rgb(0 0 0 / 0.55), 0 2px 6px 0 rgb(0 0 0 / 0.35);
+  --orbit-shadow-elevated: inset 0 1px 0 0 rgba(255, 255, 255, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 24px 60px -12px rgb(0 0 0 / 0.75), 0 8px 24px -4px rgb(0 0 0 / 0.5);
 
   /* Visualisation & Charts */
   --orbit-chart-1: #6bb39b;
@@ -198,17 +217,19 @@
   :root[data-orbit-theme="default"]:not(.light) {
     color-scheme: dark;
 
+    /* Background & Canvas — Warm Charcoal Bound Paper */
     --orbit-bg: #161613;
     --orbit-bg-canvas: #161613;
     --orbit-bg-subtle: #22211c;
 
-    --orbit-surface: #1d1c18;
-    --orbit-surface-secondary: #25241e;
-    --orbit-surface-elevated: #282721;
+    /* Surfaces — Frosted Charcoal Stationery & Solid Editorial Spine */
+    --orbit-surface: rgba(28, 26, 22, 0.72);
+    --orbit-surface-secondary: #181713;
+    --orbit-surface-elevated: rgba(36, 34, 28, 0.88);
 
-    --orbit-text: #f1efe7;
-    --orbit-text-secondary: #c6c3b7;
-    --orbit-text-muted: #969385;
+    --orbit-text: #f3efe6;
+    --orbit-text-secondary: #c9c5b7;
+    --orbit-text-muted: #999484;
 
     --orbit-accent: #6bb39b;
     --orbit-accent-hover: #7fc1aa;
@@ -225,8 +246,8 @@
     --orbit-danger-fg: #1d0e0d;
     --orbit-danger-soft: rgba(224, 115, 107, 0.16);
 
-    --orbit-border: #2e2d26;
-    --orbit-border-strong: #424036;
+    --orbit-border: rgba(90, 84, 70, 0.55);
+    --orbit-border-strong: #625c4e;
     --orbit-focus-ring: rgba(107, 179, 155, 0.45);
 
     --orbit-radius-card: 0.75rem;
@@ -235,13 +256,23 @@
     --orbit-heading-tracking: -0.02em;
     --orbit-font-eyebrow: var(--font-geist-sans);
     --orbit-eyebrow-tracking: 0.14em;
-    --orbit-bg-pattern: linear-gradient(180deg, #161613 0%, #121210 100%);
-    --orbit-bg-size: auto;
-    --orbit-card-blur: 0px;
 
-    --orbit-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.28);
-    --orbit-shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.34), 0 1px 2px -1px rgb(0 0 0 / 0.25);
-    --orbit-shadow-elevated: 0 24px 52px -12px rgb(0 0 0 / 0.62);
+    /* Surface Atmospheric Treatments — Dark Parchment with Fractal Fiber Tooth & Ambient Vignette */
+    --orbit-bg-pattern:
+      radial-gradient(120% 90% at 50% 0%, #23211c 0%, #1a1915 45%, #141310 85%, #0e0d0b 100%),
+      radial-gradient(circle at 18% 25%, rgba(45, 42, 34, 0.45) 0%, transparent 45%),
+      radial-gradient(circle at 82% 65%, rgba(40, 38, 30, 0.4) 0%, transparent 50%),
+      radial-gradient(circle at 45% 85%, rgba(50, 46, 37, 0.35) 0%, transparent 40%),
+      repeating-linear-gradient(90deg, transparent 0px, transparent 95px, rgba(210, 195, 165, 0.03) 95px, rgba(210, 195, 165, 0.03) 96px),
+      repeating-linear-gradient(0deg, rgba(210, 195, 165, 0.025) 0px, rgba(210, 195, 165, 0.025) 1px, transparent 1px, transparent 8px),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperNoiseDark'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.8  0 0 0 0 0.75  0 0 0 0 0.65  0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paperNoiseDark)'/%3E%3C/svg%3E");
+    --orbit-bg-size: auto;
+    --orbit-card-blur: 16px;
+
+    /* Shadows & Elevation — Layered Dark Glass Top Rim & Ambient Charcoal Depth */
+    --orbit-shadow-xs: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 1px 2px 0 rgb(0 0 0 / 0.4);
+    --orbit-shadow-card: inset 0 1px 0 0 rgba(255, 255, 255, 0.16), inset 0 0 0 1px rgba(255, 255, 255, 0.05), 0 8px 28px -4px rgb(0 0 0 / 0.55), 0 2px 6px 0 rgb(0 0 0 / 0.35);
+    --orbit-shadow-elevated: inset 0 1px 0 0 rgba(255, 255, 255, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 24px 60px -12px rgb(0 0 0 / 0.75), 0 8px 24px -4px rgb(0 0 0 / 0.5);
 
     /* Visualisation & Charts */
     --orbit-chart-1: #6bb39b;
@@ -1993,12 +2024,16 @@ pre {
 :root[data-orbit-theme="archivist"] .orbit-modal-backdrop,
 :root[data-orbit-theme="default"] .orbit-modal-backdrop,
 :root:not([data-orbit-theme]) .orbit-modal-backdrop {
-  background-color: rgba(38, 38, 33, 0.48);
+  background-color: rgba(38, 36, 32, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 .dark:root[data-orbit-theme="archivist"] .orbit-modal-backdrop,
 .dark:root[data-orbit-theme="default"] .orbit-modal-backdrop,
 .dark:not([data-orbit-theme]) .orbit-modal-backdrop {
-  background-color: rgba(12, 12, 10, 0.72);
+  background-color: rgba(12, 12, 10, 0.70);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 :root[data-orbit-theme="futuristic"] .orbit-modal-backdrop {
@@ -2064,8 +2099,21 @@ pre {
 :root[data-orbit-theme="archivist"] .orbit-modal-dialog,
 :root[data-orbit-theme="default"] .orbit-modal-dialog,
 :root:not([data-orbit-theme]) .orbit-modal-dialog {
-  border: 1px solid var(--orbit-border);
-  box-shadow: 0 20px 45px -16px rgb(38 38 33 / 0.18), 0 2px 8px -2px rgb(38 38 33 / 0.06);
+  background-color: rgba(254, 252, 247, 0.88) !important;
+  backdrop-filter: blur(20px) saturate(1.1) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(1.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.95), 0 24px 60px -12px rgba(45, 35, 20, 0.22), 0 8px 20px -4px rgba(45, 35, 20, 0.08) !important;
+}
+
+.dark:root[data-orbit-theme="archivist"] .orbit-modal-dialog,
+.dark:root[data-orbit-theme="default"] .orbit-modal-dialog,
+.dark:not([data-orbit-theme]) .orbit-modal-dialog {
+  background-color: rgba(26, 24, 20, 0.86) !important;
+  backdrop-filter: blur(20px) saturate(1.1) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(1.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.16), 0 24px 60px -12px rgba(0, 0, 0, 0.75), 0 8px 24px -4px rgba(0, 0, 0, 0.5) !important;
 }
 
 :root[data-orbit-theme="futuristic"] .orbit-modal-dialog {
@@ -2246,6 +2294,51 @@ pre {
   transition: border-color var(--orbit-transition-fast), box-shadow var(--orbit-transition-fast), background-color var(--orbit-transition-fast);
 }
 
+/* Archivist: Refined stationery form controls with crisp vellum fills & ink focus */
+:root[data-orbit-theme="archivist"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+:root[data-orbit-theme="archivist"] select,
+:root[data-orbit-theme="archivist"] textarea,
+:root:not([data-orbit-theme]) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+:root:not([data-orbit-theme]) select,
+:root:not([data-orbit-theme]) textarea {
+  background-color: rgba(255, 255, 255, 0.72) !important;
+  border-color: rgba(200, 188, 168, 0.8) !important;
+  box-shadow: inset 0 1px 2px rgba(45, 38, 28, 0.04);
+}
+
+:root[data-orbit-theme="archivist"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
+:root[data-orbit-theme="archivist"] select:focus,
+:root[data-orbit-theme="archivist"] textarea:focus,
+:root:not([data-orbit-theme]) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
+:root:not([data-orbit-theme]) select:focus,
+:root:not([data-orbit-theme]) textarea:focus {
+  background-color: #ffffff !important;
+  border-color: var(--orbit-accent) !important;
+  box-shadow: 0 0 0 3px rgba(44, 94, 79, 0.18), inset 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+}
+
+.dark:root[data-orbit-theme="archivist"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.dark:root[data-orbit-theme="archivist"] select,
+.dark:root[data-orbit-theme="archivist"] textarea,
+.dark:not([data-orbit-theme]) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.dark:not([data-orbit-theme]) select,
+.dark:not([data-orbit-theme]) textarea {
+  background-color: rgba(20, 19, 16, 0.75) !important;
+  border-color: rgba(75, 70, 58, 0.8) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.dark:root[data-orbit-theme="archivist"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
+.dark:root[data-orbit-theme="archivist"] select:focus,
+.dark:root[data-orbit-theme="archivist"] textarea:focus,
+.dark:not([data-orbit-theme]) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
+.dark:not([data-orbit-theme]) select:focus,
+.dark:not([data-orbit-theme]) textarea:focus {
+  background-color: rgba(28, 26, 22, 0.95) !important;
+  border-color: var(--orbit-accent) !important;
+  box-shadow: 0 0 0 3px rgba(107, 179, 155, 0.25) !important;
+}
+
 :root[data-orbit-theme="futuristic"] .orbit-input:focus,
 :root[data-orbit-theme="futuristic"] .orbit-textarea:focus,
 :root[data-orbit-theme="futuristic"] .orbit-select:focus {
@@ -2292,6 +2385,8 @@ pre {
 /* 5. Surface & Interactive Cards */
 .orbit-surface-card {
   position: relative;
+  backdrop-filter: blur(var(--orbit-card-blur, 0px));
+  -webkit-backdrop-filter: blur(var(--orbit-card-blur, 0px));
   transition: border-color var(--orbit-transition-fast), box-shadow var(--orbit-transition-fast), background-color var(--orbit-transition-fast);
 }
 
@@ -2309,9 +2404,15 @@ pre {
 /* Archivist: Refined paper-like surfaces and editorial transitions */
 :root[data-orbit-theme="archivist"] .orbit-card-interactive:hover,
 :root:not([data-orbit-theme]) .orbit-card-interactive:hover {
-  border-color: var(--orbit-border-strong) !important;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.07);
+  border-color: rgba(44, 94, 79, 0.35) !important;
+  transform: translateY(-1.5px);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 1), 0 10px 24px -4px rgba(45, 38, 28, 0.12), 0 2px 6px -1px rgba(45, 38, 28, 0.06);
+}
+.dark:root[data-orbit-theme="archivist"] .orbit-card-interactive:hover,
+.dark:root:not([data-orbit-theme]) .orbit-card-interactive:hover {
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  transform: translateY(-1.5px);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.25), 0 12px 32px -4px rgb(0 0 0 / 0.65), 0 2px 6px 0 rgb(0 0 0 / 0.4);
 }
 :root[data-orbit-theme="archivist"] .orbit-card-interactive:active,
 :root:not([data-orbit-theme]) .orbit-card-interactive:active {
