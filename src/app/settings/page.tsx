@@ -25,6 +25,7 @@ import {
   restoreBackup,
 } from "@/lib/services/backup-service";
 import { requestNotificationPermission } from "@/lib/services/reminder-service";
+import { resetSearchIndex } from "@/lib/services/search-service";
 import { useNotificationStore } from "@/lib/stores/notification-store";
 import { useMounted } from "@/lib/utils/dates";
 import {
@@ -364,6 +365,7 @@ export default function SettingsPage() {
         }
       );
       await useNotificationStore.getState().clearAll();
+      resetSearchIndex();
       setIsResetConfirmOpen(false);
       setStatusMessage("All data cleared successfully.");
       setTimeout(() => setStatusMessage(null), 4000);

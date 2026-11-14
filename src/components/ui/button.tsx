@@ -62,7 +62,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={isDisabled}
         aria-busy={loading || undefined}
         className={[
-          "orbit-button inline-flex items-center justify-center transition-colors outline-hidden disabled:opacity-50 disabled:cursor-not-allowed",
+          "orbit-button inline-flex items-center justify-center transition-colors outline-hidden disabled:opacity-50 disabled:cursor-not-allowed select-none cursor-pointer",
           variantClasses[variant],
           sizeClasses[size],
           className,

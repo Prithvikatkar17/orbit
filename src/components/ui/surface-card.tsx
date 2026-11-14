@@ -26,13 +26,13 @@ const variantClasses: Record<SurfaceCardVariant, string> = {
 
 const interactiveVariantClasses: Record<SurfaceCardVariant, string> = {
   outlined:
-    "orbit-card-interactive transition-all hover:border-orbit-border-strong hover:shadow-orbit-card cursor-pointer",
+    "orbit-card-interactive transition-all hover:border-orbit-border-strong hover:shadow-orbit-card focus-visible:outline-2 focus-visible:outline-orbit-ring focus-visible:outline-offset-2 cursor-pointer",
   elevated:
-    "orbit-card-interactive transition-all hover:border-orbit-border-strong hover:shadow-orbit-elevated cursor-pointer",
+    "orbit-card-interactive transition-all hover:border-orbit-border-strong hover:shadow-orbit-elevated focus-visible:outline-2 focus-visible:outline-orbit-ring focus-visible:outline-offset-2 cursor-pointer",
   tonal:
-    "orbit-card-interactive transition-colors hover:bg-orbit-subtle cursor-pointer",
+    "orbit-card-interactive transition-colors hover:bg-orbit-subtle focus-visible:outline-2 focus-visible:outline-orbit-ring focus-visible:outline-offset-2 cursor-pointer",
   flat:
-    "orbit-card-interactive transition-colors hover:bg-orbit-surface-secondary/60 cursor-pointer",
+    "orbit-card-interactive transition-colors hover:bg-orbit-surface-secondary/60 focus-visible:outline-2 focus-visible:outline-orbit-ring focus-visible:outline-offset-2 cursor-pointer",
 };
 
 const paddingClasses: Record<SurfaceCardPadding, string> = {
@@ -62,7 +62,7 @@ export const SurfaceCard = React.forwardRef<HTMLElement, SurfaceCardProps>(
       <Tag
         ref={ref}
         className={[
-          "rounded-orbit-card",
+          "orbit-surface-card rounded-orbit-card",
           variantClasses[variant],
           paddingClasses[padding],
           interactive && interactiveVariantClasses[variant],

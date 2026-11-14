@@ -1,5 +1,6 @@
 import * as fflate from "fflate";
 import { db, type OrbitDatabase } from "../db/client.ts";
+import { resetSearchIndex } from "./search-service.ts";
 import {
   BackupPayloadSchema,
   type BackupPayload,
@@ -551,6 +552,9 @@ export async function restoreBackup(
       await Promise.all(puts);
     });
 
+    // Invalidate search cache upon successful backup restore
+    resetSearchIndex();
+
     return stats;
   }
 
@@ -667,6 +671,9 @@ export async function restoreBackup(
     }
     await Promise.all(puts);
   });
+
+  // Invalidate search cache upon successful backup restore
+  resetSearchIndex();
 
   return stats;
 }

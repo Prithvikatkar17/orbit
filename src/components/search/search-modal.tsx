@@ -15,9 +15,10 @@ import { db } from "@/lib/db/client";
 import { useSearchStore, type SearchFilterTab } from "@/lib/stores/search-store";
 import { useUIStore } from "@/lib/stores/ui-store";
 import {
-  searchAll,
-  type SearchDataSources,
+  executeUniversalSearch,
+  warmSearchIndex,
   type SearchResultItem as SearchResultItemType,
+  type SearchResultsGrouped,
 } from "@/lib/services/search-service";
 import { SearchResultItem } from "./search-result-item";
 import { Badge } from "@/components/ui/badge";
@@ -35,6 +36,13 @@ const FILTER_TABS: { id: SearchFilterTab; label: string }[] = [
   { id: "inbox", label: "Inbox" },
   { id: "collection", label: "Collections" },
 ];
+
+const EMPTY_SEARCH_RESULTS: SearchResultsGrouped = {
+  query: "",
+  totalMatches: 0,
+  items: [],
+  groups: [],
+};
 
 export function SearchModal() {
   const router = useRouter();
@@ -58,27 +66,34 @@ export function SearchModal() {
   } = useSearchStore();
 
   const [debouncedQuery, setDebouncedQuery] = useState(query);
-  const [snapshot, setSnapshot] = useState<SearchDataSources | null>(null);
+  const [searchResults, setSearchResults] = useState<SearchResultsGrouped>(EMPTY_SEARCH_RESULTS);
   const [selectedRecentIndex, setSelectedRecentIndex] = useState(-1);
 
-  const isLoadingSnapshot = isSearchOpen && snapshot === null;
+  const trimmedQuery = debouncedQuery.trim();
+  const activeSearchResults = trimmedQuery ? searchResults : EMPTY_SEARCH_RESULTS;
+  const isSearching = Boolean(trimmedQuery && activeSearchResults.query !== trimmedQuery);
 
-  // Save active element when opening and restore upon closing
+  // Save active element when opening and restore upon closing; focus input immediately
   useEffect(() => {
     if (isSearchOpen) {
       if (typeof document !== "undefined") {
         previousActiveElementRef.current = document.activeElement as HTMLElement | null;
       }
+      requestAnimationFrame(() => {
+        inputRef.current?.focus();
+      });
+      // Non-blocking idle warm-up of staged index
+      warmSearchIndex(db).catch(() => {});
     } else {
       previousActiveElementRef.current?.focus?.();
     }
   }, [isSearchOpen]);
 
-  // Debounce query updates (120ms)
+  // Debounce query updates (100ms)
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(query);
-    }, 120);
+    }, 100);
     return () => clearTimeout(timer);
   }, [query]);
 
@@ -115,59 +130,36 @@ export function SearchModal() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [openSearch, closeSearch]);
 
-  // Fetch in-memory snapshot when modal opens; discard on unmount/close cleanup.
-  // NEVER loads libraryFiles.data binary Blobs.
+  // Staged query execution: queries only run when search has non-empty input
   useEffect(() => {
-    if (!isSearchOpen) return;
+    if (!isSearchOpen || !trimmedQuery) {
+      return;
+    }
 
     let isMounted = true;
 
-    Promise.all([
-      db.tasks.toArray(),
-      db.libraryEntries.toArray(),
-      db.habits.toArray(),
-      db.events.toArray(),
-      db.items.toArray(),
-      db.libraryCollections.toArray(),
-    ])
-      .then(([tasks, libraryEntries, habits, events, items, collections]) => {
+    executeUniversalSearch(
+      trimmedQuery,
+      {
+        moduleFilter: activeFilter,
+        limit: 25,
+      },
+      db
+    )
+      .then((res) => {
         if (!isMounted) return;
-        setSnapshot({
-          tasks,
-          libraryEntries,
-          habits,
-          events,
-          items,
-          collections,
-        });
+        setSearchResults(res);
       })
       .catch((err) => {
-        console.error("Failed to fetch search snapshot:", err);
+        console.error("Failed to execute universal search:", err);
       });
-
-    // Auto-focus search input upon opening
-    requestAnimationFrame(() => {
-      inputRef.current?.focus();
-    });
 
     return () => {
       isMounted = false;
-      setSnapshot(null);
     };
-  }, [isSearchOpen]);
+  }, [isSearchOpen, trimmedQuery, activeFilter]);
 
-  // Execute in-memory search across snapshot
-  const searchResults = useMemo(() => {
-    if (!snapshot || !debouncedQuery.trim()) {
-      return { query: debouncedQuery, totalMatches: 0, items: [], groups: [] };
-    }
-    return searchAll(debouncedQuery, snapshot, {
-      moduleFilter: activeFilter,
-      limit: 25,
-    });
-  }, [snapshot, debouncedQuery, activeFilter]);
-
-  const items = searchResults.items;
+  const items = activeSearchResults.items;
   const itemsCount = items.length;
 
   // Selected item reference
@@ -202,7 +194,7 @@ export function SearchModal() {
 
   // Live screen reader announcement
   const announcementText = useMemo(() => {
-    if (isLoadingSnapshot) return "Loading search index...";
+    if (isSearching && itemsCount === 0) return "Searching across ORBIT...";
     if (!debouncedQuery.trim()) {
       return recentSearches.length > 0
         ? `Ready to search. ${recentSearches.length} recent search${recentSearches.length === 1 ? "" : "es"} available.`
@@ -210,7 +202,7 @@ export function SearchModal() {
     }
     if (itemsCount === 0) return `No results found for ${debouncedQuery}`;
     return `${itemsCount} result${itemsCount === 1 ? "" : "s"} found for ${debouncedQuery}`;
-  }, [isLoadingSnapshot, debouncedQuery, itemsCount, recentSearches.length]);
+  }, [isSearching, debouncedQuery, itemsCount, recentSearches.length]);
 
   // Keyboard navigation within search palette
   function handleInputKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -426,10 +418,10 @@ export function SearchModal() {
           aria-label="Search Results"
           className="flex-1 overflow-y-auto overscroll-contain p-2 sm:p-3 min-h-[160px] max-h-[55vh]"
         >
-          {isLoadingSnapshot ? (
+          {isSearching && itemsCount === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-orbit-text-muted">
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-orbit-accent border-t-transparent mb-2" />
-              <span className="font-mono text-xs text-orbit-text-muted">Indexing local database...</span>
+              <span className="font-mono text-xs text-orbit-text-muted">Searching local records...</span>
             </div>
           ) : !query.trim() ? (
             /* Empty Query State: Recent Searches & Hints */
