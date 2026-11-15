@@ -830,83 +830,91 @@
 }
 
 /* --------------------------------------------------------------------------
-   THEME PERSONALITY 4: ARTISTIC (Creative Studio & Pigment)
+   THEME PERSONALITY 4: ARTISTIC (The Chromatic Watercolor & Gouache Atelier)
    -------------------------------------------------------------------------- */
 :root[data-orbit-theme="artistic"],
 [data-orbit-theme-preview="artistic"] {
   color-scheme: light;
 
-  /* Typography */
-  --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
+  /* Typography — Expressive Serif & Humanist Sans */
+  --orbit-font-display: var(--font-orbit-display-base), Newsreader, Georgia, serif;
   --orbit-heading-tracking: -0.015em;
   --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
-  --orbit-eyebrow-tracking: 0.14em;
+  --orbit-eyebrow-tracking: 0.12em;
 
-  /* Radii — Craft Studio Geometry */
-  --orbit-radius-card: 0.625rem;
-  --orbit-radius-control: 0.5rem;
+  /* Radii — Generous Painterly Geometry */
+  --orbit-radius-card: 1.5rem;
+  --orbit-radius-control: 1rem;
   --orbit-radius-pill: 9999px;
 
-  --orbit-bg: #faf6ed;
-  --orbit-bg-canvas: #faf6ed;
-  --orbit-bg-subtle: #f0ebdd;
-  --orbit-bg-pattern: linear-gradient(135deg, rgba(217, 119, 6, 0.04) 0%, transparent 35%, rgba(37, 99, 235, 0.03) 70%, rgba(217, 119, 6, 0.03) 100%);
+  /* Canvas Background — Cold-Pressed Watercolor Paper with Dreamy Pigment Meshes */
+  --orbit-bg: #fcf9f4;
+  --orbit-bg-canvas: #fcf9f4;
+  --orbit-bg-subtle: #f7f2ea;
+  --orbit-bg-pattern: radial-gradient(60% 50% at 10% 10%, rgba(99, 102, 241, 0.12), transparent 70%),
+                      radial-gradient(55% 45% at 88% 15%, rgba(244, 63, 94, 0.11), transparent 70%),
+                      radial-gradient(65% 55% at 50% 95%, rgba(245, 158, 11, 0.10), rgba(6, 182, 212, 0.06), transparent 75%);
   --orbit-bg-size: auto;
   --orbit-card-blur: 0px;
 
+  /* Surfaces — Pure Warm Ivory Watercolor Board */
   --orbit-surface: #ffffff;
-  --orbit-surface-secondary: #f5eee0;
+  --orbit-surface-secondary: #faf6f0;
   --orbit-surface-elevated: #ffffff;
 
-  --orbit-text: #2b251e;
-  --orbit-text-secondary: #5c5043;
-  --orbit-text-muted: #786b5c;
+  /* Inks — Deep Plum & Saturated Charcoal */
+  --orbit-text: #231c26;
+  --orbit-text-secondary: #574d5e;
+  --orbit-text-muted: #84778d;
 
-  --orbit-accent: #d97706;
-  --orbit-accent-hover: #b45309;
+  /* Primary Pigments: Vibrant Rose Vermilion, Ultramarine, Golden Amber */
+  --orbit-accent: #e11d48;
+  --orbit-accent-hover: #be123c;
   --orbit-accent-fg: #ffffff;
-  --orbit-accent-soft: #fef3c7;
-  --orbit-accent-secondary: #2563eb;
-  --orbit-accent-secondary-soft: #eff6ff;
+  --orbit-accent-soft: rgba(225, 29, 72, 0.10);
+  --orbit-accent-secondary: #4338ca;
+  --orbit-accent-secondary-soft: rgba(67, 56, 202, 0.10);
 
-  --orbit-success: #15803d;
-  --orbit-success-soft: #dcfce7;
-  --orbit-warning: #b45309;
-  --orbit-warning-soft: #fef3c7;
-  --orbit-danger: #b91c1c;
+  --orbit-success: #059669;
+  --orbit-success-soft: rgba(5, 150, 105, 0.12);
+  --orbit-warning: #f59e0b;
+  --orbit-warning-soft: rgba(245, 158, 11, 0.12);
+  --orbit-danger: #e11d48;
   --orbit-danger-fg: #ffffff;
-  --orbit-danger-soft: #fee2e2;
+  --orbit-danger-soft: rgba(225, 29, 72, 0.12);
 
-  --orbit-border: #e6decb;
-  --orbit-border-strong: #d1c5ab;
-  --orbit-focus-ring: rgba(217, 119, 6, 0.38);
+  /* Delicate Warm Linen Borders */
+  --orbit-border: rgba(180, 150, 135, 0.22);
+  --orbit-border-strong: rgba(180, 150, 135, 0.38);
+  --orbit-focus-ring: rgba(225, 29, 72, 0.35);
 
-  --orbit-shadow-xs: 1px 1px 0 rgb(43 37 30 / 0.1);
-  --orbit-shadow-card: 2px 3px 0 rgb(43 37 30 / 0.08), 0 6px 18px -4px rgb(217 119 6 / 0.08);
-  --orbit-shadow-elevated: 3px 4px 0 rgb(43 37 30 / 0.12), 0 16px 36px -8px rgb(217 119 6 / 0.14);
+  /* Multi-Toned Chromatic Ambient Shadows */
+  --orbit-shadow-xs: 0 1px 3px rgba(120, 70, 140, 0.06);
+  --orbit-shadow-card: 0 16px 36px -10px rgba(120, 70, 140, 0.08), 0 4px 12px -2px rgba(230, 100, 80, 0.05);
+  --orbit-shadow-elevated: 0 24px 48px -12px rgba(120, 70, 140, 0.14), 0 8px 20px -4px rgba(230, 100, 80, 0.08);
 
-  /* Visualisation & Charts */
-  --orbit-chart-1: #d97706;
-  --orbit-chart-2: #2563eb;
-  --orbit-chart-3: #059669;
-  --orbit-chart-4: #dc2626;
-  --orbit-chart-5: #7c3aed;
-  --orbit-chart-positive: #16a34a;
-  --orbit-chart-neutral: #57534e;
-  --orbit-chart-negative: #dc2626;
-  --orbit-chart-grid: #e6decb;
-  --orbit-chart-axis: #d1c7af;
-  --orbit-chart-tooltip-bg: #fffcf5;
-  --orbit-chart-tooltip-border: #d1c7af;
-  --orbit-chart-tooltip-text: #292524;
-  --orbit-progress-track: #ede5d5;
-  --orbit-progress-fill: #d97706;
-  --orbit-chart-highlight: #b45309;
-  --orbit-heatmap-0: #ede5d5;
-  --orbit-heatmap-1: #fde68a;
-  --orbit-heatmap-2: #f59e0b;
-  --orbit-heatmap-3: #d97706;
-  --orbit-heatmap-4: #92400e;
+  /* Visualisation & Charts — Expressive Pigment Palette */
+  --orbit-chart-1: #e11d48;
+  --orbit-chart-2: #4338ca;
+  --orbit-chart-3: #f59e0b;
+  --orbit-chart-4: #059669;
+  --orbit-chart-5: #9333ea;
+  --orbit-chart-positive: #059669;
+  --orbit-chart-neutral: #84778d;
+  --orbit-chart-negative: #e11d48;
+  --orbit-chart-grid: rgba(180, 150, 135, 0.16);
+  --orbit-chart-axis: rgba(180, 150, 135, 0.32);
+  --orbit-chart-tooltip-bg: #231c26;
+  --orbit-chart-tooltip-border: rgba(180, 150, 135, 0.3);
+  --orbit-chart-tooltip-text: #ffffff;
+  --orbit-progress-track: #faf6f0;
+  --orbit-progress-fill: #e11d48;
+  --orbit-chart-highlight: #ec4899;
+  --orbit-heatmap-0: #faf6f0;
+  --orbit-heatmap-1: #fbcfe8;
+  --orbit-heatmap-2: #f472b6;
+  --orbit-heatmap-3: #e11d48;
+  --orbit-heatmap-4: #9f1239;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -919,76 +927,84 @@
   color-scheme: dark;
 
   /* Typography */
-  --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
+  --orbit-font-display: var(--font-orbit-display-base), Newsreader, Georgia, serif;
   --orbit-heading-tracking: -0.015em;
   --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
-  --orbit-eyebrow-tracking: 0.14em;
+  --orbit-eyebrow-tracking: 0.12em;
 
-  /* Radii — Craft Studio Geometry */
-  --orbit-radius-card: 0.625rem;
-  --orbit-radius-control: 0.5rem;
+  /* Radii */
+  --orbit-radius-card: 1.5rem;
+  --orbit-radius-control: 1rem;
   --orbit-radius-pill: 9999px;
 
-  --orbit-bg: #181512;
-  --orbit-bg-canvas: #181512;
-  --orbit-bg-subtle: #231f1a;
-  --orbit-bg-pattern: linear-gradient(135deg, rgba(245, 158, 11, 0.06) 0%, transparent 40%, rgba(96, 165, 250, 0.04) 75%, rgba(245, 158, 11, 0.04) 100%);
+  /* Canvas Background — Deep Indigo-Plum Oil Canvas with Luminous Glazes */
+  --orbit-bg: #110f18;
+  --orbit-bg-canvas: #110f18;
+  --orbit-bg-subtle: #181522;
+  --orbit-bg-pattern: radial-gradient(60% 50% at 10% 10%, rgba(168, 85, 247, 0.15), transparent 70%),
+                      radial-gradient(55% 45% at 88% 15%, rgba(244, 63, 94, 0.12), transparent 70%),
+                      radial-gradient(65% 55% at 50% 95%, rgba(20, 184, 166, 0.10), transparent 75%);
   --orbit-bg-size: auto;
   --orbit-card-blur: 0px;
 
-  --orbit-surface: #201c18;
-  --orbit-surface-secondary: #29241f;
-  --orbit-surface-elevated: #332d26;
+  /* Surfaces — Velvety Studio Plum-Slate */
+  --orbit-surface: #1b1726;
+  --orbit-surface-secondary: #241f33;
+  --orbit-surface-elevated: #2a243c;
 
-  --orbit-text: #f7f2ea;
-  --orbit-text-secondary: #cfc5b6;
-  --orbit-text-muted: #998f80;
+  /* Inks — Luminous Lilac Chalk */
+  --orbit-text: #f5f0fb;
+  --orbit-text-secondary: #c9bed7;
+  --orbit-text-muted: #9587a6;
 
-  --orbit-accent: #f59e0b;
-  --orbit-accent-hover: #fbbf24;
-  --orbit-accent-fg: #261400;
-  --orbit-accent-soft: rgba(245, 158, 11, 0.16);
-  --orbit-accent-secondary: #60a5fa;
-  --orbit-accent-secondary-soft: rgba(96, 165, 250, 0.16);
+  /* Luminous Pigments: Sunset Rose Coral, Electric Iris, Golden Glaze */
+  --orbit-accent: #fb7185;
+  --orbit-accent-hover: #f43f5e;
+  --orbit-accent-fg: #110f18;
+  --orbit-accent-soft: rgba(251, 113, 133, 0.16);
+  --orbit-accent-secondary: #818cf8;
+  --orbit-accent-secondary-soft: rgba(129, 140, 248, 0.16);
 
-  --orbit-success: #4ade80;
-  --orbit-success-soft: rgba(74, 222, 128, 0.15);
+  --orbit-success: #34d399;
+  --orbit-success-soft: rgba(52, 211, 153, 0.16);
   --orbit-warning: #fbbf24;
-  --orbit-warning-soft: rgba(251, 191, 36, 0.15);
-  --orbit-danger: #f87171;
-  --orbit-danger-fg: #1d0909;
-  --orbit-danger-soft: rgba(248, 113, 113, 0.16);
+  --orbit-warning-soft: rgba(251, 191, 36, 0.16);
+  --orbit-danger: #fb7185;
+  --orbit-danger-fg: #110f18;
+  --orbit-danger-soft: rgba(251, 113, 133, 0.16);
 
-  --orbit-border: #383129;
-  --orbit-border-strong: #4d4439;
-  --orbit-focus-ring: rgba(245, 158, 11, 0.45);
+  /* Subtle Luminous Borders */
+  --orbit-border: rgba(255, 255, 255, 0.09);
+  --orbit-border-strong: rgba(255, 255, 255, 0.18);
+  --orbit-focus-ring: rgba(251, 113, 133, 0.4);
 
-  --orbit-shadow-xs: 1px 1px 0 rgb(0 0 0 / 0.4);
-  --orbit-shadow-card: 2px 3px 0 rgb(0 0 0 / 0.35), 0 6px 20px -4px rgb(245 158 11 / 0.12);
-  --orbit-shadow-elevated: 3px 4px 0 rgb(0 0 0 / 0.5), 0 20px 40px -8px rgb(245 158 11 / 0.18);
+  /* Deep Chromatic Ambient Shadows */
+  --orbit-shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --orbit-shadow-card: 0 16px 36px -10px rgba(0, 0, 0, 0.6), 0 4px 16px -2px rgba(168, 85, 247, 0.12);
+  --orbit-shadow-elevated: 0 24px 48px -12px rgba(0, 0, 0, 0.75), 0 8px 24px -4px rgba(244, 63, 94, 0.15);
 
   /* Visualisation & Charts */
-  --orbit-chart-1: #f59e0b;
-  --orbit-chart-2: #60a5fa;
-  --orbit-chart-3: #4ade80;
-  --orbit-chart-4: #f87171;
-  --orbit-chart-5: #a78bfa;
-  --orbit-chart-positive: #22c55e;
-  --orbit-chart-neutral: #a8a29e;
-  --orbit-chart-negative: #ef4444;
-  --orbit-chart-grid: #383129;
-  --orbit-chart-axis: #4d4338;
-  --orbit-chart-tooltip-bg: #241e17;
-  --orbit-chart-tooltip-border: #4d4338;
-  --orbit-chart-tooltip-text: #fafaf9;
-  --orbit-progress-track: #2e261f;
-  --orbit-progress-fill: #f59e0b;
-  --orbit-chart-highlight: #fbbf24;
-  --orbit-heatmap-0: #2e261f;
-  --orbit-heatmap-1: #4a3512;
-  --orbit-heatmap-2: #7c5512;
-  --orbit-heatmap-3: #b45309;
-  --orbit-heatmap-4: #f59e0b;
+  --orbit-chart-1: #fb7185;
+  --orbit-chart-2: #818cf8;
+  --orbit-chart-3: #fbbf24;
+  --orbit-chart-4: #34d399;
+  --orbit-chart-5: #c084fc;
+  --orbit-chart-positive: #34d399;
+  --orbit-chart-neutral: #9587a6;
+  --orbit-chart-negative: #fb7185;
+  --orbit-chart-grid: rgba(255, 255, 255, 0.07);
+  --orbit-chart-axis: rgba(255, 255, 255, 0.18);
+  --orbit-chart-tooltip-bg: #1b1726;
+  --orbit-chart-tooltip-border: rgba(255, 255, 255, 0.18);
+  --orbit-chart-tooltip-text: #f5f0fb;
+  --orbit-progress-track: #241f33;
+  --orbit-progress-fill: #fb7185;
+  --orbit-chart-highlight: #f43f5e;
+  --orbit-heatmap-0: #241f33;
+  --orbit-heatmap-1: #4c1d32;
+  --orbit-heatmap-2: #881337;
+  --orbit-heatmap-3: #e11d48;
+  --orbit-heatmap-4: #fb7185;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -999,76 +1015,78 @@
     color-scheme: dark;
 
     /* Typography */
-    --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
+    --orbit-font-display: var(--font-orbit-display-base), Newsreader, Georgia, serif;
     --orbit-heading-tracking: -0.015em;
     --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
-    --orbit-eyebrow-tracking: 0.14em;
+    --orbit-eyebrow-tracking: 0.12em;
 
-    /* Radii — Craft Studio Geometry */
-    --orbit-radius-card: 0.625rem;
-    --orbit-radius-control: 0.5rem;
+    /* Radii */
+    --orbit-radius-card: 1.5rem;
+    --orbit-radius-control: 1rem;
     --orbit-radius-pill: 9999px;
 
-    --orbit-bg: #181512;
-    --orbit-bg-canvas: #181512;
-    --orbit-bg-subtle: #231f1a;
-    --orbit-bg-pattern: linear-gradient(135deg, rgba(245, 158, 11, 0.06) 0%, transparent 40%, rgba(96, 165, 250, 0.04) 75%, rgba(245, 158, 11, 0.04) 100%);
+    /* Canvas Background */
+    --orbit-bg: #110f18;
+    --orbit-bg-canvas: #110f18;
+    --orbit-bg-subtle: #181522;
+    --orbit-bg-pattern: radial-gradient(60% 50% at 10% 10%, rgba(168, 85, 247, 0.15), transparent 70%),
+                        radial-gradient(55% 45% at 88% 15%, rgba(244, 63, 94, 0.12), transparent 70%),
+                        radial-gradient(65% 55% at 50% 95%, rgba(20, 184, 166, 0.10), transparent 75%);
     --orbit-bg-size: auto;
     --orbit-card-blur: 0px;
 
-    --orbit-surface: #201c18;
-    --orbit-surface-secondary: #29241f;
-    --orbit-surface-elevated: #332d26;
+    --orbit-surface: #1b1726;
+    --orbit-surface-secondary: #241f33;
+    --orbit-surface-elevated: #2a243c;
 
-    --orbit-text: #f7f2ea;
-    --orbit-text-secondary: #cfc5b6;
-    --orbit-text-muted: #998f80;
+    --orbit-text: #f5f0fb;
+    --orbit-text-secondary: #c9bed7;
+    --orbit-text-muted: #9587a6;
 
-    --orbit-accent: #f59e0b;
-    --orbit-accent-hover: #fbbf24;
-    --orbit-accent-fg: #261400;
-    --orbit-accent-soft: rgba(245, 158, 11, 0.16);
-    --orbit-accent-secondary: #60a5fa;
-    --orbit-accent-secondary-soft: rgba(96, 165, 250, 0.16);
+    --orbit-accent: #fb7185;
+    --orbit-accent-hover: #f43f5e;
+    --orbit-accent-fg: #110f18;
+    --orbit-accent-soft: rgba(251, 113, 133, 0.16);
+    --orbit-accent-secondary: #818cf8;
+    --orbit-accent-secondary-soft: rgba(129, 140, 248, 0.16);
 
-    --orbit-success: #4ade80;
-    --orbit-success-soft: rgba(74, 222, 128, 0.15);
+    --orbit-success: #34d399;
+    --orbit-success-soft: rgba(52, 211, 153, 0.16);
     --orbit-warning: #fbbf24;
-    --orbit-warning-soft: rgba(251, 191, 36, 0.15);
-    --orbit-danger: #f87171;
-    --orbit-danger-fg: #1d0909;
-    --orbit-danger-soft: rgba(248, 113, 113, 0.16);
+    --orbit-warning-soft: rgba(251, 191, 36, 0.16);
+    --orbit-danger: #fb7185;
+    --orbit-danger-fg: #110f18;
+    --orbit-danger-soft: rgba(251, 113, 133, 0.16);
 
-    --orbit-border: #383129;
-    --orbit-border-strong: #4d4439;
-    --orbit-focus-ring: rgba(245, 158, 11, 0.45);
+    --orbit-border: rgba(255, 255, 255, 0.09);
+    --orbit-border-strong: rgba(255, 255, 255, 0.18);
+    --orbit-focus-ring: rgba(251, 113, 133, 0.4);
 
-    --orbit-shadow-xs: 1px 1px 0 rgb(0 0 0 / 0.4);
-    --orbit-shadow-card: 2px 3px 0 rgb(0 0 0 / 0.35), 0 6px 20px -4px rgb(245 158 11 / 0.12);
-    --orbit-shadow-elevated: 3px 4px 0 rgb(0 0 0 / 0.5), 0 20px 40px -8px rgb(245 158 11 / 0.18);
+    --orbit-shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --orbit-shadow-card: 0 16px 36px -10px rgba(0, 0, 0, 0.6), 0 4px 16px -2px rgba(168, 85, 247, 0.12);
+    --orbit-shadow-elevated: 0 24px 48px -12px rgba(0, 0, 0, 0.75), 0 8px 24px -4px rgba(244, 63, 94, 0.15);
 
-    /* Visualisation & Charts */
-    --orbit-chart-1: #f59e0b;
-    --orbit-chart-2: #60a5fa;
-    --orbit-chart-3: #4ade80;
-    --orbit-chart-4: #f87171;
-    --orbit-chart-5: #a78bfa;
-    --orbit-chart-positive: #22c55e;
-    --orbit-chart-neutral: #a8a29e;
-    --orbit-chart-negative: #ef4444;
-    --orbit-chart-grid: #383129;
-    --orbit-chart-axis: #4d4338;
-    --orbit-chart-tooltip-bg: #241e17;
-    --orbit-chart-tooltip-border: #4d4338;
-    --orbit-chart-tooltip-text: #fafaf9;
-    --orbit-progress-track: #2e261f;
-    --orbit-progress-fill: #f59e0b;
-    --orbit-chart-highlight: #fbbf24;
-    --orbit-heatmap-0: #2e261f;
-    --orbit-heatmap-1: #4a3512;
-    --orbit-heatmap-2: #7c5512;
-    --orbit-heatmap-3: #b45309;
-    --orbit-heatmap-4: #f59e0b;
+    --orbit-chart-1: #fb7185;
+    --orbit-chart-2: #818cf8;
+    --orbit-chart-3: #fbbf24;
+    --orbit-chart-4: #34d399;
+    --orbit-chart-5: #c084fc;
+    --orbit-chart-positive: #34d399;
+    --orbit-chart-neutral: #9587a6;
+    --orbit-chart-negative: #fb7185;
+    --orbit-chart-grid: rgba(255, 255, 255, 0.07);
+    --orbit-chart-axis: rgba(255, 255, 255, 0.18);
+    --orbit-chart-tooltip-bg: #1b1726;
+    --orbit-chart-tooltip-border: rgba(255, 255, 255, 0.18);
+    --orbit-chart-tooltip-text: #f5f0fb;
+    --orbit-progress-track: #241f33;
+    --orbit-progress-fill: #fb7185;
+    --orbit-chart-highlight: #f43f5e;
+    --orbit-heatmap-0: #241f33;
+    --orbit-heatmap-1: #4c1d32;
+    --orbit-heatmap-2: #881337;
+    --orbit-heatmap-3: #e11d48;
+    --orbit-heatmap-4: #fb7185;
 
     --background: var(--orbit-bg);
     --foreground: var(--orbit-text);
@@ -2173,8 +2191,9 @@ pre {
 }
 
 :root[data-orbit-theme="artistic"] .orbit-modal-dialog {
-  border-radius: 1rem;
-  box-shadow: 4px 6px 0px 0px var(--orbit-border-strong), 0 20px 40px -15px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--orbit-border) !important;
+  border-radius: 1.5rem !important;
+  box-shadow: 0 24px 60px -12px rgba(120, 70, 140, 0.22), 0 8px 24px -4px rgba(230, 100, 80, 0.12) !important;
 }
 
 :root[data-orbit-theme="minimalist"] .orbit-modal-dialog {
@@ -2268,19 +2287,19 @@ pre {
   box-shadow: 0 0 10px rgba(200, 109, 81, 0.25) !important;
 }
 
-/* Artistic: Expressive accents and creative interaction details */
+/* Artistic: Soft tactile pigment elevation */
 :root[data-orbit-theme="artistic"] .orbit-button:hover:not(:disabled) {
-  transform: translate(-1.5px, -1.5px) rotate(-0.5deg);
-  box-shadow: 2px 3px 0px 0px var(--orbit-border-strong);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -4px rgba(225, 29, 72, 0.25);
 }
 :root[data-orbit-theme="artistic"] .orbit-button:active:not(:disabled) {
-  transform: translate(1px, 1px) rotate(0deg);
-  box-shadow: 0px 0px 0px 0px var(--orbit-border-strong);
+  transform: translateY(1px);
+  box-shadow: 0 2px 6px -2px rgba(225, 29, 72, 0.2);
 }
 :root[data-orbit-theme="artistic"] .orbit-button:focus-visible {
   outline: 2px solid var(--orbit-accent) !important;
   outline-offset: 2px !important;
-  box-shadow: 2px 2px 0px 0px var(--orbit-border-strong) !important;
+  box-shadow: 0 0 12px rgba(225, 29, 72, 0.3) !important;
 }
 
 /* Minimalist: Restrained, immediate feedback with minimal decoration */
@@ -2559,19 +2578,18 @@ pre {
   box-shadow: 0 0 10px rgba(200, 109, 81, 0.25) !important;
 }
 
-/* Artistic: Expressive accents and creative interaction details */
+/* Artistic: Soft tactile pigment elevation */
 :root[data-orbit-theme="artistic"] .orbit-card-interactive:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 4px 4px 0px 0px var(--orbit-border-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px -12px rgba(120, 70, 140, 0.12), 0 6px 16px -2px rgba(230, 100, 80, 0.08);
 }
 :root[data-orbit-theme="artistic"] .orbit-card-interactive:active {
-  transform: translate(0px, 0px);
-  box-shadow: 1px 1px 0px 0px var(--orbit-border-strong);
+  transform: translateY(1px);
 }
 :root[data-orbit-theme="artistic"] .orbit-card-interactive:focus-visible {
   outline: 2px solid var(--orbit-accent) !important;
   outline-offset: 2px !important;
-  box-shadow: 2px 2px 0px 0px var(--orbit-border-strong) !important;
+  box-shadow: 0 0 12px rgba(225, 29, 72, 0.3) !important;
 }
 
 /* Minimalist: Restrained, immediate feedback with minimal decoration */

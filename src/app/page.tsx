@@ -33,6 +33,7 @@ import { getAllOccurrencesForRange } from "@/lib/utils/recurrence";
 import { useThemePersonality } from "@/components/theme-personality-provider";
 import { FuturisticDashboard } from "@/components/dashboard/futuristic/futuristic-dashboard";
 import { AestheticDashboard } from "@/components/dashboard/aesthetic/aesthetic-dashboard";
+import { ArtisticDashboard } from "@/components/dashboard/artistic/artistic-dashboard";
 import { toggleTaskCompletionWithSync } from "@/lib/services/task-sync-service";
 import {
   fetchDashboardSnapshotData,
@@ -183,6 +184,33 @@ export default function HomePage() {
         tasks={dashboardData.tasks}
         habits={dashboardData.habits}
         habitLogs={dashboardData.habitLogs}
+        activeHabits={activeHabits}
+        completedTodayHabitIds={completedTodayHabitIds}
+        openTasks={openTasks}
+        dueTodayTasks={dueTodayTasks}
+        focusTasks={focusTasks}
+        overdueCount={overdueCount}
+        habitsCompletedCount={habitsCompletedCount}
+        habitsTotalCount={habitsTotalCount}
+        habitsProgressPct={habitsProgressPct}
+        todayStr={todayStr}
+        upcomingEventsCount={upcomingEventsCount}
+        inboxCount={inboxCount}
+        onToggleTask={toggleTask}
+        onToggleHabit={toggleHabit}
+        onOpenQuickCapture={openQuickCapture}
+      />
+    );
+  }
+
+  // Dedicated Bauhaus / Swiss Risograph Atelier for Artistic personality
+  if (mounted && themePersonality === "artistic") {
+    return (
+      <ArtisticDashboard
+        tasks={dashboardData.tasks}
+        habits={dashboardData.habits}
+        habitLogs={dashboardData.habitLogs}
+        events={events || []}
         activeHabits={activeHabits}
         completedTodayHabitIds={completedTodayHabitIds}
         openTasks={openTasks}
