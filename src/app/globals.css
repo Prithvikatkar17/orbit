@@ -9,7 +9,8 @@
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   THEME PERSONALITY 1: ARCHIVIST (Quiet Desk & Paper Editorial — Default)
+   THEME PERSONALITY 1: ARCHIVIST (The Bodleian Rare Book Folio & Curatorial Card Catalog)
+   Editorial Heritage Palette References: #f6f5f1, #2c5e4f, #161613, #6bb39b
    -------------------------------------------------------------------------- */
 :root,
 :root[data-orbit-theme="archivist"],
@@ -22,12 +23,12 @@
   --orbit-font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --orbit-font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  /* Background & Canvas — Warm Ivory Editorial Paper */
-  --orbit-bg: #f6f5f1;
-  --orbit-bg-canvas: #f6f5f1;
+  /* Background & Canvas — Aged Cotton Rag Parchment */
+  --orbit-bg: #f4eee1;
+  --orbit-bg-canvas: #f4eee1;
   --orbit-bg-subtle: #eae4d4;
 
-  /* Surfaces — Translucent Frosted Vellum & Solid Desk Rail */
+  /* Surfaces — Cream Archival Index Card Stock & Solid Desk Rail */
   --orbit-surface: rgba(254, 252, 247, 0.74);
   --orbit-surface-secondary: #eee8db;
   --orbit-surface-elevated: rgba(255, 254, 250, 0.88);
@@ -37,27 +38,27 @@
   --orbit-text-secondary: #57564c;
   --orbit-text-muted: #67655b;
 
-  /* Primary & Secondary Accents — Botanical Pine & Mineral Teal */
-  --orbit-accent: #2c5e4f;
-  --orbit-accent-hover: #224b3e;
+  /* Primary & Secondary Accents — Oxford Botanical Green & Rubricated Crimson */
+  --orbit-accent: #1b4332;
+  --orbit-accent-hover: #143326;
   --orbit-accent-fg: #faf9f5;
   --orbit-accent-soft: #e3eee9;
-  --orbit-accent-secondary: #366c75;
-  --orbit-accent-secondary-soft: #e6f0f2;
+  --orbit-accent-secondary: #8c2d38;
+  --orbit-accent-secondary-soft: #f8e8ea;
 
   /* Semantic Status Colors — Harmonious & WCAG AA Accessible */
-  --orbit-success: #2f7a57;
+  --orbit-success: #1b4332;
   --orbit-success-soft: #e6f2ec;
-  --orbit-warning: #a86214;
+  --orbit-warning: #b08938;
   --orbit-warning-soft: #f8eedf;
-  --orbit-danger: #b8403a;
+  --orbit-danger: #8c2d38;
   --orbit-danger-fg: #faf9f5;
   --orbit-danger-soft: #faeae9;
 
   /* Borders & Focus Rings — Delicate Vellum Rim & Subtle Framing */
-  --orbit-border: rgba(200, 188, 168, 0.6);
-  --orbit-border-strong: #c2b9a5;
-  --orbit-focus-ring: rgba(44, 94, 79, 0.38);
+  --orbit-border: rgba(120, 95, 65, 0.28);
+  --orbit-border-strong: #a8947b;
+  --orbit-focus-ring: rgba(27, 67, 50, 0.38);
 
   /* Radii */
   --orbit-radius-card: 0.75rem;
@@ -69,17 +70,17 @@
   --orbit-font-eyebrow: var(--font-geist-sans);
   --orbit-eyebrow-tracking: 0.14em;
 
-  /* Surface Atmospheric Treatments — Organic Laid Paper with Fractal Fiber Tooth & Desk Lighting */
+  /* Surface Atmospheric Treatments — Aged Cotton Rag Parchment with Laid Lines and Warm Candlelit Radiance */
   --orbit-bg-pattern:
-    radial-gradient(120% 90% at 50% 0%, #faf8f2 0%, #f4efe4 45%, #eae1d0 85%, #dfd4bf 100%),
+    radial-gradient(120% 90% at 50% 0%, #faf6ee 0%, #f4eee1 45%, #ebe2ce 85%, #dfd3ba 100%),
     radial-gradient(circle at 18% 28%, rgba(215, 198, 172, 0.28) 0%, transparent 45%),
     radial-gradient(circle at 82% 65%, rgba(210, 192, 164, 0.24) 0%, transparent 50%),
     radial-gradient(circle at 45% 85%, rgba(225, 210, 185, 0.2) 0%, transparent 40%),
     repeating-linear-gradient(90deg, transparent 0px, transparent 95px, rgba(160, 140, 110, 0.04) 95px, rgba(160, 140, 110, 0.04) 96px),
-    repeating-linear-gradient(0deg, rgba(165, 145, 115, 0.035) 0px, rgba(165, 145, 115, 0.035) 1px, transparent 1px, transparent 8px),
+    repeating-linear-gradient(0deg, rgba(95, 75, 50, 0.03) 0px, rgba(95, 75, 50, 0.03) 1px, transparent 1px, transparent 4px),
     url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.55  0 0 0 0 0.48  0 0 0 0 0.38  0 0 0 0.055 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paperNoise)'/%3E%3C/svg%3E");
   --orbit-bg-size: auto;
-  --orbit-card-blur: 16px;
+  --orbit-card-blur: 0px;
 
   /* Shadows & Elevation — Layered Glassmorphic Edge Light & Warm Diffuse Depth */
   --orbit-shadow-xs: inset 0 1px 0 0 rgba(255, 255, 255, 0.8), 0 1px 2px 0 rgba(45, 38, 28, 0.04);
@@ -127,38 +128,38 @@
 [data-orbit-theme-preview="archivist"].dark {
   color-scheme: dark;
 
-  /* Background & Canvas — Warm Charcoal Bound Paper */
-  --orbit-bg: #161613;
-  --orbit-bg-canvas: #161613;
-  --orbit-bg-subtle: #22211c;
+  /* Background & Canvas — Deep Roasted Walnut & Old Leather */
+  --orbit-bg: #110e0c;
+  --orbit-bg-canvas: #110e0c;
+  --orbit-bg-subtle: #1c1613;
 
-  /* Surfaces — Frosted Charcoal Stationery & Solid Editorial Spine */
+  /* Surfaces — Dark Vellum & Mahogany Folio Card & Solid Editorial Spine */
   --orbit-surface: rgba(28, 26, 22, 0.72);
-  --orbit-surface-secondary: #181713;
-  --orbit-surface-elevated: rgba(36, 34, 28, 0.88);
+  --orbit-surface-secondary: #181411;
+  --orbit-surface-elevated: rgba(36, 30, 24, 0.88);
 
   --orbit-text: #f3efe6;
   --orbit-text-secondary: #c9c5b7;
   --orbit-text-muted: #999484;
 
-  --orbit-accent: #6bb39b;
-  --orbit-accent-hover: #7fc1aa;
-  --orbit-accent-fg: #11221c;
-  --orbit-accent-soft: rgba(107, 179, 155, 0.16);
-  --orbit-accent-secondary: #6eb2ba;
-  --orbit-accent-secondary-soft: rgba(110, 178, 186, 0.15);
+  --orbit-accent: #52b788;
+  --orbit-accent-hover: #74c69d;
+  --orbit-accent-fg: #0d1a13;
+  --orbit-accent-soft: rgba(82, 183, 136, 0.16);
+  --orbit-accent-secondary: #d4af37;
+  --orbit-accent-secondary-soft: rgba(212, 175, 55, 0.15);
 
-  --orbit-success: #63b387;
-  --orbit-success-soft: rgba(99, 179, 135, 0.15);
-  --orbit-warning: #e0a34d;
-  --orbit-warning-soft: rgba(224, 163, 77, 0.15);
-  --orbit-danger: #e0736b;
+  --orbit-success: #52b788;
+  --orbit-success-soft: rgba(82, 183, 136, 0.15);
+  --orbit-warning: #d4af37;
+  --orbit-warning-soft: rgba(212, 175, 55, 0.15);
+  --orbit-danger: #c94a58;
   --orbit-danger-fg: #1d0e0d;
-  --orbit-danger-soft: rgba(224, 115, 107, 0.16);
+  --orbit-danger-soft: rgba(201, 74, 88, 0.16);
 
-  --orbit-border: rgba(90, 84, 70, 0.55);
-  --orbit-border-strong: #625c4e;
-  --orbit-focus-ring: rgba(107, 179, 155, 0.45);
+  --orbit-border: rgba(197, 165, 115, 0.20);
+  --orbit-border-strong: rgba(212, 175, 85, 0.35);
+  --orbit-focus-ring: rgba(82, 183, 136, 0.45);
 
   --orbit-radius-card: 0.75rem;
   --orbit-radius-control: 0.5rem;
@@ -167,17 +168,17 @@
   --orbit-font-eyebrow: var(--font-geist-sans);
   --orbit-eyebrow-tracking: 0.14em;
 
-  /* Surface Atmospheric Treatments — Dark Parchment with Fractal Fiber Tooth & Ambient Vignette */
+  /* Surface Atmospheric Treatments — Dark Roasted Walnut with Laid Paper & Candlelit Amber Washes */
   --orbit-bg-pattern:
-    radial-gradient(120% 90% at 50% 0%, #23211c 0%, #1a1915 45%, #141310 85%, #0e0d0b 100%),
-    radial-gradient(circle at 18% 25%, rgba(45, 42, 34, 0.45) 0%, transparent 45%),
-    radial-gradient(circle at 82% 65%, rgba(40, 38, 30, 0.4) 0%, transparent 50%),
-    radial-gradient(circle at 45% 85%, rgba(50, 46, 37, 0.35) 0%, transparent 40%),
+    radial-gradient(120% 90% at 50% 0%, #1d1713 0%, #16120f 45%, #110e0c 85%, #0a0807 100%),
+    radial-gradient(circle at 18% 25%, rgba(197, 150, 75, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 82% 65%, rgba(180, 130, 60, 0.07) 0%, transparent 50%),
+    radial-gradient(circle at 45% 85%, rgba(197, 150, 75, 0.06) 0%, transparent 40%),
     repeating-linear-gradient(90deg, transparent 0px, transparent 95px, rgba(210, 195, 165, 0.03) 95px, rgba(210, 195, 165, 0.03) 96px),
     repeating-linear-gradient(0deg, rgba(210, 195, 165, 0.025) 0px, rgba(210, 195, 165, 0.025) 1px, transparent 1px, transparent 8px),
     url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperNoiseDark'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.8  0 0 0 0 0.75  0 0 0 0 0.65  0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paperNoiseDark)'/%3E%3C/svg%3E");
   --orbit-bg-size: auto;
-  --orbit-card-blur: 16px;
+  --orbit-card-blur: 0px;
 
   /* Shadows & Elevation — Layered Dark Glass Top Rim & Ambient Charcoal Depth */
   --orbit-shadow-xs: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 1px 2px 0 rgb(0 0 0 / 0.4);
@@ -218,38 +219,38 @@
   :root[data-orbit-theme="default"]:not(.light) {
     color-scheme: dark;
 
-    /* Background & Canvas — Warm Charcoal Bound Paper */
-    --orbit-bg: #161613;
-    --orbit-bg-canvas: #161613;
-    --orbit-bg-subtle: #22211c;
+    /* Background & Canvas — Deep Roasted Walnut & Old Leather */
+    --orbit-bg: #110e0c;
+    --orbit-bg-canvas: #110e0c;
+    --orbit-bg-subtle: #1c1613;
 
-    /* Surfaces — Frosted Charcoal Stationery & Solid Editorial Spine */
+    /* Surfaces — Dark Vellum & Mahogany Folio Card & Solid Editorial Spine */
     --orbit-surface: rgba(28, 26, 22, 0.72);
-    --orbit-surface-secondary: #181713;
-    --orbit-surface-elevated: rgba(36, 34, 28, 0.88);
+    --orbit-surface-secondary: #181411;
+    --orbit-surface-elevated: rgba(36, 30, 24, 0.88);
 
     --orbit-text: #f3efe6;
     --orbit-text-secondary: #c9c5b7;
     --orbit-text-muted: #999484;
 
-    --orbit-accent: #6bb39b;
-    --orbit-accent-hover: #7fc1aa;
-    --orbit-accent-fg: #11221c;
-    --orbit-accent-soft: rgba(107, 179, 155, 0.16);
-    --orbit-accent-secondary: #6eb2ba;
-    --orbit-accent-secondary-soft: rgba(110, 178, 186, 0.15);
+    --orbit-accent: #52b788;
+    --orbit-accent-hover: #74c69d;
+    --orbit-accent-fg: #0d1a13;
+    --orbit-accent-soft: rgba(82, 183, 136, 0.16);
+    --orbit-accent-secondary: #d4af37;
+    --orbit-accent-secondary-soft: rgba(212, 175, 55, 0.15);
 
-    --orbit-success: #63b387;
-    --orbit-success-soft: rgba(99, 179, 135, 0.15);
-    --orbit-warning: #e0a34d;
-    --orbit-warning-soft: rgba(224, 163, 77, 0.15);
-    --orbit-danger: #e0736b;
+    --orbit-success: #52b788;
+    --orbit-success-soft: rgba(82, 183, 136, 0.15);
+    --orbit-warning: #d4af37;
+    --orbit-warning-soft: rgba(212, 175, 55, 0.15);
+    --orbit-danger: #c94a58;
     --orbit-danger-fg: #1d0e0d;
-    --orbit-danger-soft: rgba(224, 115, 107, 0.16);
+    --orbit-danger-soft: rgba(201, 74, 88, 0.16);
 
-    --orbit-border: rgba(90, 84, 70, 0.55);
-    --orbit-border-strong: #625c4e;
-    --orbit-focus-ring: rgba(107, 179, 155, 0.45);
+    --orbit-border: rgba(197, 165, 115, 0.20);
+    --orbit-border-strong: rgba(212, 175, 85, 0.35);
+    --orbit-focus-ring: rgba(82, 183, 136, 0.45);
 
     --orbit-radius-card: 0.75rem;
     --orbit-radius-control: 0.5rem;
@@ -258,17 +259,17 @@
     --orbit-font-eyebrow: var(--font-geist-sans);
     --orbit-eyebrow-tracking: 0.14em;
 
-    /* Surface Atmospheric Treatments — Dark Parchment with Fractal Fiber Tooth & Ambient Vignette */
+    /* Surface Atmospheric Treatments — Dark Roasted Walnut with Laid Paper & Candlelit Amber Washes */
     --orbit-bg-pattern:
-      radial-gradient(120% 90% at 50% 0%, #23211c 0%, #1a1915 45%, #141310 85%, #0e0d0b 100%),
-      radial-gradient(circle at 18% 25%, rgba(45, 42, 34, 0.45) 0%, transparent 45%),
-      radial-gradient(circle at 82% 65%, rgba(40, 38, 30, 0.4) 0%, transparent 50%),
-      radial-gradient(circle at 45% 85%, rgba(50, 46, 37, 0.35) 0%, transparent 40%),
+      radial-gradient(120% 90% at 50% 0%, #1d1713 0%, #16120f 45%, #110e0c 85%, #0a0807 100%),
+      radial-gradient(circle at 18% 25%, rgba(197, 150, 75, 0.08) 0%, transparent 45%),
+      radial-gradient(circle at 82% 65%, rgba(180, 130, 60, 0.07) 0%, transparent 50%),
+      radial-gradient(circle at 45% 85%, rgba(197, 150, 75, 0.06) 0%, transparent 40%),
       repeating-linear-gradient(90deg, transparent 0px, transparent 95px, rgba(210, 195, 165, 0.03) 95px, rgba(210, 195, 165, 0.03) 96px),
       repeating-linear-gradient(0deg, rgba(210, 195, 165, 0.025) 0px, rgba(210, 195, 165, 0.025) 1px, transparent 1px, transparent 8px),
       url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperNoiseDark'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.8  0 0 0 0 0.75  0 0 0 0 0.65  0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paperNoiseDark)'/%3E%3C/svg%3E");
     --orbit-bg-size: auto;
-    --orbit-card-blur: 16px;
+    --orbit-card-blur: 0px;
 
     /* Shadows & Elevation — Layered Dark Glass Top Rim & Ambient Charcoal Depth */
     --orbit-shadow-xs: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 1px 2px 0 rgb(0 0 0 / 0.4);
@@ -2230,21 +2231,23 @@ pre {
 :root[data-orbit-theme="archivist"] .orbit-modal-dialog,
 :root[data-orbit-theme="default"] .orbit-modal-dialog,
 :root:not([data-orbit-theme]) .orbit-modal-dialog {
-  background-color: rgba(254, 252, 247, 0.88) !important;
-  backdrop-filter: blur(20px) saturate(1.1) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(1.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.85) !important;
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.95), 0 24px 60px -12px rgba(45, 35, 20, 0.22), 0 8px 20px -4px rgba(45, 35, 20, 0.08) !important;
+  background-color: #fdfaf3 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(120, 95, 65, 0.32) !important;
+  box-shadow: 0 24px 60px -12px rgba(60, 42, 24, 0.22), 0 8px 20px -4px rgba(60, 42, 24, 0.08) !important;
+  border-radius: 16px !important;
 }
 
 .dark:root[data-orbit-theme="archivist"] .orbit-modal-dialog,
 .dark:root[data-orbit-theme="default"] .orbit-modal-dialog,
 .dark:not([data-orbit-theme]) .orbit-modal-dialog {
-  background-color: rgba(26, 24, 20, 0.86) !important;
-  backdrop-filter: blur(20px) saturate(1.1) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(1.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.16), 0 24px 60px -12px rgba(0, 0, 0, 0.75), 0 8px 24px -4px rgba(0, 0, 0, 0.5) !important;
+  background-color: #181411 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(197, 165, 115, 0.25) !important;
+  box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.75), 0 8px 24px -4px rgba(0, 0, 0, 0.5) !important;
+  border-radius: 16px !important;
 }
 
 :root[data-orbit-theme="futuristic"] .orbit-modal-dialog {
@@ -2359,6 +2362,52 @@ pre {
   background: linear-gradient(145deg, #141c17 0%, #101713 100%);
   border: 1px solid rgba(140, 165, 145, 0.18);
   box-shadow: 0 14px 32px -8px rgba(0, 0, 0, 0.5);
+}
+
+/* Rare Book Folio & Curatorial Card Catalog Surfaces for Archivist Personality */
+.archivist-folio-hero {
+  background: linear-gradient(135deg, #163024 0%, #1f4232 55%, #2a3629 100%);
+  border: 1px solid rgba(197, 160, 89, 0.45);
+  box-shadow: 0 16px 36px -8px rgba(18, 38, 28, 0.35), inset 0 1px 0 rgba(223, 192, 122, 0.25);
+  color: #f9f5eb;
+  backdrop-filter: none;
+  border-radius: 18px;
+}
+.dark .archivist-folio-hero,
+.dark:root[data-orbit-theme="archivist"] .archivist-folio-hero {
+  background: linear-gradient(135deg, #1b1310 0%, #241a15 55%, #16261d 100%);
+  border: 1px solid rgba(212, 175, 85, 0.35);
+  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(212, 175, 85, 0.25);
+  color: #f9f5eb;
+  backdrop-filter: none;
+  border-radius: 18px;
+}
+
+.archivist-catalog-card {
+  background: linear-gradient(180deg, #fdfaf3 0%, #f7f1e3 100%);
+  border: 1px solid rgba(120, 95, 65, 0.28);
+  box-shadow: 0 10px 24px -6px rgba(60, 42, 24, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  backdrop-filter: none;
+  border-radius: 14px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.dark .archivist-catalog-card,
+.dark:root[data-orbit-theme="archivist"] .archivist-catalog-card {
+  background: linear-gradient(180deg, #1b1613 0%, #15110e 100%);
+  border: 1px solid rgba(197, 165, 115, 0.20);
+  box-shadow: 0 10px 24px -6px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: none;
+  border-radius: 14px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+:root[data-orbit-theme="archivist"] .orbit-surface-card,
+:root[data-orbit-theme="archivist"] .orbit-modal-backdrop,
+:root[data-orbit-theme="archivist"] .orbit-modal-dialog,
+:root[data-orbit-theme="archivist"] .archivist-folio-hero,
+:root[data-orbit-theme="archivist"] .archivist-catalog-card {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 /* Celestial Horological Astrolabe Surfaces for Midnight Personality */

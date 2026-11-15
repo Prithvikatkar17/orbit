@@ -31,6 +31,7 @@ import {
 } from "@/lib/utils/dates";
 import { getAllOccurrencesForRange } from "@/lib/utils/recurrence";
 import { useThemePersonality } from "@/components/theme-personality-provider";
+import { ArchivistDashboard } from "@/components/dashboard/archivist/archivist-dashboard";
 import { FuturisticDashboard } from "@/components/dashboard/futuristic/futuristic-dashboard";
 import { AestheticDashboard } from "@/components/dashboard/aesthetic/aesthetic-dashboard";
 import { ArtisticDashboard } from "@/components/dashboard/artistic/artistic-dashboard";
@@ -153,6 +154,33 @@ export default function HomePage() {
   const greetingText = mounted ? getTimeOfDayGreeting() : "Welcome home";
   const dateSubtitle =
     mounted && todayStr ? formatDateDisplay(todayStr) : "Your personal space, everything in place.";
+
+  // Dedicated Bodleian Rare Book Folio & Curatorial Card Catalog for Archivist personality
+  if (mounted && themePersonality === "archivist") {
+    return (
+      <ArchivistDashboard
+        tasks={dashboardData.tasks}
+        habits={dashboardData.habits}
+        habitLogs={dashboardData.habitLogs}
+        events={events || []}
+        activeHabits={activeHabits}
+        completedTodayHabitIds={completedTodayHabitIds}
+        openTasks={openTasks}
+        dueTodayTasks={dueTodayTasks}
+        focusTasks={focusTasks}
+        overdueCount={overdueCount}
+        habitsCompletedCount={habitsCompletedCount}
+        habitsTotalCount={habitsTotalCount}
+        habitsProgressPct={habitsProgressPct}
+        todayStr={todayStr}
+        upcomingEventsCount={upcomingEventsCount}
+        inboxCount={inboxCount}
+        onToggleTask={toggleTask}
+        onToggleHabit={toggleHabit}
+        onOpenQuickCapture={openQuickCapture}
+      />
+    );
+  }
 
   // Dedicated Monolithic Avionics Console for Futuristic personality
   if (mounted && themePersonality === "futuristic") {
