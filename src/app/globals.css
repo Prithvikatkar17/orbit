@@ -1651,27 +1651,32 @@
   --orbit-radius-control: 0.625rem;
   --orbit-radius-pill: 9999px;
 
-  --orbit-bg: #eef2f9;
-  --orbit-bg-canvas: #eef2f9;
-  --orbit-bg-subtle: #dde5f3;
-  --orbit-bg-pattern: radial-gradient(circle at 50% -10%, rgba(67, 56, 202, 0.09) 0%, transparent 55%), radial-gradient(circle at 100% 100%, rgba(2, 132, 199, 0.05) 0%, transparent 45%);
+  /* Background & Canvas — Star Atlas Vellum with Celestial Declination Rings */
+  --orbit-bg: #f3f4fa;
+  --orbit-bg-canvas: #f3f4fa;
+  --orbit-bg-subtle: #e6e8f4;
+  --orbit-bg-pattern:
+    radial-gradient(75% 60% at 15% 10%, rgba(55, 48, 163, 0.08) 0%, transparent 70%),
+    radial-gradient(55% 45% at 85% 15%, rgba(180, 131, 39, 0.07) 0%, transparent 65%),
+    radial-gradient(60% 60% at 50% 90%, rgba(99, 102, 241, 0.05) 0%, transparent 70%),
+    url("data:image/svg+xml,%3Csvg width='400' height='400' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%233730a3' stroke-width='0.6' opacity='0.08'%3E%3Ccircle cx='200' cy='200' r='180' stroke-dasharray='3 5'/%3E%3Ccircle cx='200' cy='200' r='130'/%3E%3Ccircle cx='200' cy='200' r='75' stroke-dasharray='1 4'/%3E%3Cpath d='M200 10 v380 M10 200 h380' stroke-width='0.4'/%3E%3Cpath d='M65 65 L335 335 M335 65 L65 335' stroke-dasharray='2 6' stroke-width='0.4'/%3E%3Ccircle cx='95' cy='135' r='1.2' fill='%23b48327' opacity='0.4'/%3E%3Ccircle cx='280' cy='95' r='1.5' fill='%233730a3' opacity='0.3'/%3E%3Ccircle cx='315' cy='260' r='1.2' fill='%233730a3' opacity='0.3'/%3E%3Ccircle cx='130' cy='305' r='1.6' fill='%23b48327' opacity='0.4'/%3E%3C/g%3E%3C/svg%3E");
   --orbit-bg-size: auto;
-  --orbit-card-blur: 16px;
+  --orbit-card-blur: 0px;
 
   --orbit-surface: #ffffff;
-  --orbit-surface-secondary: #e4ecf7;
+  --orbit-surface-secondary: #f4f5fc;
   --orbit-surface-elevated: #ffffff;
 
-  --orbit-text: #0f172a;
-  --orbit-text-secondary: #334155;
-  --orbit-text-muted: #64748b;
+  --orbit-text: #0d1226;
+  --orbit-text-secondary: #2c3558;
+  --orbit-text-muted: #5e698d;
 
-  --orbit-accent: #4338ca;
-  --orbit-accent-hover: #3730a3;
+  --orbit-accent: #3730a3;
+  --orbit-accent-hover: #312e81;
   --orbit-accent-fg: #ffffff;
-  --orbit-accent-soft: #e0e7ff;
-  --orbit-accent-secondary: #0284c7;
-  --orbit-accent-secondary-soft: #e0f2fe;
+  --orbit-accent-soft: rgba(55, 48, 163, 0.12);
+  --orbit-accent-secondary: #b48327;
+  --orbit-accent-secondary-soft: rgba(180, 131, 39, 0.12);
 
   --orbit-success: #059669;
   --orbit-success-soft: #d1fae5;
@@ -1681,31 +1686,31 @@
   --orbit-danger-fg: #ffffff;
   --orbit-danger-soft: #fee2e2;
 
-  --orbit-border: #cbd5e1;
-  --orbit-border-strong: #94a3b8;
-  --orbit-focus-ring: rgba(67, 56, 202, 0.4);
+  --orbit-border: rgba(55, 48, 163, 0.16);
+  --orbit-border-strong: rgba(55, 48, 163, 0.32);
+  --orbit-focus-ring: rgba(55, 48, 163, 0.45);
 
-  --orbit-shadow-xs: 0 1px 3px 0 rgb(15 23 42 / 0.06);
-  --orbit-shadow-card: 0 4px 16px -2px rgb(67 56 202 / 0.08), 0 1px 3px 0 rgb(15 23 42 / 0.04);
-  --orbit-shadow-elevated: 0 18px 40px -8px rgb(67 56 202 / 0.16), 0 4px 12px 0 rgb(15 23 42 / 0.06);
+  --orbit-shadow-xs: 0 1px 3px 0 rgba(13, 18, 38, 0.05);
+  --orbit-shadow-card: 0 12px 28px -8px rgba(15, 22, 54, 0.06);
+  --orbit-shadow-elevated: 0 20px 48px -12px rgba(15, 22, 54, 0.12);
 
   /* Visualisation & Charts */
-  --orbit-chart-1: #4338ca;
-  --orbit-chart-2: #0284c7;
-  --orbit-chart-3: #9333ea;
+  --orbit-chart-1: #3730a3;
+  --orbit-chart-2: #b48327;
+  --orbit-chart-3: #6366f1;
   --orbit-chart-4: #d97706;
   --orbit-chart-5: #059669;
   --orbit-chart-positive: #15803d;
-  --orbit-chart-neutral: #64748b;
+  --orbit-chart-neutral: #5e698d;
   --orbit-chart-negative: #be123c;
-  --orbit-chart-grid: #cbd5e1;
+  --orbit-chart-grid: #e2e8f0;
   --orbit-chart-axis: #94a3b8;
   --orbit-chart-tooltip-bg: #ffffff;
   --orbit-chart-tooltip-border: #818cf8;
-  --orbit-chart-tooltip-text: #0f172a;
+  --orbit-chart-tooltip-text: #0d1226;
   --orbit-progress-track: #e2e8f0;
-  --orbit-progress-fill: #4338ca;
-  --orbit-chart-highlight: #3730a3;
+  --orbit-progress-fill: #3730a3;
+  --orbit-chart-highlight: #4338ca;
   --orbit-heatmap-0: #e2e8f0;
   --orbit-heatmap-1: #c7d2fe;
   --orbit-heatmap-2: #818cf8;
@@ -1733,27 +1738,32 @@
   --orbit-radius-control: 0.625rem;
   --orbit-radius-pill: 9999px;
 
-  --orbit-bg: #0a0d18;
-  --orbit-bg-canvas: #0a0d18;
-  --orbit-bg-subtle: #111628;
-  --orbit-bg-pattern: radial-gradient(ellipse at 50% -15%, rgba(129, 140, 248, 0.16) 0%, transparent 60%), radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.09) 0%, transparent 50%), radial-gradient(circle at 10% 70%, rgba(99, 102, 241, 0.08) 0%, transparent 40%);
+  /* Background & Canvas — Abyssal Observatory Obsidian with Concentric Starfields */
+  --orbit-bg: #060813;
+  --orbit-bg-canvas: #060813;
+  --orbit-bg-subtle: #0b0e20;
+  --orbit-bg-pattern:
+    radial-gradient(65% 55% at 15% 10%, rgba(99, 102, 241, 0.16), rgba(129, 140, 248, 0.16) 40%, transparent 70%),
+    radial-gradient(50% 45% at 88% 12%, rgba(212, 175, 55, 0.09), rgba(139, 92, 246, 0.08) 50%, transparent 75%),
+    radial-gradient(60% 60% at 50% 95%, rgba(56, 189, 248, 0.06), transparent 70%),
+    url("data:image/svg+xml,%3Csvg width='500' height='500' viewBox='0 0 500 500' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23818cf8' stroke-width='0.6' opacity='0.12'%3E%3Ccircle cx='250' cy='250' r='230' stroke-dasharray='2 6'/%3E%3Ccircle cx='250' cy='250' r='170'/%3E%3Ccircle cx='250' cy='250' r='100' stroke-dasharray='1 4'/%3E%3Cpath d='M250 15 v470 M15 250 h470' stroke-width='0.4'/%3E%3Cpath d='M80 80 L420 420 M420 80 L80 420' stroke-dasharray='2 8' stroke-width='0.4'/%3E%3Ccircle cx='120' cy='180' r='1.5' fill='%23d4af37' opacity='0.65'/%3E%3Ccircle cx='370' cy='130' r='1.8' fill='%23ffffff' opacity='0.7'/%3E%3Ccircle cx='410' cy='340' r='1.4' fill='%23818cf8' opacity='0.6'/%3E%3Ccircle cx='160' cy='390' r='1.8' fill='%23d4af37' opacity='0.7'/%3E%3Ccircle cx='300' cy='430' r='1.2' fill='%23ffffff' opacity='0.6'/%3E%3Ccircle cx='70' cy='320' r='1.2' fill='%23818cf8' opacity='0.5'/%3E%3Ccircle cx='310' cy='70' r='1.4' fill='%23d4af37' opacity='0.6'/%3E%3C/g%3E%3C/svg%3E");
   --orbit-bg-size: auto;
-  --orbit-card-blur: 16px;
+  --orbit-card-blur: 0px;
 
-  --orbit-surface: #11162b;
-  --orbit-surface-secondary: #171e3a;
-  --orbit-surface-elevated: #1d2649;
+  --orbit-surface: #0d1124;
+  --orbit-surface-secondary: #131936;
+  --orbit-surface-elevated: #171f42;
 
-  --orbit-text: #e2e8f0;
+  --orbit-text: #f1f5f9;
   --orbit-text-secondary: #94a3b8;
   --orbit-text-muted: #64748b;
 
   --orbit-accent: #818cf8;
   --orbit-accent-hover: #a5b4fc;
-  --orbit-accent-fg: #0c102b;
+  --orbit-accent-fg: #070a18;
   --orbit-accent-soft: rgba(129, 140, 248, 0.16);
-  --orbit-accent-secondary: #38bdf8;
-  --orbit-accent-secondary-soft: rgba(56, 189, 248, 0.15);
+  --orbit-accent-secondary: #d4af37;
+  --orbit-accent-secondary-soft: rgba(212, 175, 55, 0.15);
 
   --orbit-success: #34d399;
   --orbit-success-soft: rgba(52, 211, 153, 0.15);
@@ -1763,13 +1773,13 @@
   --orbit-danger-fg: #1d0909;
   --orbit-danger-soft: rgba(248, 113, 113, 0.16);
 
-  --orbit-border: #1d2649;
-  --orbit-border-strong: #2c396c;
-  --orbit-focus-ring: rgba(129, 140, 248, 0.45);
+  --orbit-border: rgba(129, 140, 248, 0.20);
+  --orbit-border-strong: rgba(129, 140, 248, 0.38);
+  --orbit-focus-ring: rgba(129, 140, 248, 0.5);
 
   --orbit-shadow-xs: 0 0 0 1px rgba(129, 140, 248, 0.15);
-  --orbit-shadow-card: 0 0 0 1px rgba(129, 140, 248, 0.2), 0 0 20px -2px rgba(129, 140, 248, 0.16), 0 8px 24px 0 rgb(0 0 0 / 0.6);
-  --orbit-shadow-elevated: 0 0 0 1px rgba(129, 140, 248, 0.35), 0 0 36px 0 rgba(129, 140, 248, 0.22), 0 24px 56px -12px rgb(0 0 0 / 0.85);
+  --orbit-shadow-card: 0 16px 36px -10px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(226, 232, 240, 0.10);
+  --orbit-shadow-elevated: 0 24px 56px -12px rgba(0, 0, 0, 0.85), inset 0 1px 0 0 rgba(212, 175, 55, 0.15);
 
   /* Visualisation & Charts */
   --orbit-chart-1: #818cf8;
@@ -1813,27 +1823,32 @@
     --orbit-radius-control: 0.625rem;
     --orbit-radius-pill: 9999px;
 
-    --orbit-bg: #0a0d18;
-    --orbit-bg-canvas: #0a0d18;
-    --orbit-bg-subtle: #111628;
-    --orbit-bg-pattern: radial-gradient(ellipse at 50% -15%, rgba(129, 140, 248, 0.16) 0%, transparent 60%), radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.09) 0%, transparent 50%), radial-gradient(circle at 10% 70%, rgba(99, 102, 241, 0.08) 0%, transparent 40%);
+    /* Background & Canvas — Abyssal Observatory Obsidian with Concentric Starfields */
+    --orbit-bg: #060813;
+    --orbit-bg-canvas: #060813;
+    --orbit-bg-subtle: #0b0e20;
+    --orbit-bg-pattern:
+      radial-gradient(65% 55% at 15% 10%, rgba(99, 102, 241, 0.16), rgba(129, 140, 248, 0.16) 40%, transparent 70%),
+      radial-gradient(50% 45% at 88% 12%, rgba(212, 175, 55, 0.09), rgba(139, 92, 246, 0.08) 50%, transparent 75%),
+      radial-gradient(60% 60% at 50% 95%, rgba(56, 189, 248, 0.06), transparent 70%),
+      url("data:image/svg+xml,%3Csvg width='500' height='500' viewBox='0 0 500 500' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23818cf8' stroke-width='0.6' opacity='0.12'%3E%3Ccircle cx='250' cy='250' r='230' stroke-dasharray='2 6'/%3E%3Ccircle cx='250' cy='250' r='170'/%3E%3Ccircle cx='250' cy='250' r='100' stroke-dasharray='1 4'/%3E%3Cpath d='M250 15 v470 M15 250 h470' stroke-width='0.4'/%3E%3Cpath d='M80 80 L420 420 M420 80 L80 420' stroke-dasharray='2 8' stroke-width='0.4'/%3E%3Ccircle cx='120' cy='180' r='1.5' fill='%23d4af37' opacity='0.65'/%3E%3Ccircle cx='370' cy='130' r='1.8' fill='%23ffffff' opacity='0.7'/%3E%3Ccircle cx='410' cy='340' r='1.4' fill='%23818cf8' opacity='0.6'/%3E%3Ccircle cx='160' cy='390' r='1.8' fill='%23d4af37' opacity='0.7'/%3E%3Ccircle cx='300' cy='430' r='1.2' fill='%23ffffff' opacity='0.6'/%3E%3Ccircle cx='70' cy='320' r='1.2' fill='%23818cf8' opacity='0.5'/%3E%3Ccircle cx='310' cy='70' r='1.4' fill='%23d4af37' opacity='0.6'/%3E%3C/g%3E%3C/svg%3E");
     --orbit-bg-size: auto;
-    --orbit-card-blur: 16px;
+    --orbit-card-blur: 0px;
 
-    --orbit-surface: #11162b;
-    --orbit-surface-secondary: #171e3a;
-    --orbit-surface-elevated: #1d2649;
+    --orbit-surface: #0d1124;
+    --orbit-surface-secondary: #131936;
+    --orbit-surface-elevated: #171f42;
 
-    --orbit-text: #e2e8f0;
+    --orbit-text: #f1f5f9;
     --orbit-text-secondary: #94a3b8;
     --orbit-text-muted: #64748b;
 
     --orbit-accent: #818cf8;
     --orbit-accent-hover: #a5b4fc;
-    --orbit-accent-fg: #0c102b;
+    --orbit-accent-fg: #070a18;
     --orbit-accent-soft: rgba(129, 140, 248, 0.16);
-    --orbit-accent-secondary: #38bdf8;
-    --orbit-accent-secondary-soft: rgba(56, 189, 248, 0.15);
+    --orbit-accent-secondary: #d4af37;
+    --orbit-accent-secondary-soft: rgba(212, 175, 55, 0.15);
 
     --orbit-success: #34d399;
     --orbit-success-soft: rgba(52, 211, 153, 0.15);
@@ -1843,13 +1858,13 @@
     --orbit-danger-fg: #1d0909;
     --orbit-danger-soft: rgba(248, 113, 113, 0.16);
 
-    --orbit-border: #1d2649;
-    --orbit-border-strong: #2c396c;
-    --orbit-focus-ring: rgba(129, 140, 248, 0.45);
+    --orbit-border: rgba(129, 140, 248, 0.20);
+    --orbit-border-strong: rgba(129, 140, 248, 0.38);
+    --orbit-focus-ring: rgba(129, 140, 248, 0.5);
 
     --orbit-shadow-xs: 0 0 0 1px rgba(129, 140, 248, 0.15);
-    --orbit-shadow-card: 0 0 0 1px rgba(129, 140, 248, 0.2), 0 0 20px -2px rgba(129, 140, 248, 0.16), 0 8px 24px 0 rgb(0 0 0 / 0.6);
-    --orbit-shadow-elevated: 0 0 0 1px rgba(129, 140, 248, 0.35), 0 0 36px 0 rgba(129, 140, 248, 0.22), 0 24px 56px -12px rgb(0 0 0 / 0.85);
+    --orbit-shadow-card: 0 16px 36px -10px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(226, 232, 240, 0.10);
+    --orbit-shadow-elevated: 0 24px 56px -12px rgba(0, 0, 0, 0.85), inset 0 1px 0 0 rgba(212, 175, 55, 0.15);
 
     /* Visualisation & Charts */
     --orbit-chart-1: #818cf8;
@@ -2197,8 +2212,13 @@ pre {
 }
 
 :root[data-orbit-theme="midnight"] .orbit-modal-backdrop {
-  background-color: rgba(5, 5, 18, 0.8);
-  backdrop-filter: blur(12px);
+  background-color: rgba(13, 18, 38, 0.45);
+  backdrop-filter: none !important;
+  background-image: radial-gradient(circle at 50% 25%, rgba(55, 48, 163, 0.12) 0%, transparent 65%);
+}
+.dark:root[data-orbit-theme="midnight"] .orbit-modal-backdrop {
+  background-color: rgba(6, 8, 19, 0.85);
+  backdrop-filter: none !important;
   background-image: radial-gradient(circle at 50% 25%, rgba(129, 140, 248, 0.12) 0%, transparent 65%);
 }
 
@@ -2341,9 +2361,74 @@ pre {
   box-shadow: 0 14px 32px -8px rgba(0, 0, 0, 0.5);
 }
 
+/* Celestial Horological Astrolabe Surfaces for Midnight Personality */
+.midnight-zenith-hero {
+  background: linear-gradient(135deg, #0f1636 0%, #1b2554 55%, #261f4c 100%);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 20px 48px -12px rgba(15, 22, 54, 0.45);
+  color: #f8fafc;
+  backdrop-filter: none;
+  border-radius: 26px;
+}
+.dark .midnight-zenith-hero,
+.dark:root[data-orbit-theme="midnight"] .midnight-zenith-hero {
+  background: linear-gradient(135deg, #0b1026 0%, #141b3d 55%, #1d183b 100%);
+  border: 1px solid rgba(212, 175, 55, 0.30);
+  box-shadow: 0 24px 55px -12px rgba(0, 0, 0, 0.85);
+  color: #f8fafc;
+  backdrop-filter: none;
+  border-radius: 26px;
+}
+
+.midnight-observatory-card {
+  background: linear-gradient(155deg, #ffffff 0%, #f7f8fd 100%);
+  border: 1px solid rgba(55, 48, 163, 0.16);
+  box-shadow: 0 12px 28px -8px rgba(15, 22, 54, 0.06);
+  backdrop-filter: none;
+  border-radius: 22px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.dark .midnight-observatory-card,
+.dark:root[data-orbit-theme="midnight"] .midnight-observatory-card {
+  background: linear-gradient(155deg, #0d1124 0%, #090c1a 100%);
+  border: 1px solid rgba(129, 140, 248, 0.20);
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(226, 232, 240, 0.10);
+  backdrop-filter: none;
+  border-radius: 22px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.midnight-hero-task-card {
+  background: linear-gradient(155deg, #ffffff 0%, #f9f9fe 100%);
+  border: 1.5px solid rgba(180, 131, 39, 0.35);
+  box-shadow: 0 16px 36px -8px rgba(15, 22, 54, 0.08);
+  backdrop-filter: none;
+  border-radius: 24px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.dark .midnight-hero-task-card,
+.dark:root[data-orbit-theme="midnight"] .midnight-hero-task-card {
+  background: linear-gradient(155deg, #11162e 0%, #0c0f20 100%);
+  border: 1.5px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 20px 42px -10px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(212, 175, 55, 0.15);
+  backdrop-filter: none;
+  border-radius: 24px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
 :root[data-orbit-theme="midnight"] .orbit-modal-dialog {
-  border: 1px solid rgba(129, 140, 248, 0.35);
-  box-shadow: 0 0 35px -5px rgba(129, 140, 248, 0.25), 0 25px 60px -15px rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(55, 48, 163, 0.25) !important;
+  box-shadow: 0 20px 50px -10px rgba(15, 22, 54, 0.25) !important;
+  backdrop-filter: none !important;
+  background-color: var(--orbit-surface) !important;
+  border-radius: 22px !important;
+}
+.dark:root[data-orbit-theme="midnight"] .orbit-modal-dialog {
+  border: 1px solid rgba(129, 140, 248, 0.35) !important;
+  box-shadow: 0 0 35px -5px rgba(129, 140, 248, 0.25), 0 25px 60px -15px rgba(0, 0, 0, 0.85) !important;
+  backdrop-filter: none !important;
+  background-color: var(--orbit-surface) !important;
+  border-radius: 22px !important;
 }
 
 /* 3. Button Interactions across Personalities */

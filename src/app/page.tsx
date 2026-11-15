@@ -36,6 +36,7 @@ import { AestheticDashboard } from "@/components/dashboard/aesthetic/aesthetic-d
 import { ArtisticDashboard } from "@/components/dashboard/artistic/artistic-dashboard";
 import { MinimalistDashboard } from "@/components/dashboard/minimalist/minimalist-dashboard";
 import { NaturalistDashboard } from "@/components/dashboard/naturalist/naturalist-dashboard";
+import { MidnightDashboard } from "@/components/dashboard/midnight/midnight-dashboard";
 import { toggleTaskCompletionWithSync } from "@/lib/services/task-sync-service";
 import {
   fetchDashboardSnapshotData,
@@ -263,6 +264,33 @@ export default function HomePage() {
   if (mounted && themePersonality === "naturalist") {
     return (
       <NaturalistDashboard
+        tasks={dashboardData.tasks}
+        habits={dashboardData.habits}
+        habitLogs={dashboardData.habitLogs}
+        events={events || []}
+        activeHabits={activeHabits}
+        completedTodayHabitIds={completedTodayHabitIds}
+        openTasks={openTasks}
+        dueTodayTasks={dueTodayTasks}
+        focusTasks={focusTasks}
+        overdueCount={overdueCount}
+        habitsCompletedCount={habitsCompletedCount}
+        habitsTotalCount={habitsTotalCount}
+        habitsProgressPct={habitsProgressPct}
+        todayStr={todayStr}
+        upcomingEventsCount={upcomingEventsCount}
+        inboxCount={inboxCount}
+        onToggleTask={toggleTask}
+        onToggleHabit={toggleHabit}
+        onOpenQuickCapture={openQuickCapture}
+      />
+    );
+  }
+
+  // Dedicated Celestial Observatory & Horological Astrolabe for Midnight personality
+  if (mounted && themePersonality === "midnight") {
+    return (
+      <MidnightDashboard
         tasks={dashboardData.tasks}
         habits={dashboardData.habits}
         habitLogs={dashboardData.habitLogs}
