@@ -566,7 +566,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   THEME PERSONALITY 3: AESTHETIC (Soft Pastel Dream)
+   THEME PERSONALITY 3: AESTHETIC (The Kinfolk / Museum Editorial Spread)
    -------------------------------------------------------------------------- */
 :root[data-orbit-theme="aesthetic"],
 [data-orbit-theme-preview="aesthetic"] {
@@ -574,75 +574,81 @@
 
   /* Typography */
   --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
-  --orbit-heading-tracking: -0.01em;
+  --orbit-heading-tracking: -0.015em;
   --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
-  --orbit-eyebrow-tracking: 0.14em;
+  --orbit-eyebrow-tracking: 0.18em;
 
   /* Radii — Pillowy Soft Geometry */
   --orbit-radius-card: 1.25rem;
   --orbit-radius-control: 0.875rem;
   --orbit-radius-pill: 9999px;
 
-  --orbit-bg: #fbf7f5;
-  --orbit-bg-canvas: #fbf7f5;
-  --orbit-bg-subtle: #f3ece8;
-  --orbit-bg-pattern: radial-gradient(circle at 12% 18%, rgba(212, 93, 121, 0.08) 0%, transparent 45%), radial-gradient(circle at 88% 82%, rgba(159, 122, 234, 0.08) 0%, transparent 45%), radial-gradient(circle at 50% 50%, rgba(254, 243, 199, 0.15) 0%, transparent 60%);
+  /* Background & Canvas — Warm Alabaster Linen with Dawn Radial Wash */
+  --orbit-bg: #faf6f0;
+  --orbit-bg-canvas: #faf6f0;
+  --orbit-bg-subtle: #f3ece4;
+  --orbit-bg-pattern: radial-gradient(90% 60% at 15% 0%, rgba(214, 158, 126, 0.08), transparent 70%);
   --orbit-bg-size: auto;
-  --orbit-card-blur: 12px;
+  --orbit-card-blur: 0px;
 
-  --orbit-surface: #ffffff;
-  --orbit-surface-secondary: #f7f1ee;
-  --orbit-surface-elevated: #ffffff;
+  /* Surfaces — Pure Warm Ivory Editorial Surfaces */
+  --orbit-surface: #fffdf9;
+  --orbit-surface-secondary: #f4eee7;
+  --orbit-surface-elevated: #fffdf9;
 
-  --orbit-text: #342729;
-  --orbit-text-secondary: #665558;
-  --orbit-text-muted: #8a7579;
+  /* Inks */
+  --orbit-text: #231f1d;
+  --orbit-text-secondary: #5a514b;
+  --orbit-text-muted: #786e67;
 
-  --orbit-accent: #d45d79;
-  --orbit-accent-hover: #bf4b66;
+  /* Accents — Baked Terracotta & Muted Sage Olive */
+  --orbit-accent: #c86d51;
+  --orbit-accent-hover: #b45b40;
   --orbit-accent-fg: #ffffff;
-  --orbit-accent-soft: #fcebec;
-  --orbit-accent-secondary: #9f7aea;
-  --orbit-accent-secondary-soft: #f3ebff;
+  --orbit-accent-soft: rgba(200, 109, 81, 0.1);
+  --orbit-accent-secondary: #5c6f58;
+  --orbit-accent-secondary-soft: rgba(92, 111, 88, 0.12);
 
-  --orbit-success: #2e7d5a;
-  --orbit-success-soft: #e8f5ee;
+  --orbit-success: #5c6f58;
+  --orbit-success-soft: rgba(92, 111, 88, 0.12);
   --orbit-warning: #b8682a;
-  --orbit-warning-soft: #faeee6;
-  --orbit-danger: #c2414c;
+  --orbit-warning-soft: rgba(184, 104, 42, 0.1);
+  --orbit-danger: #b84338;
   --orbit-danger-fg: #ffffff;
-  --orbit-danger-soft: #fbebee;
+  --orbit-danger-soft: rgba(184, 67, 56, 0.1);
 
-  --orbit-border: #ebdcd7;
-  --orbit-border-strong: #dac3bc;
-  --orbit-focus-ring: rgba(212, 93, 121, 0.35);
+  /* Editorial Hairlines */
+  --orbit-border: rgba(140, 120, 105, 0.22);
+  --orbit-border-strong: rgba(140, 120, 105, 0.38);
+  --orbit-focus-ring: rgba(200, 109, 81, 0.35);
 
-  --orbit-shadow-xs: 0 2px 4px 0 rgb(212 93 121 / 0.04);
-  --orbit-shadow-card: 0 4px 20px -4px rgb(212 93 121 / 0.08), 0 1px 3px 0 rgb(52 39 41 / 0.03);
-  --orbit-shadow-elevated: 0 16px 36px -8px rgb(212 93 121 / 0.14), 0 4px 12px 0 rgb(52 39 41 / 0.04);
+  /* Soft Ambient Shadows (Zero GPU blur tax) */
+  --orbit-shadow-xs: 0 1px 2px 0 rgba(60, 35, 20, 0.03);
+  --orbit-shadow-card: 0 12px 32px -8px rgba(60, 35, 20, 0.06), 0 2px 6px 0 rgba(60, 35, 20, 0.02);
+  --orbit-shadow-elevated: 0 20px 48px -12px rgba(60, 35, 20, 0.09), 0 4px 12px 0 rgba(60, 35, 20, 0.03);
 
   /* Visualisation & Charts */
-  --orbit-chart-1: #d45d79;
-  --orbit-chart-2: #9f7aea;
-  --orbit-chart-3: #e28743;
-  --orbit-chart-4: #4299e1;
-  --orbit-chart-5: #48bb78;
-  --orbit-chart-positive: #38a169;
-  --orbit-chart-neutral: #718096;
-  --orbit-chart-negative: #e53e3e;
-  --orbit-chart-grid: #ebdcd7;
-  --orbit-chart-axis: #dac6bf;
-  --orbit-chart-tooltip-bg: #fffaf9;
-  --orbit-chart-tooltip-border: #e8cecb;
-  --orbit-chart-tooltip-text: #2d2325;
-  --orbit-progress-track: #f6ece9;
-  --orbit-progress-fill: #d45d79;
-  --orbit-chart-highlight: #b83253;
-  --orbit-heatmap-0: #f6ece9;
-  --orbit-heatmap-1: #fed7e2;
-  --orbit-heatmap-2: #f687b3;
-  --orbit-heatmap-3: #d45d79;
-  --orbit-heatmap-4: #97266d;
+  --orbit-chart-1: #c86d51;
+  --orbit-chart-2: #5c6f58;
+  --orbit-chart-3: #d99a4e;
+  --orbit-chart-4: #60889c;
+  --orbit-chart-5: #9c6c7d;
+  --orbit-chart-positive: #5c6f58;
+  --orbit-chart-neutral: #786e67;
+  --orbit-chart-negative: #b84338;
+  --orbit-chart-grid: rgba(140, 120, 105, 0.18);
+  --orbit-chart-axis: rgba(140, 120, 105, 0.35);
+  --orbit-chart-tooltip-bg: #fffdf9;
+  --orbit-chart-tooltip-border: rgba(140, 120, 105, 0.25);
+  --orbit-chart-tooltip-text: #231f1d;
+  --orbit-progress-track: #f4eee7;
+  --orbit-progress-fill: #c86d51;
+  --orbit-chart-highlight: #b45b40;
+  --orbit-heatmap-0: #f4eee7;
+  --orbit-heatmap-1: #ecdcd2;
+  --orbit-heatmap-2: #dfbaa8;
+  --orbit-heatmap-3: #c86d51;
+  --orbit-heatmap-4: #8c3f28;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -656,75 +662,81 @@
 
   /* Typography */
   --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
-  --orbit-heading-tracking: -0.01em;
+  --orbit-heading-tracking: -0.015em;
   --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
-  --orbit-eyebrow-tracking: 0.14em;
+  --orbit-eyebrow-tracking: 0.18em;
 
   /* Radii — Pillowy Soft Geometry */
   --orbit-radius-card: 1.25rem;
   --orbit-radius-control: 0.875rem;
   --orbit-radius-pill: 9999px;
 
-  --orbit-bg: #171315;
-  --orbit-bg-canvas: #171315;
-  --orbit-bg-subtle: #231c20;
-  --orbit-bg-pattern: radial-gradient(circle at 15% 15%, rgba(251, 113, 133, 0.1) 0%, transparent 50%), radial-gradient(circle at 85% 85%, rgba(192, 132, 252, 0.09) 0%, transparent 50%);
+  /* Background & Canvas — Deep Roasted Espresso with Umber Wash */
+  --orbit-bg: #141110;
+  --orbit-bg-canvas: #141110;
+  --orbit-bg-subtle: #1c1715;
+  --orbit-bg-pattern: radial-gradient(90% 60% at 15% 0%, rgba(190, 115, 85, 0.06), transparent 70%);
   --orbit-bg-size: auto;
-  --orbit-card-blur: 12px;
+  --orbit-card-blur: 0px;
 
-  --orbit-surface: #1f191c;
-  --orbit-surface-secondary: #282125;
-  --orbit-surface-elevated: #30272c;
+  /* Surfaces — Warm Dark Umber */
+  --orbit-surface: #1e1917;
+  --orbit-surface-secondary: #27211e;
+  --orbit-surface-elevated: #2a2320;
 
-  --orbit-text: #faedf0;
-  --orbit-text-secondary: #d1bec4;
-  --orbit-text-muted: #9c8990;
+  /* Inks */
+  --orbit-text: #f3ece4;
+  --orbit-text-secondary: #c7bbb2;
+  --orbit-text-muted: #9c8f86;
 
-  --orbit-accent: #fb7185;
-  --orbit-accent-hover: #fda4af;
-  --orbit-accent-fg: #20080f;
-  --orbit-accent-soft: rgba(251, 113, 133, 0.16);
-  --orbit-accent-secondary: #c084fc;
-  --orbit-accent-secondary-soft: rgba(192, 132, 252, 0.16);
+  /* Accents — Warm Terracotta Clay & Soft Sage */
+  --orbit-accent: #d98266;
+  --orbit-accent-hover: #e8957c;
+  --orbit-accent-fg: #141110;
+  --orbit-accent-soft: rgba(217, 130, 102, 0.15);
+  --orbit-accent-secondary: #7a9175;
+  --orbit-accent-secondary-soft: rgba(122, 145, 117, 0.15);
 
-  --orbit-success: #4ade80;
-  --orbit-success-soft: rgba(74, 222, 128, 0.15);
-  --orbit-warning: #fbbf24;
-  --orbit-warning-soft: rgba(251, 191, 36, 0.15);
-  --orbit-danger: #f87171;
-  --orbit-danger-fg: #1d0909;
-  --orbit-danger-soft: rgba(248, 113, 113, 0.16);
+  --orbit-success: #7a9175;
+  --orbit-success-soft: rgba(122, 145, 117, 0.15);
+  --orbit-warning: #d99a4e;
+  --orbit-warning-soft: rgba(217, 154, 78, 0.15);
+  --orbit-danger: #d9625b;
+  --orbit-danger-fg: #141110;
+  --orbit-danger-soft: rgba(217, 98, 91, 0.15);
 
-  --orbit-border: #33272d;
-  --orbit-border-strong: #48373f;
-  --orbit-focus-ring: rgba(251, 113, 133, 0.42);
+  /* Editorial Hairlines */
+  --orbit-border: rgba(215, 195, 180, 0.14);
+  --orbit-border-strong: rgba(215, 195, 180, 0.28);
+  --orbit-focus-ring: rgba(217, 130, 102, 0.4);
 
-  --orbit-shadow-xs: 0 2px 4px 0 rgb(0 0 0 / 0.3);
-  --orbit-shadow-card: 0 4px 24px -4px rgb(251 113 133 / 0.12), 0 2px 6px 0 rgb(0 0 0 / 0.4);
-  --orbit-shadow-elevated: 0 20px 44px -8px rgb(251 113 133 / 0.18), 0 8px 16px 0 rgb(0 0 0 / 0.5);
+  /* Ambient Shadows */
+  --orbit-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --orbit-shadow-card: 0 12px 32px -8px rgba(0, 0, 0, 0.45), 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+  --orbit-shadow-elevated: 0 24px 52px -12px rgba(0, 0, 0, 0.6), 0 6px 16px 0 rgba(0, 0, 0, 0.3);
 
   /* Visualisation & Charts */
-  --orbit-chart-1: #fb7185;
-  --orbit-chart-2: #c084fc;
-  --orbit-chart-3: #fbbf24;
-  --orbit-chart-4: #60a5fa;
-  --orbit-chart-5: #6ee7b7;
-  --orbit-chart-positive: #4ade80;
-  --orbit-chart-neutral: #a89ca0;
-  --orbit-chart-negative: #f87171;
-  --orbit-chart-grid: #33272d;
-  --orbit-chart-axis: #44353c;
-  --orbit-chart-tooltip-bg: #22181c;
-  --orbit-chart-tooltip-border: #44353c;
-  --orbit-chart-tooltip-text: #fbf7f8;
-  --orbit-progress-track: #291d22;
-  --orbit-progress-fill: #fb7185;
-  --orbit-chart-highlight: #fda4af;
-  --orbit-heatmap-0: #291d22;
-  --orbit-heatmap-1: #501d2d;
-  --orbit-heatmap-2: #882444;
-  --orbit-heatmap-3: #be3460;
-  --orbit-heatmap-4: #fb7185;
+  --orbit-chart-1: #d98266;
+  --orbit-chart-2: #7a9175;
+  --orbit-chart-3: #d99a4e;
+  --orbit-chart-4: #759eb5;
+  --orbit-chart-5: #b57c91;
+  --orbit-chart-positive: #7a9175;
+  --orbit-chart-neutral: #9c8f86;
+  --orbit-chart-negative: #d9625b;
+  --orbit-chart-grid: rgba(215, 195, 180, 0.12);
+  --orbit-chart-axis: rgba(215, 195, 180, 0.25);
+  --orbit-chart-tooltip-bg: #1e1917;
+  --orbit-chart-tooltip-border: rgba(215, 195, 180, 0.22);
+  --orbit-chart-tooltip-text: #f3ece4;
+  --orbit-progress-track: #27211e;
+  --orbit-progress-fill: #d98266;
+  --orbit-chart-highlight: #e8957c;
+  --orbit-heatmap-0: #27211e;
+  --orbit-heatmap-1: #422d25;
+  --orbit-heatmap-2: #8a4833;
+  --orbit-heatmap-3: #d98266;
+  --orbit-heatmap-4: #f0a690;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -736,75 +748,81 @@
 
     /* Typography */
     --orbit-font-display: var(--font-orbit-display-base), Georgia, "Times New Roman", serif;
-    --orbit-heading-tracking: -0.01em;
+    --orbit-heading-tracking: -0.015em;
     --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
-    --orbit-eyebrow-tracking: 0.14em;
+    --orbit-eyebrow-tracking: 0.18em;
 
     /* Radii — Pillowy Soft Geometry */
     --orbit-radius-card: 1.25rem;
     --orbit-radius-control: 0.875rem;
     --orbit-radius-pill: 9999px;
 
-    --orbit-bg: #171315;
-    --orbit-bg-canvas: #171315;
-    --orbit-bg-subtle: #231c20;
-    --orbit-bg-pattern: radial-gradient(circle at 15% 15%, rgba(251, 113, 133, 0.1) 0%, transparent 50%), radial-gradient(circle at 85% 85%, rgba(192, 132, 252, 0.09) 0%, transparent 50%);
+    /* Background & Canvas — Deep Roasted Espresso with Umber Wash */
+    --orbit-bg: #141110;
+    --orbit-bg-canvas: #141110;
+    --orbit-bg-subtle: #1c1715;
+    --orbit-bg-pattern: radial-gradient(90% 60% at 15% 0%, rgba(190, 115, 85, 0.06), transparent 70%);
     --orbit-bg-size: auto;
-    --orbit-card-blur: 12px;
+    --orbit-card-blur: 0px;
 
-    --orbit-surface: #1f191c;
-    --orbit-surface-secondary: #282125;
-    --orbit-surface-elevated: #30272c;
+    /* Surfaces — Warm Dark Umber */
+    --orbit-surface: #1e1917;
+    --orbit-surface-secondary: #27211e;
+    --orbit-surface-elevated: #2a2320;
 
-    --orbit-text: #faedf0;
-    --orbit-text-secondary: #d1bec4;
-    --orbit-text-muted: #9c8990;
+    /* Inks */
+    --orbit-text: #f3ece4;
+    --orbit-text-secondary: #c7bbb2;
+    --orbit-text-muted: #9c8f86;
 
-    --orbit-accent: #fb7185;
-    --orbit-accent-hover: #fda4af;
-    --orbit-accent-fg: #20080f;
-    --orbit-accent-soft: rgba(251, 113, 133, 0.16);
-    --orbit-accent-secondary: #c084fc;
-    --orbit-accent-secondary-soft: rgba(192, 132, 252, 0.16);
+    /* Accents — Warm Terracotta Clay & Soft Sage */
+    --orbit-accent: #d98266;
+    --orbit-accent-hover: #e8957c;
+    --orbit-accent-fg: #141110;
+    --orbit-accent-soft: rgba(217, 130, 102, 0.15);
+    --orbit-accent-secondary: #7a9175;
+    --orbit-accent-secondary-soft: rgba(122, 145, 117, 0.15);
 
-    --orbit-success: #4ade80;
-    --orbit-success-soft: rgba(74, 222, 128, 0.15);
-    --orbit-warning: #fbbf24;
-    --orbit-warning-soft: rgba(251, 191, 36, 0.15);
-    --orbit-danger: #f87171;
-    --orbit-danger-fg: #1d0909;
-    --orbit-danger-soft: rgba(248, 113, 113, 0.16);
+    --orbit-success: #7a9175;
+    --orbit-success-soft: rgba(122, 145, 117, 0.15);
+    --orbit-warning: #d99a4e;
+    --orbit-warning-soft: rgba(217, 154, 78, 0.15);
+    --orbit-danger: #d9625b;
+    --orbit-danger-fg: #141110;
+    --orbit-danger-soft: rgba(217, 98, 91, 0.15);
 
-    --orbit-border: #33272d;
-    --orbit-border-strong: #48373f;
-    --orbit-focus-ring: rgba(251, 113, 133, 0.42);
+    /* Editorial Hairlines */
+    --orbit-border: rgba(215, 195, 180, 0.14);
+    --orbit-border-strong: rgba(215, 195, 180, 0.28);
+    --orbit-focus-ring: rgba(217, 130, 102, 0.4);
 
-    --orbit-shadow-xs: 0 2px 4px 0 rgb(0 0 0 / 0.3);
-    --orbit-shadow-card: 0 4px 24px -4px rgb(251 113 133 / 0.12), 0 2px 6px 0 rgb(0 0 0 / 0.4);
-    --orbit-shadow-elevated: 0 20px 44px -8px rgb(251 113 133 / 0.18), 0 8px 16px 0 rgb(0 0 0 / 0.5);
+    /* Ambient Shadows */
+    --orbit-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --orbit-shadow-card: 0 12px 32px -8px rgba(0, 0, 0, 0.45), 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+    --orbit-shadow-elevated: 0 24px 52px -12px rgba(0, 0, 0, 0.6), 0 6px 16px 0 rgba(0, 0, 0, 0.3);
 
     /* Visualisation & Charts */
-    --orbit-chart-1: #fb7185;
-    --orbit-chart-2: #c084fc;
-    --orbit-chart-3: #fbbf24;
-    --orbit-chart-4: #60a5fa;
-    --orbit-chart-5: #6ee7b7;
-    --orbit-chart-positive: #4ade80;
-    --orbit-chart-neutral: #a89ca0;
-    --orbit-chart-negative: #f87171;
-    --orbit-chart-grid: #33272d;
-    --orbit-chart-axis: #44353c;
-    --orbit-chart-tooltip-bg: #22181c;
-    --orbit-chart-tooltip-border: #44353c;
-    --orbit-chart-tooltip-text: #fbf7f8;
-    --orbit-progress-track: #291d22;
-    --orbit-progress-fill: #fb7185;
-    --orbit-chart-highlight: #fda4af;
-    --orbit-heatmap-0: #291d22;
-    --orbit-heatmap-1: #501d2d;
-    --orbit-heatmap-2: #882444;
-    --orbit-heatmap-3: #be3460;
-    --orbit-heatmap-4: #fb7185;
+    --orbit-chart-1: #d98266;
+    --orbit-chart-2: #7a9175;
+    --orbit-chart-3: #d99a4e;
+    --orbit-chart-4: #759eb5;
+    --orbit-chart-5: #b57c91;
+    --orbit-chart-positive: #7a9175;
+    --orbit-chart-neutral: #9c8f86;
+    --orbit-chart-negative: #d9625b;
+    --orbit-chart-grid: rgba(215, 195, 180, 0.12);
+    --orbit-chart-axis: rgba(215, 195, 180, 0.25);
+    --orbit-chart-tooltip-bg: #1e1917;
+    --orbit-chart-tooltip-border: rgba(215, 195, 180, 0.22);
+    --orbit-chart-tooltip-text: #f3ece4;
+    --orbit-progress-track: #27211e;
+    --orbit-progress-fill: #d98266;
+    --orbit-chart-highlight: #e8957c;
+    --orbit-heatmap-0: #27211e;
+    --orbit-heatmap-1: #422d25;
+    --orbit-heatmap-2: #8a4833;
+    --orbit-heatmap-3: #d98266;
+    --orbit-heatmap-4: #f0a690;
 
     --background: var(--orbit-bg);
     --foreground: var(--orbit-text);
@@ -2233,12 +2251,12 @@ pre {
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5) !important;
 }
 
-/* Aesthetic: Soft transitions, gentle shadows and rounded surfaces */
+/* Aesthetic: Soft transitions, gentle ambient shadows and warm terracotta focus */
 :root[data-orbit-theme="aesthetic"] .orbit-button {
   border-radius: var(--orbit-radius-pill);
 }
 :root[data-orbit-theme="aesthetic"] .orbit-button:hover:not(:disabled) {
-  box-shadow: 0 4px 16px -2px rgba(244, 63, 94, 0.25);
+  box-shadow: 0 4px 16px -2px rgba(200, 109, 81, 0.25);
   transform: translateY(-1px);
 }
 :root[data-orbit-theme="aesthetic"] .orbit-button:active:not(:disabled) {
@@ -2247,7 +2265,7 @@ pre {
 :root[data-orbit-theme="aesthetic"] .orbit-button:focus-visible {
   outline: 2px solid var(--orbit-accent) !important;
   outline-offset: 2px !important;
-  box-shadow: 0 0 10px rgba(244, 63, 94, 0.25) !important;
+  box-shadow: 0 0 10px rgba(200, 109, 81, 0.25) !important;
 }
 
 /* Artistic: Expressive accents and creative interaction details */
@@ -2521,11 +2539,16 @@ pre {
   box-shadow: 0 0 10px var(--orbit-accent) !important;
 }
 
-/* Aesthetic: Soft transitions, gentle shadows and rounded surfaces */
+/* Aesthetic: Soft transitions, gentle ambient shadows and warm terracotta highlights */
 :root[data-orbit-theme="aesthetic"] .orbit-card-interactive:hover {
   transform: translateY(-2px);
-  border-color: rgba(244, 63, 94, 0.35) !important;
-  box-shadow: 0 14px 28px -6px rgba(244, 63, 94, 0.14);
+  border-color: var(--orbit-accent) !important;
+  box-shadow: 0 16px 36px -8px rgba(60, 35, 20, 0.08);
+}
+.dark:root[data-orbit-theme="aesthetic"] .orbit-card-interactive:hover {
+  transform: translateY(-2px);
+  border-color: var(--orbit-accent) !important;
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.5);
 }
 :root[data-orbit-theme="aesthetic"] .orbit-card-interactive:active {
   transform: translateY(0.5px) scale(0.985);
@@ -2533,7 +2556,7 @@ pre {
 :root[data-orbit-theme="aesthetic"] .orbit-card-interactive:focus-visible {
   outline: 2px solid var(--orbit-accent) !important;
   outline-offset: 2px !important;
-  box-shadow: 0 0 10px rgba(244, 63, 94, 0.25) !important;
+  box-shadow: 0 0 10px rgba(200, 109, 81, 0.25) !important;
 }
 
 /* Artistic: Expressive accents and creative interaction details */
@@ -2623,7 +2646,7 @@ pre {
 
 :root[data-orbit-theme="aesthetic"] .orbit-notification-panel {
   border-radius: 1.5rem;
-  box-shadow: 0 16px 40px -10px rgba(244, 63, 94, 0.14);
+  box-shadow: 0 16px 40px -10px rgba(60, 35, 20, 0.12);
 }
 
 :root[data-orbit-theme="artistic"] .orbit-notification-panel {
@@ -2683,7 +2706,7 @@ pre {
 
 :root[data-orbit-theme="aesthetic"] .orbit-search-item[aria-selected="true"] {
   border-radius: 0.875rem;
-  box-shadow: 0 4px 14px -2px rgba(244, 63, 94, 0.12);
+  box-shadow: 0 4px 14px -2px rgba(200, 109, 81, 0.16);
 }
 
 :root[data-orbit-theme="artistic"] .orbit-search-item[aria-selected="true"] {

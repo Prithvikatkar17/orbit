@@ -139,8 +139,8 @@ test("Phase 10C.1: Archivist Theme Redesign — Paper Workspace & Frosted Glass"
       "Aesthetic retains pillowy card radius"
     );
     assert.ok(
-      css.includes("rgba(212, 93, 121, 0.08)"),
-      "Aesthetic retains soft pastel atmospheric mesh"
+      css.includes("rgba(214, 158, 126, 0.08)") || css.includes("rgba(212, 93, 121, 0.08)"),
+      "Aesthetic retains warm editorial wash"
     );
 
     // 3. Artistic
