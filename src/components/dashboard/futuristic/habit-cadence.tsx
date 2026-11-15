@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react";
 import Link from "next/link";
-import { Check, ArrowRight, Plus, Repeat } from "lucide-react";
+import { Check, ArrowRight, Plus, Sliders } from "lucide-react";
 import type { Habit, HabitLog } from "@/lib/schemas";
 import {
   getWeekMonday,
@@ -68,13 +68,12 @@ export function HabitCadence({
   }, [habits]);
 
   return (
-    <section className="futuristic-panel flex flex-col">
-      {/* Section Header */}
-      <div className="futuristic-panel-header flex items-center justify-between px-5 py-4">
+    <div className="space-y-3">
+      {/* Clean Single-Line Header (Zero Jargon Subtitle) */}
+      <div className="flex items-center justify-between gap-2 border-b border-orbit-border/70 pb-3">
         <div className="flex items-center gap-2">
-          <Repeat className="h-4 w-4 text-orbit-accent" aria-hidden />
-          <h2 className="font-sans text-base font-bold text-orbit-text tracking-tight">
-            Habit Cadence
+          <h2 className="font-mono text-sm font-bold tracking-wider text-orbit-text uppercase">
+            02 // HABIT CADENCE
           </h2>
           {activeHabits.length > 0 && (
             <span className="font-mono text-xs text-orbit-text-muted">
@@ -85,42 +84,33 @@ export function HabitCadence({
 
         <Link
           href="/habits"
-          className="inline-flex min-h-[44px] sm:min-h-[32px] items-center gap-1 font-mono text-xs font-semibold text-orbit-accent hover:text-orbit-accent-hover transition-colors py-1"
+          className="inline-flex min-h-[44px] sm:min-h-[28px] items-center gap-1 font-mono text-xs font-semibold text-orbit-accent hover:text-orbit-accent-hover transition-colors py-1"
         >
           <span>All habits</span>
-          <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+          <ArrowRight className="h-3 w-3" aria-hidden />
         </Link>
       </div>
 
       {activeHabits.length === 0 ? (
-        <div className="p-6 flex flex-col items-center justify-center text-center">
+        <div className="futuristic-panel p-6 rounded-[12px] flex flex-col items-center justify-center text-center">
+          <div className="h-8 w-8 rounded-[4px] bg-orbit-surface-secondary border border-orbit-border flex items-center justify-center mb-2.5 text-orbit-text-muted">
+            <Sliders className="h-4 w-4" />
+          </div>
           <p className="text-xs text-orbit-text-muted mb-3">
-            No active routines yet. Track your daily consistency at a glance.
+            No routines tracked yet. Build daily consistency with a 7-day cadence.
           </p>
           <button
             type="button"
             onClick={onOpenQuickCapture}
             className="futuristic-btn-tactile futuristic-btn-tactile-secondary inline-flex min-h-[44px] sm:min-h-[32px] items-center gap-1.5 px-3 py-1 font-sans text-xs font-medium text-orbit-text rounded-xs cursor-pointer"
           >
-            <Plus className="h-3.5 w-3.5" aria-hidden />
+            <Plus className="h-3.5 w-3.5 text-orbit-accent" aria-hidden />
             <span>Create a habit</span>
           </button>
         </div>
       ) : (
-        <div className="divide-y divide-orbit-border/40">
-          {/* Weekday Column Header */}
-          <div className="flex items-center justify-between px-5 py-1.5 bg-orbit-surface-secondary/20 text-[10px] font-mono text-orbit-text-muted">
-            <span className="truncate">ROUTINE</span>
-            <div className="flex items-center gap-1 sm:gap-1.5">
-              {DAY_LABELS.map((d, i) => (
-                <span key={i} className="w-5 text-center font-bold">
-                  {d}
-                </span>
-              ))}
-              <span className="w-8 text-right ml-1">STRK</span>
-            </div>
-          </div>
-
+        /* Unified Compact Panel with Divide-Y */
+        <div className="futuristic-panel rounded-[12px] divide-y divide-orbit-border/50 overflow-hidden">
           {activeHabits.map((habit) => {
             const completedDates = logsByHabit.get(habit.id) ?? [];
             const streakInfo = calculateStreak(
@@ -130,84 +120,78 @@ export function HabitCadence({
             );
 
             return (
-              <div
-                key={habit.id}
-                className="futuristic-row flex items-center justify-between gap-3 px-5 py-2.5"
-              >
-                {/* Left: Title with frequency */}
-                <div className="min-w-0 flex-1">
-                  <div className="truncate text-xs font-semibold text-orbit-text">
+              <div key={habit.id} className="p-3.5 space-y-2.5 hover:bg-orbit-surface-secondary/20 transition-colors">
+                {/* Line 1: Full Habit Title (Zero Truncation) + Streak Pill */}
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="text-sm font-medium text-orbit-text leading-snug whitespace-normal break-words flex-1">
                     {habit.title}
-                  </div>
-                  <div className="font-mono text-[10px] text-orbit-text-muted">
-                    {habit.frequency === "weekdays" ? "Mon–Fri" : habit.frequency}
-                  </div>
+                  </h3>
+
+                  {/* Clean Streak Pill */}
+                  <span
+                    className={`font-mono text-xs font-bold px-2 py-0.5 rounded-[3px] shrink-0 ${streakInfo.currentStreak > 0
+                      ? "text-[#00e5a3] bg-[#00e5a3]/10 border border-[#00e5a3]/30"
+                      : "text-orbit-text-muted bg-orbit-surface-secondary border border-orbit-border"
+                      }`}
+                  >
+                    {streakInfo.currentStreak}d
+                  </span>
                 </div>
 
-                {/* Right: 7-Day Spark Blocks & Streak */}
-                <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-                  {currentWeekDays.map((dateStr) => {
+                {/* Line 2: 7-Day Low-Profile Hardware LED Step Bar */}
+                <div className="grid grid-cols-7 gap-1.5 pt-0.5">
+                  {currentWeekDays.map((dateStr, dayIdx) => {
                     const isDone = completionMap.has(`${habit.id}:${dateStr}`);
                     const isToday = dateStr === todayStr;
-                    const isPast = dateStr < todayStr;
-
-                    if (isToday) {
-                      return (
-                        <button
-                          key={dateStr}
-                          type="button"
-                          aria-label={`Toggle habit "${habit.title}" for today`}
-                          onClick={() => onToggleHabit(habit.id)}
-                          className="flex min-h-[44px] min-w-[20px] sm:min-h-[26px] items-center justify-center cursor-pointer group/toggle focus-visible:outline-hidden"
-                        >
-                          <span
-                            className="futuristic-spark-toggle"
-                            data-active={isDone ? "true" : "false"}
-                          >
-                            {isDone ? (
-                              <Check className="h-2.5 w-2.5 stroke-[3.5] text-[#04111d]" />
-                            ) : (
-                              <span className="h-1.5 w-1.5 rounded-[1px] bg-orbit-accent shadow-[0_0_4px_rgba(0,240,255,0.6)] group-hover/toggle:scale-125 transition-transform" />
-                            )}
-                          </span>
-                        </button>
-                      );
-                    }
+                    const dayLetter = DAY_LABELS[dayIdx] || "·";
 
                     return (
-                      <div
-                        key={dateStr}
-                        className="flex h-6 w-5 items-center justify-center select-none"
-                      >
-                        <span
-                          className={`h-3.5 w-3.5 rounded-[2px] border ${
-                            isDone
-                              ? "border-orbit-accent/80 bg-orbit-accent/25 text-orbit-accent shadow-[0_0_6px_rgba(0,240,255,0.35)]"
-                              : isPast
-                              ? "border-orbit-border/60 bg-[#070b13] shadow-[inset_0_1px_2px_rgba(0,0,0,0.8)]"
-                              : "border-orbit-border/30 bg-transparent opacity-25"
-                          } flex items-center justify-center`}
+                      <div key={dateStr} className="flex flex-col items-center gap-1">
+                        {/* Tactile Hardware Step Button (Accessible touch target) */}
+                        <button
+                          type="button"
+                          aria-label={`Toggle habit ${habit.title} for ${dateStr}`}
+                          onClick={() => onToggleHabit(habit.id)}
+                          className="relative min-h-[44px] min-w-[28px] w-full flex items-center justify-center p-0.5 cursor-pointer focus-visible:outline-hidden group"
                         >
-                          {isDone && <Check className="h-2 w-2 stroke-[3]" />}
+                          <span
+                            className={`h-6 w-full rounded-[4px] flex items-center justify-center transition-all ${
+                              isDone
+                                ? "bg-[#0284c7] border border-[#0369a1] text-white shadow-[0_1px_3px_rgba(2,132,199,0.35)] dark:bg-[#00f0ff] dark:border-[#38bdf8] dark:text-[#04111d] dark:shadow-[0_0_8px_rgba(0,240,255,0.7)]"
+                                : "bg-[#e8eef5] border border-[#cbd5e1] text-transparent hover:border-[#0284c7]/60 shadow-[inset_0_1px_2px_rgba(15,23,42,0.08)] dark:bg-[#070b13] dark:border-[#1c283c] dark:shadow-[inset_0_1.5px_2px_rgba(0,0,0,0.85)] dark:hover:border-[#00f0ff]/50"
+                            } ${
+                              isToday && !isDone
+                                ? "ring-1 ring-[#0284c7]/50 dark:ring-[#00f0ff]/60 ring-offset-1 ring-offset-white dark:ring-offset-black"
+                                : ""
+                            }`}
+                          >
+                            <Check
+                              className={`h-3 w-3 stroke-[3] transition-transform ${
+                                isDone
+                                  ? "scale-100"
+                                  : "scale-75 text-transparent group-hover:text-[#0284c7]/40 dark:group-hover:text-[#00f0ff]/30"
+                              }`}
+                            />
+                          </span>
+                        </button>
+
+                        {/* Subtle Day Letter Below Step */}
+                        <span
+                          className={`font-mono text-[10px] select-none ${
+                            isToday ? "text-[#0284c7] dark:text-[#00f0ff] font-bold" : "text-orbit-text-muted"
+                          }`}
+                        >
+                          {dayLetter}
                         </span>
                       </div>
                     );
                   })}
-
-                  {/* Streak */}
-                  <span className="w-8 text-right font-mono text-[11px] tabular-nums font-semibold ml-1 text-orbit-text-muted">
-                    {streakInfo.currentStreak > 0 ? (
-                      <span className="text-orbit-accent font-bold">{streakInfo.currentStreak}d</span>
-                    ) : (
-                      "0d"
-                    )}
-                  </span>
                 </div>
               </div>
             );
           })}
         </div>
       )}
-    </section>
+    </div>
   );
 }
