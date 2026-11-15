@@ -320,17 +320,26 @@
   --orbit-radius-control: 0.25rem;
   --orbit-radius-pill: 0.25rem;
 
-  /* Background & Canvas — Technical Slate */
-  --orbit-bg: #f0f4f8;
-  --orbit-bg-canvas: #f0f4f8;
-  --orbit-bg-subtle: #e1e8f0;
-  --orbit-bg-pattern: radial-gradient(rgba(2, 132, 199, 0.1) 1px, transparent 1px), linear-gradient(to right, rgba(203, 213, 225, 0.35) 1px, transparent 1px), linear-gradient(to bottom, rgba(203, 213, 225, 0.35) 1px, transparent 1px);
-  --orbit-bg-size: 32px 32px, 32px 32px, 32px 32px;
-  --orbit-card-blur: 8px;
+  /* Background & Canvas — Silver-White Holographic Deck */
+  --orbit-bg: #f3f6fa;
+  --orbit-bg-canvas: #f3f6fa;
+  --orbit-bg-subtle: #e2e8f2;
+  --orbit-bg-pattern:
+    radial-gradient(110% 70% at 50% 0%, rgba(2, 132, 199, 0.08) 0%, transparent 65%),
+    radial-gradient(85% 55% at 85% 12%, rgba(124, 58, 237, 0.05) 0%, transparent 55%),
+    linear-gradient(180deg, #f8fafc 0%, #edf3f9 100%),
+    radial-gradient(rgba(2, 132, 199, 0.12) 1px, transparent 1px),
+    linear-gradient(to right, rgba(2, 132, 199, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(2, 132, 199, 0.045) 1px, transparent 1px),
+    linear-gradient(to right, rgba(124, 58, 237, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(124, 58, 237, 0.035) 1px, transparent 1px);
+  --orbit-bg-size: auto, auto, auto, 40px 40px, 40px 40px, 40px 40px, 200px 200px, 200px 200px;
+  --orbit-card-blur: 16px;
 
-  --orbit-surface: #ffffff;
-  --orbit-surface-secondary: #eaf0f7;
-  --orbit-surface-elevated: #ffffff;
+  /* Surfaces — Translucent Luminous Holographic Glass & Grounded Deck */
+  --orbit-surface: rgba(255, 255, 255, 0.78);
+  --orbit-surface-secondary: #e9f0f8;
+  --orbit-surface-elevated: rgba(255, 255, 255, 0.92);
 
   --orbit-text: #0f172a;
   --orbit-text-secondary: #334155;
@@ -351,13 +360,13 @@
   --orbit-danger-fg: #ffffff;
   --orbit-danger-soft: #fee2e2;
 
-  --orbit-border: #cbd5e1;
-  --orbit-border-strong: #94a3b8;
+  --orbit-border: rgba(2, 132, 199, 0.22);
+  --orbit-border-strong: rgba(2, 132, 199, 0.45);
   --orbit-focus-ring: rgba(2, 132, 199, 0.4);
 
-  --orbit-shadow-xs: 0 1px 2px 0 rgb(15 23 42 / 0.05);
-  --orbit-shadow-card: 0 0 0 1px rgba(2, 132, 199, 0.12), 0 2px 6px -1px rgb(15 23 42 / 0.06);
-  --orbit-shadow-elevated: 0 0 0 1px rgba(2, 132, 199, 0.22), 0 16px 32px -8px rgb(15 23 42 / 0.14);
+  --orbit-shadow-xs: inset 0 1px 0 0 rgba(255, 255, 255, 0.9), 0 1px 2px 0 rgb(15 23 42 / 0.05);
+  --orbit-shadow-card: inset 0 1px 0 0 rgba(255, 255, 255, 1), inset -1px -1px 0 0 rgba(124, 58, 237, 0.14), 0 0 0 1px rgba(2, 132, 199, 0.16), 0 8px 24px -4px rgba(15, 23, 42, 0.08), 0 0 14px -2px rgba(2, 132, 199, 0.1);
+  --orbit-shadow-elevated: inset 0 1px 0 0 rgba(255, 255, 255, 1), inset -1px -1px 0 0 rgba(124, 58, 237, 0.25), 0 0 0 1px rgba(2, 132, 199, 0.32), 0 20px 48px -10px rgba(15, 23, 42, 0.14), 0 0 24px -2px rgba(2, 132, 199, 0.16);
 
   /* Visualisation & Charts */
   --orbit-chart-1: #0284c7;
@@ -403,16 +412,26 @@
   --orbit-radius-control: 0.25rem;
   --orbit-radius-pill: 0.25rem;
 
-  --orbit-bg: #0a0c12;
-  --orbit-bg-canvas: #0a0c12;
-  --orbit-bg-subtle: #121722;
-  --orbit-bg-pattern: radial-gradient(rgba(0, 240, 255, 0.12) 1px, transparent 1px), linear-gradient(to right, rgba(30, 41, 59, 0.5) 1px, transparent 1px), linear-gradient(to bottom, rgba(30, 41, 59, 0.5) 1px, transparent 1px);
-  --orbit-bg-size: 32px 32px, 32px 32px, 32px 32px;
-  --orbit-card-blur: 8px;
+  /* Background & Canvas — Deep Obsidian Holographic Deck */
+  --orbit-bg: #07090e;
+  --orbit-bg-canvas: #07090e;
+  --orbit-bg-subtle: #0f1420;
+  --orbit-bg-pattern:
+    radial-gradient(100% 70% at 20% 0%, rgba(0, 240, 255, 0.09) 0%, transparent 60%),
+    radial-gradient(90% 60% at 85% 15%, rgba(168, 85, 247, 0.08) 0%, transparent 55%),
+    radial-gradient(130% 90% at 50% 20%, rgba(11, 17, 32, 0.65) 0%, #05070b 100%),
+    radial-gradient(rgba(0, 240, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(to right, rgba(0, 240, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 240, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(to right, rgba(168, 85, 247, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
+  --orbit-bg-size: auto, auto, auto, 48px 48px, 48px 48px, 48px 48px, 240px 240px, 240px 240px;
+  --orbit-card-blur: 16px;
 
-  --orbit-surface: #111624;
-  --orbit-surface-secondary: #182032;
-  --orbit-surface-elevated: #1d273d;
+  /* Surfaces — Translucent Obsidian Holographic Glass & Tactical Rack */
+  --orbit-surface: rgba(10, 16, 28, 0.72);
+  --orbit-surface-secondary: #0d1322;
+  --orbit-surface-elevated: rgba(16, 24, 42, 0.85);
 
   --orbit-text: #f1f5f9;
   --orbit-text-secondary: #94a3b8;
@@ -433,13 +452,13 @@
   --orbit-danger-fg: #190508;
   --orbit-danger-soft: rgba(244, 63, 94, 0.16);
 
-  --orbit-border: #1e293b;
-  --orbit-border-strong: #334155;
+  --orbit-border: rgba(0, 240, 255, 0.24);
+  --orbit-border-strong: rgba(0, 240, 255, 0.48);
   --orbit-focus-ring: rgba(0, 240, 255, 0.45);
 
-  --orbit-shadow-xs: 0 0 0 1px rgba(0, 240, 255, 0.15);
-  --orbit-shadow-card: 0 0 0 1px rgba(0, 240, 255, 0.22), 0 0 16px -2px rgba(0, 240, 255, 0.12), 0 4px 14px 0 rgb(0 0 0 / 0.5);
-  --orbit-shadow-elevated: 0 0 0 1px rgba(0, 240, 255, 0.35), 0 0 28px 0 rgba(0, 240, 255, 0.18), 0 24px 48px -12px rgb(0 0 0 / 0.8);
+  --orbit-shadow-xs: inset 0 1px 0 0 rgba(0, 240, 255, 0.3), 0 0 0 1px rgba(0, 240, 255, 0.15);
+  --orbit-shadow-card: inset 0 1px 0 0 rgba(0, 240, 255, 0.65), inset -1px -1px 0 0 rgba(168, 85, 247, 0.28), 0 0 0 1px rgba(0, 240, 255, 0.16), 0 8px 32px -4px rgba(0, 0, 0, 0.75), 0 0 18px -2px rgba(0, 240, 255, 0.16);
+  --orbit-shadow-elevated: inset 0 1px 0 0 rgba(0, 240, 255, 0.85), inset -1px -1px 0 0 rgba(168, 85, 247, 0.45), 0 0 0 1px rgba(0, 240, 255, 0.35), 0 24px 64px -12px rgba(0, 0, 0, 0.85), 0 0 28px 0 rgba(0, 240, 255, 0.22);
 
   /* Visualisation & Charts */
   --orbit-chart-1: #00f0ff;
@@ -483,16 +502,26 @@
     --orbit-radius-control: 0.25rem;
     --orbit-radius-pill: 0.25rem;
 
-    --orbit-bg: #0a0c12;
-    --orbit-bg-canvas: #0a0c12;
-    --orbit-bg-subtle: #121722;
-    --orbit-bg-pattern: radial-gradient(rgba(0, 240, 255, 0.12) 1px, transparent 1px), linear-gradient(to right, rgba(30, 41, 59, 0.5) 1px, transparent 1px), linear-gradient(to bottom, rgba(30, 41, 59, 0.5) 1px, transparent 1px);
-    --orbit-bg-size: 32px 32px, 32px 32px, 32px 32px;
-    --orbit-card-blur: 8px;
+    /* Background & Canvas — Deep Obsidian Holographic Deck */
+    --orbit-bg: #07090e;
+    --orbit-bg-canvas: #07090e;
+    --orbit-bg-subtle: #0f1420;
+    --orbit-bg-pattern:
+      radial-gradient(100% 70% at 20% 0%, rgba(0, 240, 255, 0.09) 0%, transparent 60%),
+      radial-gradient(90% 60% at 85% 15%, rgba(168, 85, 247, 0.08) 0%, transparent 55%),
+      radial-gradient(130% 90% at 50% 20%, rgba(11, 17, 32, 0.65) 0%, #05070b 100%),
+      radial-gradient(rgba(0, 240, 255, 0.12) 1px, transparent 1px),
+      linear-gradient(to right, rgba(0, 240, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 240, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(to right, rgba(168, 85, 247, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
+    --orbit-bg-size: auto, auto, auto, 48px 48px, 48px 48px, 48px 48px, 240px 240px, 240px 240px;
+    --orbit-card-blur: 16px;
 
-    --orbit-surface: #111624;
-    --orbit-surface-secondary: #182032;
-    --orbit-surface-elevated: #1d273d;
+    /* Surfaces — Translucent Obsidian Holographic Glass & Tactical Rack */
+    --orbit-surface: rgba(10, 16, 28, 0.72);
+    --orbit-surface-secondary: #0d1322;
+    --orbit-surface-elevated: rgba(16, 24, 42, 0.85);
 
     --orbit-text: #f1f5f9;
     --orbit-text-secondary: #94a3b8;
@@ -513,13 +542,13 @@
     --orbit-danger-fg: #190508;
     --orbit-danger-soft: rgba(244, 63, 94, 0.16);
 
-    --orbit-border: #1e293b;
-    --orbit-border-strong: #334155;
+    --orbit-border: rgba(0, 240, 255, 0.24);
+    --orbit-border-strong: rgba(0, 240, 255, 0.48);
     --orbit-focus-ring: rgba(0, 240, 255, 0.45);
 
-    --orbit-shadow-xs: 0 0 0 1px rgba(0, 240, 255, 0.15);
-    --orbit-shadow-card: 0 0 0 1px rgba(0, 240, 255, 0.22), 0 0 16px -2px rgba(0, 240, 255, 0.12), 0 4px 14px 0 rgb(0 0 0 / 0.5);
-    --orbit-shadow-elevated: 0 0 0 1px rgba(0, 240, 255, 0.35), 0 0 28px 0 rgba(0, 240, 255, 0.18), 0 24px 48px -12px rgb(0 0 0 / 0.8);
+    --orbit-shadow-xs: inset 0 1px 0 0 rgba(0, 240, 255, 0.3), 0 0 0 1px rgba(0, 240, 255, 0.15);
+    --orbit-shadow-card: inset 0 1px 0 0 rgba(0, 240, 255, 0.65), inset -1px -1px 0 0 rgba(168, 85, 247, 0.28), 0 0 0 1px rgba(0, 240, 255, 0.16), 0 8px 32px -4px rgba(0, 0, 0, 0.75), 0 0 18px -2px rgba(0, 240, 255, 0.16);
+    --orbit-shadow-elevated: inset 0 1px 0 0 rgba(0, 240, 255, 0.85), inset -1px -1px 0 0 rgba(168, 85, 247, 0.45), 0 0 0 1px rgba(0, 240, 255, 0.35), 0 24px 64px -12px rgba(0, 0, 0, 0.85), 0 0 28px 0 rgba(0, 240, 255, 0.22);
 
     /* Visualisation & Charts */
     --orbit-chart-1: #00f0ff;
@@ -1885,7 +1914,15 @@ pre {
 
 [data-orbit-theme="futuristic"] [data-orbit-nav-item][data-active="true"] {
   border-left: 2px solid var(--orbit-accent);
-  box-shadow: inset 3px 0 10px -2px rgba(0, 240, 255, 0.25);
+  background: linear-gradient(90deg, rgba(2, 132, 199, 0.12) 0%, rgba(124, 58, 237, 0.04) 100%);
+  box-shadow: inset 3px 0 10px -2px rgba(2, 132, 199, 0.35);
+}
+.dark[data-orbit-theme="futuristic"] [data-orbit-nav-item][data-active="true"],
+.dark [data-orbit-theme="futuristic"] [data-orbit-nav-item][data-active="true"],
+[data-orbit-theme="futuristic"].dark [data-orbit-nav-item][data-active="true"] {
+  border-left: 2px solid var(--orbit-accent);
+  background: linear-gradient(90deg, rgba(0, 240, 255, 0.14) 0%, rgba(168, 85, 247, 0.05) 100%);
+  box-shadow: inset 3px 0 12px -2px rgba(0, 240, 255, 0.4), 0 0 12px -2px rgba(0, 240, 255, 0.25);
 }
 
 [data-orbit-theme="archivist"] [data-orbit-nav-item][data-active="true"] {
@@ -2037,16 +2074,18 @@ pre {
 }
 
 :root[data-orbit-theme="futuristic"] .orbit-modal-backdrop {
-  background-color: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(10px) brightness(0.9);
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px) brightness(0.95);
+  -webkit-backdrop-filter: blur(12px) brightness(0.95);
   background-image: radial-gradient(rgba(2, 132, 199, 0.15) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-size: 32px 32px;
 }
 .dark:root[data-orbit-theme="futuristic"] .orbit-modal-backdrop {
-  background-color: rgba(2, 6, 23, 0.85);
-  backdrop-filter: blur(12px) brightness(0.85);
+  background-color: rgba(4, 6, 12, 0.85);
+  backdrop-filter: blur(14px) brightness(0.85);
+  -webkit-backdrop-filter: blur(14px) brightness(0.85);
   background-image: radial-gradient(rgba(0, 240, 255, 0.16) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-size: 32px 32px;
 }
 
 :root[data-orbit-theme="aesthetic"] .orbit-modal-backdrop {
@@ -2117,13 +2156,20 @@ pre {
 }
 
 :root[data-orbit-theme="futuristic"] .orbit-modal-dialog {
-  border: 1px solid var(--orbit-border-strong);
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(20px) saturate(1.15) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(1.15) !important;
+  border: 1px solid rgba(2, 132, 199, 0.35) !important;
   border-radius: var(--orbit-radius-card);
-  box-shadow: 0 0 0 1px rgba(2, 132, 199, 0.25), 0 20px 50px -10px rgba(2, 132, 199, 0.2);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 1), 0 0 0 1px rgba(2, 132, 199, 0.2), 0 0 32px rgba(2, 132, 199, 0.16), 0 24px 60px -12px rgba(15, 23, 42, 0.2) !important;
 }
 .dark:root[data-orbit-theme="futuristic"] .orbit-modal-dialog {
-  border: 1px solid rgba(0, 240, 255, 0.35);
-  box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.2), 0 0 35px -5px rgba(0, 240, 255, 0.22);
+  background-color: rgba(10, 16, 28, 0.88) !important;
+  backdrop-filter: blur(20px) saturate(1.2) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(1.2) !important;
+  border: 1px solid rgba(0, 240, 255, 0.45) !important;
+  border-radius: var(--orbit-radius-card);
+  box-shadow: inset 0 1px 0 0 rgba(0, 240, 255, 0.75), inset -1px -1px 0 0 rgba(168, 85, 247, 0.4), 0 0 0 1px rgba(0, 240, 255, 0.25), 0 0 35px rgba(0, 240, 255, 0.25), 0 24px 64px -12px rgba(0, 0, 0, 0.9) !important;
 }
 
 :root[data-orbit-theme="aesthetic"] .orbit-modal-dialog {
@@ -2339,6 +2385,41 @@ pre {
   box-shadow: 0 0 0 3px rgba(107, 179, 155, 0.25) !important;
 }
 
+/* Futuristic: Precision technical data terminals with telemetry glow */
+:root[data-orbit-theme="futuristic"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+:root[data-orbit-theme="futuristic"] select,
+:root[data-orbit-theme="futuristic"] textarea {
+  background-color: rgba(255, 255, 255, 0.75) !important;
+  border-color: rgba(2, 132, 199, 0.3) !important;
+  border-radius: var(--orbit-radius-control) !important;
+  transition: all var(--orbit-transition-fast);
+}
+
+:root[data-orbit-theme="futuristic"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
+:root[data-orbit-theme="futuristic"] select:focus,
+:root[data-orbit-theme="futuristic"] textarea:focus {
+  background-color: #ffffff !important;
+  border-color: var(--orbit-accent) !important;
+  box-shadow: 0 0 0 1px var(--orbit-accent), 0 0 12px rgba(2, 132, 199, 0.35) !important;
+}
+
+.dark:root[data-orbit-theme="futuristic"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.dark:root[data-orbit-theme="futuristic"] select,
+.dark:root[data-orbit-theme="futuristic"] textarea {
+  background-color: rgba(14, 22, 38, 0.75) !important;
+  border-color: rgba(0, 240, 255, 0.3) !important;
+  border-radius: var(--orbit-radius-control) !important;
+  transition: all var(--orbit-transition-fast);
+}
+
+.dark:root[data-orbit-theme="futuristic"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
+.dark:root[data-orbit-theme="futuristic"] select:focus,
+.dark:root[data-orbit-theme="futuristic"] textarea:focus {
+  background-color: rgba(16, 26, 46, 0.95) !important;
+  border-color: var(--orbit-accent) !important;
+  box-shadow: 0 0 0 1px var(--orbit-accent), 0 0 14px rgba(0, 240, 255, 0.45), inset 0 0 8px rgba(0, 240, 255, 0.1) !important;
+}
+
 :root[data-orbit-theme="futuristic"] .orbit-input:focus,
 :root[data-orbit-theme="futuristic"] .orbit-textarea:focus,
 :root[data-orbit-theme="futuristic"] .orbit-select:focus {
@@ -2427,14 +2508,14 @@ pre {
 
 /* Futuristic: Precise borders, technical highlights and restrained glow */
 :root[data-orbit-theme="futuristic"] .orbit-card-interactive:hover {
-  border-color: rgba(2, 132, 199, 0.6) !important;
-  box-shadow: 0 0 14px rgba(2, 132, 199, 0.22) !important;
-  transform: translateY(-1px);
+  border-color: rgba(2, 132, 199, 0.65) !important;
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 1), 0 0 16px rgba(2, 132, 199, 0.25), 0 12px 28px -4px rgba(15, 23, 42, 0.12) !important;
+  transform: translateY(-1.5px);
 }
 .dark:root[data-orbit-theme="futuristic"] .orbit-card-interactive:hover {
-  border-color: rgba(0, 240, 255, 0.7) !important;
-  box-shadow: 0 0 18px rgba(0, 240, 255, 0.3) !important;
-  transform: translateY(-1px);
+  border-color: rgba(0, 240, 255, 0.85) !important;
+  box-shadow: inset 0 1px 0 0 rgba(0, 240, 255, 0.85), inset -1px -1px 0 0 rgba(168, 85, 247, 0.5), 0 0 24px rgba(0, 240, 255, 0.35), 0 16px 36px -6px rgba(0, 0, 0, 0.8) !important;
+  transform: translateY(-1.5px);
 }
 :root[data-orbit-theme="futuristic"] .orbit-card-interactive:active {
   transform: scale(0.992);
@@ -2534,11 +2615,16 @@ pre {
 
 :root[data-orbit-theme="futuristic"] .orbit-notification-panel {
   border-radius: var(--orbit-radius-card);
-  box-shadow: 0 0 0 1px rgba(2, 132, 199, 0.25), 0 16px 40px -10px rgba(2, 132, 199, 0.25);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(2, 132, 199, 0.35);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.95), 0 0 0 1px rgba(2, 132, 199, 0.2), 0 16px 40px -10px rgba(2, 132, 199, 0.22);
 }
 .dark:root[data-orbit-theme="futuristic"] .orbit-notification-panel {
-  border: 1px solid rgba(0, 240, 255, 0.35);
-  box-shadow: 0 0 24px rgba(0, 240, 255, 0.25);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: inset 0 1px 0 0 rgba(0, 240, 255, 0.65), inset -1px -1px 0 0 rgba(168, 85, 247, 0.35), 0 0 24px rgba(0, 240, 255, 0.25), 0 20px 48px -10px rgba(0, 0, 0, 0.85);
 }
 
 :root[data-orbit-theme="aesthetic"] .orbit-notification-panel {
@@ -2592,10 +2678,13 @@ pre {
 
 :root[data-orbit-theme="futuristic"] .orbit-search-item[aria-selected="true"] {
   border-color: var(--orbit-accent) !important;
-  box-shadow: 0 0 10px rgba(2, 132, 199, 0.25) !important;
+  background: rgba(2, 132, 199, 0.08) !important;
+  box-shadow: inset 0 0 8px rgba(2, 132, 199, 0.12), 0 0 12px rgba(2, 132, 199, 0.25) !important;
 }
 .dark:root[data-orbit-theme="futuristic"] .orbit-search-item[aria-selected="true"] {
-  box-shadow: 0 0 14px rgba(0, 240, 255, 0.35) !important;
+  border-color: var(--orbit-accent) !important;
+  background: rgba(0, 240, 255, 0.12) !important;
+  box-shadow: inset 0 0 10px rgba(0, 240, 255, 0.15), 0 0 16px rgba(0, 240, 255, 0.35) !important;
 }
 
 :root[data-orbit-theme="aesthetic"] .orbit-search-item[aria-selected="true"] {
