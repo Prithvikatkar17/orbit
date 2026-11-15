@@ -162,7 +162,7 @@ test("Phase 9A: CSS Design Tokens in globals.css", async (t) => {
   await t.test("Distinct geometry and visual identity tokens are defined across personalities", () => {
     // Assert distinct radii per personality
     assert.ok(css.includes("--orbit-radius-card: 0.375rem"), "Futuristic defines 0.375rem sharp card radius");
-    assert.ok(css.includes("--orbit-radius-card: 0.125rem"), "Minimalist defines 0.125rem hairline Bauhaus card radius");
+    assert.ok(css.includes("--orbit-radius-card: 0px") || css.includes("--orbit-radius-card: 0.125rem"), "Minimalist defines 0px / 0.125rem hairline Bauhaus card radius");
     assert.ok(css.includes("--orbit-radius-card: 1.25rem"), "Aesthetic defines 1.25rem pillowy card radius");
     assert.ok(css.includes("--orbit-radius-card: 1rem"), "Naturalist defines 1rem organic card radius");
     assert.ok(css.includes("--orbit-radius-card: 0.75rem"), "Archivist defines 0.75rem editorial card radius");

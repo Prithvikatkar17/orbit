@@ -1094,83 +1094,88 @@
 }
 
 /* --------------------------------------------------------------------------
-   THEME PERSONALITY 5: MINIMALIST (Monochrome Bauhaus)
+   THEME PERSONALITY 5: MINIMALIST (The Dieter Rams / Vignelli Architectural Ledger)
    -------------------------------------------------------------------------- */
 :root[data-orbit-theme="minimalist"],
 [data-orbit-theme-preview="minimalist"] {
   color-scheme: light;
 
-  /* Typography — Swiss Modernist Sans */
+  /* Typography — Swiss Modernist Grotesque */
   --orbit-font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --orbit-heading-tracking: -0.035em;
-  --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
-  --orbit-eyebrow-tracking: 0.10em;
+  --orbit-font-eyebrow: var(--font-geist-mono), ui-monospace, monospace;
+  --orbit-eyebrow-tracking: 0.18em;
 
-  /* Radii — Stark Bauhaus Hairline Geometry */
-  --orbit-radius-card: 0.125rem;
+  /* Radii — Razor-crisp 0px for layout hairlines, 2px (0.125rem) for micro-controls/buttons */
+  --orbit-radius-card: 0px;
   --orbit-radius-control: 0.125rem;
   --orbit-radius-pill: 0.125rem;
 
-  --orbit-bg: #ffffff;
-  --orbit-bg-canvas: #ffffff;
-  --orbit-bg-subtle: #f4f4f5;
+  /* Canvas & Surfaces — Warm Matte Alabaster & Subtle Stone */
+  --orbit-bg: #f6f6f3;
+  --orbit-bg-canvas: #f6f6f3;
+  --orbit-bg-subtle: #eeeeea;
   --orbit-bg-pattern: none;
   --orbit-bg-size: auto;
   --orbit-card-blur: 0px;
 
-  --orbit-surface: #fafafa;
-  --orbit-surface-secondary: #f4f4f5;
-  --orbit-surface-elevated: #ffffff;
+  --orbit-surface: #f6f6f3;
+  --orbit-surface-secondary: #eeeeea;
+  --orbit-surface-elevated: #eeeeea;
 
-  --orbit-text: #171717;
-  --orbit-text-secondary: #525252;
-  --orbit-text-muted: #737373;
+  /* Inks — Pure Carbon & Neutral Graphite */
+  --orbit-text: #111110;
+  --orbit-text-secondary: #444440;
+  --orbit-text-muted: #71716b;
 
-  --orbit-accent: #171717;
-  --orbit-accent-hover: #262626;
+  /* Accents — International Braun Signal Orange (#ff3b00) */
+  --orbit-accent: #ff3b00;
+  --orbit-accent-hover: #e03400;
   --orbit-accent-fg: #ffffff;
-  --orbit-accent-soft: #f4f4f5;
-  --orbit-accent-secondary: #525252;
-  --orbit-accent-secondary-soft: #e5e5e5;
+  --orbit-accent-soft: rgba(255, 59, 0, 0.08);
+  --orbit-accent-secondary: #71716b;
+  --orbit-accent-secondary-soft: #eeeeea;
 
   --orbit-success: #16a34a;
   --orbit-success-soft: #f0fdf4;
-  --orbit-warning: #ca8a04;
-  --orbit-warning-soft: #fefce8;
+  --orbit-warning: #ff3b00;
+  --orbit-warning-soft: rgba(255, 59, 0, 0.08);
   --orbit-danger: #dc2626;
   --orbit-danger-fg: #ffffff;
   --orbit-danger-soft: #fef2f2;
 
-  --orbit-border: #e5e5e5;
-  --orbit-border-strong: #a3a3a3;
-  --orbit-focus-ring: rgba(23, 23, 23, 0.35);
+  /* Hairline Rules — 1px solid Razor Hairlines */
+  --orbit-border: #dfdfd9;
+  --orbit-border-strong: #111110;
+  --orbit-focus-ring: rgba(255, 59, 0, 0.35);
 
+  /* Shadows — Zero Drop Shadows across all ledger surfaces */
   --orbit-shadow-xs: none;
   --orbit-shadow-card: none;
-  --orbit-shadow-elevated: 0 4px 16px -2px rgb(0 0 0 / 0.08);
+  --orbit-shadow-elevated: none;
 
   /* Visualisation & Charts */
-  --orbit-chart-1: #171717;
-  --orbit-chart-2: #525252;
-  --orbit-chart-3: #737373;
-  --orbit-chart-4: #a3a3a3;
-  --orbit-chart-5: #d4d4d4;
-  --orbit-chart-positive: #262626;
-  --orbit-chart-neutral: #737373;
-  --orbit-chart-negative: #171717;
-  --orbit-chart-grid: #e5e5e5;
-  --orbit-chart-axis: #d4d4d4;
-  --orbit-chart-tooltip-bg: #ffffff;
-  --orbit-chart-tooltip-border: #171717;
-  --orbit-chart-tooltip-text: #171717;
-  --orbit-progress-track: #f5f5f5;
-  --orbit-progress-fill: #171717;
-  --orbit-chart-highlight: #000000;
-  --orbit-heatmap-0: #f5f5f5;
-  --orbit-heatmap-1: #d4d4d4;
-  --orbit-heatmap-2: #a3a3a3;
-  --orbit-heatmap-3: #525252;
-  --orbit-heatmap-4: #171717;
+  --orbit-chart-1: #111110;
+  --orbit-chart-2: #ff3b00;
+  --orbit-chart-3: #71716b;
+  --orbit-chart-4: #a8a8a2;
+  --orbit-chart-5: #dfdfd9;
+  --orbit-chart-positive: #111110;
+  --orbit-chart-neutral: #71716b;
+  --orbit-chart-negative: #ff3b00;
+  --orbit-chart-grid: #dfdfd9;
+  --orbit-chart-axis: #71716b;
+  --orbit-chart-tooltip-bg: #111110;
+  --orbit-chart-tooltip-border: #ff3b00;
+  --orbit-chart-tooltip-text: #f6f6f3;
+  --orbit-progress-track: #dfdfd9;
+  --orbit-progress-fill: #ff3b00;
+  --orbit-chart-highlight: #ff3b00;
+  --orbit-heatmap-0: #f6f6f3;
+  --orbit-heatmap-1: #dfdfd9;
+  --orbit-heatmap-2: #a8a8a2;
+  --orbit-heatmap-3: #71716b;
+  --orbit-heatmap-4: #ff3b00;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -1182,77 +1187,82 @@
 [data-orbit-theme-preview="minimalist"].dark {
   color-scheme: dark;
 
-  /* Typography — Swiss Modernist Sans */
+  /* Typography — Swiss Modernist Grotesque */
   --orbit-font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --orbit-heading-tracking: -0.035em;
-  --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
-  --orbit-eyebrow-tracking: 0.10em;
+  --orbit-font-eyebrow: var(--font-geist-mono), ui-monospace, monospace;
+  --orbit-eyebrow-tracking: 0.18em;
 
-  /* Radii — Stark Bauhaus Hairline Geometry */
-  --orbit-radius-card: 0.125rem;
+  /* Radii — Razor-crisp 0px for layout hairlines, 2px (0.125rem) for micro-controls/buttons */
+  --orbit-radius-card: 0px;
   --orbit-radius-control: 0.125rem;
   --orbit-radius-pill: 0.125rem;
 
-  --orbit-bg: #0a0a0a;
-  --orbit-bg-canvas: #0a0a0a;
+  /* Canvas & Surfaces — Pure Matte Carbon & Graphite Surface */
+  --orbit-bg: #0b0b0b;
+  --orbit-bg-canvas: #0b0b0b;
   --orbit-bg-subtle: #141414;
   --orbit-bg-pattern: none;
   --orbit-bg-size: auto;
   --orbit-card-blur: 0px;
 
-  --orbit-surface: #121212;
-  --orbit-surface-secondary: #1a1a1a;
-  --orbit-surface-elevated: #222222;
+  --orbit-surface: #0b0b0b;
+  --orbit-surface-secondary: #141414;
+  --orbit-surface-elevated: #141414;
 
-  --orbit-text: #f5f5f5;
-  --orbit-text-secondary: #a3a3a3;
-  --orbit-text-muted: #737373;
+  /* Inks — Anodized Silver-White & Muted Pewter */
+  --orbit-text: #f2f2ef;
+  --orbit-text-secondary: #a8a8a2;
+  --orbit-text-muted: #787873;
 
-  --orbit-accent: #f5f5f5;
-  --orbit-accent-hover: #ffffff;
-  --orbit-accent-fg: #0a0a0a;
-  --orbit-accent-soft: rgba(245, 245, 245, 0.12);
-  --orbit-accent-secondary: #a3a3a3;
-  --orbit-accent-secondary-soft: rgba(163, 163, 163, 0.12);
+  /* Accents — Luminous Signal Orange (#ff4500) */
+  --orbit-accent: #ff4500;
+  --orbit-accent-hover: #ff5714;
+  --orbit-accent-fg: #0b0b0b;
+  --orbit-accent-soft: rgba(255, 69, 0, 0.12);
+  --orbit-accent-secondary: #787873;
+  --orbit-accent-secondary-soft: #141414;
 
   --orbit-success: #22c55e;
   --orbit-success-soft: rgba(34, 197, 94, 0.15);
-  --orbit-warning: #eab308;
-  --orbit-warning-soft: rgba(234, 179, 8, 0.15);
+  --orbit-warning: #ff4500;
+  --orbit-warning-soft: rgba(255, 69, 0, 0.15);
   --orbit-danger: #ef4444;
   --orbit-danger-fg: #1a0808;
   --orbit-danger-soft: rgba(239, 68, 68, 0.16);
 
-  --orbit-border: #262626;
-  --orbit-border-strong: #404040;
-  --orbit-focus-ring: rgba(245, 245, 245, 0.45);
+  /* Hairline Rules — 1px solid Razor Hairlines */
+  --orbit-border: #222220;
+  --orbit-border-strong: #f2f2ef;
+  --orbit-focus-ring: rgba(255, 69, 0, 0.45);
 
+  /* Shadows — Zero Drop Shadows across all ledger surfaces */
   --orbit-shadow-xs: none;
   --orbit-shadow-card: none;
-  --orbit-shadow-elevated: 0 4px 16px -2px rgb(0 0 0 / 0.4);
+  --orbit-shadow-elevated: none;
 
   /* Visualisation & Charts */
-  --orbit-chart-1: #f5f5f5;
-  --orbit-chart-2: #a3a3a3;
-  --orbit-chart-3: #737373;
-  --orbit-chart-4: #525252;
-  --orbit-chart-5: #404040;
-  --orbit-chart-positive: #e5e5e5;
-  --orbit-chart-neutral: #737373;
-  --orbit-chart-negative: #f5f5f5;
-  --orbit-chart-grid: #262626;
-  --orbit-chart-axis: #404040;
-  --orbit-chart-tooltip-bg: #0a0a0a;
-  --orbit-chart-tooltip-border: #f5f5f5;
-  --orbit-chart-tooltip-text: #f5f5f5;
-  --orbit-progress-track: #171717;
-  --orbit-progress-fill: #f5f5f5;
-  --orbit-chart-highlight: #ffffff;
-  --orbit-heatmap-0: #171717;
-  --orbit-heatmap-1: #404040;
-  --orbit-heatmap-2: #737373;
-  --orbit-heatmap-3: #a3a3a3;
-  --orbit-heatmap-4: #f5f5f5;
+  --orbit-chart-1: #f2f2ef;
+  --orbit-chart-2: #ff4500;
+  --orbit-chart-3: #787873;
+  --orbit-chart-4: #444440;
+  --orbit-chart-5: #222220;
+  --orbit-chart-positive: #f2f2ef;
+  --orbit-chart-neutral: #787873;
+  --orbit-chart-negative: #ff4500;
+  --orbit-chart-grid: #222220;
+  --orbit-chart-axis: #787873;
+  --orbit-chart-tooltip-bg: #0b0b0b;
+  --orbit-chart-tooltip-border: #ff4500;
+  --orbit-chart-tooltip-text: #f2f2ef;
+  --orbit-progress-track: #222220;
+  --orbit-progress-fill: #ff4500;
+  --orbit-chart-highlight: #ff4500;
+  --orbit-heatmap-0: #0b0b0b;
+  --orbit-heatmap-1: #222220;
+  --orbit-heatmap-2: #444440;
+  --orbit-heatmap-3: #787873;
+  --orbit-heatmap-4: #ff4500;
 
   --background: var(--orbit-bg);
   --foreground: var(--orbit-text);
@@ -1262,77 +1272,82 @@
   :root[data-orbit-theme="minimalist"]:not(.light) {
     color-scheme: dark;
 
-    /* Typography — Swiss Modernist Sans */
+    /* Typography — Swiss Modernist Grotesque */
     --orbit-font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
     --orbit-heading-tracking: -0.035em;
-    --orbit-font-eyebrow: var(--font-geist-sans), sans-serif;
-    --orbit-eyebrow-tracking: 0.10em;
+    --orbit-font-eyebrow: var(--font-geist-mono), ui-monospace, monospace;
+    --orbit-eyebrow-tracking: 0.18em;
 
-    /* Radii — Stark Bauhaus Hairline Geometry */
-    --orbit-radius-card: 0.125rem;
+    /* Radii — Razor-crisp 0px for layout hairlines, 2px (0.125rem) for micro-controls/buttons */
+    --orbit-radius-card: 0px;
     --orbit-radius-control: 0.125rem;
     --orbit-radius-pill: 0.125rem;
 
-    --orbit-bg: #0a0a0a;
-    --orbit-bg-canvas: #0a0a0a;
+    /* Canvas & Surfaces — Pure Matte Carbon & Graphite Surface */
+    --orbit-bg: #0b0b0b;
+    --orbit-bg-canvas: #0b0b0b;
     --orbit-bg-subtle: #141414;
     --orbit-bg-pattern: none;
     --orbit-bg-size: auto;
     --orbit-card-blur: 0px;
 
-    --orbit-surface: #121212;
-    --orbit-surface-secondary: #1a1a1a;
-    --orbit-surface-elevated: #222222;
+    --orbit-surface: #0b0b0b;
+    --orbit-surface-secondary: #141414;
+    --orbit-surface-elevated: #141414;
 
-    --orbit-text: #f5f5f5;
-    --orbit-text-secondary: #a3a3a3;
-    --orbit-text-muted: #737373;
+    /* Inks — Anodized Silver-White & Muted Pewter */
+    --orbit-text: #f2f2ef;
+    --orbit-text-secondary: #a8a8a2;
+    --orbit-text-muted: #787873;
 
-    --orbit-accent: #f5f5f5;
-    --orbit-accent-hover: #ffffff;
-    --orbit-accent-fg: #0a0a0a;
-    --orbit-accent-soft: rgba(245, 245, 245, 0.12);
-    --orbit-accent-secondary: #a3a3a3;
-    --orbit-accent-secondary-soft: rgba(163, 163, 163, 0.12);
+    /* Accents — Luminous Signal Orange (#ff4500) */
+    --orbit-accent: #ff4500;
+    --orbit-accent-hover: #ff5714;
+    --orbit-accent-fg: #0b0b0b;
+    --orbit-accent-soft: rgba(255, 69, 0, 0.12);
+    --orbit-accent-secondary: #787873;
+    --orbit-accent-secondary-soft: #141414;
 
     --orbit-success: #22c55e;
     --orbit-success-soft: rgba(34, 197, 94, 0.15);
-    --orbit-warning: #eab308;
-    --orbit-warning-soft: rgba(234, 179, 8, 0.15);
+    --orbit-warning: #ff4500;
+    --orbit-warning-soft: rgba(255, 69, 0, 0.15);
     --orbit-danger: #ef4444;
     --orbit-danger-fg: #1a0808;
     --orbit-danger-soft: rgba(239, 68, 68, 0.16);
 
-    --orbit-border: #262626;
-    --orbit-border-strong: #404040;
-    --orbit-focus-ring: rgba(245, 245, 245, 0.45);
+    /* Hairline Rules — 1px solid Razor Hairlines */
+    --orbit-border: #222220;
+    --orbit-border-strong: #f2f2ef;
+    --orbit-focus-ring: rgba(255, 69, 0, 0.45);
 
+    /* Shadows — Zero Drop Shadows across all ledger surfaces */
     --orbit-shadow-xs: none;
     --orbit-shadow-card: none;
-    --orbit-shadow-elevated: 0 4px 16px -2px rgb(0 0 0 / 0.4);
+    --orbit-shadow-elevated: none;
 
     /* Visualisation & Charts */
-    --orbit-chart-1: #f5f5f5;
-    --orbit-chart-2: #a3a3a3;
-    --orbit-chart-3: #737373;
-    --orbit-chart-4: #525252;
-    --orbit-chart-5: #404040;
-    --orbit-chart-positive: #e5e5e5;
-    --orbit-chart-neutral: #737373;
-    --orbit-chart-negative: #f5f5f5;
-    --orbit-chart-grid: #262626;
-    --orbit-chart-axis: #404040;
-    --orbit-chart-tooltip-bg: #0a0a0a;
-    --orbit-chart-tooltip-border: #f5f5f5;
-    --orbit-chart-tooltip-text: #f5f5f5;
-    --orbit-progress-track: #171717;
-    --orbit-progress-fill: #f5f5f5;
-    --orbit-chart-highlight: #ffffff;
-    --orbit-heatmap-0: #171717;
-    --orbit-heatmap-1: #404040;
-    --orbit-heatmap-2: #737373;
-    --orbit-heatmap-3: #a3a3a3;
-    --orbit-heatmap-4: #f5f5f5;
+    --orbit-chart-1: #f2f2ef;
+    --orbit-chart-2: #ff4500;
+    --orbit-chart-3: #787873;
+    --orbit-chart-4: #444440;
+    --orbit-chart-5: #222220;
+    --orbit-chart-positive: #f2f2ef;
+    --orbit-chart-neutral: #787873;
+    --orbit-chart-negative: #ff4500;
+    --orbit-chart-grid: #222220;
+    --orbit-chart-axis: #787873;
+    --orbit-chart-tooltip-bg: #0b0b0b;
+    --orbit-chart-tooltip-border: #ff4500;
+    --orbit-chart-tooltip-text: #f2f2ef;
+    --orbit-progress-track: #222220;
+    --orbit-progress-fill: #ff4500;
+    --orbit-chart-highlight: #ff4500;
+    --orbit-heatmap-0: #0b0b0b;
+    --orbit-heatmap-1: #222220;
+    --orbit-heatmap-2: #444440;
+    --orbit-heatmap-3: #787873;
+    --orbit-heatmap-4: #ff4500;
 
     --background: var(--orbit-bg);
     --foreground: var(--orbit-text);
@@ -2197,9 +2212,10 @@ pre {
 }
 
 :root[data-orbit-theme="minimalist"] .orbit-modal-dialog {
-  border: 1px solid var(--orbit-border-strong);
-  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
-  border-radius: 0.25rem;
+  border: 1px solid var(--orbit-border-strong) !important;
+  box-shadow: none !important;
+  border-radius: var(--orbit-radius-control) !important;
+  background-color: var(--orbit-bg) !important;
 }
 
 :root[data-orbit-theme="naturalist"] .orbit-modal-dialog {
