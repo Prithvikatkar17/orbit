@@ -26,7 +26,12 @@ import {
   formatFriendlyDate,
   useMounted,
   useTodayDate,
+  getOffsetDateString,
+  parseLocalDate,
 } from "@/lib/utils/dates";
+import { getAllOccurrencesForRange } from "@/lib/utils/recurrence";
+import { useThemePersonality } from "@/components/theme-personality-provider";
+import { FuturisticDashboard } from "@/components/dashboard/futuristic/futuristic-dashboard";
 import { toggleTaskCompletionWithSync } from "@/lib/services/task-sync-service";
 import {
   fetchDashboardSnapshotData,
@@ -50,12 +55,26 @@ function getTimeOfDayGreeting(): string {
 export default function HomePage() {
   const mounted = useMounted();
   const todayStr = useTodayDate();
+  const { themePersonality } = useThemePersonality();
   const { openQuickCapture } = useUIStore();
   const openSearch = useSearchStore((s) => s.openSearch);
 
   // Single consolidated Dexie live query shared between HomePage & WeeklyProgressWidget
   const rawDashboardData = useLiveQuery(() => fetchDashboardSnapshotData(), []);
   const dashboardData = rawDashboardData ?? EMPTY_DASHBOARD_DATA;
+
+  const events = useLiveQuery(() => db.events.toArray(), []);
+  const next7DaysStr = useMemo(
+    () => (todayStr ? getOffsetDateString(7, parseLocalDate(todayStr)) : ""),
+    [todayStr]
+  );
+  const upcomingEventsCount = useMemo(() => {
+    const list = events || [];
+    if (!todayStr || !next7DaysStr || list.length === 0) return 0;
+    return getAllOccurrencesForRange(list, todayStr, next7DaysStr).length;
+  }, [events, todayStr, next7DaysStr]);
+
+  const inboxCount = useLiveQuery(() => db.items.where("status").equals("pending").count(), []) ?? 0;
 
   const {
     activeHabits,
@@ -129,6 +148,32 @@ export default function HomePage() {
   const greetingText = mounted ? getTimeOfDayGreeting() : "Welcome home";
   const dateSubtitle =
     mounted && todayStr ? formatDateDisplay(todayStr) : "Your personal space, everything in place.";
+
+  // Dedicated Monolithic Avionics Console for Futuristic personality
+  if (mounted && themePersonality === "futuristic") {
+    return (
+      <FuturisticDashboard
+        tasks={dashboardData.tasks}
+        habits={dashboardData.habits}
+        habitLogs={dashboardData.habitLogs}
+        activeHabits={activeHabits}
+        completedTodayHabitIds={completedTodayHabitIds}
+        openTasks={openTasks}
+        dueTodayTasks={dueTodayTasks}
+        focusTasks={focusTasks}
+        overdueCount={overdueCount}
+        habitsCompletedCount={habitsCompletedCount}
+        habitsTotalCount={habitsTotalCount}
+        habitsProgressPct={habitsProgressPct}
+        todayStr={todayStr}
+        upcomingEventsCount={upcomingEventsCount}
+        inboxCount={inboxCount}
+        onToggleTask={toggleTask}
+        onToggleHabit={toggleHabit}
+        onOpenQuickCapture={openQuickCapture}
+      />
+    );
+  }
 
   return (
     <div className="space-y-8 pb-8 animate-in fade-in duration-200">

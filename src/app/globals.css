@@ -317,56 +317,51 @@
 
   /* Radii — Precision Chassis & Tactical Controls */
   --orbit-radius-card: 0.375rem;
-  --orbit-radius-control: 0.25rem;
-  --orbit-radius-pill: 0.25rem;
+  --orbit-radius-control: 0.125rem;
+  --orbit-radius-pill: 0.125rem;
 
-  /* Background & Canvas — Silver-White Holographic Deck */
-  --orbit-bg: #f3f6fa;
-  --orbit-bg-canvas: #f3f6fa;
-  --orbit-bg-subtle: #e2e8f2;
+  /* Background & Canvas — Anodized Titanium Silver with Subtle Micro-Grain */
+  --orbit-bg: #f1f4f9;
+  --orbit-bg-canvas: #f1f4f9;
+  --orbit-bg-subtle: #e2e8f0;
   --orbit-bg-pattern:
-    radial-gradient(110% 70% at 50% 0%, rgba(2, 132, 199, 0.08) 0%, transparent 65%),
-    radial-gradient(85% 55% at 85% 12%, rgba(124, 58, 237, 0.05) 0%, transparent 55%),
-    linear-gradient(180deg, #f8fafc 0%, #edf3f9 100%),
-    radial-gradient(rgba(2, 132, 199, 0.12) 1px, transparent 1px),
-    linear-gradient(to right, rgba(2, 132, 199, 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(2, 132, 199, 0.045) 1px, transparent 1px),
-    linear-gradient(to right, rgba(124, 58, 237, 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(124, 58, 237, 0.035) 1px, transparent 1px);
-  --orbit-bg-size: auto, auto, auto, 40px 40px, 40px 40px, 40px 40px, 200px 200px, 200px 200px;
-  --orbit-card-blur: 16px;
+    radial-gradient(120% 90% at 50% 0%, #f8fafc 0%, #f0f4f9 55%, #e2e8f0 100%),
+    radial-gradient(circle at 15% 20%, rgba(2, 132, 199, 0.025) 0%, transparent 45%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='titaniumNoiseLight'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.15  0 0 0 0 0.25  0 0 0 0 0.35  0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23titaniumNoiseLight)'/%3E%3C/svg%3E");
+  --orbit-bg-size: auto;
+  --orbit-card-blur: 0px;
 
-  /* Surfaces — Translucent Luminous Holographic Glass & Grounded Deck */
-  --orbit-surface: rgba(255, 255, 255, 0.78);
-  --orbit-surface-secondary: #e9f0f8;
-  --orbit-surface-elevated: rgba(255, 255, 255, 0.92);
+  /* Surfaces — Matte High-Density Instrument Deck */
+  --orbit-surface: #ffffff;
+  --orbit-surface-secondary: #f8fafc;
+  --orbit-surface-elevated: #ffffff;
 
-  --orbit-text: #0f172a;
+  --orbit-text: #090d16;
   --orbit-text-secondary: #334155;
   --orbit-text-muted: #64748b;
 
   --orbit-accent: #0284c7;
   --orbit-accent-hover: #0369a1;
   --orbit-accent-fg: #ffffff;
-  --orbit-accent-soft: #e0f2fe;
-  --orbit-accent-secondary: #7c3aed;
-  --orbit-accent-secondary-soft: #f3e8ff;
+  --orbit-accent-soft: rgba(2, 132, 199, 0.08);
+  --orbit-accent-secondary: #6366f1;
+  --orbit-accent-secondary-soft: rgba(99, 102, 241, 0.08);
 
   --orbit-success: #059669;
-  --orbit-success-soft: #d1fae5;
+  --orbit-success-soft: rgba(5, 150, 105, 0.1);
   --orbit-warning: #d97706;
-  --orbit-warning-soft: #fef3c7;
+  --orbit-warning-soft: rgba(217, 119, 6, 0.1);
   --orbit-danger: #dc2626;
   --orbit-danger-fg: #ffffff;
-  --orbit-danger-soft: #fee2e2;
+  --orbit-danger-soft: rgba(220, 38, 38, 0.1);
 
-  --orbit-border: rgba(2, 132, 199, 0.22);
-  --orbit-border-strong: rgba(2, 132, 199, 0.45);
-  --orbit-focus-ring: rgba(2, 132, 199, 0.4);
+  --orbit-border: #cbd5e1;
+  --orbit-border-strong: #94a3b8;
+  --orbit-focus-ring: #0284c7;
 
-  --orbit-shadow-xs: inset 0 1px 0 0 rgba(255, 255, 255, 0.9), 0 1px 2px 0 rgb(15 23 42 / 0.05);
-  --orbit-shadow-card: inset 0 1px 0 0 rgba(255, 255, 255, 1), inset -1px -1px 0 0 rgba(124, 58, 237, 0.14), 0 0 0 1px rgba(2, 132, 199, 0.16), 0 8px 24px -4px rgba(15, 23, 42, 0.08), 0 0 14px -2px rgba(2, 132, 199, 0.1);
-  --orbit-shadow-elevated: inset 0 1px 0 0 rgba(255, 255, 255, 1), inset -1px -1px 0 0 rgba(124, 58, 237, 0.25), 0 0 0 1px rgba(2, 132, 199, 0.32), 0 20px 48px -10px rgba(15, 23, 42, 0.14), 0 0 24px -2px rgba(2, 132, 199, 0.16);
+  --orbit-shadow-xs: inset 0 1px 0 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --orbit-shadow-card: inset 0 1px 1px 0 rgba(255, 255, 255, 0.95), inset 0 0 0 1px rgba(0, 0, 0, 0.04), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.03), 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  --orbit-shadow-elevated: inset 0 1px 1px 0 rgba(255, 255, 255, 1), inset 0 0 0 1px rgba(0, 0, 0, 0.06), 0 4px 12px -2px rgba(0, 0, 0, 0.08);
 
   /* Visualisation & Charts */
   --orbit-chart-1: #0284c7;
@@ -409,56 +404,52 @@
 
   /* Radii — Precision Chassis & Tactical Controls */
   --orbit-radius-card: 0.375rem;
-  --orbit-radius-control: 0.25rem;
-  --orbit-radius-pill: 0.25rem;
+  --orbit-radius-control: 0.125rem;
+  --orbit-radius-pill: 0.125rem;
 
-  /* Background & Canvas — Deep Obsidian Holographic Deck */
-  --orbit-bg: #07090e;
-  --orbit-bg-canvas: #07090e;
-  --orbit-bg-subtle: #0f1420;
+  /* Background & Canvas — Deep Space Obsidian / Matte Basalt with Titanium Grain */
+  --orbit-bg: #080b11;
+  --orbit-bg-canvas: #080b11;
+  --orbit-bg-subtle: #0d121c;
   --orbit-bg-pattern:
-    radial-gradient(100% 70% at 20% 0%, rgba(0, 240, 255, 0.09) 0%, transparent 60%),
-    radial-gradient(90% 60% at 85% 15%, rgba(168, 85, 247, 0.08) 0%, transparent 55%),
-    radial-gradient(130% 90% at 50% 20%, rgba(11, 17, 32, 0.65) 0%, #05070b 100%),
-    radial-gradient(rgba(0, 240, 255, 0.12) 1px, transparent 1px),
-    linear-gradient(to right, rgba(0, 240, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 240, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(to right, rgba(168, 85, 247, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
-  --orbit-bg-size: auto, auto, auto, 48px 48px, 48px 48px, 48px 48px, 240px 240px, 240px 240px;
-  --orbit-card-blur: 16px;
+    radial-gradient(120% 90% at 50% 0%, #0d131f 0%, #080b11 55%, #05070b 100%),
+    radial-gradient(circle at 15% 20%, rgba(0, 240, 255, 0.02) 0%, transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(139, 92, 246, 0.015) 0%, transparent 45%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='titaniumNoiseDark'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.6  0 0 0 0 0.7  0 0 0 0 0.85  0 0 0 0.038 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23titaniumNoiseDark)'/%3E%3C/svg%3E");
+  --orbit-bg-size: auto;
+  --orbit-card-blur: 0px;
 
-  /* Surfaces — Translucent Obsidian Holographic Glass & Tactical Rack */
-  --orbit-surface: rgba(10, 16, 28, 0.72);
-  --orbit-surface-secondary: #0d1322;
-  --orbit-surface-elevated: rgba(16, 24, 42, 0.85);
+  /* Surfaces — Matte Basalt & Titanium Instrument Deck */
+  --orbit-surface: #0e131f;
+  --orbit-surface-secondary: #131b2c;
+  --orbit-surface-elevated: #162034;
 
-  --orbit-text: #f1f5f9;
+  --orbit-text: #f8fafc;
   --orbit-text-secondary: #94a3b8;
   --orbit-text-muted: #64748b;
 
-  --orbit-accent: #00f0ff;
+  --orbit-accent: #00e5ff;
   --orbit-accent-hover: #38bdf8;
   --orbit-accent-fg: #04131f;
-  --orbit-accent-soft: rgba(0, 240, 255, 0.14);
-  --orbit-accent-secondary: #a855f7;
-  --orbit-accent-secondary-soft: rgba(168, 85, 247, 0.16);
+  --orbit-accent-soft: rgba(0, 229, 255, 0.12);
+  --orbit-accent-secondary: #8b5cf6;
+  --orbit-accent-secondary-soft: rgba(139, 92, 246, 0.12);
 
   --orbit-success: #10b981;
-  --orbit-success-soft: rgba(16, 185, 129, 0.15);
+  --orbit-success-soft: rgba(16, 185, 129, 0.12);
   --orbit-warning: #f59e0b;
-  --orbit-warning-soft: rgba(245, 158, 11, 0.15);
-  --orbit-danger: #f43f5e;
-  --orbit-danger-fg: #190508;
-  --orbit-danger-soft: rgba(244, 63, 94, 0.16);
+  --orbit-warning-soft: rgba(245, 158, 11, 0.12);
+  --orbit-danger: #ef4444;
+  --orbit-danger-fg: #ffffff;
+  --orbit-danger-soft: rgba(239, 68, 68, 0.14);
 
-  --orbit-border: rgba(0, 240, 255, 0.24);
-  --orbit-border-strong: rgba(0, 240, 255, 0.48);
-  --orbit-focus-ring: rgba(0, 240, 255, 0.45);
+  --orbit-border: #1c2638;
+  --orbit-border-strong: #2d3d5a;
+  --orbit-focus-ring: rgba(0, 229, 255, 0.5);
 
-  --orbit-shadow-xs: inset 0 1px 0 0 rgba(0, 240, 255, 0.3), 0 0 0 1px rgba(0, 240, 255, 0.15);
-  --orbit-shadow-card: inset 0 1px 0 0 rgba(0, 240, 255, 0.65), inset -1px -1px 0 0 rgba(168, 85, 247, 0.28), 0 0 0 1px rgba(0, 240, 255, 0.16), 0 8px 32px -4px rgba(0, 0, 0, 0.75), 0 0 18px -2px rgba(0, 240, 255, 0.16);
-  --orbit-shadow-elevated: inset 0 1px 0 0 rgba(0, 240, 255, 0.85), inset -1px -1px 0 0 rgba(168, 85, 247, 0.45), 0 0 0 1px rgba(0, 240, 255, 0.35), 0 24px 64px -12px rgba(0, 0, 0, 0.85), 0 0 28px 0 rgba(0, 240, 255, 0.22);
+  --orbit-shadow-xs: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), inset 0 -1px 0 0 rgba(0, 0, 0, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --orbit-shadow-card: inset 0 1px 0 0 rgba(255, 255, 255, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.02), inset 0 2px 4px 0 rgba(0, 0, 0, 0.45), 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+  --orbit-shadow-elevated: inset 0 1px 1px 0 rgba(255, 255, 255, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.04), inset 0 3px 6px 0 rgba(0, 0, 0, 0.5), 0 8px 20px -4px rgba(0, 0, 0, 0.65);
 
   /* Visualisation & Charts */
   --orbit-chart-1: #00f0ff;
@@ -499,56 +490,52 @@
 
     /* Radii — Precision Chassis & Tactical Controls */
     --orbit-radius-card: 0.375rem;
-    --orbit-radius-control: 0.25rem;
-    --orbit-radius-pill: 0.25rem;
+    --orbit-radius-control: 0.125rem;
+    --orbit-radius-pill: 0.125rem;
 
-    /* Background & Canvas — Deep Obsidian Holographic Deck */
-    --orbit-bg: #07090e;
-    --orbit-bg-canvas: #07090e;
-    --orbit-bg-subtle: #0f1420;
+    /* Background & Canvas — Deep Space Obsidian / Matte Basalt with Titanium Grain */
+    --orbit-bg: #080b11;
+    --orbit-bg-canvas: #080b11;
+    --orbit-bg-subtle: #0d121c;
     --orbit-bg-pattern:
-      radial-gradient(100% 70% at 20% 0%, rgba(0, 240, 255, 0.09) 0%, transparent 60%),
-      radial-gradient(90% 60% at 85% 15%, rgba(168, 85, 247, 0.08) 0%, transparent 55%),
-      radial-gradient(130% 90% at 50% 20%, rgba(11, 17, 32, 0.65) 0%, #05070b 100%),
-      radial-gradient(rgba(0, 240, 255, 0.12) 1px, transparent 1px),
-      linear-gradient(to right, rgba(0, 240, 255, 0.035) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(0, 240, 255, 0.035) 1px, transparent 1px),
-      linear-gradient(to right, rgba(168, 85, 247, 0.03) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
-    --orbit-bg-size: auto, auto, auto, 48px 48px, 48px 48px, 48px 48px, 240px 240px, 240px 240px;
-    --orbit-card-blur: 16px;
+      radial-gradient(120% 90% at 50% 0%, #0d131f 0%, #080b11 55%, #05070b 100%),
+      radial-gradient(circle at 15% 20%, rgba(0, 240, 255, 0.02) 0%, transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(139, 92, 246, 0.015) 0%, transparent 45%),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='titaniumNoiseDarkPrefers'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.6  0 0 0 0 0.7  0 0 0 0 0.85  0 0 0 0.038 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23titaniumNoiseDarkPrefers)'/%3E%3C/svg%3E");
+    --orbit-bg-size: auto;
+    --orbit-card-blur: 0px;
 
-    /* Surfaces — Translucent Obsidian Holographic Glass & Tactical Rack */
-    --orbit-surface: rgba(10, 16, 28, 0.72);
-    --orbit-surface-secondary: #0d1322;
-    --orbit-surface-elevated: rgba(16, 24, 42, 0.85);
+    /* Surfaces — Matte Basalt & Titanium Instrument Deck */
+    --orbit-surface: #0e131f;
+    --orbit-surface-secondary: #131b2c;
+    --orbit-surface-elevated: #162034;
 
-    --orbit-text: #f1f5f9;
+    --orbit-text: #f8fafc;
     --orbit-text-secondary: #94a3b8;
     --orbit-text-muted: #64748b;
 
-    --orbit-accent: #00f0ff;
+    --orbit-accent: #00e5ff;
     --orbit-accent-hover: #38bdf8;
     --orbit-accent-fg: #04131f;
-    --orbit-accent-soft: rgba(0, 240, 255, 0.14);
-    --orbit-accent-secondary: #a855f7;
-    --orbit-accent-secondary-soft: rgba(168, 85, 247, 0.16);
+    --orbit-accent-soft: rgba(0, 229, 255, 0.12);
+    --orbit-accent-secondary: #8b5cf6;
+    --orbit-accent-secondary-soft: rgba(139, 92, 246, 0.12);
 
     --orbit-success: #10b981;
-    --orbit-success-soft: rgba(16, 185, 129, 0.15);
+    --orbit-success-soft: rgba(16, 185, 129, 0.12);
     --orbit-warning: #f59e0b;
-    --orbit-warning-soft: rgba(245, 158, 11, 0.15);
-    --orbit-danger: #f43f5e;
-    --orbit-danger-fg: #190508;
-    --orbit-danger-soft: rgba(244, 63, 94, 0.16);
+    --orbit-warning-soft: rgba(245, 158, 11, 0.12);
+    --orbit-danger: #ef4444;
+    --orbit-danger-fg: #ffffff;
+    --orbit-danger-soft: rgba(239, 68, 68, 0.14);
 
-    --orbit-border: rgba(0, 240, 255, 0.24);
-    --orbit-border-strong: rgba(0, 240, 255, 0.48);
-    --orbit-focus-ring: rgba(0, 240, 255, 0.45);
+    --orbit-border: #1c2638;
+    --orbit-border-strong: #2d3d5a;
+    --orbit-focus-ring: rgba(0, 229, 255, 0.5);
 
-    --orbit-shadow-xs: inset 0 1px 0 0 rgba(0, 240, 255, 0.3), 0 0 0 1px rgba(0, 240, 255, 0.15);
-    --orbit-shadow-card: inset 0 1px 0 0 rgba(0, 240, 255, 0.65), inset -1px -1px 0 0 rgba(168, 85, 247, 0.28), 0 0 0 1px rgba(0, 240, 255, 0.16), 0 8px 32px -4px rgba(0, 0, 0, 0.75), 0 0 18px -2px rgba(0, 240, 255, 0.16);
-    --orbit-shadow-elevated: inset 0 1px 0 0 rgba(0, 240, 255, 0.85), inset -1px -1px 0 0 rgba(168, 85, 247, 0.45), 0 0 0 1px rgba(0, 240, 255, 0.35), 0 24px 64px -12px rgba(0, 0, 0, 0.85), 0 0 28px 0 rgba(0, 240, 255, 0.22);
+    --orbit-shadow-xs: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), inset 0 -1px 0 0 rgba(0, 0, 0, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+    --orbit-shadow-card: inset 0 1px 0 0 rgba(255, 255, 255, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.02), inset 0 2px 4px 0 rgba(0, 0, 0, 0.45), 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+    --orbit-shadow-elevated: inset 0 1px 1px 0 rgba(255, 255, 255, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.04), inset 0 3px 6px 0 rgba(0, 0, 0, 0.5), 0 8px 20px -4px rgba(0, 0, 0, 0.65);
 
     /* Visualisation & Charts */
     --orbit-chart-1: #00f0ff;
@@ -1951,14 +1938,12 @@ pre {
   border-left: 3px solid var(--orbit-accent);
 }
 
-/* 2. Glassmorphic Surface Cards for Cosmic & Cybernetic Themes */
-[data-orbit-theme="futuristic"] .bg-orbit-surface-elevated,
+/* 2. Glassmorphic Surface Cards for Cosmic Themes */
 [data-orbit-theme="midnight"] .bg-orbit-surface-elevated {
   backdrop-filter: blur(var(--orbit-card-blur, 8px));
   -webkit-backdrop-filter: blur(var(--orbit-card-blur, 8px));
 }
 
-[data-orbit-theme="futuristic"] .bg-orbit-surface,
 [data-orbit-theme="midnight"] .bg-orbit-surface {
   backdrop-filter: blur(var(--orbit-card-blur, 8px));
   -webkit-backdrop-filter: blur(var(--orbit-card-blur, 8px));
@@ -2024,8 +2009,8 @@ pre {
 }
 
 :root[data-orbit-theme="futuristic"] .orbit-empty-aura {
-  background: radial-gradient(circle, rgba(2, 132, 199, 0.16) 0%, transparent 72%);
-  filter: drop-shadow(0 0 12px rgba(2, 132, 199, 0.25));
+  background: transparent;
+  filter: none;
 }
 
 :root[data-orbit-theme="aesthetic"] .orbit-empty-aura {
@@ -2074,18 +2059,14 @@ pre {
 }
 
 :root[data-orbit-theme="futuristic"] .orbit-modal-backdrop {
-  background-color: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(12px) brightness(0.95);
-  -webkit-backdrop-filter: blur(12px) brightness(0.95);
-  background-image: radial-gradient(rgba(2, 132, 199, 0.15) 1px, transparent 1px);
-  background-size: 32px 32px;
+  background-color: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 .dark:root[data-orbit-theme="futuristic"] .orbit-modal-backdrop {
-  background-color: rgba(4, 6, 12, 0.85);
-  backdrop-filter: blur(14px) brightness(0.85);
-  -webkit-backdrop-filter: blur(14px) brightness(0.85);
-  background-image: radial-gradient(rgba(0, 240, 255, 0.16) 1px, transparent 1px);
-  background-size: 32px 32px;
+  background-color: rgba(4, 7, 12, 0.8);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 :root[data-orbit-theme="aesthetic"] .orbit-modal-backdrop {
@@ -2156,20 +2137,16 @@ pre {
 }
 
 :root[data-orbit-theme="futuristic"] .orbit-modal-dialog {
-  background-color: rgba(255, 255, 255, 0.88) !important;
-  backdrop-filter: blur(20px) saturate(1.15) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(1.15) !important;
-  border: 1px solid rgba(2, 132, 199, 0.35) !important;
+  background-color: #ffffff !important;
+  border: 1px solid var(--orbit-border-strong) !important;
   border-radius: var(--orbit-radius-card);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 1), 0 0 0 1px rgba(2, 132, 199, 0.2), 0 0 32px rgba(2, 132, 199, 0.16), 0 24px 60px -12px rgba(15, 23, 42, 0.2) !important;
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.1) !important;
 }
 .dark:root[data-orbit-theme="futuristic"] .orbit-modal-dialog {
-  background-color: rgba(10, 16, 28, 0.88) !important;
-  backdrop-filter: blur(20px) saturate(1.2) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(1.2) !important;
-  border: 1px solid rgba(0, 240, 255, 0.45) !important;
+  background-color: #0e131f !important;
+  border: 1px solid #2d3d5a !important;
   border-radius: var(--orbit-radius-card);
-  box-shadow: inset 0 1px 0 0 rgba(0, 240, 255, 0.75), inset -1px -1px 0 0 rgba(168, 85, 247, 0.4), 0 0 0 1px rgba(0, 240, 255, 0.25), 0 0 35px rgba(0, 240, 255, 0.25), 0 24px 64px -12px rgba(0, 0, 0, 0.9) !important;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.75) !important;
 }
 
 :root[data-orbit-theme="aesthetic"] .orbit-modal-dialog {
@@ -2228,23 +2205,32 @@ pre {
   outline-offset: 2px !important;
 }
 
-/* Futuristic: Precise borders, technical highlights and restrained glow */
+/* Futuristic: Precise tactile hardware micro-interactions (transform + opacity only, zero reflow) */
+:root[data-orbit-theme="futuristic"] .orbit-button {
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+  will-change: transform;
+}
 :root[data-orbit-theme="futuristic"] .orbit-button:focus-visible {
   outline: 2px solid var(--orbit-accent) !important;
   outline-offset: 2px !important;
-  box-shadow: 0 0 12px var(--orbit-accent) !important;
+  box-shadow: 0 0 10px var(--orbit-accent) !important;
 }
 :root[data-orbit-theme="futuristic"] .orbit-button:hover:not(:disabled) {
-  box-shadow: 0 0 10px rgba(2, 132, 199, 0.35);
+  transform: translateY(-1px);
   border-color: var(--orbit-accent);
 }
 .dark:root[data-orbit-theme="futuristic"] .orbit-button:hover:not(:disabled) {
-  box-shadow: 0 0 14px rgba(0, 240, 255, 0.45);
+  transform: translateY(-1px);
   border-color: rgba(0, 240, 255, 0.8);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.15), 0 0 12px rgba(0, 240, 255, 0.45);
 }
 :root[data-orbit-theme="futuristic"] .orbit-button:active:not(:disabled) {
-  transform: scale(0.975);
-  box-shadow: 0 0 5px var(--orbit-accent);
+  transform: translateY(0.5px) scale(0.985);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5) !important;
 }
 
 /* Aesthetic: Soft transitions, gentle shadows and rounded surfaces */
@@ -2389,8 +2375,8 @@ pre {
 :root[data-orbit-theme="futuristic"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
 :root[data-orbit-theme="futuristic"] select,
 :root[data-orbit-theme="futuristic"] textarea {
-  background-color: rgba(255, 255, 255, 0.75) !important;
-  border-color: rgba(2, 132, 199, 0.3) !important;
+  background-color: #f8fafc !important;
+  border-color: var(--orbit-border) !important;
   border-radius: var(--orbit-radius-control) !important;
   transition: all var(--orbit-transition-fast);
 }
@@ -2400,14 +2386,14 @@ pre {
 :root[data-orbit-theme="futuristic"] textarea:focus {
   background-color: #ffffff !important;
   border-color: var(--orbit-accent) !important;
-  box-shadow: 0 0 0 1px var(--orbit-accent), 0 0 12px rgba(2, 132, 199, 0.35) !important;
+  box-shadow: 0 0 0 1px var(--orbit-accent) !important;
 }
 
 .dark:root[data-orbit-theme="futuristic"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
 .dark:root[data-orbit-theme="futuristic"] select,
 .dark:root[data-orbit-theme="futuristic"] textarea {
-  background-color: rgba(14, 22, 38, 0.75) !important;
-  border-color: rgba(0, 240, 255, 0.3) !important;
+  background-color: #131b2c !important;
+  border-color: var(--orbit-border) !important;
   border-radius: var(--orbit-radius-control) !important;
   transition: all var(--orbit-transition-fast);
 }
@@ -2415,21 +2401,21 @@ pre {
 .dark:root[data-orbit-theme="futuristic"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
 .dark:root[data-orbit-theme="futuristic"] select:focus,
 .dark:root[data-orbit-theme="futuristic"] textarea:focus {
-  background-color: rgba(16, 26, 46, 0.95) !important;
+  background-color: #162034 !important;
   border-color: var(--orbit-accent) !important;
-  box-shadow: 0 0 0 1px var(--orbit-accent), 0 0 14px rgba(0, 240, 255, 0.45), inset 0 0 8px rgba(0, 240, 255, 0.1) !important;
+  box-shadow: 0 0 0 1px var(--orbit-accent) !important;
 }
 
 :root[data-orbit-theme="futuristic"] .orbit-input:focus,
 :root[data-orbit-theme="futuristic"] .orbit-textarea:focus,
 :root[data-orbit-theme="futuristic"] .orbit-select:focus {
   border-color: var(--orbit-accent) !important;
-  box-shadow: 0 0 8px rgba(2, 132, 199, 0.35) !important;
+  box-shadow: 0 0 0 1px var(--orbit-accent) !important;
 }
 .dark:root[data-orbit-theme="futuristic"] .orbit-input:focus,
 .dark:root[data-orbit-theme="futuristic"] .orbit-textarea:focus,
 .dark:root[data-orbit-theme="futuristic"] .orbit-select:focus {
-  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4) !important;
+  box-shadow: 0 0 0 1px var(--orbit-accent) !important;
 }
 
 :root[data-orbit-theme="aesthetic"] .orbit-input,
@@ -2506,25 +2492,33 @@ pre {
   outline-offset: 2px !important;
 }
 
-/* Futuristic: Precise borders, technical highlights and restrained glow */
+/* Futuristic: Machined tactile surfaces with recessed depth and precision hairline feedback */
+:root[data-orbit-theme="futuristic"] .orbit-card-interactive {
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
 :root[data-orbit-theme="futuristic"] .orbit-card-interactive:hover {
-  border-color: rgba(2, 132, 199, 0.65) !important;
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 1), 0 0 16px rgba(2, 132, 199, 0.25), 0 12px 28px -4px rgba(15, 23, 42, 0.12) !important;
-  transform: translateY(-1.5px);
+  border-color: var(--orbit-accent) !important;
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.95), inset 2px 0 0 0 var(--orbit-accent), 0 2px 6px -1px rgba(0, 0, 0, 0.08) !important;
+  transform: translateY(-1px);
 }
 .dark:root[data-orbit-theme="futuristic"] .orbit-card-interactive:hover {
-  border-color: rgba(0, 240, 255, 0.85) !important;
-  box-shadow: inset 0 1px 0 0 rgba(0, 240, 255, 0.85), inset -1px -1px 0 0 rgba(168, 85, 247, 0.5), 0 0 24px rgba(0, 240, 255, 0.35), 0 16px 36px -6px rgba(0, 0, 0, 0.8) !important;
-  transform: translateY(-1.5px);
+  border-color: rgba(0, 240, 255, 0.7) !important;
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.1), inset 2px 0 0 0 #00f0ff, inset 0 2px 4px 0 rgba(0, 0, 0, 0.5), 0 4px 12px -2px rgba(0, 0, 0, 0.6) !important;
+  transform: translateY(-1px);
 }
 :root[data-orbit-theme="futuristic"] .orbit-card-interactive:active {
-  transform: scale(0.992);
-  box-shadow: 0 0 8px var(--orbit-accent) !important;
+  transform: translateY(0.5px) scale(0.99);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
 }
 :root[data-orbit-theme="futuristic"] .orbit-card-interactive:focus-visible {
   outline: 2px solid var(--orbit-accent) !important;
   outline-offset: 2px !important;
-  box-shadow: 0 0 14px var(--orbit-accent) !important;
+  box-shadow: 0 0 10px var(--orbit-accent) !important;
 }
 
 /* Aesthetic: Soft transitions, gentle shadows and rounded surfaces */
@@ -2722,6 +2716,223 @@ pre {
   box-shadow: 0 0 10px rgba(129, 140, 248, 0.4);
 }
 
+/* ==========================================================================
+   FUTURISTIC: TACTILE MATTE HARDWARE SYSTEM (Machined Depth & Physical LEDs)
+   ========================================================================== */
+
+/* 1. Machined Bento Panels — Multi-layered Inset Shadows & Machined Bezel */
+:root[data-orbit-theme="futuristic"] .futuristic-panel {
+  position: relative;
+  background-color: var(--orbit-surface);
+  border: 1px solid var(--orbit-border);
+  border-radius: var(--orbit-radius-card);
+  box-shadow:
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 1px 0 rgba(0, 0, 0, 0.03),
+    0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+.dark:root[data-orbit-theme="futuristic"] .futuristic-panel {
+  background: linear-gradient(180deg, #0e1524 0%, #090e18 100%);
+  border: 1px solid #1a2538;
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+    inset 0 2px 5px 0 rgba(0, 0, 0, 0.6),
+    0 2px 6px 0 rgba(0, 0, 0, 0.65);
+}
+
+:root[data-orbit-theme="futuristic"] .futuristic-panel-header {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, transparent 100%);
+  border-bottom: 1px solid var(--orbit-border);
+  box-shadow: inset 0 -1px 0 0 rgba(0, 0, 0, 0.03);
+}
+.dark:root[data-orbit-theme="futuristic"] .futuristic-panel-header {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.2) 100%);
+  border-bottom: 1px solid #162030;
+  box-shadow: inset 0 -1px 0 0 rgba(0, 0, 0, 0.45);
+}
+
+/* 2. Recessed Task Rows — Physical Faceplate Slot with Micro-translation (Reflow-free) */
+:root[data-orbit-theme="futuristic"] .futuristic-row {
+  position: relative;
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+.dark:root[data-orbit-theme="futuristic"] .futuristic-row {
+  border-bottom: 1px solid #131b2a;
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.015);
+}
+:root[data-orbit-theme="futuristic"]:not(.dark) .futuristic-row:hover {
+  background-color: #f8fafc;
+  transform: translateX(2px);
+  box-shadow:
+    inset 2px 0 0 0 var(--orbit-accent),
+    inset 0 1px 0 0 rgba(2, 132, 199, 0.08);
+}
+.dark:root[data-orbit-theme="futuristic"] .futuristic-row:hover {
+  background-color: #101726;
+  transform: translateX(2px);
+  box-shadow:
+    inset 2px 0 0 0 #00f0ff,
+    inset 0 1px 0 0 rgba(0, 240, 255, 0.15),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.6);
+}
+
+/* 3. Physical Hardware LED Switch & Checkbox */
+:root[data-orbit-theme="futuristic"] .futuristic-led-checkbox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 2px;
+  border: 1px solid #94a3b8;
+  background: #f1f5f9;
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.12),
+    0 1px 1px rgba(255, 255, 255, 0.8);
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.dark:root[data-orbit-theme="futuristic"] .futuristic-led-checkbox {
+  border: 1px solid #1f2d42;
+  background: #060910;
+  box-shadow:
+    inset 0 1.5px 3px rgba(0, 0, 0, 0.9),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 1px 0 0 rgba(255, 255, 255, 0.04);
+}
+:root[data-orbit-theme="futuristic"] .futuristic-led-checkbox:hover {
+  border-color: var(--orbit-accent);
+}
+.dark:root[data-orbit-theme="futuristic"] .futuristic-led-checkbox:hover {
+  border-color: #00f0ff;
+  box-shadow:
+    inset 0 1.5px 3px rgba(0, 0, 0, 0.9),
+    0 0 8px rgba(0, 240, 255, 0.4);
+}
+:root[data-orbit-theme="futuristic"] .futuristic-led-checkbox[data-checked="true"] {
+  background: #0284c7;
+  border-color: #0284c7;
+  color: #ffffff;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.6),
+    0 1px 2px rgba(0, 0, 0, 0.15);
+}
+.dark:root[data-orbit-theme="futuristic"] .futuristic-led-checkbox[data-checked="true"] {
+  background: #00f0ff;
+  border-color: #38bdf8;
+  color: #04111d;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.8),
+    0 0 10px rgba(0, 240, 255, 0.8),
+    0 0 2px #00f0ff;
+}
+
+/* 4. Hardware LED Spark Toggle (Habit Cadence) */
+:root[data-orbit-theme="futuristic"] .futuristic-spark-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 2px;
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+.dark:root[data-orbit-theme="futuristic"] .futuristic-spark-toggle[data-active="false"] {
+  border: 1px solid #1c283c;
+  background: #070b13;
+  box-shadow:
+    inset 0 1.5px 2px rgba(0, 0, 0, 0.85),
+    0 1px 0 rgba(255, 255, 255, 0.03);
+}
+.dark:root[data-orbit-theme="futuristic"] .futuristic-spark-toggle[data-active="false"]:hover {
+  border-color: #00f0ff;
+  box-shadow:
+    inset 0 1.5px 2px rgba(0, 0, 0, 0.85),
+    0 0 8px rgba(0, 240, 255, 0.4);
+}
+.dark:root[data-orbit-theme="futuristic"] .futuristic-spark-toggle[data-active="true"] {
+  border: 1px solid #38bdf8;
+  background: #00f0ff;
+  color: #04111d;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.8),
+    0 0 12px rgba(0, 240, 255, 0.85),
+    0 0 3px #00f0ff;
+}
+:root[data-orbit-theme="futuristic"]:not(.dark) .futuristic-spark-toggle[data-active="false"] {
+  border: 1px solid #cbd5e1;
+  background: #f1f5f9;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+:root[data-orbit-theme="futuristic"]:not(.dark) .futuristic-spark-toggle[data-active="true"] {
+  border: 1px solid #0284c7;
+  background: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(2, 132, 199, 0.35);
+}
+
+/* 5. Tactile Hardware Control Buttons (Header & Actions) */
+:root[data-orbit-theme="futuristic"] .futuristic-btn-tactile {
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+:root[data-orbit-theme="futuristic"] .futuristic-btn-tactile:hover {
+  transform: translateY(-1px);
+}
+:root[data-orbit-theme="futuristic"] .futuristic-btn-tactile:active {
+  transform: translateY(0.5px) scale(0.985);
+}
+.dark:root[data-orbit-theme="futuristic"] .futuristic-btn-tactile-secondary {
+  background: linear-gradient(180deg, #131c2a 0%, #0b111c 100%);
+  border: 1px solid #1c293c;
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+    0 1px 2px rgba(0, 0, 0, 0.4);
+}
+.dark:root[data-orbit-theme="futuristic"] .futuristic-btn-tactile-secondary:hover {
+  border-color: #00f0ff;
+  color: #00f0ff;
+  box-shadow:
+    inset 0 1px 0 0 rgba(0, 240, 255, 0.2),
+    0 0 8px rgba(0, 240, 255, 0.25);
+}
+.dark:root[data-orbit-theme="futuristic"] .futuristic-btn-tactile-primary {
+  background: #00f0ff;
+  color: #04111d;
+  font-weight: 700;
+  border: 1px solid #38bdf8;
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.7),
+    0 0 10px rgba(0, 240, 255, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.4);
+}
+.dark:root[data-orbit-theme="futuristic"] .futuristic-btn-tactile-primary:hover {
+  background: #38bdf8;
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+    0 0 14px rgba(0, 240, 255, 0.7),
+    0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
 
 /* Accessible Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
@@ -2745,7 +2956,12 @@ pre {
   .orbit-card-interactive,
   .orbit-card-interactive:hover,
   .orbit-card-interactive:active,
-  .orbit-surface-card {
+  .orbit-surface-card,
+  .futuristic-panel,
+  .futuristic-row,
+  .futuristic-led-checkbox,
+  .futuristic-spark-toggle,
+  .futuristic-btn-tactile {
     transform: none !important;
     transition: none !important;
   }
