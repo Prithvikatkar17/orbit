@@ -7,24 +7,41 @@ export interface QuickCaptureInitialData {
   category?: string;
 }
 
-export function parseShareTargetDraft(raw: string): QuickCaptureInitialData {
-  const trimmed = raw.trim();
-  if (!trimmed) return {};
+export function parseShareTargetDraft(
+  input: string | { title?: string | null; text?: string | null; url?: string | null }
+): QuickCaptureInitialData {
+  let rawTitle = "";
+  let rawText = "";
+  let rawUrl = "";
 
-  let link = "";
-  let remainingText = trimmed;
+  if (typeof input === "string") {
+    rawText = input.trim();
+  } else if (input && typeof input === "object") {
+    rawTitle = (input.title ?? "").trim();
+    rawText = (input.text ?? "").trim();
+    rawUrl = (input.url ?? "").trim();
+  }
+
+  if (!rawTitle && !rawText && !rawUrl) {
+    return {};
+  }
+
+  let link = rawUrl;
+  let remainingText = rawText;
 
   const urlMatch = remainingText.match(/https?:\/\/[^\s]+/i);
-  if (urlMatch) {
+  if (!link && urlMatch) {
     link = urlMatch[0];
     remainingText = remainingText.replace(link, "").trim();
     remainingText = remainingText.replace(/[:\-–—\s]+$/, "").trim();
   }
 
-  let title = "";
+  let title = rawTitle;
   let notes = "";
 
-  if (remainingText) {
+  if (title) {
+    notes = remainingText;
+  } else if (remainingText) {
     const lines = remainingText.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
     if (lines.length > 0) {
       title = lines[0];
@@ -39,7 +56,9 @@ export function parseShareTargetDraft(raw: string): QuickCaptureInitialData {
     }
   }
 
-  return { title, notes, link };
+  const category = link ? "bookmark" : "inbox";
+
+  return { title, notes, link, category };
 }
 
 interface UIState {

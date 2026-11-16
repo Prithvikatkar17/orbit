@@ -2146,6 +2146,22 @@ pre {
   -webkit-backdrop-filter: none !important;
 }
 
+/* Ensure closed or inert backdrops never capture pointer/touch events */
+.orbit-modal-backdrop[inert],
+.orbit-modal-backdrop[aria-hidden="true"]:not([role="dialog"]) {
+  pointer-events: none !important;
+}
+
+/* Mobile Touch & Scroll Protection (< 1024px) */
+@media (max-width: 1023px) {
+  html,
+  body {
+    overflow-x: hidden;
+    touch-action: pan-y pinch-zoom;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 :root[data-orbit-theme="archivist"] .orbit-modal-backdrop,
 :root[data-orbit-theme="default"] .orbit-modal-backdrop,
 :root:not([data-orbit-theme]) .orbit-modal-backdrop {

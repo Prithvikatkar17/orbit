@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemePersonalityProvider } from "@/components/theme-personality-provider";
 import { Sidebar, MobileHeader } from "@/components/sidebar";
+import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { QuickCaptureModal } from "@/components/quick-capture-modal";
 import { SearchModal } from "@/components/search/search-modal";
 import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
@@ -91,9 +92,10 @@ export default function RootLayout({
                 {/* Main Application Shell */}
                 <div className="flex min-w-0 flex-1 flex-col">
                   <MobileHeader />
-                  <main className="@container flex-1 min-w-0 px-4 py-5 sm:px-6 lg:px-8 lg:py-8 max-w-6xl w-full mx-auto">
+                  <main className="@container flex-1 min-w-0 px-4 py-5 pb-24 sm:px-6 lg:px-8 lg:py-8 lg:pb-8 max-w-6xl w-full mx-auto">
                     {children}
                   </main>
+                  <MobileBottomNav />
                 </div>
               </div>
 

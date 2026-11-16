@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { X, ArrowRight, Star, Zap } from "lucide-react";
-import { useUIStore } from "@/lib/stores/ui-store";
+import { useUIStore, type QuickCaptureInitialData } from "@/lib/stores/ui-store";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db/client";
 import {
@@ -19,7 +19,95 @@ import { Button } from "@/components/ui/button";
 import { useThemePersonality } from "@/components/theme-personality-provider";
 import { useMounted } from "@/lib/utils/dates";
 
-export function QuickCaptureModal() {
+function getInitialCaptureData(storeData?: QuickCaptureInitialData): QuickCaptureInitialData {
+  if (storeData && (storeData.title || storeData.link || storeData.notes || storeData.category)) {
+    return storeData;
+  }
+  if (typeof window !== "undefined") {
+    try {
+      const stored =
+        window.sessionStorage.getItem("orbit-share-draft") ||
+        window.sessionStorage.getItem("orbit_pending_capture");
+      if (stored) {
+        window.sessionStorage.removeItem("orbit-share-draft");
+        window.sessionStorage.removeItem("orbit_pending_capture");
+        const parsed = JSON.parse(stored);
+        if (parsed && typeof parsed === "object") {
+          return parsed;
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }
+  return storeData ?? {};
+}
+
+function QuickCaptureListener() {
+  const { openQuickCapture, closeQuickCapture } = useUIStore();
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    try {
+      const search = window.location.search;
+      const params = new URLSearchParams(search);
+      const isSharedFlag =
+        params.get("shared") === "1" ||
+        params.get("quickCapture") === "1" ||
+        params.has("capture");
+
+      const storedDraft =
+        window.sessionStorage.getItem("orbit-share-draft") ||
+        window.sessionStorage.getItem("orbit_pending_capture");
+
+      if (storedDraft) {
+        window.sessionStorage.removeItem("orbit-share-draft");
+        window.sessionStorage.removeItem("orbit_pending_capture");
+        try {
+          const parsed = JSON.parse(storedDraft);
+          openQuickCapture(parsed);
+        } catch {
+          openQuickCapture(storedDraft);
+        }
+      } else if (isSharedFlag) {
+        openQuickCapture();
+      }
+
+      if (isSharedFlag) {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("shared");
+        url.searchParams.delete("quickCapture");
+        url.searchParams.delete("capture");
+        window.history.replaceState({}, "", url.pathname + (url.search || ""));
+      }
+    } catch (err) {
+      console.warn("Failed checking pending capture storage:", err);
+    }
+  }, [openQuickCapture]);
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      // Ctrl+Shift+K / Cmd+Shift+K: Toggle Quick Capture
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        const { quickCaptureOpen: isOpen, openQuickCapture: openQC, closeQuickCapture: closeQC } =
+          useUIStore.getState();
+        if (isOpen) closeQC();
+        else openQC();
+      } else if (e.key === "Escape" && useUIStore.getState().quickCaptureOpen) {
+        closeQuickCapture();
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [closeQuickCapture]);
+
+  return null;
+}
+
+function QuickCaptureDialog() {
   const { quickCaptureOpen, closeQuickCapture, quickCaptureInitialData } = useUIStore();
   const modalRef = useAccessibleModal({
     isOpen: quickCaptureOpen,
@@ -57,10 +145,13 @@ export function QuickCaptureModal() {
     ? "rounded-md"
     : "rounded-orbit-control";
 
-  const [title, setTitle] = useState(quickCaptureInitialData?.title ?? "");
-  const [notes, setNotes] = useState(quickCaptureInitialData?.notes ?? "");
-  const [link, setLink] = useState(quickCaptureInitialData?.link ?? "");
-  const [category, setCategory] = useState(quickCaptureInitialData?.category ?? "inbox");
+  const initialData = getInitialCaptureData(quickCaptureInitialData);
+  const [title, setTitle] = useState(initialData.title ?? "");
+  const [notes, setNotes] = useState(initialData.notes ?? "");
+  const [link, setLink] = useState(initialData.link ?? "");
+  const [category, setCategory] = useState(
+    initialData.category ?? (initialData.link ? "bookmark" : "inbox")
+  );
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
   const [dueDate, setDueDate] = useState("");
   const [dueTime, setDueTime] = useState("");
@@ -92,25 +183,6 @@ export function QuickCaptureModal() {
     "library",
   ].includes(category.toLowerCase());
 
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      // Ctrl+Shift+K / Cmd+Shift+K: Toggle Quick Capture
-      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        const { quickCaptureOpen, openQuickCapture, closeQuickCapture } =
-          useUIStore.getState();
-        if (quickCaptureOpen) closeQuickCapture();
-        else openQuickCapture();
-      } else if (e.key === "Escape" && useUIStore.getState().quickCaptureOpen) {
-        closeQuickCapture();
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [closeQuickCapture]);
-
-  if (!quickCaptureOpen) return null;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -737,5 +809,20 @@ export function QuickCaptureModal() {
         </form>
       </div>
     </div>
+  );
+}
+
+export function QuickCaptureModal() {
+  const { quickCaptureOpen, quickCaptureInitialData } = useUIStore();
+
+  const dialogKey = quickCaptureOpen
+    ? `${quickCaptureInitialData?.title ?? ""}-${quickCaptureInitialData?.link ?? ""}-${quickCaptureInitialData?.notes ?? ""}-${quickCaptureInitialData?.category ?? ""}`
+    : "closed";
+
+  return (
+    <>
+      <QuickCaptureListener />
+      {quickCaptureOpen && <QuickCaptureDialog key={dialogKey} />}
+    </>
   );
 }

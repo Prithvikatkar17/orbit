@@ -33,7 +33,10 @@ test("Phase 12C: Web Share Target API Verification", async (t) => {
     assert.match(content, /<Suspense/, "must wrap logic in Suspense boundary");
     assert.match(content, /useSearchParams/, "must extract params using useSearchParams");
     assert.match(content, /openQuickCapture/, "must hand off payload to openQuickCapture");
-    assert.match(content, /router\.replace\(['"]\/['"]\)/, "must redirect to Home dashboard");
+    assert.match(content, /router\.replace\(['"]\/(?:\?(?:shared=1|quickCapture=1))?['"]\)/, "must redirect to Home dashboard");
+    assert.match(content, /PENDING_CAPTURE_STORAGE_KEY|sessionStorage/, "must persist payload to sessionStorage");
+    assert.match(content, /location\.replace/, "must support hard fallback redirect on mobile");
+    assert.match(content, /Continue to Workspace/, "must render manual fallback action button");
     assert.match(content, /INITIALIZING CAPTURE/, "must provide sleek loading view");
   });
 

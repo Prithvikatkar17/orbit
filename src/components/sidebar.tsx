@@ -137,7 +137,7 @@ export function Sidebar() {
       {/* Mobile / Tablet Backdrop (< 1024px) */}
       {sidebarOpen && (
         <div
-          className="orbit-modal-backdrop fixed inset-0 z-30 lg:hidden"
+          className="orbit-modal-backdrop fixed inset-0 z-30 lg:hidden pointer-events-auto"
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />
@@ -149,7 +149,9 @@ export function Sidebar() {
         aria-hidden={isMobileDrawerHidden || undefined}
         inert={isMobileDrawerHidden || undefined}
         className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-orbit-border bg-orbit-surface-secondary p-4 transition-[transform,visibility] duration-300 lg:sticky lg:top-0 lg:h-screen lg:shrink-0 lg:translate-x-0 lg:visible ${
-          sidebarOpen ? "translate-x-0 visible" : "-translate-x-full invisible lg:visible"
+          sidebarOpen
+            ? "translate-x-0 visible pointer-events-auto"
+            : "-translate-x-full invisible lg:visible pointer-events-none lg:pointer-events-auto"
         }`}
       >
         {/* Brand Header */}
