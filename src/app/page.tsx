@@ -118,7 +118,10 @@ export default function HomePage() {
     return openTasks.filter((t) => Boolean(t.dueDate && t.dueDate < todayStr)).length;
   }, [openTasks, todayStr]);
 
-  const habitsCompletedCount = completedTodayHabitIds.size;
+  const habitsCompletedCount = Math.min(
+    activeHabits.filter((h) => completedTodayHabitIds.has(h.id)).length,
+    activeHabits.length
+  );
   const habitsTotalCount = activeHabits.length;
   const habitsProgressPct =
     habitsTotalCount > 0 ? Math.round((habitsCompletedCount / habitsTotalCount) * 100) : 0;

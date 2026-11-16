@@ -73,10 +73,10 @@ export function ArtisticDashboard({
 
   const formattedDate = mounted
     ? dateObj.toLocaleDateString("en-US", {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-      })
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+    })
     : "";
 
   const greeting = mounted ? getTimeOfDayGreeting() : "Welcome";

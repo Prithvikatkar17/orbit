@@ -59,10 +59,9 @@ export function TodaysFocus({
           <button
             type="button"
             onClick={() => setFilterMode("all")}
-            className={`px-2.5 py-1 rounded-[3px] border transition-colors cursor-pointer ${
-              filterMode === "all"
-                ? "bg-[#00f0ff] text-[#04111d] border-[#38bdf8] font-semibold shadow-[0_0_8px_rgba(0,240,255,0.35)]"
-                : "bg-orbit-surface border-orbit-border text-orbit-text-muted hover:text-orbit-text"
+            className={`px-2.5 py-1 rounded-[3px] border transition-colors cursor-pointer ${filterMode === "all"
+              ? "bg-[#00f0ff] text-[#04111d] border-[#38bdf8] font-semibold shadow-[0_0_8px_rgba(0,240,255,0.35)]"
+              : "bg-orbit-surface border-orbit-border text-orbit-text-muted hover:text-orbit-text"
               }`}
           >
             All ({tasks.length})
@@ -70,10 +69,9 @@ export function TodaysFocus({
           <button
             type="button"
             onClick={() => setFilterMode("today")}
-            className={`px-2.5 py-1 rounded-[3px] border transition-colors cursor-pointer ${
-              filterMode === "today"
-                ? "bg-[#00f0ff] text-[#04111d] border-[#38bdf8] font-semibold shadow-[0_0_8px_rgba(0,240,255,0.35)]"
-                : "bg-orbit-surface border-orbit-border text-orbit-text-muted hover:text-orbit-text"
+            className={`px-2.5 py-1 rounded-[3px] border transition-colors cursor-pointer ${filterMode === "today"
+              ? "bg-[#00f0ff] text-[#04111d] border-[#38bdf8] font-semibold shadow-[0_0_8px_rgba(0,240,255,0.35)]"
+              : "bg-orbit-surface border-orbit-border text-orbit-text-muted hover:text-orbit-text"
               }`}
           >
             Due Today ({dueTodayCount})
@@ -235,11 +233,10 @@ export function TodaysFocus({
 
                       {task.priority && task.priority !== "low" && (
                         <span
-                          className={`px-1.5 py-0.5 rounded-[2px] text-[10px] font-semibold uppercase ${
-                            task.priority === "high"
-                              ? "bg-[#ef4444]/15 text-[#ef4444] border border-[#ef4444]/30"
-                              : "bg-[#38bdf8]/15 text-[#38bdf8] border border-[#38bdf8]/30"
-                          }`}
+                          className={`px-1.5 py-0.5 rounded-[2px] text-[10px] font-semibold uppercase ${task.priority === "high"
+                            ? "bg-[#ef4444]/15 text-[#ef4444] border border-[#ef4444]/30"
+                            : "bg-[#38bdf8]/15 text-[#38bdf8] border border-[#38bdf8]/30"
+                            }`}
                         >
                           {task.priority === "high" ? "High" : "Med"}
                         </span>

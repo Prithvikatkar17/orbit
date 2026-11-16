@@ -155,31 +155,27 @@ export function HabitCadence({
                           className="relative min-h-[44px] min-w-[28px] w-full flex items-center justify-center p-0.5 cursor-pointer focus-visible:outline-hidden group"
                         >
                           <span
-                            className={`h-6 w-full rounded-[4px] flex items-center justify-center transition-all ${
-                              isDone
-                                ? "bg-[#0284c7] border border-[#0369a1] text-white shadow-[0_1px_3px_rgba(2,132,199,0.35)] dark:bg-[#00f0ff] dark:border-[#38bdf8] dark:text-[#04111d] dark:shadow-[0_0_8px_rgba(0,240,255,0.7)]"
-                                : "bg-[#e8eef5] border border-[#cbd5e1] text-transparent hover:border-[#0284c7]/60 shadow-[inset_0_1px_2px_rgba(15,23,42,0.08)] dark:bg-[#070b13] dark:border-[#1c283c] dark:shadow-[inset_0_1.5px_2px_rgba(0,0,0,0.85)] dark:hover:border-[#00f0ff]/50"
-                            } ${
-                              isToday && !isDone
+                            className={`h-6 w-full rounded-[4px] flex items-center justify-center transition-all ${isDone
+                              ? "bg-[#0284c7] border border-[#0369a1] text-white shadow-[0_1px_3px_rgba(2,132,199,0.35)] dark:bg-[#00f0ff] dark:border-[#38bdf8] dark:text-[#04111d] dark:shadow-[0_0_8px_rgba(0,240,255,0.7)]"
+                              : "bg-[#e8eef5] border border-[#cbd5e1] text-transparent hover:border-[#0284c7]/60 shadow-[inset_0_1px_2px_rgba(15,23,42,0.08)] dark:bg-[#070b13] dark:border-[#1c283c] dark:shadow-[inset_0_1.5px_2px_rgba(0,0,0,0.85)] dark:hover:border-[#00f0ff]/50"
+                              } ${isToday && !isDone
                                 ? "ring-1 ring-[#0284c7]/50 dark:ring-[#00f0ff]/60 ring-offset-1 ring-offset-white dark:ring-offset-black"
                                 : ""
-                            }`}
+                              }`}
                           >
                             <Check
-                              className={`h-3 w-3 stroke-[3] transition-transform ${
-                                isDone
-                                  ? "scale-100"
-                                  : "scale-75 text-transparent group-hover:text-[#0284c7]/40 dark:group-hover:text-[#00f0ff]/30"
-                              }`}
+                              className={`h-3 w-3 stroke-[3] transition-transform ${isDone
+                                ? "scale-100"
+                                : "scale-75 text-transparent group-hover:text-[#0284c7]/40 dark:group-hover:text-[#00f0ff]/30"
+                                }`}
                             />
                           </span>
                         </button>
 
                         {/* Subtle Day Letter Below Step */}
                         <span
-                          className={`font-mono text-[10px] select-none ${
-                            isToday ? "text-[#0284c7] dark:text-[#00f0ff] font-bold" : "text-orbit-text-muted"
-                          }`}
+                          className={`font-mono text-[10px] select-none ${isToday ? "text-[#0284c7] dark:text-[#00f0ff] font-bold" : "text-orbit-text-muted"
+                            }`}
                         >
                           {dayLetter}
                         </span>

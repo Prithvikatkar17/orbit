@@ -298,6 +298,9 @@ test("Phase 9A: Layout & Pre-hydration Flash Prevention", async (t) => {
 test("Phase 9A: Settings Page Theme Integration", async (t) => {
   const settingsPath = path.join(projectRoot, "src/app/settings/page.tsx");
   const settings = fs.readFileSync(settingsPath, "utf-8");
+  const previewCardPath = path.join(projectRoot, "src/components/theme-preview-card.tsx");
+  const previewCard = fs.readFileSync(previewCardPath, "utf-8");
+  const combined = settings + previewCard;
 
   await t.test("settings page consumes useThemePersonality", () => {
     assert.ok(
@@ -316,7 +319,7 @@ test("Phase 9A: Settings Page Theme Integration", async (t) => {
       "settings page must map over THEME_PERSONALITIES"
     );
     assert.ok(
-      settings.includes("data-theme-option"),
+      combined.includes("data-theme-option"),
       "settings page should provide testable data-theme-option attributes"
     );
   });
@@ -334,15 +337,15 @@ test("Phase 9A: Settings Page Theme Integration", async (t) => {
 
   await t.test("Phase 9D: Settings theme cards feature live scoped UI preview windows", () => {
     assert.ok(
-      settings.includes("data-orbit-theme-preview"),
+      combined.includes("data-orbit-theme-preview"),
       "settings page must include data-orbit-theme-preview scoped containers"
     );
     assert.ok(
-      settings.includes("ThemeMiniMotif"),
+      combined.includes("ThemeMiniMotif"),
       "settings page must render theme-specific decorative mini motifs"
     );
     assert.ok(
-      settings.includes("THEME_SAMPLE_HEADINGS"),
+      combined.includes("THEME_SAMPLE_HEADINGS"),
       "settings page must display distinctive typography headings per theme"
     );
     assert.ok(

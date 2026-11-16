@@ -64,12 +64,13 @@ export function deriveDashboardMetrics(
   data: DashboardSnapshotData,
   todayStr: string
 ): DerivedDashboardMetrics {
-  const activeHabits = data.habits.filter((h) => h.isActive);
+  const activeHabits = data.habits.filter((h) => h.isActive !== false);
+  const activeHabitIdSet = new Set(activeHabits.map((h) => h.id));
   const completedTodayHabitIds = new Set<string>();
 
   if (todayStr) {
     for (const log of data.habitLogs) {
-      if (log.date === todayStr) {
+      if (log.date === todayStr && activeHabitIdSet.has(log.habitId)) {
         completedTodayHabitIds.add(log.habitId);
       }
     }

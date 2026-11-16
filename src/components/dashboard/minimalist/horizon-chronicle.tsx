@@ -59,8 +59,8 @@ export function HorizonChronicle({ events, todayStr }: HorizonChronicleProps) {
             const timeDisplay = occ.event.startTime
               ? occ.event.startTime
               : isToday
-              ? "ALL DAY"
-              : formatFriendlyDate(occ.occurrenceDate).toUpperCase();
+                ? "ALL DAY"
+                : formatFriendlyDate(occ.occurrenceDate).toUpperCase();
 
             const category = occ.event.type || "GENERAL";
 

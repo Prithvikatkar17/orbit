@@ -204,18 +204,23 @@ export function FuturisticDashboard({
             </Link>
 
             {/* Capsule 3: Habits Progress */}
-            <Link
-              href="/habits"
-              className="futuristic-oled-panel px-3.5 py-2 text-center min-w-[76px] hover:border-[#00f0ff]/50 transition-colors block"
-              aria-label={`${habitsCompletedCount} of ${habitsTotalCount} habits completed`}
-            >
-              <div className="text-base sm:text-lg font-bold font-mono text-[#00e5a3] tabular-nums leading-none">
-                {String(habitsCompletedCount).padStart(2, "0")}/{String(habitsTotalCount).padStart(2, "0")}
-              </div>
-              <div className="text-[9px] font-mono text-[#64748b] tracking-wider mt-1 uppercase">
-                HABITS
-              </div>
-            </Link>
+            {(() => {
+              const safeCompleted = Math.min(habitsCompletedCount, habitsTotalCount);
+              return (
+                <Link
+                  href="/habits"
+                  className="futuristic-oled-panel px-3.5 py-2 text-center min-w-[76px] hover:border-[#00f0ff]/50 transition-colors block"
+                  aria-label={`${safeCompleted} of ${habitsTotalCount} habits completed`}
+                >
+                  <div className="text-base sm:text-lg font-bold font-mono text-[#00e5a3] tabular-nums leading-none">
+                    {String(safeCompleted).padStart(2, "0")}/{String(habitsTotalCount).padStart(2, "0")}
+                  </div>
+                  <div className="text-[9px] font-mono text-[#64748b] tracking-wider mt-1 uppercase">
+                    HABITS
+                  </div>
+                </Link>
+              );
+            })()}
 
             {/* Mobile-only compact quick capture button (Hidden on desktop to avoid duplicate) */}
             <button

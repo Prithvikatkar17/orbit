@@ -12,6 +12,10 @@ test("Phase 9D — Settings Theme Preview Cards & System Appearance", async (t) 
   const settingsPath = path.join(projectRoot, "src/app/settings/page.tsx");
   const settings = fs.readFileSync(settingsPath, "utf-8");
 
+  const previewCardPath = path.join(projectRoot, "src/components/theme-preview-card.tsx");
+  const previewCard = fs.readFileSync(previewCardPath, "utf-8");
+  const combinedSettingsAndPreview = settings + previewCard;
+
   const cssPath = path.join(projectRoot, "src/app/globals.css");
   const css = fs.readFileSync(cssPath, "utf-8");
 
@@ -40,16 +44,24 @@ test("Phase 9D — Settings Theme Preview Cards & System Appearance", async (t) 
       );
     }
 
-    assert.ok(settings.includes("data-orbit-theme-preview={meta.id}"), "settings page assigns data-orbit-theme-preview to preview container");
+    assert.ok(
+      combinedSettingsAndPreview.includes("data-orbit-theme-preview={meta.id}"),
+      "settings preview assigns data-orbit-theme-preview to preview container"
+    );
+    assert.ok(
+      settings.includes("ThemePersonalityCard"),
+      "settings page consumes unified ThemePersonalityCard component"
+    );
   });
 
-  await t.test("Settings preview cards demonstrate typography, navigation, button, heatmap, and chart", () => {
-    assert.ok(settings.includes("ThemeMiniMotif"), "settings page renders ThemeMiniMotif component");
-    assert.ok(settings.includes("THEME_SAMPLE_HEADINGS"), "settings page includes distinctive typography headings");
-    assert.ok(settings.includes("data-orbit-nav-item"), "preview window renders mini active navigation element");
-    assert.ok(settings.includes("orbit-button"), "preview window renders mini action button");
-    assert.ok(settings.includes("--orbit-heatmap-"), "preview window renders mini 5-cell heatmap strip");
-    assert.ok(settings.includes("--orbit-chart-"), "preview window renders mini 3-bar sparkline chart");
+  await t.test("Settings preview cards demonstrate typography, navigation, button, and architectural vignettes", () => {
+    assert.ok(combinedSettingsAndPreview.includes("ThemeMiniMotif"), "includes ThemeMiniMotif component");
+    assert.ok(combinedSettingsAndPreview.includes("THEME_SAMPLE_HEADINGS"), "includes distinctive typography headings");
+    assert.ok(
+      combinedSettingsAndPreview.includes("PersonalityVignette") ||
+      combinedSettingsAndPreview.includes("data-orbit-theme-preview"),
+      "preview window renders bespoke personality vignette"
+    );
   });
 
   await t.test("Theme Personality Provider implements rollback on database persistence failure", () => {

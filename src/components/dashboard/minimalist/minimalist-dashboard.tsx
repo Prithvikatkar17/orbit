@@ -151,7 +151,7 @@ export function MinimalistDashboard({
                   CADENCE
                 </span>
                 <span className="font-mono text-sm sm:text-base font-semibold tabular-nums text-orbit-text">
-                  {String(habitsCompletedCount).padStart(2, "0")}/{String(habitsTotalCount).padStart(2, "0")}
+                  {String(Math.min(habitsCompletedCount, habitsTotalCount)).padStart(2, "0")}/{String(habitsTotalCount).padStart(2, "0")}
                 </span>
               </div>
 
