@@ -23,6 +23,8 @@ import {
 import { SearchResultItem } from "./search-result-item";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
+import { useThemePersonality } from "@/components/theme-personality-provider";
+import { useMounted } from "@/lib/utils/dates";
 
 const FILTER_TABS: { id: SearchFilterTab; label: string }[] = [
   { id: "all", label: "All" },
@@ -48,6 +50,29 @@ export function SearchModal() {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const previousActiveElementRef = useRef<HTMLElement | null>(null);
+
+  const { themePersonality } = useThemePersonality();
+  const mounted = useMounted();
+
+  const isMinimalist = mounted && themePersonality === "minimalist";
+  const isMidnight = mounted && themePersonality === "midnight";
+  const isFuturistic = mounted && themePersonality === "futuristic";
+  const isArchivist = mounted && themePersonality === "archivist";
+  const isNaturalist = mounted && themePersonality === "naturalist";
+  const isArtistic = mounted && themePersonality === "artistic";
+  const isAesthetic = mounted && themePersonality === "aesthetic";
+
+  const dialogRadiusClass = isMinimalist
+    ? "rounded-none border-black/30 dark:border-white/30 shadow-none"
+    : isFuturistic
+    ? "rounded-[12px] border-[#00f0ff]/30 shadow-orbit-elevated"
+    : isArchivist
+    ? "rounded-[14px] border-[#b89758]/50 shadow-orbit-elevated"
+    : isMidnight
+    ? "rounded-[20px] border-[#1e1b4b] shadow-orbit-elevated"
+    : isNaturalist || isArtistic
+    ? "rounded-[24px] shadow-orbit-elevated"
+    : "rounded-2xl border-orbit-border shadow-orbit-elevated";
 
   const {
     isSearchOpen,
@@ -315,7 +340,7 @@ export function SearchModal() {
       }}
     >
       <div
-        className="orbit-modal-dialog w-full max-w-2xl overflow-hidden rounded-2xl border border-orbit-border bg-orbit-surface shadow-orbit-elevated transition-all flex flex-col h-[92dvh] sm:h-auto max-h-[92dvh] sm:max-h-[82dvh]"
+        className={`orbit-modal-dialog w-full max-w-2xl overflow-hidden border bg-orbit-surface transition-all flex flex-col h-[92dvh] sm:h-auto max-h-[92dvh] sm:max-h-[82dvh] ${dialogRadiusClass}`}
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="orbit-search-modal-heading" className="sr-only">
@@ -326,6 +351,116 @@ export function SearchModal() {
         <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
           {announcementText}
         </div>
+
+        {/* 7-Personality Tactile Top Bezel Strips */}
+        {mounted && (
+          <>
+            {isArchivist && (
+              <div
+                data-testid="search-bezel-archivist"
+                className="relative bg-[#1c2e24] dark:bg-[#15231c] text-[#f4efe4] px-4 py-2 border-b border-[#b89758]/40 flex items-center justify-between select-none"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#b89758] border border-[#d4af37]" />
+                  <span className="font-mono text-[10px] tracking-widest text-[#d4af37] uppercase font-semibold">
+                    EX LIBRIS INDEX // UNIVERSAL CODEX SEARCH
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 text-[10px] font-serif italic text-[#e8decb]/80">
+                  <span>Folio Codex</span>
+                  <span className="text-[#b89758]">❦</span>
+                </div>
+              </div>
+            )}
+
+            {isFuturistic && (
+              <div
+                data-testid="search-bezel-futuristic"
+                className="futuristic-command-deck px-4 py-2 border-b border-[#00f0ff]/20 flex items-center justify-between text-[#94a3b8] select-none"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#00f0ff] shadow-[0_0_8px_#00f0ff] animate-pulse" />
+                  <span className="font-mono text-[10px] uppercase font-bold tracking-wider text-[#00f0ff]">
+                    SYS.SEARCH // INDEX READY
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 font-mono text-[9px] text-[#64748b]">
+                  <span>INDEX: 60Hz REALTIME</span>
+                  <span className="text-[#00f0ff]/70 font-mono">⊕</span>
+                </div>
+              </div>
+            )}
+
+            {isAesthetic && (
+              <div
+                data-testid="search-bezel-aesthetic"
+                className="bg-[#fdfbf7] dark:bg-[#181614] px-4 py-2 border-b border-[#2c2621]/15 dark:border-[#f0eae1]/15 flex items-center justify-between select-none"
+              >
+                <span className="font-serif uppercase text-[9px] tracking-[0.2em] text-[#786c5e] dark:text-[#a89c8e]">
+                  SECTION SEARCH · KINFOLK ARCHIVE
+                </span>
+                <span className="font-serif italic text-[11px] text-[#c06c52]">Universal Index</span>
+              </div>
+            )}
+
+            {isArtistic && (
+              <div
+                data-testid="search-bezel-artistic"
+                className="relative overflow-hidden bg-gradient-to-r from-[#faf6ed] via-[#fff5eb] to-[#f0f4ff] dark:from-[#181615] dark:via-[#1e1b18] dark:to-[#151824] px-4 py-2 border-b border-[#d97706]/30 dark:border-[#d97706]/20 flex items-center justify-between select-none"
+              >
+                <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-[#d97706]">
+                  <span className="w-2 h-2 rounded-full bg-[#d97706]" />
+                  <span>ATELIER ORBIT · PALETTE SEARCH</span>
+                </div>
+                <span className="font-serif italic text-xs text-[#d97706]/80">Chromatic Studio</span>
+              </div>
+            )}
+
+            {isMinimalist && (
+              <div data-testid="search-bezel-minimalist">
+                <div className="w-full h-[2px] bg-[#ff3b00]" />
+                <div className="bg-transparent px-4 py-1.5 border-b border-black/15 dark:border-white/15 flex items-center justify-between select-none">
+                  <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-[#ff3b00]">
+                    <span>SYSTEM SEARCH // UNIVERSAL QUERY</span>
+                  </div>
+                  <span className="font-mono text-[9px] text-[#737373] tracking-widest uppercase">
+                    INDEX 01
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {isNaturalist && (
+              <div
+                data-testid="search-bezel-naturalist"
+                className="naturalist-canopy-hero px-4 py-2 border-b border-[#235c3b]/40 flex items-center justify-between text-[#f4efe4] bg-[#0a1811] select-none"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#f59e0b] shadow-[0_0_8px_#f59e0b]" />
+                  <span className="font-mono text-[10px] uppercase font-bold tracking-widest text-[#f59e0b]">
+                    CONSERVATORY HERBARIUM · INDEX SEARCH
+                  </span>
+                </div>
+                <span className="text-xs select-none">🌱</span>
+              </div>
+            )}
+
+            {isMidnight && (
+              <div
+                data-testid="search-bezel-midnight"
+                className="midnight-zenith-hero px-4 py-2 border-b border-[#1e1b4b] flex items-center justify-between text-[#f8fafc] bg-[#03050c] select-none"
+              >
+                <div className="flex items-center gap-1.5 text-[10px] font-mono tracking-widest text-[#fbbf24] uppercase">
+                  <span className="text-[#fbbf24] select-none">✦</span>
+                  <span>OBSERVATORY EPHEMERIS SEARCH // CELESTIAL INDEX</span>
+                </div>
+                <span className="font-mono text-[9px] text-[#818cf8] tracking-widest uppercase">
+                  SECTOR 00
+                </span>
+              </div>
+            )}
+          </>
+        )}
 
         {/* Search Input Bar */}
         <div className="flex items-center gap-3 border-b border-orbit-border px-3.5 sm:px-4 py-3 sm:py-3.5 bg-orbit-surface">
@@ -348,7 +483,15 @@ export function SearchModal() {
             }}
             onKeyDown={handleInputKeyDown}
             placeholder="Search ORBIT... (e.g. 'planning', '#books', 'gym')"
-            className="flex-1 bg-transparent text-sm sm:text-base font-normal text-orbit-text placeholder:text-orbit-text-muted focus:outline-hidden min-w-0"
+            className={`flex-1 bg-transparent text-sm sm:text-base text-orbit-text placeholder:text-orbit-text-muted focus:outline-hidden min-w-0 ${
+              isArchivist
+                ? "font-serif placeholder:font-serif"
+                : isFuturistic
+                ? "font-mono text-[#00f0ff] placeholder:font-mono placeholder:text-[#00f0ff]/50"
+                : isMinimalist
+                ? "font-mono rounded-none"
+                : "font-normal"
+            }`}
           />
 
           {query && (
@@ -359,7 +502,9 @@ export function SearchModal() {
                 setSelectedRecentIndex(-1);
                 inputRef.current?.focus();
               }}
-              className="flex items-center justify-center min-w-[36px] min-h-[36px] sm:min-w-0 sm:min-h-0 rounded-md p-1.5 sm:p-1 text-orbit-text-muted hover:bg-orbit-subtle hover:text-orbit-text transition-colors"
+              className={`flex items-center justify-center min-w-[36px] min-h-[36px] sm:min-w-0 sm:min-h-0 p-1.5 sm:p-1 text-orbit-text-muted hover:bg-orbit-subtle hover:text-orbit-text transition-colors ${
+                isMinimalist ? "rounded-none" : "rounded-md"
+              }`}
               title="Clear search query"
               aria-label="Clear search query"
             >
@@ -371,17 +516,32 @@ export function SearchModal() {
           <button
             type="button"
             onClick={closeSearch}
-            className="sm:hidden flex items-center justify-center min-w-[36px] min-h-[36px] rounded-md px-2.5 py-1 text-xs font-medium text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text transition-colors"
+            className={`sm:hidden flex items-center justify-center min-w-[36px] min-h-[36px] px-2.5 py-1 text-xs font-medium text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text transition-colors ${
+              isMinimalist ? "rounded-none" : "rounded-md"
+            }`}
             title="Close search"
             aria-label="Close search dialog"
           >
             Done
           </button>
 
-          <div className="hidden sm:flex items-center gap-1 text-[11px] font-mono text-orbit-text-muted bg-orbit-surface-secondary border border-orbit-border px-2 py-0.5 rounded select-none">
+          <div
+            className={`hidden sm:flex items-center gap-1 text-[11px] font-mono select-none px-2 py-0.5 border ${
+              isMinimalist
+                ? "rounded-none border-black/30 dark:border-white/30 text-black dark:text-white bg-transparent"
+                : isFuturistic
+                ? "rounded border-[#00f0ff]/40 bg-[#00f0ff]/10 text-[#00f0ff]"
+                : "rounded border-orbit-border bg-orbit-surface-secondary text-orbit-text-muted"
+            }`}
+          >
             <span>ESC</span>
           </div>
         </div>
+
+        {/* Aesthetic Kinfolk Signature Double Hairline Rule */}
+        {isAesthetic && (
+          <div className="border-t border-b border-[#2c2621]/15 dark:border-[#f0eae1]/15 h-[3px] mx-4" />
+        )}
 
         {/* Filter Tabs Bar */}
         <div
@@ -391,6 +551,49 @@ export function SearchModal() {
         >
           {FILTER_TABS.map((tab) => {
             const isActive = activeFilter === tab.id;
+
+            const tabClass = isMinimalist
+              ? `rounded-none font-mono text-[11px] uppercase tracking-wider px-2.5 py-1 transition-all ${
+                  isActive
+                    ? "bg-[#ff3b00] text-white font-bold"
+                    : "text-orbit-text-secondary hover:bg-black/5 dark:hover:bg-white/10"
+                }`
+              : isNaturalist
+              ? `rounded-full px-3 py-1 text-xs transition-all ${
+                  isActive
+                    ? "bg-[#10b981] text-white shadow-xs font-medium"
+                    : "text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text"
+                }`
+              : isFuturistic
+              ? `rounded-sm font-mono text-xs px-2.5 py-1 transition-all ${
+                  isActive
+                    ? "bg-[#00f0ff] text-[#04111d] font-bold shadow-[0_0_6px_#00f0ff]/50"
+                    : "text-[#94a3b8] hover:text-[#00f0ff]"
+                }`
+              : isArtistic
+              ? `rounded-full px-3 py-1 text-xs relative transition-all ${
+                  isActive
+                    ? "bg-[#d97706] text-white font-medium shadow-xs"
+                    : "text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text"
+                }`
+              : isArchivist
+              ? `rounded-md font-serif text-xs px-2.5 py-1 transition-all ${
+                  isActive
+                    ? "bg-[#1b4332] text-[#faf9f5] font-semibold"
+                    : "text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text"
+                }`
+              : isMidnight
+              ? `rounded-md font-mono text-xs px-2.5 py-1 transition-all ${
+                  isActive
+                    ? "bg-[#818cf8] text-[#03050c] font-semibold"
+                    : "text-orbit-text-secondary hover:text-[#818cf8]"
+                }`
+              : `rounded-md px-2.5 py-1 text-xs whitespace-nowrap transition-all ${
+                  isActive
+                    ? "bg-orbit-accent text-orbit-accent-fg shadow-orbit-xs font-medium"
+                    : "text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text"
+                }`;
+
             return (
               <button
                 key={tab.id}
@@ -399,13 +602,26 @@ export function SearchModal() {
                 aria-selected={isActive}
                 data-active={isActive ? "true" : "false"}
                 onClick={() => setActiveFilter(tab.id)}
-                className={`orbit-filter-tab rounded-md px-2.5 py-1 text-xs whitespace-nowrap transition-all focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-accent ${
-                  isActive
-                    ? "bg-orbit-accent text-orbit-accent-fg shadow-orbit-xs font-medium"
-                    : "text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text"
-                }`}
+                className={`orbit-filter-tab whitespace-nowrap focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-accent relative ${tabClass}`}
               >
-                {tab.label}
+                <span>{tab.label}</span>
+                {/* Artistic Brushstroke accent under active tab */}
+                {isArtistic && isActive && (
+                  <svg
+                    className="absolute -bottom-1 left-2 right-2 h-1 w-[calc(100%-16px)] pointer-events-none"
+                    viewBox="0 0 40 4"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M1 2 Q 20 0, 39 3"
+                      stroke="#d97706"
+                      strokeWidth="2"
+                      fill="none"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                )}
               </button>
             );
           })}
@@ -580,19 +796,43 @@ export function SearchModal() {
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 border-t border-orbit-border bg-orbit-surface-secondary/40 px-4 py-2 text-[11px] text-orbit-text-muted">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <span className="inline-flex items-center gap-1">
-              <kbd className="rounded border border-orbit-border bg-orbit-surface px-1.5 py-0.5 font-mono text-[10px] text-orbit-text">
+              <kbd
+                className={`border bg-orbit-surface px-1.5 py-0.5 font-mono text-[10px] text-orbit-text font-semibold ${
+                  isMinimalist
+                    ? "rounded-none border-black/30 dark:border-white/30"
+                    : isFuturistic
+                    ? "rounded border-[#00f0ff]/40 text-[#00f0ff]"
+                    : "rounded border-orbit-border"
+                }`}
+              >
                 ↑↓
               </kbd>
               <span>Navigate</span>
             </span>
             <span className="inline-flex items-center gap-1">
-              <kbd className="rounded border border-orbit-border bg-orbit-surface px-1.5 py-0.5 font-mono text-[10px] text-orbit-text">
+              <kbd
+                className={`border bg-orbit-surface px-1.5 py-0.5 font-mono text-[10px] text-orbit-text font-semibold ${
+                  isMinimalist
+                    ? "rounded-none border-black/30 dark:border-white/30"
+                    : isFuturistic
+                    ? "rounded border-[#00f0ff]/40 text-[#00f0ff]"
+                    : "rounded border-orbit-border"
+                }`}
+              >
                 ↵
               </kbd>
               <span>Open</span>
             </span>
             <span className="hidden items-center gap-1 sm:inline-flex">
-              <kbd className="rounded border border-orbit-border bg-orbit-surface px-1.5 py-0.5 font-mono text-[10px] text-orbit-text">
+              <kbd
+                className={`border bg-orbit-surface px-1.5 py-0.5 font-mono text-[10px] text-orbit-text font-semibold ${
+                  isMinimalist
+                    ? "rounded-none border-black/30 dark:border-white/30"
+                    : isFuturistic
+                    ? "rounded border-[#00f0ff]/40 text-[#00f0ff]"
+                    : "rounded border-orbit-border"
+                }`}
+              >
                 Tab
               </kbd>
               <span>Filter</span>
@@ -605,7 +845,15 @@ export function SearchModal() {
               onClick={() => handleOpenQuickCapture(query.trim() || undefined)}
               className="inline-flex items-center gap-1 whitespace-nowrap hover:text-orbit-accent transition-colors"
             >
-              <kbd className="rounded border border-orbit-border bg-orbit-surface px-1.5 py-0.5 font-mono text-[10px] text-orbit-text">
+              <kbd
+                className={`border bg-orbit-surface px-1.5 py-0.5 font-mono text-[10px] text-orbit-text font-semibold ${
+                  isMinimalist
+                    ? "rounded-none border-black/30 dark:border-white/30"
+                    : isFuturistic
+                    ? "rounded border-[#00f0ff]/40 text-[#00f0ff]"
+                    : "rounded border-orbit-border"
+                }`}
+              >
                 Ctrl+N
               </kbd>
               <span>Quick Capture</span>

@@ -2287,10 +2287,11 @@ pre {
   box-shadow: 0 24px 60px -12px rgba(120, 70, 140, 0.22), 0 8px 24px -4px rgba(230, 100, 80, 0.12) !important;
 }
 
-:root[data-orbit-theme="minimalist"] .orbit-modal-dialog {
+:root[data-orbit-theme="minimalist"] .orbit-modal-dialog,
+.dark:root[data-orbit-theme="minimalist"] .orbit-modal-dialog {
   border: 1px solid var(--orbit-border-strong) !important;
   box-shadow: none !important;
-  border-radius: var(--orbit-radius-control) !important;
+  border-radius: 0px !important;
   background-color: var(--orbit-bg) !important;
 }
 

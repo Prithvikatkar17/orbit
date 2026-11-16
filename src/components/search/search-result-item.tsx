@@ -14,6 +14,8 @@ import {
   CornerDownLeft,
 } from "lucide-react";
 import { Badge, type BadgeVariant } from "@/components/ui/badge";
+import { useThemePersonality } from "@/components/theme-personality-provider";
+import { useMounted } from "@/lib/utils/dates";
 import type {
   SearchResultItem as SearchResultItemType,
   SearchSnippet,
@@ -104,6 +106,8 @@ export function SearchResultItem({
   onMouseEnter,
 }: SearchResultItemProps) {
   const itemRef = useRef<HTMLButtonElement>(null);
+  const { themePersonality } = useThemePersonality();
+  const mounted = useMounted();
 
   // Auto-scroll into view when selected via arrow keys
   useEffect(() => {
@@ -114,6 +118,44 @@ export function SearchResultItem({
       });
     }
   }, [isSelected]);
+
+  // Personality-specific geometry and accents
+  const isMinimalist = mounted && themePersonality === "minimalist";
+  const isMidnight = mounted && themePersonality === "midnight";
+  const isFuturistic = mounted && themePersonality === "futuristic";
+  const isArchivist = mounted && themePersonality === "archivist";
+  const isNaturalist = mounted && themePersonality === "naturalist";
+  const isArtistic = mounted && themePersonality === "artistic";
+
+  const itemRadiusClass = isMinimalist
+    ? "rounded-none"
+    : isNaturalist || isArtistic
+    ? "rounded-xl"
+    : isFuturistic || isArchivist
+    ? "rounded-md"
+    : "rounded-lg";
+
+  const iconRadiusClass = isMinimalist
+    ? "rounded-none"
+    : isNaturalist
+    ? "rounded-full"
+    : isFuturistic
+    ? "rounded-sm"
+    : "rounded-md";
+
+  const activePillClass = isMinimalist
+    ? "w-1 rounded-none bg-[#ff3b00]"
+    : isFuturistic
+    ? "w-1 rounded-full bg-[#00f0ff] shadow-[0_0_6px_#00f0ff]"
+    : isArchivist
+    ? "w-1 rounded-full bg-[#b89758]"
+    : isMidnight
+    ? "w-1 rounded-full bg-[#818cf8]"
+    : isNaturalist
+    ? "w-1 rounded-full bg-[#10b981]"
+    : isArtistic
+    ? "w-1 rounded-full bg-[#d97706]"
+    : "w-1 rounded-full bg-orbit-accent";
 
   // Module iconography & styling using Quiet Desk semantic palette
   const { icon, badgeVariant, containerBg } = (() => {
@@ -186,23 +228,27 @@ export function SearchResultItem({
       type="button"
       onClick={() => onSelect(item)}
       onMouseEnter={onMouseEnter}
-      className={`orbit-search-item group w-full text-left rounded-lg p-2.5 sm:p-3 min-h-[48px] sm:min-h-[44px] transition-all flex items-start gap-2.5 sm:gap-3 select-none relative focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-accent ${
+      className={`orbit-search-item group w-full text-left ${itemRadiusClass} p-2.5 sm:p-3 min-h-[48px] sm:min-h-[44px] transition-all flex items-start gap-2.5 sm:gap-3 select-none relative focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-accent ${
         isSelected
-          ? "bg-orbit-surface-secondary border border-orbit-border shadow-orbit-xs"
+          ? isMinimalist
+            ? "bg-black/5 dark:bg-white/10 border border-black/30 dark:border-white/30 shadow-none"
+            : isMidnight
+            ? "bg-[#1e1b4b]/50 border border-[#818cf8]/40 shadow-orbit-xs text-[#f8fafc]"
+            : "bg-orbit-surface-secondary border border-orbit-border shadow-orbit-xs"
           : "hover:bg-orbit-subtle/80 border border-transparent"
       }`}
     >
       {/* Left Active Accent Pill */}
       {isSelected && (
         <span
-          className="absolute left-1 top-2.5 bottom-2.5 w-1 rounded-full bg-orbit-accent"
+          className={`absolute left-1 top-2.5 bottom-2.5 ${activePillClass}`}
           aria-hidden="true"
         />
       )}
 
       {/* Icon Capsule */}
       <div
-        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md mt-0.5 border border-orbit-border/40 transition-colors ${containerBg}`}
+        className={`flex h-8 w-8 shrink-0 items-center justify-center ${iconRadiusClass} mt-0.5 border border-orbit-border/40 transition-colors ${containerBg}`}
       >
         {icon}
       </div>
@@ -210,7 +256,22 @@ export function SearchResultItem({
       {/* Main Content Info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="font-medium text-sm text-orbit-text truncate">
+          {/* Midnight Starlight Indicator */}
+          {isSelected && isMidnight && (
+            <span
+              className="text-[#fbbf24] font-mono text-xs select-none shrink-0"
+              aria-hidden="true"
+              title="Active selection"
+            >
+              ✦
+            </span>
+          )}
+
+          <span
+            className={`font-medium text-sm text-orbit-text truncate ${
+              isArchivist ? "font-serif" : isFuturistic ? "font-mono" : ""
+            }`}
+          >
             <HighlightedText
               text={item.title}
               offsets={titleHighlight?.offsets}
@@ -218,7 +279,7 @@ export function SearchResultItem({
           </span>
 
           {item.badge && (
-            <Badge variant={badgeVariant} className="capitalize shrink-0">
+            <Badge variant={badgeVariant} className={`capitalize shrink-0 ${isMinimalist ? "rounded-none" : ""}`}>
               {item.badge}
             </Badge>
           )}
@@ -239,7 +300,13 @@ export function SearchResultItem({
       <div
         className={`shrink-0 flex items-center gap-1 font-mono text-[11px] font-medium transition-opacity ${
           isSelected
-            ? "opacity-100 text-orbit-accent"
+            ? isMidnight
+              ? "opacity-100 text-[#818cf8]"
+              : isFuturistic
+              ? "opacity-100 text-[#00f0ff]"
+              : isMinimalist
+              ? "opacity-100 text-[#ff3b00]"
+              : "opacity-100 text-orbit-accent"
             : "opacity-0"
         }`}
       >
