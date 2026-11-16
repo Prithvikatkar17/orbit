@@ -137,7 +137,7 @@ export function Sidebar() {
       {/* Mobile / Tablet Backdrop (< 1024px) */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/40 backdrop-blur-xs lg:hidden"
+          className="orbit-modal-backdrop fixed inset-0 z-30 lg:hidden"
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />
@@ -311,7 +311,7 @@ export function MobileHeader() {
   const openSearch = useSearchStore((s) => s.openSearch);
 
   return (
-    <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-orbit-border bg-orbit-surface/95 px-2.5 backdrop-blur-xs sm:px-4 lg:hidden">
+    <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-orbit-border bg-orbit-surface px-2.5 sm:px-4 lg:hidden">
       <button
         id="orbit-mobile-nav-trigger"
         type="button"

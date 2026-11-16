@@ -2,7 +2,6 @@
 
 import React from "react";
 import {
-  Calendar as CalendarIcon,
   ChevronLeft,
   ChevronRight,
   Plus,
@@ -10,7 +9,8 @@ import {
   X,
 } from "lucide-react";
 import { EVENT_TYPES } from "@/lib/constants";
-import { Button, PageHeader, SurfaceCard } from "@/components/ui";
+import { Button, SurfaceCard } from "@/components/ui";
+import { PersonalityPageHeader } from "@/components/layout/personality-page-header";
 
 export type CalendarViewMode = "month" | "week" | "day";
 
@@ -43,11 +43,14 @@ export function CalendarHeader({
 }: CalendarHeaderProps) {
   return (
     <header className="space-y-4">
-      <PageHeader
-        eyebrow="TIME & RHYTHM"
-        icon={<CalendarIcon className="h-4 w-4" />}
-        title="Calendar"
-        description="Plan events, milestones, and recurring schedules in one quiet view."
+      <PersonalityPageHeader
+        moduleIndex="03"
+        title="Calendar & Horizon"
+        subtitle="Scheduled occurrences, time blocks, and upcoming milestones."
+        metrics={[
+          { label: "View", value: viewMode.toUpperCase() },
+          { label: "Period", value: title },
+        ]}
         actions={
           <Button
             variant="primary"

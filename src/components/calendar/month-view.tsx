@@ -300,7 +300,7 @@ export function MonthView({
       {/* Overflow Popover Modal */}
       {dayOverflowPopover && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4 backdrop-blur-2xs"
+          className="orbit-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={() => setDayOverflowPopover(null)}
         >
           <div

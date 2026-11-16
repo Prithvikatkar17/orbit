@@ -42,9 +42,9 @@ test("Phase 8D.3 — Insights adopts shared UI primitives, PageHeader, SurfaceCa
   const recent = readSrc("src/components/insights/recent-accomplishments.tsx");
 
   // Page level
-  assert.match(page, /PageHeader/);
-  assert.match(page, /INSIGHTS & ANALYTICS/);
-  assert.match(page, /Personal Insights/);
+  assert.match(page, /PersonalityPageHeader|PageHeader/);
+  assert.match(page, /INSIGHTS & ANALYTICS|Insights & Telemetry/);
+  assert.match(page, /Personal Insights|Insights & Telemetry/);
 
   // SurfaceCard usage
   assert.match(overview, /SurfaceCard/);
@@ -66,7 +66,6 @@ test("Phase 8D.3 — Insights adopts shared UI primitives, PageHeader, SurfaceCa
   assert.match(recent, /font-mono/);
 
   // Badges
-  assert.match(overview, /Badge/);
   assert.match(habits, /Badge/);
   assert.match(tasks, /Badge/);
   assert.match(recent, /Badge/);
@@ -83,7 +82,6 @@ test("Phase 8D.3 — OverviewCards contains narrative summary strip and 5 key me
   assert.match(overview, /Completion Rate/);
   assert.match(overview, /Overdue Tasks/);
   assert.match(overview, /Habit Consistency/);
-  assert.match(overview, /Rhythm & Output/);
 });
 
 // ---------------------------------------------------------------------------

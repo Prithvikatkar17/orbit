@@ -98,8 +98,8 @@ test("Phase 10B.2 — Insights OverviewCards implements asymmetric Bento layout 
     "Overdue Tasks must be a compact supporting tile spanning 4 columns"
   );
 
-  // Narrative summary strip
-  assert.match(overview, /Rhythm & Output/, "Must preserve Rhythm & Output summary strip");
+  // Hero and supporting cards
+  assert.match(overview, /Tasks Completed/, "Must preserve Tasks Completed hero tile");
   assert.match(overview, /font-display/, "Must preserve editorial display typography");
   assert.match(overview, /font-mono/, "Must preserve tabular mono figures");
 });

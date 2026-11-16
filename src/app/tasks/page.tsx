@@ -39,10 +39,10 @@ import {
   Button,
   ConfirmDialog,
   EmptyState,
-  PageHeader,
   Select,
   SurfaceCard,
 } from "@/components/ui";
+import { PersonalityPageHeader } from "@/components/layout/personality-page-header";
 
 type ViewTab = "all" | "today" | "upcoming" | "someday" | "completed";
 type SortOption = "custom" | "dueDate" | "priority" | "createdAt";
@@ -268,11 +268,20 @@ export default function TasksPage() {
         <DeepLinkListener params={["taskId"]} onDeepLink={handleTaskDeepLink} />
       </Suspense>
 
-      {/* Page Header */}
-      <PageHeader
-        eyebrow="EXECUTION & GOALS"
-        title="Tasks & Goals"
-        description="Organize action items, highlight long-term goals, and focus on what moves things forward."
+      {/* Personality Page Header */}
+      <PersonalityPageHeader
+        moduleIndex="01"
+        title="Tasks & Execution"
+        subtitle="Actionable items, focused goals, and priority execution vectors."
+        metrics={[
+          {
+            label: "Due Today",
+            value: counts.dueToday + counts.overdue,
+            tone: counts.dueToday + counts.overdue > 0 ? "accent" : "default",
+          },
+          { label: "Active", value: counts.active },
+          { label: "Completed", value: counts.completed },
+        ]}
         actions={
           <Button
             variant="primary"

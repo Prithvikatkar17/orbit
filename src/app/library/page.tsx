@@ -32,9 +32,9 @@ import {
   Button,
   ConfirmDialog,
   EmptyState,
-  PageHeader,
   SurfaceCard,
 } from "@/components/ui";
+import { PersonalityPageHeader } from "@/components/layout/personality-page-header";
 
 const VIEW_MODE_STORAGE_KEY = "orbit-library-view-mode";
 const VIEW_MODE_EVENT = "orbit-library-view-mode-change";
@@ -389,12 +389,15 @@ export default function LibraryPage() {
         />
       </Suspense>
 
-      {/* Page Header */}
-      <PageHeader
-        eyebrow="PERSONAL LIBRARY"
-        icon="📚"
-        title="Knowledge & Resources"
-        description="Curate bookmarks, videos, notes, articles, and learning materials."
+      {/* Personality Page Header */}
+      <PersonalityPageHeader
+        moduleIndex="05"
+        title="Library & Notes"
+        subtitle="Curated reading collections, reference notes, and archived materials."
+        metrics={[
+          { label: "Entries", value: entries.length },
+          { label: "Collections", value: collections.length },
+        ]}
         actions={
           <>
             <Button
@@ -431,9 +434,10 @@ export default function LibraryPage() {
         }
       />
 
-      {/* Editorial Archive Summary & Quick Filter Strip */}
-      <SurfaceCard variant="tonal" padding="sm">
-        <div className="flex flex-wrap items-center justify-between gap-3">
+      {/* Unified Control Toolbar: Shelves, Collections, Search, Filters, Sorting, and View Toggle */}
+      <SurfaceCard padding="sm" className="space-y-3 p-3.5 sm:p-4">
+        {/* Top Row: View Tabs Strip + Archive Summary */}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-orbit-border/70 pb-3">
           <div className="flex flex-wrap items-center gap-1.5">
             {(
               [
@@ -449,7 +453,7 @@ export default function LibraryPage() {
                   key={tab.id}
                   type="button"
                   onClick={() => setActiveSection(tab.id)}
-                  className={`inline-flex min-h-[38px] items-center gap-2 rounded-orbit-control px-3 py-1.5 text-xs font-semibold transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-ring ${
+                  className={`inline-flex min-h-[36px] items-center gap-2 rounded-orbit-control px-3 py-1 text-xs font-semibold transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-ring ${
                     isSelected
                       ? "bg-orbit-surface text-orbit-text shadow-orbit-xs"
                       : "text-orbit-text-secondary hover:bg-orbit-surface/60 hover:text-orbit-text"
@@ -472,10 +476,7 @@ export default function LibraryPage() {
             <span>{collections.length} {collections.length === 1 ? "collection" : "collections"}</span>
           </div>
         </div>
-      </SurfaceCard>
 
-      {/* Control Toolbar: Collections, Categories, Search, Filters, Sorting, and View Toggle */}
-      <SurfaceCard padding="sm" className="space-y-3">
         {/* Collections Shelf Bar */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden border-b border-orbit-border/70">
           <button

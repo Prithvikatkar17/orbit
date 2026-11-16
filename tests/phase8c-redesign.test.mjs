@@ -93,7 +93,10 @@ test("Phase 8C — Tasks page uses PageHeader, unified SurfaceCard toolbar, Empt
   const tasksPage = readSrc("src/app/tasks/page.tsx");
   const taskItem = readSrc("src/components/tasks/sortable-task-item.tsx");
 
-  assert.ok(tasksPage.includes("<PageHeader"), "Tasks page should use PageHeader");
+  assert.ok(
+    tasksPage.includes("<PageHeader") || tasksPage.includes("<PersonalityPageHeader"),
+    "Tasks page should use PageHeader or PersonalityPageHeader"
+  );
   assert.ok(tasksPage.includes("<EmptyState"), "Tasks page should use EmptyState");
   assert.ok(tasksPage.includes("<ConfirmDialog"), "Tasks page should preserve ConfirmDialog");
   assert.ok(
@@ -112,7 +115,10 @@ test("Phase 8C — Tasks page uses PageHeader, unified SurfaceCard toolbar, Empt
 test("Phase 8C — Inbox page preserves ⌘⇧K shortcut, accessible modals, and semantic design", () => {
   const inbox = readSrc("src/app/inbox/page.tsx");
 
-  assert.ok(inbox.includes("<PageHeader"), "Inbox should use PageHeader");
+  assert.ok(
+    inbox.includes("<PageHeader") || inbox.includes("<PersonalityPageHeader"),
+    "Inbox should use PageHeader or PersonalityPageHeader"
+  );
   assert.ok(inbox.includes("<SurfaceCard"), "Inbox should use SurfaceCard");
   assert.ok(inbox.includes("<EmptyState"), "Inbox should use EmptyState");
   assert.ok(inbox.includes("<ConfirmDialog"), "Inbox should use ConfirmDialog");
@@ -130,8 +136,14 @@ test("Phase 8C — Habits page uses momentum summary, accessible tablist, and no
   const habitsPage = readSrc("src/app/habits/page.tsx");
   const habitCard = readSrc("src/components/habits/habit-card.tsx");
 
-  assert.ok(habitsPage.includes("<PageHeader"), "Habits page should use PageHeader");
-  assert.ok(habitsPage.includes("<SurfaceCard"), "Habits page should use SurfaceCard");
+  assert.ok(
+    habitsPage.includes("<PageHeader") || habitsPage.includes("<PersonalityPageHeader"),
+    "Habits page should use PageHeader or PersonalityPageHeader"
+  );
+  assert.ok(
+    habitsPage.includes("<SurfaceCard") || habitsPage.includes("<PersonalityPageHeader"),
+    "Habits page should use SurfaceCard or PersonalityPageHeader"
+  );
   assert.ok(habitsPage.includes("<EmptyState"), "Habits page should use EmptyState");
   assert.ok(habitsPage.includes("<ConfirmDialog"), "Habits page should preserve ConfirmDialog");
   assert.ok(

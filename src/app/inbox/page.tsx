@@ -15,7 +15,6 @@ import {
   Link2,
   FileText,
   ChevronDown,
-  Inbox as InboxIcon,
 } from "lucide-react";
 import { db } from "@/lib/db/client";
 import { type Item, ItemSchema } from "@/lib/schemas";
@@ -29,10 +28,10 @@ import {
   EmptyState,
   FormField,
   Input,
-  PageHeader,
   SurfaceCard,
   Textarea,
 } from "@/components/ui";
+import { PersonalityPageHeader } from "@/components/layout/personality-page-header";
 import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
 
 function getDisplayHost(rawUrl?: string): string | null {
@@ -86,7 +85,7 @@ function EditInboxModal({ item, onClose, onSave }: EditInboxModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs animate-in fade-in"
+      className="orbit-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget && !isSubmitting) {
           onClose();
@@ -299,12 +298,18 @@ export default function InboxPage() {
         <DeepLinkListener params={["itemId"]} onDeepLink={handleInboxDeepLink} />
       </Suspense>
 
-      {/* Header */}
-      <PageHeader
-        eyebrow="UNIVERSAL INBOX"
-        icon={<InboxIcon className="h-4 w-4" />}
-        title="Collect & Triage"
-        description="Drop fleeting thoughts, links, and ideas here. Organize them into tasks, habits, or library resources when ready."
+      {/* Personality Page Header */}
+      <PersonalityPageHeader
+        moduleIndex="04"
+        title="Inbox & Triage"
+        subtitle="Unsorted captures, links, and notes awaiting organization."
+        metrics={[
+          {
+            label: "Pending",
+            value: items.length,
+            tone: items.length > 0 ? "accent" : "default",
+          },
+        ]}
         actions={
           <Button
             variant="primary"

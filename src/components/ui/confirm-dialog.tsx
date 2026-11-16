@@ -65,7 +65,7 @@ export function ConfirmDialog({
 
   return createPortal(
     <div
-      className="orbit-modal-backdrop fixed inset-0 z-[200] flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs animate-in fade-in"
+      className="orbit-modal-backdrop fixed inset-0 z-[200] flex items-center justify-center p-4 animate-in fade-in"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget && canDismissConfirmDialog(loading)) {
           onClose();

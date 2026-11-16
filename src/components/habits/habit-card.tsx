@@ -16,6 +16,13 @@ import { type Habit, HabitLogSchema } from "@/lib/schemas";
 import { HabitHeatmap } from "@/components/habits/heatmap";
 import { calculateStreak, useTodayDate } from "@/lib/utils/dates";
 import { Badge, SurfaceCard } from "@/components/ui";
+import { useTheme } from "next-themes";
+import { useThemePersonality } from "@/components/theme-personality-provider";
+import {
+  getHarmonizedHabitColor,
+  getContrastTextColor,
+  isLightHexColor,
+} from "@/lib/utils/color-harmony";
 
 interface HabitCardProps {
   habit: Habit;
@@ -39,6 +46,23 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
   }, [logs]);
 
   const isCompletedToday = completedDates.has(today);
+
+  const { themePersonality } = useThemePersonality();
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
+  const harmonizedColor = useMemo(
+    () => getHarmonizedHabitColor(habit.color, themePersonality, isDark),
+    [habit.color, themePersonality, isDark]
+  );
+  const contrastTextColor = useMemo(
+    () => getContrastTextColor(harmonizedColor),
+    [harmonizedColor]
+  );
+  const isLightAccent = useMemo(
+    () => isLightHexColor(harmonizedColor),
+    [harmonizedColor]
+  );
 
   const { currentStreak, bestStreak } = useMemo(() => {
     return calculateStreak(Array.from(completedDates), habit.frequency, habit.customDays);
@@ -99,7 +123,7 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
         <div className="flex min-w-0 items-start gap-3">
           <div
             className="mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full ring-2 ring-orbit-border"
-            style={{ backgroundColor: habit.color }}
+            style={{ backgroundColor: harmonizedColor }}
           />
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
@@ -125,8 +149,8 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
           <div
             className="inline-flex items-center gap-1.5 rounded-orbit-control px-2.5 py-1 text-xs font-semibold tabular-nums"
             style={{
-              backgroundColor: `${habit.color}18`,
-              color: habit.color,
+              backgroundColor: `${harmonizedColor}18`,
+              color: harmonizedColor,
             }}
             title="Current consecutive streak"
           >
@@ -150,19 +174,25 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
             aria-pressed={isCompletedToday}
             style={
               isCompletedToday
-                ? { backgroundColor: habit.color, borderColor: habit.color }
+                ? {
+                    backgroundColor: harmonizedColor,
+                    borderColor: harmonizedColor,
+                    color: contrastTextColor,
+                  }
                 : undefined
             }
             className={`inline-flex min-h-[44px] sm:min-h-[38px] items-center gap-2 rounded-orbit-control border px-3.5 py-2 sm:py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring focus-visible:ring-offset-2 focus-visible:ring-offset-orbit-surface ${
               isCompletedToday
-                ? "text-white shadow-orbit-xs"
+                ? "shadow-orbit-xs"
                 : "border-orbit-border-strong bg-orbit-surface text-orbit-text hover:bg-orbit-surface-secondary"
             }`}
           >
             <span
               className={`flex h-4 w-4 items-center justify-center rounded ${
                 isCompletedToday
-                  ? "bg-white/25"
+                  ? isLightAccent
+                    ? "bg-black/15 text-inherit"
+                    : "bg-white/25 text-inherit"
                   : "border border-orbit-border-strong"
               }`}
             >
@@ -216,7 +246,7 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
       <div className="mt-4 border-t border-orbit-border pt-4">
         <HabitHeatmap
           completedDates={completedDates}
-          color={habit.color}
+          color={harmonizedColor}
           today={today}
         />
       </div>

@@ -2790,9 +2790,35 @@ pre {
 /* 5. Surface & Interactive Cards */
 .orbit-surface-card {
   position: relative;
-  backdrop-filter: blur(var(--orbit-card-blur, 0px));
-  -webkit-backdrop-filter: blur(var(--orbit-card-blur, 0px));
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   transition: border-color var(--orbit-transition-fast), box-shadow var(--orbit-transition-fast), background-color var(--orbit-transition-fast);
+}
+
+/* Minimalist Open-Ledger Surface Card & Sharp Architectural Corners */
+:root[data-orbit-theme="minimalist"] .orbit-surface-card,
+.dark:root[data-orbit-theme="minimalist"] .orbit-surface-card,
+[data-orbit-theme="minimalist"] .orbit-surface-card {
+  box-shadow: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: 0px !important;
+}
+
+.dark:root[data-orbit-theme="minimalist"] .orbit-surface-card,
+.dark [data-orbit-theme="minimalist"] .orbit-surface-card {
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+:root[data-orbit-theme="minimalist"] .rounded-orbit-card,
+:root[data-orbit-theme="minimalist"] .rounded-orbit-control,
+:root[data-orbit-theme="minimalist"] .rounded-xl,
+:root[data-orbit-theme="minimalist"] .rounded-2xl,
+:root[data-orbit-theme="minimalist"] .rounded-lg,
+:root[data-orbit-theme="minimalist"] .rounded-md,
+:root[data-orbit-theme="minimalist"] button,
+:root[data-orbit-theme="minimalist"] input,
+:root[data-orbit-theme="minimalist"] select {
+  border-radius: 0px !important;
 }
 
 .orbit-card-interactive {

@@ -4,7 +4,6 @@ import React, { useState, useMemo, useCallback, Suspense } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   Plus,
-  Flame,
   Sparkles,
   Archive,
 } from "lucide-react";
@@ -18,9 +17,8 @@ import {
   Button,
   ConfirmDialog,
   EmptyState,
-  PageHeader,
-  SurfaceCard,
 } from "@/components/ui";
+import { PersonalityPageHeader } from "@/components/layout/personality-page-header";
 
 export default function HabitsPage() {
   const [activeTab, setActiveTab] = useState<"active" | "archived">("active");
@@ -146,100 +144,87 @@ export default function HabitsPage() {
         <DeepLinkListener params={["habitId"]} onDeepLink={handleHabitDeepLink} />
       </Suspense>
 
-      {/* Top Banner */}
-      <PageHeader
-        eyebrow="DAILY RHYTHM"
-        title="Habits"
-        description="Steady routines, gentle streaks, and your 180-day rhythm."
+      {/* Personality Page Header */}
+      <PersonalityPageHeader
+        moduleIndex="02"
+        title="Habits & Rituals"
+        subtitle="Daily consistency, cadence streaks, and long-term momentum."
+        metrics={[
+          { label: "Active", value: stats.activeCount },
+          {
+            label: "Done Today",
+            value: `${stats.completedToday}/${stats.activeCount}`,
+            tone: stats.completedToday > 0 ? "accent" : "default",
+          },
+          { label: "Rate", value: `${stats.completionRate}%` },
+          { label: "Best Streak", value: `${stats.bestGlobalStreak}d` },
+        ]}
         actions={
-          <Button
-            variant="primary"
-            size="md"
-            icon={<Plus className="h-4 w-4" />}
-            onClick={() => {
-              setEditingHabit(null);
-              setModalOpen(true);
-            }}
-          >
-            New Habit
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Segmented Active / Archived Filter Tabs */}
+            <div
+              role="tablist"
+              aria-label="Habit status views"
+              className="inline-flex rounded-orbit-control border border-orbit-border/70 bg-orbit-surface-secondary/70 p-0.5"
+            >
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeTab === "active"}
+                onClick={() => setActiveTab("active")}
+                className={`inline-flex min-h-[34px] sm:min-h-[30px] items-center gap-1.5 rounded-[calc(var(--orbit-radius-control)-2px)] px-2.5 py-1 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring ${
+                  activeTab === "active"
+                    ? "bg-orbit-surface text-orbit-text shadow-orbit-xs"
+                    : "text-orbit-text-secondary hover:text-orbit-text"
+                }`}
+              >
+                <span>Active</span>
+                <span
+                  className={`tabular-nums text-[11px] ${
+                    activeTab === "active" ? "text-orbit-accent font-bold" : "text-orbit-text-muted"
+                  }`}
+                >
+                  {activeHabitsCount}
+                </span>
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeTab === "archived"}
+                onClick={() => setActiveTab("archived")}
+                className={`inline-flex min-h-[34px] sm:min-h-[30px] items-center gap-1.5 rounded-[calc(var(--orbit-radius-control)-2px)] px-2.5 py-1 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring ${
+                  activeTab === "archived"
+                    ? "bg-orbit-surface text-orbit-text shadow-orbit-xs"
+                    : "text-orbit-text-secondary hover:text-orbit-text"
+                }`}
+              >
+                <span>Archived</span>
+                {archivedHabitsCount > 0 && (
+                  <span
+                    className={`tabular-nums text-[11px] ${
+                      activeTab === "archived" ? "text-orbit-accent font-bold" : "text-orbit-text-muted"
+                    }`}
+                  >
+                    {archivedHabitsCount}
+                  </span>
+                )}
+              </button>
+            </div>
+
+            <Button
+              variant="primary"
+              size="md"
+              icon={<Plus className="h-4 w-4" />}
+              onClick={() => {
+                setEditingHabit(null);
+                setModalOpen(true);
+              }}
+            >
+              New Habit
+            </Button>
+          </div>
         }
       />
-
-      {/* Cohesive Momentum Strip + Segmented Filter */}
-      <SurfaceCard padding="none" className="p-4 sm:p-5">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          {/* Today's momentum summary */}
-          <div className="flex-1 space-y-2">
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-              <span className="font-semibold text-orbit-text tabular-nums">
-                {stats.completedToday} of {stats.activeCount} completed today
-              </span>
-              <span className="text-xs font-medium text-orbit-accent tabular-nums">
-                {stats.completionRate}% daily rate
-              </span>
-              <span className="inline-flex items-center gap-1 text-xs font-medium text-orbit-text-secondary tabular-nums">
-                <Flame className="h-3.5 w-3.5 text-orbit-warning" />
-                Best streak: {stats.bestGlobalStreak}d
-              </span>
-            </div>
-            <div className="h-1.5 max-w-md overflow-hidden rounded-full bg-orbit-subtle">
-              <div
-                className="h-full rounded-full bg-orbit-accent transition-all duration-500"
-                style={{ width: `${Math.min(100, stats.completionRate)}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Segmented Active / Archived Tabs */}
-          <div
-            role="tablist"
-            aria-label="Habit status views"
-            className="inline-flex self-start rounded-orbit-control bg-orbit-surface-secondary p-1"
-          >
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === "active"}
-              onClick={() => setActiveTab("active")}
-              className={`inline-flex min-h-[40px] sm:min-h-[34px] items-center gap-1.5 rounded-[calc(var(--orbit-radius-control)-2px)] px-3 py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring ${
-                activeTab === "active"
-                  ? "bg-orbit-surface text-orbit-text shadow-orbit-xs"
-                  : "text-orbit-text-secondary hover:text-orbit-text"
-              }`}
-            >
-              <span>Active</span>
-              <span
-                className={`tabular-nums ${
-                  activeTab === "active" ? "text-orbit-accent" : "text-orbit-text-muted"
-                }`}
-              >
-                {activeHabitsCount}
-              </span>
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === "archived"}
-              onClick={() => setActiveTab("archived")}
-              className={`inline-flex min-h-[40px] sm:min-h-[34px] items-center gap-1.5 rounded-[calc(var(--orbit-radius-control)-2px)] px-3 py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orbit-ring ${
-                activeTab === "archived"
-                  ? "bg-orbit-surface text-orbit-text shadow-orbit-xs"
-                  : "text-orbit-text-secondary hover:text-orbit-text"
-              }`}
-            >
-              <span>Archived</span>
-              <span
-                className={`tabular-nums ${
-                  activeTab === "archived" ? "text-orbit-accent" : "text-orbit-text-muted"
-                }`}
-              >
-                {archivedHabitsCount}
-              </span>
-            </button>
-          </div>
-        </div>
-      </SurfaceCard>
 
       {/* Habit Cards List */}
       {displayedHabits.length === 0 ? (

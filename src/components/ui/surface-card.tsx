@@ -16,10 +16,9 @@ export interface SurfaceCardProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 const variantClasses: Record<SurfaceCardVariant, string> = {
-  outlined:
-    "border border-orbit-border bg-orbit-surface shadow-orbit-xs backdrop-blur-[var(--orbit-card-blur,0px)]",
+  outlined: "border border-orbit-border bg-orbit-surface shadow-orbit-xs",
   elevated:
-    "border border-orbit-border/75 bg-orbit-surface-elevated shadow-orbit-card backdrop-blur-[var(--orbit-card-blur,0px)]",
+    "border border-orbit-border/75 bg-orbit-surface-elevated shadow-orbit-card",
   tonal: "border border-transparent bg-orbit-surface-secondary shadow-none",
   flat: "border border-transparent bg-transparent shadow-none",
 };

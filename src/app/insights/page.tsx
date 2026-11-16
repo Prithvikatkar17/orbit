@@ -10,7 +10,7 @@ import {
   calculateAnalyticsSnapshot,
   type DateRangeType,
 } from "@/lib/services/analytics-service";
-import { PageHeader } from "@/components/ui/page-header";
+import { PersonalityPageHeader } from "@/components/layout/personality-page-header";
 import { OverviewCards } from "@/components/insights/overview-cards";
 import { ActivityChart } from "@/components/insights/activity-chart";
 import { HabitBreakdown } from "@/components/insights/habit-breakdown";
@@ -75,12 +75,20 @@ export default function InsightsPage() {
 
   return (
     <div className="space-y-6 pb-16 animate-in fade-in duration-200">
-      {/* Editorial Page Header with Date Range Selector */}
-      <PageHeader
-        eyebrow="INSIGHTS & ANALYTICS"
-        icon="📊"
-        title="Personal Insights"
-        description="Reflect on your momentum, output velocity, and habit consistency over time."
+      {/* Personality Page Header with Date Range Selector */}
+      <PersonalityPageHeader
+        moduleIndex="06"
+        title="Insights & Telemetry"
+        subtitle="Velocity reflection, habit consistency, and weekly momentum."
+        metrics={[
+          { label: "Range", value: rangeType.toUpperCase() },
+          { label: "Tasks Done", value: snapshot?.tasksCompletedInRange ?? 0 },
+          {
+            label: "Consistency",
+            value: `${snapshot?.habitConsistency.consistencyRate ?? 0}%`,
+            tone: "accent",
+          },
+        ]}
         actions={
           <div className="flex items-center gap-1 rounded-lg border border-orbit-border bg-orbit-surface p-1 shadow-orbit-xs">
             <Calendar className="ml-2 mr-1 h-3.5 w-3.5 text-orbit-text-muted shrink-0" />

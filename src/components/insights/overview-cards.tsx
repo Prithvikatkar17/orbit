@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import type { AnalyticsSnapshot } from "@/lib/services/analytics-service";
 import { SurfaceCard } from "@/components/ui/surface-card";
-import { Badge } from "@/components/ui/badge";
 
 interface OverviewCardsProps {
   snapshot: AnalyticsSnapshot;
@@ -27,7 +26,6 @@ export function OverviewCards({ snapshot }: OverviewCardsProps) {
     taskPeriodComparison,
     habitConsistency,
     habitStreaks,
-    goalProgress,
     range,
   } = snapshot;
 
@@ -36,46 +34,6 @@ export function OverviewCards({ snapshot }: OverviewCardsProps) {
 
   return (
     <div className="space-y-4">
-      {/* Editorial Narrative Summary Strip */}
-      <SurfaceCard variant="tonal" padding="md">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-orbit-accent">
-                Rhythm & Output
-              </span>
-              <Badge variant="neutral">
-                {range.type === "all" ? "All Time" : `Past ${range.daysCount} Days`}
-              </Badge>
-            </div>
-            <p className="font-display text-lg font-semibold text-orbit-text">
-              {tasksCompletedInRange > 0
-                ? `${tasksCompletedInRange} ${
-                    tasksCompletedInRange === 1 ? "task" : "tasks"
-                  } completed with ${habitConsistency.consistencyRate}% habit consistency.`
-                : "A calm period. Ready when you want to begin tracking momentum."}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-orbit-text-secondary tabular-nums">
-            <span className="inline-flex items-center gap-1.5 rounded-orbit-control bg-orbit-surface px-2.5 py-1 border border-orbit-border/80">
-              <CheckCircle2 className="h-3.5 w-3.5 text-orbit-success" />
-              <span>{taskOverview.completionRate}% task rate</span>
-            </span>
-            <span className="inline-flex items-center gap-1.5 rounded-orbit-control bg-orbit-surface px-2.5 py-1 border border-orbit-border/80">
-              <Flame className="h-3.5 w-3.5 text-orbit-warning" />
-              <span>{bestActiveStreak}d active streak</span>
-            </span>
-            {goalProgress.totalGoals > 0 && (
-              <span className="inline-flex items-center gap-1.5 rounded-orbit-control bg-orbit-surface px-2.5 py-1 border border-orbit-border/80">
-                <Target className="h-3.5 w-3.5 text-orbit-accent" />
-                <span>{goalProgress.completedGoals}/{goalProgress.totalGoals} goals</span>
-              </span>
-            )}
-          </div>
-        </div>
-      </SurfaceCard>
-
       {/* Bento-Style 5 Metric Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-12">
         {/* 1. Tasks Completed in Range — Hero Volume & Velocity Tile */}
@@ -114,13 +72,12 @@ export function OverviewCards({ snapshot }: OverviewCardsProps) {
                 </span>
               ) : taskPeriodComparison.percentageChange !== null ? (
                 <span
-                  className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 font-medium border ${
-                    taskPeriodComparison.trend === "up"
+                  className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 font-medium border ${taskPeriodComparison.trend === "up"
                       ? "border-orbit-success/30 bg-orbit-success/10 text-orbit-success"
                       : taskPeriodComparison.trend === "down"
-                      ? "border-orbit-danger/30 bg-orbit-danger/10 text-orbit-danger"
-                      : "border-orbit-border bg-orbit-surface-secondary text-orbit-text-muted"
-                  }`}
+                        ? "border-orbit-danger/30 bg-orbit-danger/10 text-orbit-danger"
+                        : "border-orbit-border bg-orbit-surface-secondary text-orbit-text-muted"
+                    }`}
                 >
                   {taskPeriodComparison.trend === "up" && (
                     <TrendingUp className="h-3.5 w-3.5" />
@@ -274,28 +231,25 @@ export function OverviewCards({ snapshot }: OverviewCardsProps) {
         {/* 5. Overdue Tasks — Supporting Metric / Status Alert Tile */}
         <SurfaceCard
           padding="md"
-          className={`flex flex-col justify-between sm:col-span-2 lg:col-span-4 transition-colors ${
-            isOverdue
+          className={`flex flex-col justify-between sm:col-span-2 lg:col-span-4 transition-colors ${isOverdue
               ? "border-orbit-danger/35 bg-orbit-danger-soft/30"
               : ""
-          }`}
+            }`}
         >
           <div className="flex items-center justify-between">
             <span
-              className={`text-xs font-semibold ${
-                isOverdue
+              className={`text-xs font-semibold ${isOverdue
                   ? "text-orbit-danger"
                   : "text-orbit-text-muted"
-              }`}
+                }`}
             >
               Overdue Tasks
             </span>
             <div
-              className={`flex h-8 w-8 items-center justify-center rounded-orbit-control ${
-                isOverdue
+              className={`flex h-8 w-8 items-center justify-center rounded-orbit-control ${isOverdue
                   ? "bg-orbit-danger-soft text-orbit-danger"
                   : "bg-orbit-surface-secondary text-orbit-text-muted"
-              }`}
+                }`}
             >
               <AlertCircle className="h-4 w-4" />
             </div>
@@ -303,9 +257,8 @@ export function OverviewCards({ snapshot }: OverviewCardsProps) {
 
           <div className="mt-3">
             <div
-              className={`font-display text-2xl sm:text-3xl font-semibold tracking-tight tabular-nums ${
-                isOverdue ? "text-orbit-danger" : "text-orbit-text"
-              }`}
+              className={`font-display text-2xl sm:text-3xl font-semibold tracking-tight tabular-nums ${isOverdue ? "text-orbit-danger" : "text-orbit-text"
+                }`}
             >
               {taskOverview.overdueTasks}
             </div>

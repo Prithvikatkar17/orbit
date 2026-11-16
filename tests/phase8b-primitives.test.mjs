@@ -173,7 +173,10 @@ test("Phase 8B — Shared ConfirmDialog and primitives are adopted in Inbox, Hab
   for (const relPath of targets) {
     const src = fs.readFileSync(path.resolve(relPath), "utf8");
     assert.ok(src.includes("<ConfirmDialog"), `${relPath} must use <ConfirmDialog>`);
-    assert.ok(src.includes("<PageHeader"), `${relPath} must adopt <PageHeader>`);
+    assert.ok(
+      src.includes("<PageHeader") || src.includes("<PersonalityPageHeader"),
+      `${relPath} must adopt <PageHeader> or <PersonalityPageHeader>`
+    );
   }
 });
 
