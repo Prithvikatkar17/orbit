@@ -20,7 +20,7 @@ import { useThemePersonality } from "@/components/theme-personality-provider";
 import { useMounted } from "@/lib/utils/dates";
 
 export function QuickCaptureModal() {
-  const { quickCaptureOpen, closeQuickCapture } = useUIStore();
+  const { quickCaptureOpen, closeQuickCapture, quickCaptureInitialData } = useUIStore();
   const modalRef = useAccessibleModal({
     isOpen: quickCaptureOpen,
     onClose: closeQuickCapture,
@@ -57,10 +57,10 @@ export function QuickCaptureModal() {
     ? "rounded-md"
     : "rounded-orbit-control";
 
-  const [title, setTitle] = useState("");
-  const [notes, setNotes] = useState("");
-  const [link, setLink] = useState("");
-  const [category, setCategory] = useState("inbox");
+  const [title, setTitle] = useState(quickCaptureInitialData?.title ?? "");
+  const [notes, setNotes] = useState(quickCaptureInitialData?.notes ?? "");
+  const [link, setLink] = useState(quickCaptureInitialData?.link ?? "");
+  const [category, setCategory] = useState(quickCaptureInitialData?.category ?? "inbox");
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
   const [dueDate, setDueDate] = useState("");
   const [dueTime, setDueTime] = useState("");
