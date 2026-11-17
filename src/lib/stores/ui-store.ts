@@ -61,6 +61,30 @@ export function parseShareTargetDraft(
   return { title, notes, link, category };
 }
 
+export interface CaptureInboxPayload {
+  id?: string;
+  title: string;
+  notes?: string;
+  link?: string;
+  category?: string;
+  status?: string;
+  priority?: string;
+  createdAt?: number | string;
+}
+
+export async function captureInboxItem(payload: CaptureInboxPayload) {
+  const response = await fetch("/api/inbox", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || `Failed to capture item: ${response.status}`);
+  }
+  return response.json();
+}
+
 interface UIState {
   sidebarOpen: boolean;
   quickCaptureOpen: boolean;
@@ -69,6 +93,7 @@ interface UIState {
   setSidebarOpen: (open: boolean) => void;
   openQuickCapture: (data?: QuickCaptureInitialData | string | unknown) => void;
   closeQuickCapture: () => void;
+  captureToInbox: (payload: CaptureInboxPayload) => Promise<{ success: boolean; item?: unknown }>;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -102,6 +127,9 @@ export const useUIStore = create<UIState>((set) => ({
     }
   },
   closeQuickCapture: () => set({ quickCaptureOpen: false, quickCaptureInitialData: undefined }),
+  captureToInbox: async (payload) => {
+    return captureInboxItem(payload);
+  },
 }));
 
 

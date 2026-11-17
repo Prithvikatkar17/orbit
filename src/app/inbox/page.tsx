@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useRef, useMemo, Suspense } from "react";
+import React, { useState, useCallback, useRef, useMemo, Suspense, useEffect } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   Plus,
@@ -220,6 +220,44 @@ export default function InboxPage() {
   }, []);
   const items = useMemo(() => rawItems ?? [], [rawItems]);
 
+  // Synchronize items from SQLite server on mount (multi-device hotspot bridge)
+  useEffect(() => {
+    let isCancelled = false;
+    async function syncFromSQLiteServer() {
+      try {
+        const res = await fetch("/api/inbox");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.items && Array.isArray(data.items)) {
+            for (const serverItem of data.items) {
+              if (isCancelled) break;
+              const existing = await db.items.get(serverItem.id);
+              if (!existing) {
+                await db.items.put({
+                  id: serverItem.id,
+                  title: serverItem.title,
+                  notes: serverItem.notes || "",
+                  link: serverItem.link || undefined,
+                  category: serverItem.category || "inbox",
+                  priority: "medium",
+                  status: serverItem.status || "pending",
+                  createdAt: new Date(serverItem.createdAt || Date.now()).toISOString(),
+                  updatedAt: new Date(serverItem.createdAt || Date.now()).toISOString(),
+                });
+              }
+            }
+          }
+        }
+      } catch {
+        // Offline or server route loading
+      }
+    }
+    syncFromSQLiteServer();
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
   // Filter & sort
   const filteredItems = useMemo(() => {
     return items
@@ -262,6 +300,26 @@ export default function InboxPage() {
       });
 
       await db.items.add(item);
+
+      // Persist to SQLite backend
+      try {
+        await fetch("/api/inbox", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: item.id,
+            title: item.title,
+            notes: item.notes,
+            link: item.link,
+            category: item.category,
+            status: item.status,
+            createdAt: Date.now(),
+          }),
+        });
+      } catch (apiErr) {
+        console.warn("Failed to sync new item to SQLite backend:", apiErr);
+      }
+
       setNewTitle("");
       setNewNotes("");
       setNewLink("");
@@ -277,6 +335,13 @@ export default function InboxPage() {
     setIsDeleting(true);
     try {
       await db.items.delete(deleteTargetId);
+      try {
+        await fetch(`/api/inbox?id=${encodeURIComponent(deleteTargetId)}`, {
+          method: "DELETE",
+        });
+      } catch (apiErr) {
+        console.warn("Failed to delete from SQLite backend:", apiErr);
+      }
     } finally {
       setIsDeleting(false);
       setDeleteTargetId(null);

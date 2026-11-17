@@ -8,6 +8,8 @@ const withSerwist = withSerwistInit({
 });
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  serverExternalPackages: ["better-sqlite3"],
+};
 
 export default withSerwist(nextConfig);

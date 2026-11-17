@@ -108,7 +108,7 @@ function QuickCaptureListener() {
 }
 
 function QuickCaptureDialog() {
-  const { quickCaptureOpen, closeQuickCapture, quickCaptureInitialData } = useUIStore();
+  const { quickCaptureOpen, closeQuickCapture, quickCaptureInitialData, captureToInbox } = useUIStore();
   const modalRef = useAccessibleModal({
     isOpen: quickCaptureOpen,
     onClose: closeQuickCapture,
@@ -196,8 +196,8 @@ function QuickCaptureDialog() {
       const lowerCat = category.toLowerCase();
 
       if (lowerCat === "inbox") {
-        // Pure capture into items table
-        const item = ItemSchema.parse({
+        // Pure capture into SQLite via /api/inbox (Hotspot backend)
+        await captureToInbox({
           id,
           title: title.trim(),
           notes: notes.trim(),
@@ -205,10 +205,25 @@ function QuickCaptureDialog() {
           category: "inbox",
           priority,
           status: "pending",
-          createdAt: nowIso,
-          updatedAt: nowIso,
         });
-        await db.items.add(item);
+
+        // Mirror to Dexie for offline resilience & client-side live queries
+        try {
+          const item = ItemSchema.parse({
+            id,
+            title: title.trim(),
+            notes: notes.trim(),
+            link: normalizeUrl(link),
+            category: "inbox",
+            priority,
+            status: "pending",
+            createdAt: nowIso,
+            updatedAt: nowIso,
+          });
+          await db.items.add(item);
+        } catch {
+          // Ignore offline fallback error
+        }
       } else if (lowerCat === "habit") {
         const habit = HabitSchema.parse({
           id,
