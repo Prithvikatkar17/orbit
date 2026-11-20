@@ -191,44 +191,91 @@ function QuickCaptureDialog() {
     setIsSubmitting(true);
     const nowIso = new Date().toISOString();
     const id = crypto.randomUUID();
+    const trimmedTitle = title.trim();
+    const trimmedNotes = notes.trim();
+    const normalizedLink = normalizeUrl(link);
+    const lowerCat = category.toLowerCase();
+    const capturePriority = priority;
+    const captureDueDate = dueDate;
+    const captureDueTime = dueTime;
+    const captureCollectionId = collectionId;
+    const captureIsFavorite = isFavorite;
+    const captureLibraryStatus = libraryStatus;
+    const captureTagInput = tagInput;
+
+    // 1. Optimistic UI: Immediately close modal and reset form state (0ms perceived latency)
+    closeQuickCapture();
+    setTitle("");
+    setNotes("");
+    setLink("");
+    setDueDate("");
+    setDueTime("");
+    setCategory("inbox");
+    setCollectionId("");
+    setIsFavorite(false);
+    setLibraryStatus("saved");
+    setTagInput("");
+    setIsSubmitting(false);
 
     try {
-      const lowerCat = category.toLowerCase();
-
       if (lowerCat === "inbox") {
-        // Pure capture into SQLite via /api/inbox (Hotspot backend)
-        await captureToInbox({
-          id,
-          title: title.trim(),
-          notes: notes.trim(),
-          link: normalizeUrl(link),
-          category: "inbox",
-          priority,
-          status: "pending",
-        });
-
-        // Mirror to Dexie for offline resilience & client-side live queries
+        // Dual-write: Instant local Dexie backup
         try {
           const item = ItemSchema.parse({
             id,
-            title: title.trim(),
-            notes: notes.trim(),
-            link: normalizeUrl(link),
+            title: trimmedTitle,
+            notes: trimmedNotes,
+            link: normalizedLink,
             category: "inbox",
-            priority,
+            priority: capturePriority,
             status: "pending",
             createdAt: nowIso,
             updatedAt: nowIso,
           });
-          await db.items.add(item);
-        } catch {
-          // Ignore offline fallback error
+          void db.items.add(item).catch((err) => {
+            console.warn("Optimistic Dexie write error:", err);
+          });
+        } catch (validationErr) {
+          console.warn("ItemSchema validation error:", validationErr);
         }
+
+        // Asynchronous non-blocking SQLite backend sync (fire-and-forget without freezing UI)
+        void captureToInbox({
+          id,
+          title: trimmedTitle,
+          notes: trimmedNotes,
+          link: normalizedLink,
+          category: "inbox",
+          priority: capturePriority,
+          status: "pending",
+        }).catch((err) => {
+          console.warn("Background SQLite sync error:", err);
+        });
       } else if (lowerCat === "habit") {
+        void fetch("/api/habits", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id,
+            title: trimmedTitle,
+            notes: trimmedNotes,
+            description: trimmedNotes,
+            frequency: "daily",
+            customDays: [],
+            color: "#10b981",
+            isActive: true,
+            sortOrder: 0,
+            createdAt: nowIso,
+            updatedAt: nowIso,
+          }),
+        }).catch((err) => {
+          console.warn("Background habit save sync error:", err);
+        });
+
         const habit = HabitSchema.parse({
           id,
-          title: title.trim(),
-          notes: notes.trim(),
+          title: trimmedTitle,
+          notes: trimmedNotes,
           frequency: "daily",
           customDays: [],
           color: "#10b981",
@@ -237,7 +284,9 @@ function QuickCaptureDialog() {
           createdAt: nowIso,
           updatedAt: nowIso,
         });
-        await db.habits.add(habit);
+        void db.habits.add(habit).catch((err) => {
+          console.warn("Habit save error:", err);
+        });
       } else if (isLibraryCategory) {
         let resolvedType: LibraryEntry["type"] = "other";
         switch (lowerCat) {
@@ -275,7 +324,7 @@ function QuickCaptureDialog() {
             break;
         }
 
-        const tags = tagInput
+        const tags = captureTagInput
           .split(",")
           .map((t) => t.trim().toLowerCase())
           .filter(Boolean);
@@ -285,56 +334,67 @@ function QuickCaptureDialog() {
 
         const entry = LibraryEntrySchema.parse({
           id,
-          title: title.trim(),
-          notes: notes.trim(),
-          link: normalizeUrl(link),
+          title: trimmedTitle,
+          notes: trimmedNotes,
+          link: normalizedLink,
           type: resolvedType,
-          status: libraryStatus,
+          status: captureLibraryStatus,
           tags,
-          isFavorite,
-          collectionId: collectionId || undefined,
-          completedAt: libraryStatus === "completed" ? nowIso : undefined,
+          isFavorite: captureIsFavorite,
+          collectionId: captureCollectionId || undefined,
+          completedAt: captureLibraryStatus === "completed" ? nowIso : undefined,
           createdAt: nowIso,
           updatedAt: nowIso,
         });
-        await db.libraryEntries.add(entry);
+        void db.libraryEntries.add(entry).catch((err) => {
+          console.warn("Library entry save error:", err);
+        });
       } else {
         // Task / Goal / Idea
-        await saveTaskWithSync({
+        void fetch("/api/tasks", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id,
+            title: trimmedTitle,
+            notes: trimmedNotes,
+            link: normalizedLink,
+            category: lowerCat,
+            priority: capturePriority,
+            status: "todo",
+            dueDate: captureDueDate,
+            dueTime: captureDueTime,
+            sortOrder: 0,
+            tags: [category],
+            createdAt: nowIso,
+            updatedAt: nowIso,
+          }),
+        }).catch((err) => {
+          console.warn("Background task save sync error:", err);
+        });
+
+        void saveTaskWithSync({
           taskData: {
             id,
-            title,
-            notes,
-            link,
+            title: trimmedTitle,
+            notes: trimmedNotes,
+            link: normalizedLink,
             category: lowerCat,
-            priority,
+            priority: capturePriority,
             status: "todo",
-            dueDate,
-            dueTime,
+            dueDate: captureDueDate,
+            dueTime: captureDueTime,
             sortOrder: 0,
             tags: [category],
             createdAt: nowIso,
             updatedAt: nowIso,
           },
+        }).catch((err) => {
+          console.warn("Task save error:", err);
         });
       }
-
-      // Reset form & close
-      setTitle("");
-      setNotes("");
-      setLink("");
-      setDueDate("");
-      setDueTime("");
-      setCategory("inbox");
-      setCollectionId("");
-      setIsFavorite(false);
-      setLibraryStatus("saved");
-      setTagInput("");
-      closeQuickCapture();
     } catch (err) {
       console.error("Failed to save capture:", err);
-    } finally {
-      setIsSubmitting(false);
     }
   }
 

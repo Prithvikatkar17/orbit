@@ -70,6 +70,18 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
 
   // Toggle today's completion
   async function toggleToday() {
+    // Non-blocking optimistic background sync to SQLite backend
+    void fetch("/api/habits/log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        habitId: habit.id,
+        date: today,
+      }),
+    }).catch((err) => {
+      console.warn("Background habit log toggle sync error:", err);
+    });
+
     if (isCompletedToday) {
       // Find and delete the log for today
       const todayLog = logs.find((l) => l.date === today && l.completed);
@@ -91,8 +103,22 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
 
   // Toggle archive status
   async function toggleArchive() {
+    const nextActive = !habit.isActive;
+    // Non-blocking optimistic background sync to SQLite backend
+    void fetch("/api/habits", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: habit.id,
+        isActive: nextActive,
+        archived: !nextActive,
+      }),
+    }).catch((err) => {
+      console.warn("Background habit archive toggle sync error:", err);
+    });
+
     await db.habits.update(habit.id, {
-      isActive: !habit.isActive,
+      isActive: nextActive,
       updatedAt: new Date().toISOString(),
     });
   }

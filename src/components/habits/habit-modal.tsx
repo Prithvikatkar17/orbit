@@ -63,6 +63,8 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
     const nowIso = new Date().toISOString();
 
     try {
+      const habitId = isEditing && initialHabit ? initialHabit.id : crypto.randomUUID();
+
       if (isEditing && initialHabit) {
         const updated = HabitSchema.parse({
           ...initialHabit,
@@ -80,7 +82,7 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
         const nextOrder = maxOrder ? maxOrder.sortOrder + 1 : 0;
 
         const newHabit = HabitSchema.parse({
-          id: crypto.randomUUID(),
+          id: habitId,
           title: title.trim(),
           notes: notes.trim(),
           frequency,
@@ -94,6 +96,25 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
 
         await db.habits.add(newHabit);
       }
+
+      // Non-blocking optimistic background sync to SQLite backend
+      void fetch("/api/habits", {
+        method: isEditing ? "PATCH" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: habitId,
+          title: title.trim(),
+          notes: notes.trim(),
+          description: notes.trim(),
+          frequency,
+          customDays: frequency === "custom" ? customDays : [],
+          color,
+          isActive: isEditing && initialHabit ? initialHabit.isActive : true,
+          archived: isEditing && initialHabit ? !initialHabit.isActive : false,
+        }),
+      }).catch((err) => {
+        console.warn("Background habit save sync error:", err);
+      });
 
       onClose();
     } catch (err: unknown) {

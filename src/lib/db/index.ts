@@ -8,6 +8,7 @@ const globalForDb = globalThis as unknown as {
 
 export const sqlite = globalForDb.sqlite ?? new Database("orbit.sqlite");
 sqlite.pragma("journal_mode = WAL");
+sqlite.pragma("foreign_keys = ON");
 
 if (process.env.NODE_ENV !== "production") {
   globalForDb.sqlite = sqlite;

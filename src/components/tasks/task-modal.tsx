@@ -40,9 +40,10 @@ export function TaskModal({ initialTask, onClose }: TaskModalProps) {
         sortOrder = maxOrderTask ? maxOrderTask.sortOrder + 1 : 0;
       }
 
-      await saveTaskWithSync({
+      const taskId = isEditing ? initialTask?.id : undefined;
+      const savedTask = await saveTaskWithSync({
         taskData: {
-          id: isEditing ? initialTask?.id : undefined,
+          id: taskId,
           title,
           notes,
           link,
@@ -57,6 +58,27 @@ export function TaskModal({ initialTask, onClose }: TaskModalProps) {
           createdAt: initialTask?.createdAt,
         },
         isEditing,
+      });
+
+      // Non-blocking optimistic background sync to SQLite backend
+      void fetch("/api/tasks", {
+        method: isEditing ? "PATCH" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: savedTask.id,
+          title: savedTask.title,
+          notes: savedTask.notes,
+          link: savedTask.link,
+          category: savedTask.category,
+          priority: savedTask.priority,
+          status: savedTask.status,
+          dueDate: savedTask.dueDate,
+          dueTime: savedTask.dueTime,
+          sortOrder: savedTask.sortOrder,
+          tags: savedTask.tags,
+        }),
+      }).catch((err) => {
+        console.warn("Background task save sync error:", err);
       });
 
       onClose();

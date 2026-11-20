@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useCallback, Suspense } from "react";
+import React, { useState, useMemo, useCallback, Suspense, useEffect } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   Plus,
@@ -65,6 +65,68 @@ export default function HabitsPage() {
   const rawLogs = useLiveQuery(() => db.habitLogs.toArray(), []);
   const allLogs = useMemo(() => rawLogs ?? [], [rawLogs]);
 
+  // Hydrate habits and logs from SQLite backend on mount (hotspot bridge)
+  useEffect(() => {
+    let isCancelled = false;
+    async function syncHabitsFromSQLite() {
+      try {
+        const res = await fetch("/api/habits?all=true");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.allHabits && Array.isArray(data.allHabits)) {
+            for (const serverHabit of data.allHabits) {
+              if (isCancelled) break;
+              const existing = await db.habits.get(serverHabit.id);
+              if (!existing) {
+                let customDays: number[] = [];
+                try {
+                  if (serverHabit.customDays) {
+                    customDays = JSON.parse(serverHabit.customDays);
+                  }
+                } catch {
+                  // fallback
+                }
+                await db.habits.put({
+                  id: serverHabit.id,
+                  title: serverHabit.title,
+                  notes: serverHabit.notes || serverHabit.description || "",
+                  frequency: serverHabit.frequency || "daily",
+                  customDays,
+                  color: serverHabit.color || "#10b981",
+                  isActive: Boolean(serverHabit.isActive),
+                  sortOrder: serverHabit.sortOrder ?? 0,
+                  createdAt: new Date(serverHabit.createdAt || Date.now()).toISOString(),
+                  updatedAt: new Date(serverHabit.updatedAt || Date.now()).toISOString(),
+                });
+              }
+            }
+          }
+          if (data.logs && Array.isArray(data.logs)) {
+            for (const serverLog of data.logs) {
+              if (isCancelled) break;
+              const existingLog = await db.habitLogs.get(serverLog.id);
+              if (!existingLog) {
+                await db.habitLogs.put({
+                  id: serverLog.id,
+                  habitId: serverLog.habitId,
+                  date: serverLog.date,
+                  completed: Boolean(serverLog.completed),
+                  createdAt: new Date(serverLog.createdAt || Date.now()).toISOString(),
+                });
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Habits SQLite hydration warning:", err);
+      }
+    }
+    syncHabitsFromSQLite();
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
   // Filter habits by active/archived tab
   const displayedHabits = useMemo(() => {
     return habits.filter((h) => (activeTab === "active" ? h.isActive : !h.isActive));
@@ -118,11 +180,19 @@ export default function HabitsPage() {
   // Delete Habit and its logs
   async function handleConfirmDeleteHabit() {
     if (!deleteTargetId) return;
+    const targetId = deleteTargetId;
     setIsDeleting(true);
     try {
+      // Non-blocking optimistic background delete to SQLite backend
+      void fetch(`/api/habits?id=${encodeURIComponent(targetId)}`, {
+        method: "DELETE",
+      }).catch((err) => {
+        console.warn("Background habit delete sync error:", err);
+      });
+
       await db.transaction("rw", [db.habits, db.habitLogs], async () => {
-        await db.habitLogs.where("habitId").equals(deleteTargetId).delete();
-        await db.habits.delete(deleteTargetId);
+        await db.habitLogs.where("habitId").equals(targetId).delete();
+        await db.habits.delete(targetId);
       });
     } finally {
       setIsDeleting(false);

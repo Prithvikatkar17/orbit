@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useCallback, Suspense } from "react";
+import React, { useState, useMemo, useCallback, Suspense, useEffect } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   DndContext,
@@ -60,6 +60,60 @@ export default function TasksPage() {
 
   const rawTasks = useLiveQuery(() => db.tasks.toArray(), []);
   const tasks = useMemo(() => rawTasks ?? [], [rawTasks]);
+
+  // Hydrate tasks from SQLite backend on mount (hotspot bridge)
+  useEffect(() => {
+    let isCancelled = false;
+    async function syncTasksFromSQLite() {
+      try {
+        const res = await fetch("/api/tasks");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.tasks && Array.isArray(data.tasks)) {
+            for (const serverTask of data.tasks) {
+              if (isCancelled) break;
+              const existing = await db.tasks.get(serverTask.id);
+              if (!existing) {
+                let tags: string[] = [serverTask.category || "task"];
+                try {
+                  if (serverTask.tags) {
+                    tags = JSON.parse(serverTask.tags);
+                  }
+                } catch {
+                  // fallback
+                }
+                await db.tasks.put({
+                  id: serverTask.id,
+                  title: serverTask.title,
+                  notes: serverTask.notes || "",
+                  link: serverTask.link || undefined,
+                  category: serverTask.category || "task",
+                  priority: serverTask.priority || "medium",
+                  status: serverTask.status || "todo",
+                  dueDate: serverTask.dueDate || undefined,
+                  dueTime: serverTask.dueTime || undefined,
+                  completedAt: serverTask.completedAt
+                    ? new Date(serverTask.completedAt).toISOString()
+                    : undefined,
+                  sortOrder: serverTask.sortOrder ?? 0,
+                  tags,
+                  sourceItemId: serverTask.sourceItemId || undefined,
+                  createdAt: new Date(serverTask.createdAt || Date.now()).toISOString(),
+                  updatedAt: new Date(serverTask.updatedAt || Date.now()).toISOString(),
+                });
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Tasks SQLite hydration warning:", err);
+      }
+    }
+    syncTasksFromSQLite();
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   // Sensors for drag-and-drop
   const sensors = useSensors(
@@ -198,6 +252,20 @@ export default function TasksPage() {
   // Toggle completion
   async function handleToggle(task: Task) {
     try {
+      const isNowCompleted = task.status !== "completed";
+      // Non-blocking optimistic background sync to SQLite backend
+      void fetch("/api/tasks", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: task.id,
+          status: isNowCompleted ? "completed" : "todo",
+          completedAt: isNowCompleted ? Date.now() : null,
+        }),
+      }).catch((err) => {
+        console.warn("Background task toggle sync error:", err);
+      });
+
       await toggleTaskCompletionWithSync(task);
     } catch (err: unknown) {
       console.error("Toggle task error:", err);
@@ -213,9 +281,17 @@ export default function TasksPage() {
   // Delete task
   async function handleConfirmDeleteTask() {
     if (!deleteTargetId) return;
+    const targetId = deleteTargetId;
     setIsDeleting(true);
     try {
-      await deleteTaskWithCascade(deleteTargetId);
+      // Non-blocking optimistic background delete to SQLite backend
+      void fetch(`/api/tasks?id=${encodeURIComponent(targetId)}`, {
+        method: "DELETE",
+      }).catch((err) => {
+        console.warn("Background task delete sync error:", err);
+      });
+
+      await deleteTaskWithCascade(targetId);
     } catch (err: unknown) {
       console.error("Delete task error:", err);
     } finally {
