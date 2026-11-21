@@ -324,6 +324,7 @@ export function validateBackupArchive(unzipped: fflate.Unzipped): {
   validateUniqueIds("habitLogs", payload.habitLogs);
   validateUniqueIds("events", payload.events);
   validateUniqueIds("reminders", payload.reminders);
+  validateUniqueIds("notifications", payload.notifications || []);
   validateUniqueIds("libraryEntries", payload.libraryEntries);
   validateUniqueIds("libraryCollections", payload.libraryCollections);
   validateUniqueIds("libraryFiles", payload.libraryFiles);
@@ -583,10 +584,35 @@ export async function restoreBackup(
   validateUniqueIds("habitLogs", parsed.habitLogs);
   validateUniqueIds("events", parsed.events);
   validateUniqueIds("reminders", parsed.reminders);
+  validateUniqueIds("notifications", parsed.notifications || []);
   validateUniqueIds("libraryEntries", parsed.libraryEntries);
   validateUniqueIds("libraryCollections", parsed.libraryCollections);
   validateUniqueIds("categories", parsed.categories);
   validateUniqueIds("settings", parsed.settings);
+
+  // Sanitize dangling collection references and broken fileMetadata in libraryEntries
+  const jsonCollectionIds = new Set(parsed.libraryCollections.map((c) => c.id));
+  if (mode === "replace") {
+    for (const entry of parsed.libraryEntries) {
+      if (entry.collectionId && !jsonCollectionIds.has(entry.collectionId)) {
+        entry.collectionId = undefined;
+      }
+      if (options.confirmFileDeletion) {
+        entry.fileMetadata = undefined;
+      }
+    }
+  } else {
+    const existingCollections = await dbInstance.libraryCollections.toArray();
+    const allKnownCollections = new Set([
+      ...jsonCollectionIds,
+      ...existingCollections.map((c) => c.id),
+    ]);
+    for (const entry of parsed.libraryEntries) {
+      if (entry.collectionId && !allKnownCollections.has(entry.collectionId)) {
+        entry.collectionId = undefined;
+      }
+    }
+  }
 
   // Protect against silent deletion of existing attachments
   const existingFilesCount = await dbInstance.libraryFiles.count();

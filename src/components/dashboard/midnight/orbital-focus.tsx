@@ -2,19 +2,20 @@
 
 import React, { useState, useMemo } from "react";
 import type { Task } from "@/lib/schemas";
-import { formatFriendlyDate } from "@/lib/utils/dates";
+import { formatFriendlyDate, getLocalDateString } from "@/lib/utils/dates";
 
 export interface OrbitalFocusProps {
   tasks: Task[];
   openTasks: Task[];
   dueTodayTasks: Task[];
   focusTasks: Task[];
+  todayStr?: string | null;
   onToggleTask: (task: Task) => Promise<void>;
   onOpenQuickCapture: () => void;
 }
 
 export function OrbitalFocus(props: OrbitalFocusProps) {
-  const { openTasks, dueTodayTasks, focusTasks, onToggleTask, onOpenQuickCapture } = props;
+  const { openTasks, dueTodayTasks, focusTasks, todayStr, onToggleTask, onOpenQuickCapture } = props;
   const [activeFilter, setActiveFilter] = useState<"all" | "today">("all");
 
   // Determine Primary Perihelion Focus task
@@ -163,8 +164,9 @@ export function OrbitalFocus(props: OrbitalFocusProps) {
           {secondaryTasks.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {secondaryTasks.map((task, idx) => {
-                const isOverdue = task.dueDate && task.dueDate < (new Date().toISOString().slice(0, 10));
-                const isDueToday = task.dueDate && task.dueDate === (new Date().toISOString().slice(0, 10));
+                const effectiveToday = todayStr || getLocalDateString();
+                const isOverdue = Boolean(task.dueDate && task.dueDate < effectiveToday);
+                const isDueToday = Boolean(task.dueDate && task.dueDate === effectiveToday);
 
                 let magnitudeBadge = "MAGNITUDE III · OUTER ORBIT";
                 let badgeStyle = "border-orbit-border bg-orbit-subtle/50 text-orbit-text-muted";
@@ -190,7 +192,9 @@ export function OrbitalFocus(props: OrbitalFocusProps) {
                         </span>
                         <span className="font-mono text-[11px] text-orbit-text-muted">
                           {isDueToday
-                            ? `Today · ${task.dueTime || "14:00"}`
+                            ? task.dueTime
+                              ? `Today · ${task.dueTime}`
+                              : "Today · All day"
                             : task.dueDate
                             ? formatFriendlyDate(task.dueDate)
                             : "Perennial Orbit"}

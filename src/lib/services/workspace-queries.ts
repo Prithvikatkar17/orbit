@@ -70,7 +70,7 @@ export function deriveDashboardMetrics(
 
   if (todayStr) {
     for (const log of data.habitLogs) {
-      if (log.date === todayStr && activeHabitIdSet.has(log.habitId)) {
+      if (log.date === todayStr && log.completed === true && activeHabitIdSet.has(log.habitId)) {
         completedTodayHabitIds.add(log.habitId);
       }
     }
@@ -83,7 +83,7 @@ export function deriveDashboardMetrics(
   for (const task of data.tasks) {
     if (task.status === "completed") {
       completedTasks.push(task);
-    } else {
+    } else if (task.status !== "archived") {
       openTasks.push(task);
       if (todayStr && task.dueDate === todayStr) {
         dueTodayTasks.push(task);

@@ -18,7 +18,7 @@ interface WeekViewProps {
   onCreateEvent: (dateStr: string, defaultTime?: string) => void;
 }
 
-const HOURS = Array.from({ length: 18 }, (_, i) => i + 6); // 06:00 to 23:00
+const HOURS = Array.from({ length: 24 }, (_, i) => i); // 00:00 to 23:00
 
 export function WeekView({
   currentDateStr,

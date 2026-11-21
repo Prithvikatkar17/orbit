@@ -489,7 +489,7 @@ export function SearchModal() {
             }}
             onKeyDown={handleInputKeyDown}
             placeholder="Search ORBIT... (e.g. 'planning', '#books', 'gym')"
-            className={`flex-1 bg-transparent text-sm sm:text-base text-orbit-text placeholder:text-orbit-text-muted focus:outline-hidden min-w-0 ${
+            className={`orbit-unstyled-input flex-1 bg-transparent text-sm sm:text-base text-orbit-text placeholder:text-orbit-text-muted focus:outline-hidden min-w-0 ${
               isArchivist
                 ? "font-serif placeholder:font-serif"
                 : isFuturistic

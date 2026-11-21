@@ -24,6 +24,7 @@ import {
   getOffsetDateString,
   formatMonthYear,
   formatDateDisplay,
+  useTodayDate,
 } from "@/lib/utils/dates";
 import { DeepLinkListener } from "@/components/common/deep-link-listener";
 import { Button, EmptyState, SurfaceCard } from "@/components/ui";
@@ -31,12 +32,14 @@ import { Calendar as CalendarIcon, Plus } from "lucide-react";
 
 export default function CalendarPage() {
   const [viewMode, setViewMode] = useState<CalendarViewMode>("month");
-  const [currentDateStr, setCurrentDateStr] = useState<string>(() =>
-    getLocalDateString()
-  );
-  const [selectedDateStr, setSelectedDateStr] = useState<string>(() =>
-    getLocalDateString()
-  );
+  const todayStr = useTodayDate();
+  const [userCurrentDate, setUserCurrentDate] = useState<string | null>(null);
+  const [userSelectedDate, setUserSelectedDate] = useState<string | null>(null);
+
+  const activeCurrentDate = userCurrentDate ?? (todayStr || getLocalDateString());
+  const activeSelectedDate = userSelectedDate ?? (todayStr || getLocalDateString());
+  const setCurrentDateStr = (d: string) => setUserCurrentDate(d);
+  const setSelectedDateStr = (d: string) => setUserSelectedDate(d);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState("all");
 
@@ -80,8 +83,6 @@ export default function CalendarPage() {
     []
   );
 
-  const todayStr = useMemo(() => getLocalDateString(), []);
-
   // Fetch user settings (for weekStartsOn) and all events reactively from Dexie
   const userSettings = useLiveQuery(() => db.settings.get("user_settings"), []);
   const weekStartsOn = (userSettings?.weekStartsOn as "monday" | "sunday") ?? "monday";
@@ -91,8 +92,8 @@ export default function CalendarPage() {
   }, []);
 
   const currentDateObj = useMemo(
-    () => parseLocalDate(currentDateStr),
-    [currentDateStr]
+    () => parseLocalDate(activeCurrentDate),
+    [activeCurrentDate]
   );
   const currentYear = currentDateObj.getFullYear();
   const currentMonth = currentDateObj.getMonth() + 1; // 1-12
@@ -100,9 +101,9 @@ export default function CalendarPage() {
   // Compute title for the header based on active view mode
   const headerTitle = useMemo(() => {
     if (viewMode === "month") {
-      return formatMonthYear(currentDateStr);
+      return formatMonthYear(activeCurrentDate);
     } else if (viewMode === "week") {
-      const days = getWeekDays(currentDateStr, todayStr, weekStartsOn);
+      const days = getWeekDays(activeCurrentDate, todayStr, weekStartsOn);
       const first = days[0].dateStr;
       const last = days[6].dateStr;
       const [fYear, fMonth, fDay] = first.split("-");
@@ -113,9 +114,9 @@ export default function CalendarPage() {
       }
       return `${formatMonthYear(first).split(" ")[0]} ${fDay} – ${formatMonthYear(last).split(" ")[0]} ${lDay}, ${lYear}`;
     } else {
-      return formatDateDisplay(currentDateStr);
+      return formatDateDisplay(activeCurrentDate);
     }
-  }, [viewMode, currentDateStr, todayStr, weekStartsOn]);
+  }, [viewMode, activeCurrentDate, todayStr, weekStartsOn]);
 
   // Compute date range window for occurrences calculation
   const { windowStart, windowEnd } = useMemo(() => {
@@ -126,18 +127,18 @@ export default function CalendarPage() {
         windowEnd: grid[grid.length - 1].dateStr,
       };
     } else if (viewMode === "week") {
-      const days = getWeekDays(currentDateStr, todayStr, weekStartsOn);
+      const days = getWeekDays(activeCurrentDate, todayStr, weekStartsOn);
       return {
         windowStart: days[0].dateStr,
         windowEnd: days[6].dateStr,
       };
     } else {
       return {
-        windowStart: currentDateStr,
-        windowEnd: currentDateStr,
+        windowStart: activeCurrentDate,
+        windowEnd: activeCurrentDate,
       };
     }
-  }, [viewMode, currentYear, currentMonth, currentDateStr, todayStr, weekStartsOn]);
+  }, [viewMode, currentYear, currentMonth, activeCurrentDate, todayStr, weekStartsOn]);
 
   // Filter events by type and search query
   const filteredEvents = useMemo(() => {
@@ -167,9 +168,9 @@ export default function CalendarPage() {
       const prevDate = new Date(currentYear, currentMonth - 2, 1);
       setCurrentDateStr(getLocalDateString(prevDate));
     } else if (viewMode === "week") {
-      setCurrentDateStr(getOffsetDateString(-7, parseLocalDate(currentDateStr)));
+      setCurrentDateStr(getOffsetDateString(-7, parseLocalDate(activeCurrentDate)));
     } else {
-      setCurrentDateStr(getOffsetDateString(-1, parseLocalDate(currentDateStr)));
+      setCurrentDateStr(getOffsetDateString(-1, parseLocalDate(activeCurrentDate)));
     }
   }
 
@@ -178,9 +179,9 @@ export default function CalendarPage() {
       const nextDate = new Date(currentYear, currentMonth, 1);
       setCurrentDateStr(getLocalDateString(nextDate));
     } else if (viewMode === "week") {
-      setCurrentDateStr(getOffsetDateString(7, parseLocalDate(currentDateStr)));
+      setCurrentDateStr(getOffsetDateString(7, parseLocalDate(activeCurrentDate)));
     } else {
-      setCurrentDateStr(getOffsetDateString(1, parseLocalDate(currentDateStr)));
+      setCurrentDateStr(getOffsetDateString(1, parseLocalDate(activeCurrentDate)));
     }
   }
 
@@ -191,7 +192,7 @@ export default function CalendarPage() {
 
   function handleCreateEvent(dateStr?: string, defaultTime?: string) {
     setModalInitialEvent(null);
-    setModalInitialDate(dateStr || currentDateStr);
+    setModalInitialDate(dateStr || activeCurrentDate);
     setModalInitialTime(defaultTime);
     setIsEventModalOpen(true);
   }
@@ -262,7 +263,7 @@ export default function CalendarPage() {
             year={currentYear}
             month={currentMonth}
             todayStr={todayStr}
-            selectedDateStr={selectedDateStr}
+            selectedDateStr={activeSelectedDate}
             onSelectDate={setSelectedDateStr}
             occurrences={occurrences}
             weekStartsOn={weekStartsOn}
@@ -273,7 +274,7 @@ export default function CalendarPage() {
 
         {viewMode === "week" && (
           <WeekView
-            currentDateStr={currentDateStr}
+            currentDateStr={activeCurrentDate}
             todayStr={todayStr}
             occurrences={occurrences}
             weekStartsOn={weekStartsOn}
@@ -284,9 +285,9 @@ export default function CalendarPage() {
 
         {viewMode === "day" && (
           <DayView
-            dateStr={currentDateStr}
+            dateStr={activeCurrentDate}
             todayStr={todayStr}
-            isToday={currentDateStr === todayStr}
+            isToday={activeCurrentDate === todayStr}
             occurrences={occurrences}
             onSelectEvent={handleSelectEvent}
             onCreateEvent={(d, t) => handleCreateEvent(d, t)}

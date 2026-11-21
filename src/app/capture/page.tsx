@@ -4,6 +4,7 @@ import React, { Suspense, useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUIStore, parseShareTargetDraft } from "@/lib/stores/ui-store";
 import { useThemePersonality } from "@/components/theme-personality-provider";
+import { useMounted } from "@/lib/utils/dates";
 import { ArrowRight } from "lucide-react";
 
 const PENDING_CAPTURE_STORAGE_KEY = "orbit_pending_capture";
@@ -96,11 +97,13 @@ interface CaptureLoadingViewProps {
 
 function CaptureLoadingView({ showManualFallback, onManualContinue }: CaptureLoadingViewProps) {
   const { themePersonality } = useThemePersonality();
+  const mounted = useMounted();
 
-  const isMinimalist = themePersonality === "minimalist";
-  const isFuturistic = themePersonality === "futuristic";
-  const isArchivist = themePersonality === "archivist";
-  const isMidnight = themePersonality === "midnight";
+  const activePersonality = mounted ? themePersonality : "archivist";
+  const isMinimalist = activePersonality === "minimalist";
+  const isFuturistic = activePersonality === "futuristic";
+  const isArchivist = activePersonality === "archivist";
+  const isMidnight = activePersonality === "midnight";
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-orbit-bg px-4 select-none">

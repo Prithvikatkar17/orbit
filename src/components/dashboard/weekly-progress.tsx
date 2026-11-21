@@ -197,7 +197,7 @@ export function WeeklyProgressWidget({
         </div>
 
         {/* Right: Compact 7-Day Activity Chart (7 columns) */}
-        <div className="flex flex-col justify-between md:col-span-7">
+        <div className="flex flex-col justify-between @lg:col-span-7">
           <div className="mb-1 flex items-center justify-between px-1 text-xs">
             <span className="text-[11px] font-semibold tracking-wider text-orbit-text-muted uppercase">
               Daily Task Activity

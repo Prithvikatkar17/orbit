@@ -38,7 +38,6 @@ export interface MidnightDashboardProps {
 
 export function MidnightDashboard(props: MidnightDashboardProps) {
   const {
-    habits,
     events,
     activeHabits,
     habitLogs,
@@ -51,7 +50,7 @@ export function MidnightDashboard(props: MidnightDashboardProps) {
     onOpenQuickCapture,
   } = props;
 
-  const displayHabits = activeHabits.length > 0 ? activeHabits : habits;
+  const displayHabits = activeHabits;
 
   // Real Astronomical Calculations based on current time
   const now = useMemo(() => new Date(), []);
@@ -60,20 +59,22 @@ export function MidnightDashboard(props: MidnightDashboardProps) {
   const greeting = useMemo(() => getTimeOfDayGreeting(), []);
 
   // Urgent/Perihelion task count
+  const effectiveToday = todayStr || now.toISOString().slice(0, 10);
   const urgentCount = useMemo(() => {
     return openTasks.filter((t) => {
-      const isOverdue = t.dueDate && t.dueDate < (now.toISOString().slice(0, 10));
-      const isDueToday = t.dueDate && t.dueDate === (now.toISOString().slice(0, 10));
+      const isOverdue = Boolean(t.dueDate && t.dueDate < effectiveToday);
+      const isDueToday = Boolean(t.dueDate && t.dueDate === effectiveToday);
       return isOverdue || isDueToday || t.priority === "high";
     }).length;
-  }, [openTasks, now]);
+  }, [openTasks, effectiveToday]);
 
-  // Synthetic epoch descriptor
+  // Synthetic epoch descriptor (clamped so late December never outputs 1.0)
   const epochYear = now.getFullYear();
   const dayOfYear = Math.floor(
     (now.getTime() - new Date(epochYear, 0, 0).getTime()) / (1000 * 60 * 60 * 24)
   );
-  const epochFraction = (dayOfYear / 365).toFixed(1).replace("0.", "");
+  const fractionNum = Math.min(0.9, Math.floor(((dayOfYear || 1) / 366) * 10) / 10);
+  const epochFraction = fractionNum.toFixed(1).replace("0.", "");
 
   return (
     <div className="space-y-8 pb-12 animate-in fade-in duration-300">
@@ -239,6 +240,7 @@ export function MidnightDashboard(props: MidnightDashboardProps) {
             openTasks={openTasks}
             dueTodayTasks={dueTodayTasks}
             focusTasks={focusTasks}
+            todayStr={todayStr}
             onToggleTask={onToggleTask}
             onOpenQuickCapture={onOpenQuickCapture}
           />

@@ -119,7 +119,9 @@ export function HerbariumSpecimens({
                   )}
                   <span className="font-mono text-xs text-orbit-text-muted ml-auto">
                     {primaryTask.dueDate && todayStr && primaryTask.dueDate === todayStr
-                      ? `Due today · ${primaryTask.dueTime || "11:00"}`
+                      ? primaryTask.dueTime
+                        ? `Due today · ${primaryTask.dueTime}`
+                        : "Due today · All day"
                       : primaryTask.dueDate
                       ? `Due ${formatFriendlyDate(primaryTask.dueDate)}`
                       : "Ongoing Cultivation"}
@@ -200,7 +202,9 @@ export function HerbariumSpecimens({
                         </span>
                         <span className="font-mono text-[11px] text-orbit-text-muted">
                           {isDueToday
-                            ? `Today · ${task.dueTime || "14:00"}`
+                            ? task.dueTime
+                              ? `Today · ${task.dueTime}`
+                              : "Today · All day"
                             : task.dueDate
                             ? formatFriendlyDate(task.dueDate)
                             : "Perennial"}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { removeQueryParams, buildDeepLinkSignature } from "@/lib/utils/deep-links";
 
@@ -29,12 +29,13 @@ export function DeepLinkListener({ params, onDeepLink }: DeepLinkListenerProps) 
 
   // Stable params representation to prevent re-running effect on every render if an inline array is passed
   const paramsKey = params.slice().sort().join(",");
+  const paramsList = useMemo(() => (paramsKey ? paramsKey.split(",") : []), [paramsKey]);
 
   useEffect(() => {
     const extracted: Record<string, string> = {};
     let hasAny = false;
 
-    for (const key of params) {
+    for (const key of paramsList) {
       const val = searchParams.get(key);
       if (val !== null && val.trim().length > 0) {
         extracted[key] = val.trim();
@@ -57,10 +58,10 @@ export function DeepLinkListener({ params, onDeepLink }: DeepLinkListenerProps) 
 
     // Run callback and remove consumed parameters from URL
     Promise.resolve(onDeepLinkRef.current(extracted)).finally(() => {
-      const cleanUrl = removeQueryParams(pathname, searchParams, params);
+      const cleanUrl = removeQueryParams(pathname, searchParams, paramsList);
       router.replace(cleanUrl, { scroll: false });
     });
-  }, [searchParams, router, pathname, paramsKey, params]);
+  }, [searchParams, router, pathname, paramsKey, paramsList]);
 
   return null;
 }

@@ -17,7 +17,8 @@ function renderInlineMarkdown(text: string): React.ReactNode[] {
   // 2. Inline code: `code`
   // 3. Bold: **text** or __text__
   // 4. Italic: *text* or _text_
-  const tokenRegex = /(\[[^\]]+\]\([^)]+\)|`[^`]+`|\*\*[^*]+\*\*|__[^_]+__|\*[^*]+\*|_[^_]+_)/g;
+  const tokenRegex =
+    /(\[[^\]]+\]\([^)]+\)|`[^`]+`|\*\*[^*]+\*\*|__[^_]+__|\*[^*]+\*|(?<=[^\w]|^)_[^_]+_(?=[^\w]|$))/g;
   const parts = text.split(tokenRegex);
 
   return parts.map((part, idx) => {
@@ -246,6 +247,9 @@ export function MarkdownContent({ content, className = "" }: MarkdownContentProp
 
       // Unordered list: - or *
       if (/^[\*\-]\s+/.test(trimmed)) {
+        if (isOrderedList && listItems.length > 0) {
+          flushList(i);
+        }
         isOrderedList = false;
         listItems.push(
           <li key={`li-${i}`} className="leading-relaxed text-orbit-text-secondary">
@@ -257,6 +261,9 @@ export function MarkdownContent({ content, className = "" }: MarkdownContentProp
 
       // Ordered list: 1. 2. etc.
       if (/^\d+\.\s+/.test(trimmed)) {
+        if (!isOrderedList && listItems.length > 0) {
+          flushList(i);
+        }
         isOrderedList = true;
         listItems.push(
           <li key={`li-${i}`} className="leading-relaxed text-orbit-text-secondary">

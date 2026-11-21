@@ -484,7 +484,9 @@ export function calculateHabitConsistency(params: {
 
         // Count how many unique weeks have at least 1 completed log
         const completedWeeks = new Set(
-          Array.from(completedDates).map((d) => getWeekMonday(d))
+          Array.from(completedDates)
+            .filter((d) => d >= effectiveStart && d <= endDate)
+            .map((d) => getWeekMonday(d))
         );
         completedCount = uniqueWeekMondays.filter((m) => completedWeeks.has(m)).length;
       } else {

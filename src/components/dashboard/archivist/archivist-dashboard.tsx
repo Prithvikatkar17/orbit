@@ -50,7 +50,7 @@ export function ArchivistDashboard(props: ArchivistDashboardProps) {
     onOpenQuickCapture,
   } = props;
 
-  const displayHabits = activeHabits.length > 0 ? activeHabits : habits;
+  const displayHabits = activeHabits;
 
   const now = useMemo(() => new Date(), []);
   const dayOfYear = useMemo(() => getDayOfYear(now), [now]);

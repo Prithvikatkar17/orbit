@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react";
 import type { Task, Habit, HabitLog, Event } from "@/lib/schemas";
-import { parseLocalDate } from "@/lib/utils/dates";
+import { parseLocalDate, getLocalDateString } from "@/lib/utils/dates";
 import { SwissFocusLedger } from "./swiss-focus-ledger";
 import { DieterCadenceStrip } from "./dieter-cadence-strip";
 import { HorizonChronicle } from "./horizon-chronicle";
@@ -39,7 +39,6 @@ function getGreeting(): string {
 
 export function MinimalistDashboard({
   tasks,
-  habits,
   habitLogs,
   events,
   activeHabits,
@@ -77,7 +76,10 @@ export function MinimalistDashboard({
     const tasksDueOrCompletedToday = tasks.filter(
       (t) =>
         t.dueDate === todayStr ||
-        (t.status === "completed" && t.completedAt && todayStr && t.completedAt.startsWith(todayStr))
+        (t.status === "completed" &&
+          t.completedAt &&
+          todayStr &&
+          getLocalDateString(new Date(t.completedAt)) === todayStr)
     );
     const totalItems = tasksDueOrCompletedToday.length + habitsTotalCount;
     if (totalItems === 0) return 0;
@@ -213,7 +215,7 @@ export function MinimalistDashboard({
           {/* Band 02 — Dieter Cadence Strip (6 cols on lg) */}
           <div className="lg:col-span-6">
             <DieterCadenceStrip
-              habits={activeHabits.length > 0 ? activeHabits : habits}
+              habits={activeHabits}
               habitLogs={habitLogs}
               completedTodayHabitIds={completedTodayHabitIds}
               todayStr={todayStr}

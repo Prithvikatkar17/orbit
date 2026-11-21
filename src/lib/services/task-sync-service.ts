@@ -144,8 +144,16 @@ export async function saveTaskWithSync(
                 await database.reminders.add(newReminder);
               }
             } else {
-              // Task has no time: remove at_time reminders
-              await database.reminders.where("eventId").equals(primaryEvent.id).delete();
+              // Task has no time: remove only "at_time" reminders, preserving custom reminders
+              for (const rem of existingReminders) {
+                if (rem.timing.type === "at_time") {
+                  await database.reminders.delete(rem.id);
+                } else {
+                  await database.reminders.update(rem.id, {
+                    isActive: validatedTask.status !== "completed",
+                  });
+                }
+              }
             }
           } else {
             // Task previously had no linked event: create one now

@@ -134,7 +134,7 @@ export default function TasksPage() {
       if (activeTab === "completed") {
         if (task.status !== "completed") return false;
       } else {
-        if (task.status === "completed") return false;
+        if (task.status === "completed" || task.status === "archived") return false;
 
         if (activeTab === "today") {
           if (!task.dueDate || task.dueDate > todayStr) return false;
@@ -200,7 +200,7 @@ export default function TasksPage() {
     tasks.forEach((t) => {
       if (t.status === "completed") {
         completed++;
-      } else {
+      } else if (t.status !== "archived") {
         active++;
         if (t.dueDate === todayStr) {
           dueToday++;

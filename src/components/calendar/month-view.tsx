@@ -9,6 +9,7 @@ import {
   getMonthCalendarGrid,
 } from "@/lib/utils/recurrence";
 import { formatDateDisplay } from "@/lib/utils/dates";
+import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
 import { Button, SurfaceCard } from "@/components/ui";
 
 interface MonthViewProps {
@@ -39,6 +40,11 @@ export function MonthView({
     dateStr: string;
     events: EventOccurrence[];
   } | null>(null);
+
+  const overflowModalRef = useAccessibleModal({
+    isOpen: Boolean(dayOverflowPopover),
+    onClose: () => setDayOverflowPopover(null),
+  });
 
   const activeSelectedDate = selectedDateStr || internalSelectedDate;
   const handleSelectDate = (dateStr: string) => {
@@ -304,10 +310,12 @@ export function MonthView({
           onClick={() => setDayOverflowPopover(null)}
         >
           <div
+            ref={overflowModalRef}
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-labelledby="month-overflow-title"
-            className="w-full max-w-sm max-h-[90dvh] overflow-y-auto rounded-orbit-card border border-orbit-border bg-orbit-surface-elevated p-4 sm:p-5 shadow-orbit-elevated animate-in fade-in zoom-in-95 duration-100"
+            className="w-full max-w-sm max-h-[90dvh] overflow-y-auto rounded-orbit-card border border-orbit-border bg-orbit-surface-elevated p-4 sm:p-5 shadow-orbit-elevated animate-in fade-in zoom-in-95 duration-100 outline-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between gap-2 pb-3 border-b border-orbit-border">

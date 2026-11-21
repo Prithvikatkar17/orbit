@@ -181,11 +181,15 @@ export function FuturisticDashboard({
               </div>
             </Link>
 
-            {/* Capsule 2: Due Today */}
+            {/* Capsule 2: Due Today / Overdue */}
             <Link
               href="/tasks"
               className="futuristic-oled-panel px-3.5 py-2 text-center min-w-[76px] hover:border-[#00f0ff]/50 transition-colors block"
-              aria-label={`${dueTodayTasks.length} tasks due today`}
+              aria-label={
+                overdueCount > 0
+                  ? `${overdueCount} overdue tasks`
+                  : `${dueTodayTasks.length} tasks due today`
+              }
             >
               <div
                 className={`text-base sm:text-lg font-bold font-mono tabular-nums leading-none ${
@@ -196,7 +200,7 @@ export function FuturisticDashboard({
                     : "text-[#94a3b8]"
                 }`}
               >
-                {String(dueTodayTasks.length).padStart(2, "0")}
+                {String(overdueCount > 0 ? overdueCount : dueTodayTasks.length).padStart(2, "0")}
               </div>
               <div className="text-[9px] font-mono text-[#64748b] tracking-wider mt-1 uppercase">
                 {overdueCount > 0 ? "OVERDUE" : "DUE TODAY"}

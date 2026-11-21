@@ -236,7 +236,6 @@ export function LibraryCard({
               rel="noopener noreferrer"
               onClick={(e) => {
                 e.stopPropagation();
-                onView(entry);
               }}
               className="inline-flex max-w-full items-center gap-1.5 font-mono text-[11px] font-medium text-orbit-accent hover:underline"
             >
@@ -287,7 +286,7 @@ export function LibraryCard({
               e.stopPropagation();
               onStatusChange(entry.id, e.target.value as LibraryEntry["status"]);
             }}
-            className={`min-h-[32px] cursor-pointer rounded-orbit-control border-0 px-2 py-1 text-[11px] font-semibold focus:outline-hidden focus:ring-2 focus:ring-orbit-ring ${statusCfg.badgeClass}`}
+            className={`orbit-status-pill min-h-[32px] cursor-pointer rounded-orbit-control border-0 px-2 py-1 text-[11px] font-semibold focus:outline-hidden focus:ring-2 focus:ring-orbit-ring ${statusCfg.badgeClass}`}
           >
             <option value="saved">Saved</option>
             <option value="in_progress">In Progress</option>

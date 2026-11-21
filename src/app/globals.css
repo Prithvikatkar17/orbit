@@ -2679,44 +2679,44 @@ pre {
 }
 
 /* Archivist: Refined stationery form controls with crisp vellum fills & ink focus */
-:root[data-orbit-theme="archivist"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-:root[data-orbit-theme="archivist"] select,
+:root[data-orbit-theme="archivist"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(.orbit-unstyled-input),
+:root[data-orbit-theme="archivist"] select:not(.orbit-status-pill):not(.orbit-unstyled-input),
 :root[data-orbit-theme="archivist"] textarea,
-:root:not([data-orbit-theme]) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-:root:not([data-orbit-theme]) select,
+:root:not([data-orbit-theme]) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(.orbit-unstyled-input),
+:root:not([data-orbit-theme]) select:not(.orbit-status-pill):not(.orbit-unstyled-input),
 :root:not([data-orbit-theme]) textarea {
   background-color: rgba(255, 255, 255, 0.72) !important;
   border-color: rgba(200, 188, 168, 0.8) !important;
   box-shadow: inset 0 1px 2px rgba(45, 38, 28, 0.04);
 }
 
-:root[data-orbit-theme="archivist"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
-:root[data-orbit-theme="archivist"] select:focus,
+:root[data-orbit-theme="archivist"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(.orbit-unstyled-input):focus,
+:root[data-orbit-theme="archivist"] select:not(.orbit-status-pill):not(.orbit-unstyled-input):focus,
 :root[data-orbit-theme="archivist"] textarea:focus,
-:root:not([data-orbit-theme]) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
-:root:not([data-orbit-theme]) select:focus,
+:root:not([data-orbit-theme]) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(.orbit-unstyled-input):focus,
+:root:not([data-orbit-theme]) select:not(.orbit-status-pill):not(.orbit-unstyled-input):focus,
 :root:not([data-orbit-theme]) textarea:focus {
   background-color: #ffffff !important;
   border-color: var(--orbit-accent) !important;
   box-shadow: 0 0 0 3px rgba(44, 94, 79, 0.18), inset 0 1px 2px rgba(0, 0, 0, 0.02) !important;
 }
 
-.dark:root[data-orbit-theme="archivist"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-.dark:root[data-orbit-theme="archivist"] select,
+.dark:root[data-orbit-theme="archivist"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(.orbit-unstyled-input),
+.dark:root[data-orbit-theme="archivist"] select:not(.orbit-status-pill):not(.orbit-unstyled-input),
 .dark:root[data-orbit-theme="archivist"] textarea,
-.dark:not([data-orbit-theme]) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-.dark:not([data-orbit-theme]) select,
+.dark:not([data-orbit-theme]) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(.orbit-unstyled-input),
+.dark:not([data-orbit-theme]) select:not(.orbit-status-pill):not(.orbit-unstyled-input),
 .dark:not([data-orbit-theme]) textarea {
   background-color: rgba(20, 19, 16, 0.75) !important;
   border-color: rgba(75, 70, 58, 0.8) !important;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
-.dark:root[data-orbit-theme="archivist"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
-.dark:root[data-orbit-theme="archivist"] select:focus,
+.dark:root[data-orbit-theme="archivist"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(.orbit-unstyled-input):focus,
+.dark:root[data-orbit-theme="archivist"] select:not(.orbit-status-pill):not(.orbit-unstyled-input):focus,
 .dark:root[data-orbit-theme="archivist"] textarea:focus,
-.dark:not([data-orbit-theme]) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
-.dark:not([data-orbit-theme]) select:focus,
+.dark:not([data-orbit-theme]) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(.orbit-unstyled-input):focus,
+.dark:not([data-orbit-theme]) select:not(.orbit-status-pill):not(.orbit-unstyled-input):focus,
 .dark:not([data-orbit-theme]) textarea:focus {
   background-color: rgba(28, 26, 22, 0.95) !important;
   border-color: var(--orbit-accent) !important;
@@ -2724,8 +2724,8 @@ pre {
 }
 
 /* Futuristic: Precision technical data terminals with telemetry glow */
-:root[data-orbit-theme="futuristic"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-:root[data-orbit-theme="futuristic"] select,
+:root[data-orbit-theme="futuristic"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(.orbit-unstyled-input),
+:root[data-orbit-theme="futuristic"] select:not(.orbit-status-pill):not(.orbit-unstyled-input),
 :root[data-orbit-theme="futuristic"] textarea {
   background-color: #f8fafc !important;
   border-color: var(--orbit-border) !important;
@@ -2733,16 +2733,16 @@ pre {
   transition: all var(--orbit-transition-fast);
 }
 
-:root[data-orbit-theme="futuristic"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
-:root[data-orbit-theme="futuristic"] select:focus,
+:root[data-orbit-theme="futuristic"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(.orbit-unstyled-input):focus,
+:root[data-orbit-theme="futuristic"] select:not(.orbit-status-pill):not(.orbit-unstyled-input):focus,
 :root[data-orbit-theme="futuristic"] textarea:focus {
   background-color: #ffffff !important;
   border-color: var(--orbit-accent) !important;
   box-shadow: 0 0 0 1px var(--orbit-accent) !important;
 }
 
-.dark:root[data-orbit-theme="futuristic"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-.dark:root[data-orbit-theme="futuristic"] select,
+.dark:root[data-orbit-theme="futuristic"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(.orbit-unstyled-input),
+.dark:root[data-orbit-theme="futuristic"] select:not(.orbit-status-pill):not(.orbit-unstyled-input),
 .dark:root[data-orbit-theme="futuristic"] textarea {
   background-color: #131b2c !important;
   border-color: var(--orbit-border) !important;
@@ -2750,8 +2750,8 @@ pre {
   transition: all var(--orbit-transition-fast);
 }
 
-.dark:root[data-orbit-theme="futuristic"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
-.dark:root[data-orbit-theme="futuristic"] select:focus,
+.dark:root[data-orbit-theme="futuristic"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(.orbit-unstyled-input):focus,
+.dark:root[data-orbit-theme="futuristic"] select:not(.orbit-status-pill):not(.orbit-unstyled-input):focus,
 .dark:root[data-orbit-theme="futuristic"] textarea:focus {
   background-color: #162034 !important;
   border-color: var(--orbit-accent) !important;

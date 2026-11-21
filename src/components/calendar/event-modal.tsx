@@ -118,16 +118,25 @@ export function EventModal({
         updatedAt: nowIso,
       });
 
-      const parsedReminders = reminders.map((r) =>
-        ReminderSchema.parse({
+      const existingRemindersList = isEditing
+        ? await db.reminders.where("eventId").equals(eventId).toArray()
+        : [];
+      const existingRemindersMap = new Map(existingRemindersList.map((r) => [r.id, r]));
+
+      const parsedReminders = reminders.map((r) => {
+        const existing = r.id ? existingRemindersMap.get(r.id) : undefined;
+        return ReminderSchema.parse({
           id: r.id || crypto.randomUUID(),
           eventId,
           timing: r.timing,
           label: r.label,
           isActive: r.isActive,
-          createdAt: nowIso,
-        })
-      );
+          lastNotifiedOccurrenceDate: existing?.lastNotifiedOccurrenceDate,
+          notifiedAt: existing?.notifiedAt,
+          acknowledgedAt: existing?.acknowledgedAt,
+          createdAt: existing?.createdAt ?? nowIso,
+        });
+      });
 
       // Atomic write
       await db.transaction("rw", [db.events, db.reminders], async () => {
