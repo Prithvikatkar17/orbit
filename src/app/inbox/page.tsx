@@ -350,6 +350,21 @@ export default function InboxPage() {
 
   async function handleSaveEdit(updated: Item) {
     await db.items.put(updated);
+    // Non-blocking optimistic background sync to SQLite backend
+    void fetch("/api/inbox", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: updated.id,
+        title: updated.title,
+        notes: updated.notes || null,
+        link: updated.link || null,
+        category: updated.category,
+        status: updated.status,
+      }),
+    }).catch((err) => {
+      console.warn("Background inbox edit sync error:", err);
+    });
   }
 
   function focusQuickCapture() {

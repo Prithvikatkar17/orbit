@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import type { Habit, HabitLog } from "@/lib/schemas";
-import { calculateStreak } from "@/lib/utils/dates";
+import { calculateStreak, parseLocalDate, getOffsetDateString } from "@/lib/utils/dates";
 import { toRomanNumeral } from "./archival-math";
 
 export interface LectionaryCadenceProps {
@@ -12,7 +12,7 @@ export interface LectionaryCadenceProps {
   activeHabits: Habit[];
   habitLogs: HabitLog[];
   todayStr: string | null;
-  onToggleHabit: (habitId: string) => Promise<void>;
+  onToggleHabit: (habitId: string, dateStr?: string) => Promise<void>;
 }
 
 const RIBBON_COLORS = [
@@ -30,18 +30,17 @@ export function LectionaryCadence({
 }: LectionaryCadenceProps) {
   const displayHabits = activeHabits.length > 0 ? activeHabits : habits;
 
-  // Build the 7-day past week window ending on today
+  // Build the 7-day past week window ending on today (UTC-safe local date math)
   const weekDays = React.useMemo(() => {
     const days: { dateStr: string; label: string; isToday: boolean }[] = [];
-    const base = todayStr ? new Date(todayStr + "T00:00:00") : new Date();
+    const base = todayStr ? parseLocalDate(todayStr) : new Date();
     const dayLabels = ["S", "M", "T", "W", "T", "F", "S"];
 
     for (let i = 6; i >= 0; i--) {
-      const d = new Date(base);
-      d.setDate(base.getDate() - i);
-      const iso = d.toISOString().split("T")[0];
+      const dateStr = getOffsetDateString(-i, base);
+      const d = parseLocalDate(dateStr);
       days.push({
-        dateStr: iso,
+        dateStr,
         label: dayLabels[d.getDay()],
         isToday: i === 0,
       });
@@ -177,7 +176,7 @@ export function LectionaryCadence({
                           // Today's Target: Clickable Stamped Seal if completed, or Brass Signet Ring if pending
                           <button
                             type="button"
-                            onClick={() => onToggleHabit(habit.id)}
+                            onClick={() => onToggleHabit(habit.id, d.dateStr)}
                             className={`w-8 h-8 rounded-full flex items-center justify-center transition-all transform hover:scale-105 active:scale-95 cursor-pointer ${
                               isDone
                                 ? "bg-[#8c2d38] text-[#f9f5eb] shadow-sm ring-1 ring-inset ring-amber-300/40"

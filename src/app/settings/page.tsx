@@ -302,6 +302,14 @@ export default function SettingsPage() {
       );
       await useNotificationStore.getState().clearAll();
       resetSearchIndex();
+
+      // Also reset SQLite tables via reset endpoint to prevent ghost resurrection
+      try {
+        await fetch("/api/reset", { method: "DELETE" });
+      } catch (resetErr) {
+        console.warn("SQLite database reset error:", resetErr);
+      }
+
       setIsResetConfirmOpen(false);
       setStatusMessage("All data cleared successfully.");
       setTimeout(() => setStatusMessage(null), 4000);

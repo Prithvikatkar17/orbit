@@ -126,20 +126,36 @@ export default function HomePage() {
   const habitsProgressPct =
     habitsTotalCount > 0 ? Math.round((habitsCompletedCount / habitsTotalCount) * 100) : 0;
 
-  async function toggleHabit(habitId: string) {
-    if (!todayStr) return;
+  async function toggleHabit(habitId: string, dateStr?: string) {
+    const targetDate = dateStr || todayStr;
+    if (!targetDate) return;
     const existing = await db.habitLogs
       .where("[habitId+date]")
-      .equals([habitId, todayStr])
+      .equals([habitId, targetDate])
       .first();
+
+    const newLogId = crypto.randomUUID();
+
+    // Non-blocking optimistic background sync to SQLite backend
+    void fetch("/api/habits/log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: newLogId,
+        habitId,
+        date: targetDate,
+      }),
+    }).catch((err) => {
+      console.warn("Background habit log toggle sync error:", err);
+    });
 
     if (existing) {
       await db.habitLogs.delete(existing.id);
     } else {
       await db.habitLogs.add({
-        id: crypto.randomUUID(),
+        id: newLogId,
         habitId,
-        date: todayStr,
+        date: targetDate,
         completed: true,
         createdAt: new Date().toISOString(),
       });
@@ -148,7 +164,21 @@ export default function HomePage() {
 
   async function toggleTask(task: Task) {
     try {
-      await toggleTaskCompletionWithSync(task);
+      const updatedTask = await toggleTaskCompletionWithSync(task);
+      // Non-blocking optimistic background sync to SQLite backend
+      void fetch("/api/tasks", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: updatedTask.id,
+          status: updatedTask.status,
+          completedAt: updatedTask.completedAt
+            ? new Date(updatedTask.completedAt).getTime()
+            : null,
+        }),
+      }).catch((err) => {
+        console.warn("Background task toggle sync error:", err);
+      });
     } catch (err: unknown) {
       console.error("Toggle task error:", err);
     }

@@ -57,6 +57,33 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
 
     try {
       if (destination === "task") {
+        // Non-blocking optimistic background sync to SQLite backend
+        void fetch(`/api/inbox?id=${encodeURIComponent(item.id)}`, { method: "DELETE" }).catch((err) => {
+          console.warn("Background inbox delete sync error:", err);
+        });
+        void fetch("/api/tasks", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: newId,
+            title: title.trim(),
+            notes: notes.trim(),
+            link: link || null,
+            category: "task",
+            priority,
+            status: "todo",
+            dueDate: dueDate || null,
+            dueTime: dueTime || null,
+            sortOrder: 0,
+            tags: ["inbox-converted"],
+            sourceItemId: item.id,
+            createdAt: nowIso,
+            updatedAt: nowIso,
+          }),
+        }).catch((err) => {
+          console.warn("Background task create sync error:", err);
+        });
+
         // Atomic transaction: Add task with sync + Remove inbox item
         await db.transaction("rw", [db.tasks, db.events, db.reminders, db.items], async () => {
           await saveTaskWithSync({
@@ -80,6 +107,29 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
           await db.items.delete(item.id);
         });
       } else if (destination === "habit") {
+        // Non-blocking optimistic background sync to SQLite backend
+        void fetch(`/api/inbox?id=${encodeURIComponent(item.id)}`, { method: "DELETE" }).catch((err) => {
+          console.warn("Background inbox delete sync error:", err);
+        });
+        void fetch("/api/habits", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: newId,
+            title: title.trim(),
+            notes: notes.trim(),
+            description: notes.trim(),
+            frequency: "daily",
+            color: "#10b981",
+            isActive: true,
+            sortOrder: 0,
+            createdAt: nowIso,
+            updatedAt: nowIso,
+          }),
+        }).catch((err) => {
+          console.warn("Background habit create sync error:", err);
+        });
+
         const habit = HabitSchema.parse({
           id: newId,
           title: title.trim(),
@@ -98,6 +148,10 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
           await db.items.delete(item.id);
         });
       } else if (destination === "library") {
+        // Non-blocking optimistic background sync to SQLite backend
+        void fetch(`/api/inbox?id=${encodeURIComponent(item.id)}`, { method: "DELETE" }).catch((err) => {
+          console.warn("Background inbox delete sync error:", err);
+        });
         const tags = libraryTags
           .split(",")
           .map((t) => t.trim().toLowerCase())

@@ -70,34 +70,47 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
 
   // Toggle today's completion
   async function toggleToday() {
-    // Non-blocking optimistic background sync to SQLite backend
-    void fetch("/api/habits/log", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        habitId: habit.id,
-        date: today,
-      }),
-    }).catch((err) => {
-      console.warn("Background habit log toggle sync error:", err);
-    });
-
     if (isCompletedToday) {
       // Find and delete the log for today
       const todayLog = logs.find((l) => l.date === today && l.completed);
       if (todayLog) {
         await db.habitLogs.delete(todayLog.id);
       }
+      // Non-blocking optimistic background sync to SQLite backend (toggle off)
+      void fetch("/api/habits/log", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          habitId: habit.id,
+          date: today,
+        }),
+      }).catch((err) => {
+        console.warn("Background habit log toggle sync error:", err);
+      });
     } else {
       // Add log for today
+      const newLogId = crypto.randomUUID();
       const newLog = HabitLogSchema.parse({
-        id: crypto.randomUUID(),
+        id: newLogId,
         habitId: habit.id,
         date: today,
         completed: true,
         createdAt: new Date().toISOString(),
       });
       await db.habitLogs.add(newLog);
+
+      // Non-blocking optimistic background sync to SQLite backend (toggle on with matching UUID)
+      void fetch("/api/habits/log", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: newLogId,
+          habitId: habit.id,
+          date: today,
+        }),
+      }).catch((err) => {
+        console.warn("Background habit log toggle sync error:", err);
+      });
     }
   }
 

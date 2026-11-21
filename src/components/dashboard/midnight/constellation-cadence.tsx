@@ -11,7 +11,7 @@ export interface ConstellationCadenceProps {
   habits: Habit[];
   habitLogs: HabitLog[];
   todayStr: string | null;
-  onToggleHabit: (habitId: string) => Promise<void>;
+  onToggleHabit: (habitId: string, dateStr?: string) => Promise<void>;
 }
 
 export function ConstellationCadence(props: ConstellationCadenceProps) {
@@ -165,7 +165,7 @@ export function ConstellationCadence(props: ConstellationCadenceProps) {
                         >
                           <button
                             type="button"
-                            onClick={() => onToggleHabit(habit.id)}
+                            onClick={() => onToggleHabit(habit.id, day.dateStr)}
                             className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-150 cursor-pointer ${
                               isCompleted
                                 ? "bg-[#4338ca] text-[#f8fafc] border border-[#818cf8] shadow-[0_0_12px_rgba(129,140,248,0.55)]"

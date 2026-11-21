@@ -104,7 +104,12 @@ export default function HabitsPage() {
           if (data.logs && Array.isArray(data.logs)) {
             for (const serverLog of data.logs) {
               if (isCancelled) break;
-              const existingLog = await db.habitLogs.get(serverLog.id);
+              // Deduplicate strictly by (habitId, date) compound key
+              const existingLog = await db.habitLogs
+                .where("[habitId+date]")
+                .equals([serverLog.habitId, serverLog.date])
+                .first();
+
               if (!existingLog) {
                 await db.habitLogs.put({
                   id: serverLog.id,
@@ -112,6 +117,16 @@ export default function HabitsPage() {
                   date: serverLog.date,
                   completed: Boolean(serverLog.completed),
                   createdAt: new Date(serverLog.createdAt || Date.now()).toISOString(),
+                });
+              } else if (existingLog.id !== serverLog.id) {
+                // Reconcile client temporary UUID with canonical server UUID
+                await db.habitLogs.delete(existingLog.id);
+                await db.habitLogs.put({
+                  id: serverLog.id,
+                  habitId: serverLog.habitId,
+                  date: serverLog.date,
+                  completed: Boolean(serverLog.completed),
+                  createdAt: existingLog.createdAt,
                 });
               }
             }

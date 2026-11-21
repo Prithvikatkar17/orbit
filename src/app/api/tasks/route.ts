@@ -92,7 +92,7 @@ export async function PATCH(request: Request) {
     };
 
     if ("title" in updates && typeof updates.title === "string") taskUpdates.title = updates.title.trim();
-    if ("notes" in updates) taskUpdates.notes = updates.notes ? String(updates.notes).trim() : "";
+    if ("notes" in updates) taskUpdates.notes = updates.notes ? String(updates.notes).trim() : null;
     if ("link" in updates) taskUpdates.link = updates.link ? String(updates.link).trim() : null;
     if ("category" in updates) taskUpdates.category = String(updates.category).trim().toLowerCase();
     if ("priority" in updates) taskUpdates.priority = updates.priority;

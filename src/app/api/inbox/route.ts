@@ -62,6 +62,32 @@ export async function POST(request: Request) {
   }
 }
 
+export async function PATCH(request: Request) {
+  try {
+    const body = await request.json();
+    const { id, ...updates } = body;
+    if (!id) {
+      return NextResponse.json({ success: false, error: "Inbox ID is required" }, { status: 400 });
+    }
+
+    const itemUpdates: Record<string, unknown> = {};
+    if ("title" in updates && typeof updates.title === "string") itemUpdates.title = updates.title.trim();
+    if ("notes" in updates) itemUpdates.notes = updates.notes ? String(updates.notes).trim() : null;
+    if ("link" in updates) itemUpdates.link = updates.link ? String(updates.link).trim() : null;
+    if ("category" in updates) itemUpdates.category = String(updates.category).trim().toLowerCase();
+    if ("status" in updates) itemUpdates.status = String(updates.status).trim();
+
+    await db.update(inbox).set(itemUpdates).where(eq(inbox.id, id));
+    return NextResponse.json({ success: true, updated: { id, ...itemUpdates } });
+  } catch (error) {
+    console.error("Failed to update inbox item in SQLite:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to update inbox item" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);

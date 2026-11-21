@@ -15,7 +15,7 @@ export interface HabitCadenceProps {
   habits: Habit[];
   habitLogs: HabitLog[];
   todayStr: string;
-  onToggleHabit: (habitId: string) => Promise<void>;
+  onToggleHabit: (habitId: string, dateStr?: string) => Promise<void>;
   onOpenQuickCapture: () => void;
 }
 
@@ -151,7 +151,7 @@ export function HabitCadence({
                         <button
                           type="button"
                           aria-label={`Toggle habit ${habit.title} for ${dateStr}`}
-                          onClick={() => onToggleHabit(habit.id)}
+                          onClick={() => onToggleHabit(habit.id, dateStr)}
                           className="relative min-h-[44px] min-w-[28px] w-full flex items-center justify-center p-0.5 cursor-pointer focus-visible:outline-hidden group"
                         >
                           <span

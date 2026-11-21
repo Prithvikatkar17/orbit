@@ -47,23 +47,25 @@ export function ThemePersonalityProvider({
   const [personality, setPersonality] = React.useState<ThemePersonality>(getInitialPersonality);
   const isLoaded = useMounted();
 
+  // 1. Sync DOM attribute whenever personality state changes
   React.useEffect(() => {
-    // Sync DOM attribute on mount / personality change
     if (typeof document !== "undefined") {
       document.documentElement.setAttribute("data-orbit-theme", personality);
     }
+  }, [personality]);
 
-    // Hydrate and reconcile from Dexie user_settings
+  // 2. Mount-only hydration from Dexie user_settings with cancellation guard
+  React.useEffect(() => {
+    let cancelled = false;
+
     db.settings
       .get("user_settings")
       .then((settings) => {
+        if (cancelled) return;
         if (settings?.themePersonality) {
           const parsed = ThemePersonalitySchema.safeParse(settings.themePersonality);
-          if (parsed.success && parsed.data !== personality) {
+          if (parsed.success) {
             setPersonality(parsed.data);
-            if (typeof document !== "undefined") {
-              document.documentElement.setAttribute("data-orbit-theme", parsed.data);
-            }
             try {
               localStorage.setItem(THEME_PERSONALITY_STORAGE_KEY, parsed.data);
             } catch {
@@ -75,7 +77,11 @@ export function ThemePersonalityProvider({
       .catch((err) => {
         console.error("Failed to load theme personality from DB:", err);
       });
-  }, [personality]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const setThemePersonality = React.useCallback(
     async (next: ThemePersonality) => {
