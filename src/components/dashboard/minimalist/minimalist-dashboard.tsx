@@ -6,6 +6,7 @@ import { parseLocalDate } from "@/lib/utils/dates";
 import { SwissFocusLedger } from "./swiss-focus-ledger";
 import { DieterCadenceStrip } from "./dieter-cadence-strip";
 import { HorizonChronicle } from "./horizon-chronicle";
+import { LegacyMigrationBanner } from "@/components/legacy-migration-banner";
 
 export interface MinimalistDashboardProps {
   tasks: Task[];
@@ -90,6 +91,7 @@ export function MinimalistDashboard({
 
   return (
     <div className="space-y-10 pb-16 overflow-hidden">
+      <LegacyMigrationBanner />
       {/* 1. Top Horizon Filament (The Daily Ratio Bar) */}
       <div className="w-full h-[2px] bg-orbit-border overflow-hidden">
         <div

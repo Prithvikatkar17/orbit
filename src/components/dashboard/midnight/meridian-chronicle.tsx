@@ -4,25 +4,35 @@ import React, { useMemo } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { Event } from "@/lib/schemas";
-import { formatFriendlyDate } from "@/lib/utils/dates";
+import { formatFriendlyDate, getLocalDateString, getOffsetDateString, parseLocalDate } from "@/lib/utils/dates";
+import { getAllOccurrencesForRange } from "@/lib/utils/recurrence";
 import { getEventTransitPhase } from "./astronomical-math";
 
 export interface MeridianChronicleProps {
   events: Event[];
+  todayStr?: string | null;
 }
 
 export function MeridianChronicle(props: MeridianChronicleProps) {
-  const { events } = props;
+  const { events, todayStr } = props;
 
-  // Sort upcoming events chronologically
+  const resolvedToday = todayStr ?? getLocalDateString();
+  const next7DaysStr = useMemo(
+    () => getOffsetDateString(7, parseLocalDate(resolvedToday)),
+    [resolvedToday]
+  );
+
+  // Expand recurring events and filter past events, sort chronologically
   const sortedEvents = useMemo(() => {
-    return [...events].sort((a, b) => {
-      const dateA = a.date || "";
-      const dateB = b.date || "";
-      if (dateA !== dateB) return dateA.localeCompare(dateB);
-      return (a.startTime || "").localeCompare(b.startTime || "");
-    }).slice(0, 6);
-  }, [events]);
+    if (!events.length) return [];
+    return getAllOccurrencesForRange(events, resolvedToday, next7DaysStr)
+      .sort((a, b) => {
+        if (a.occurrenceDate !== b.occurrenceDate)
+          return a.occurrenceDate.localeCompare(b.occurrenceDate);
+        return (a.event.startTime || "").localeCompare(b.event.startTime || "");
+      })
+      .slice(0, 6);
+  }, [events, resolvedToday, next7DaysStr]);
 
   return (
     <section className="space-y-4" aria-label="Meridian Transit Log">
@@ -60,12 +70,13 @@ export function MeridianChronicle(props: MeridianChronicleProps) {
         ) : (
           /* Vertical Graduated Brass/Indigo Meridian Axis */
           <div className="relative pl-6 ml-2 border-l-2 border-[#818cf8]/25 space-y-7 my-1">
-            {sortedEvents.map((ev, idx) => {
+            {sortedEvents.map((occ, idx) => {
+              const ev = occ.event;
               const transitPhase = getEventTransitPhase(ev.startTime);
               const isFirst = idx === 0;
 
               return (
-                <div key={ev.id} className="relative group">
+                <div key={`${ev.id}_${occ.occurrenceDate}`} className="relative group">
                   {/* Graduated Meridian Axis Node / Stellar Orb */}
                   <div
                     className={`absolute -left-[31px] top-1 w-4 h-4 rounded-full flex items-center justify-center transition-transform group-hover:scale-125 ${
@@ -105,10 +116,10 @@ export function MeridianChronicle(props: MeridianChronicleProps) {
                       {ev.title}
                     </h4>
 
-                    {/* Date subtitle if not today */}
-                    {ev.date && (
+                    {/* Date subtitle */}
+                    {occ.occurrenceDate && (
                       <p className="font-mono text-[10px] text-orbit-text-muted tracking-wider">
-                        {formatFriendlyDate(ev.date)}
+                        {formatFriendlyDate(occ.occurrenceDate)}
                       </p>
                     )}
                   </div>

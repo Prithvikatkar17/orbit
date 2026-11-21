@@ -49,7 +49,7 @@ export function LegacyMigrationBanner() {
       setImportResult(
         `Imported ${res.importedTasks} tasks, ${res.importedHabits} habits (${res.importedLogs} logs), and ${res.importedLibrary} library entries.`
       );
-      setDismissed(true);
+      // Keep modal open to show success screen — user dismisses via "Done" button
     } catch (e) {
       console.error("Migration error:", e);
     } finally {
@@ -136,7 +136,7 @@ export function LegacyMigrationBanner() {
                   <Button
                     type="button"
                     variant="primary"
-                    onClick={() => setShowModal(false)}
+                    onClick={() => { setShowModal(false); setDismissed(true); }}
                   >
                     Done
                   </Button>

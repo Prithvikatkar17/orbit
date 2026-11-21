@@ -75,11 +75,26 @@ async function runCheckDueReminders(
     const now = options.nowMs ?? Date.now();
     const nowDate = new Date(now);
     const todayStr = getLocalDateString(nowDate);
-    // Check past 7 days to 2 days ahead to catch missed reminders and early offsets
+    // Dynamically compute lookahead window from active reminders' max offset days
+    // so 3-day and 7-day advance reminders (offsetMinutes: 4320 or 10080) fire on time.
+    const maxOffsetDays = Math.max(
+      2,
+      ...activeReminders.map((r) =>
+        Math.ceil(((r.timing as { offsetMinutes?: number }).offsetMinutes || 0) / 1440) + 1
+      )
+    );
+    // Check past 7 days to maxOffsetDays ahead to catch missed reminders and early offsets
     const checkStartStr = getOffsetDateString(-7, parseLocalDate(todayStr));
-    const checkEndStr = getOffsetDateString(2, parseLocalDate(todayStr));
+    const checkEndStr = getOffsetDateString(maxOffsetDays, parseLocalDate(todayStr));
 
-    // 2. Batch-load only referenced events using primary key index
+    // 2. Load user settings to respect defaultReminderTime and notificationsEnabled
+    const userSettings = typeof database.settings?.get === "function"
+      ? await database.settings.get("user_settings")
+      : null;
+    const defaultReminderTime = userSettings?.defaultReminderTime || "09:00";
+    const notificationsEnabled = userSettings?.notificationsEnabled ?? true;
+
+    // Batch-load only referenced events using primary key index
     const eventIds = Array.from(new Set(activeReminders.map((r) => r.eventId)));
     const events = await database.events.where("id").anyOf(eventIds).toArray();
     const eventMap = new Map<string, Event>();
@@ -123,7 +138,8 @@ async function runCheckDueReminders(
         const triggerTimestamp = calculateReminderTriggerTime(
           event,
           occ.occurrenceDate,
-          reminder
+          reminder,
+          defaultReminderTime
         );
 
         // If trigger time is still in the future, it is waiting
@@ -212,8 +228,9 @@ async function runCheckDueReminders(
       .getState()
       .receivePersistedNotifications(notificationsToPersist);
 
-    // 6. Dispatch native browser notifications when permitted and app is backgrounded
+    // 6. Dispatch native browser notifications when permitted, enabled in settings, and app is backgrounded
     if (
+      notificationsEnabled &&
       typeof window !== "undefined" &&
       typeof document !== "undefined" &&
       "Notification" in window &&

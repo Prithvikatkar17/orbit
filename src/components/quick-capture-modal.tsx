@@ -9,6 +9,7 @@ import {
   ItemSchema,
   HabitSchema,
   LibraryEntrySchema,
+  TaskSchema,
   type LibraryEntry,
 } from "@/lib/schemas";
 import { saveTaskWithSync } from "@/lib/services/task-sync-service";
@@ -25,6 +26,9 @@ function getInitialCaptureData(storeData?: QuickCaptureInitialData): QuickCaptur
   }
   if (typeof window !== "undefined") {
     try {
+      if (window.location.pathname === "/capture") {
+        return storeData ?? {};
+      }
       const stored =
         window.sessionStorage.getItem("orbit-share-draft") ||
         window.sessionStorage.getItem("orbit_pending_capture");
@@ -50,6 +54,9 @@ function QuickCaptureListener() {
     if (typeof window === "undefined") return;
 
     try {
+      if (window.location.pathname === "/capture") {
+        return;
+      }
       const search = window.location.search;
       const params = new URLSearchParams(search);
       const isSharedFlag =
@@ -161,6 +168,7 @@ function QuickCaptureDialog() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [libraryStatus, setLibraryStatus] = useState<LibraryEntry["status"]>("saved");
   const [tagInput, setTagInput] = useState("");
+  const [formError, setFormError] = useState<string | null>(null);
 
   const collections = useLiveQuery(
     () => db.libraryCollections.orderBy("sortOrder").toArray(),
@@ -189,6 +197,7 @@ function QuickCaptureDialog() {
     if (!title.trim() || isSubmitting) return;
 
     setIsSubmitting(true);
+    setFormError(null);
     const nowIso = new Date().toISOString();
     const id = crypto.randomUUID();
     const trimmedTitle = title.trim();
@@ -203,7 +212,145 @@ function QuickCaptureDialog() {
     const captureLibraryStatus = libraryStatus;
     const captureTagInput = tagInput;
 
-    // 1. Optimistic UI: Immediately close modal and reset form state (0ms perceived latency)
+    // 1. Compute nextSortOrder for tasks
+    let nextSortOrder = 0;
+    if (!isLibraryCategory && lowerCat !== "inbox" && lowerCat !== "habit") {
+      try {
+        const existingTasks = await db.tasks.toArray();
+        const maxSortOrder =
+          existingTasks.length > 0
+            ? Math.max(...existingTasks.map((t) => t.sortOrder ?? 0))
+            : -1;
+        nextSortOrder = maxSortOrder + 1;
+      } catch {
+        nextSortOrder = 0;
+      }
+    }
+
+    // 2. Validate with Zod before closing modal or resetting state to prevent data loss
+    if (lowerCat === "inbox") {
+      const parsed = ItemSchema.safeParse({
+        id,
+        title: trimmedTitle,
+        notes: trimmedNotes,
+        link: normalizedLink,
+        category: "inbox",
+        priority: capturePriority,
+        status: "pending",
+        createdAt: nowIso,
+        updatedAt: nowIso,
+      });
+      if (!parsed.success) {
+        setFormError(parsed.error.issues[0]?.message || "Validation failed for inbox item");
+        setIsSubmitting(false);
+        return;
+      }
+    } else if (lowerCat === "habit") {
+      const parsed = HabitSchema.safeParse({
+        id,
+        title: trimmedTitle,
+        notes: trimmedNotes,
+        frequency: "daily",
+        customDays: [],
+        color: "#10b981",
+        isActive: true,
+        sortOrder: 0,
+        createdAt: nowIso,
+        updatedAt: nowIso,
+      });
+      if (!parsed.success) {
+        setFormError(parsed.error.issues[0]?.message || "Validation failed for habit");
+        setIsSubmitting(false);
+        return;
+      }
+    } else if (isLibraryCategory) {
+      let resolvedType: LibraryEntry["type"] = "other";
+      switch (lowerCat) {
+        case "bookmark":
+        case "library":
+          resolvedType = "bookmark";
+          break;
+        case "video":
+        case "youtube":
+          resolvedType = "video";
+          break;
+        case "watch":
+          resolvedType = "watch";
+          break;
+        case "article":
+          resolvedType = "article";
+          break;
+        case "note":
+          resolvedType = "note";
+          break;
+        case "learn":
+          resolvedType = "learn";
+          break;
+        case "buy":
+          resolvedType = "buy";
+          break;
+        case "playlist":
+          resolvedType = "playlist";
+          break;
+        case "file":
+          resolvedType = "file";
+          break;
+        default:
+          resolvedType = "other";
+          break;
+      }
+
+      const tags = captureTagInput
+        .split(",")
+        .map((t) => t.trim().toLowerCase())
+        .filter(Boolean);
+      if (!tags.includes(lowerCat) && lowerCat !== "library") {
+        tags.push(lowerCat);
+      }
+
+      const parsed = LibraryEntrySchema.safeParse({
+        id,
+        title: trimmedTitle,
+        notes: trimmedNotes,
+        link: normalizedLink,
+        type: resolvedType,
+        status: captureLibraryStatus,
+        tags,
+        isFavorite: captureIsFavorite,
+        collectionId: captureCollectionId || undefined,
+        completedAt: captureLibraryStatus === "completed" ? nowIso : undefined,
+        createdAt: nowIso,
+        updatedAt: nowIso,
+      });
+      if (!parsed.success) {
+        setFormError(parsed.error.issues[0]?.message || "Validation failed for library resource");
+        setIsSubmitting(false);
+        return;
+      }
+    } else {
+      const parsed = TaskSchema.safeParse({
+        id,
+        title: trimmedTitle,
+        notes: trimmedNotes,
+        link: normalizedLink,
+        category: lowerCat,
+        priority: capturePriority,
+        status: "todo",
+        dueDate: captureDueDate || undefined,
+        dueTime: captureDueTime || undefined,
+        sortOrder: nextSortOrder,
+        tags: [category],
+        createdAt: nowIso,
+        updatedAt: nowIso,
+      });
+      if (!parsed.success) {
+        setFormError(parsed.error.issues[0]?.message || "Validation failed for task");
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
+    // 3. Optimistic UI: Immediately close modal and reset form state now that validation passed
     closeQuickCapture();
     setTitle("");
     setNotes("");
@@ -364,7 +511,7 @@ function QuickCaptureDialog() {
             status: "todo",
             dueDate: captureDueDate,
             dueTime: captureDueTime,
-            sortOrder: 0,
+            sortOrder: nextSortOrder,
             tags: [category],
             createdAt: nowIso,
             updatedAt: nowIso,
@@ -384,7 +531,7 @@ function QuickCaptureDialog() {
             status: "todo",
             dueDate: captureDueDate,
             dueTime: captureDueTime,
-            sortOrder: 0,
+            sortOrder: nextSortOrder,
             tags: [category],
             createdAt: nowIso,
             updatedAt: nowIso,
@@ -544,13 +691,24 @@ function QuickCaptureDialog() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+          {formError && (
+            <div
+              role="alert"
+              className="rounded-md bg-red-500/10 border border-red-500/30 p-2.5 text-xs text-red-600 dark:text-red-400 font-medium animate-in fade-in"
+            >
+              {formError}
+            </div>
+          )}
           <div>
             <input
               type="text"
               required
               autoFocus
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => {
+                setTitle(e.target.value);
+                if (formError) setFormError(null);
+              }}
               placeholder="What do you want to remember or do?"
               className={`w-full border border-orbit-border bg-orbit-surface-secondary px-3.5 py-2.5 text-base text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors ${controlRadiusClass} ${
                 isArchivist

@@ -6,6 +6,7 @@ import type { Task, Habit, HabitLog, Event } from "@/lib/schemas";
 import { PerennialGarden } from "./perennial-garden";
 import { HerbariumSpecimens } from "./herbarium-specimens";
 import { SolarHorizon } from "./solar-horizon";
+import { LegacyMigrationBanner } from "@/components/legacy-migration-banner";
 
 export interface NaturalistDashboardProps {
   tasks: Task[];
@@ -123,6 +124,7 @@ export function NaturalistDashboard(props: NaturalistDashboardProps) {
 
   return (
     <div className="space-y-10 max-w-7xl mx-auto pb-16">
+      <LegacyMigrationBanner />
       {/* STRATUM 1: The Lush Conservatory Panorama & Solar Arc Pavilion */}
       <div className="naturalist-canopy-hero rounded-[28px] p-7 md:p-9 relative overflow-hidden">
         {/* Panoramic SVG Landscape Backdrop with Mountain Contours & Golden Solar Arc */}

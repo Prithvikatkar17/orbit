@@ -82,7 +82,10 @@ export default function CalendarPage() {
 
   const todayStr = useMemo(() => getLocalDateString(), []);
 
-  // Fetch all events reactively from Dexie
+  // Fetch user settings (for weekStartsOn) and all events reactively from Dexie
+  const userSettings = useLiveQuery(() => db.settings.get("user_settings"), []);
+  const weekStartsOn = (userSettings?.weekStartsOn as "monday" | "sunday") ?? "monday";
+
   const allEvents = useLiveQuery(async () => {
     return await db.events.toArray();
   }, []);
@@ -99,7 +102,7 @@ export default function CalendarPage() {
     if (viewMode === "month") {
       return formatMonthYear(currentDateStr);
     } else if (viewMode === "week") {
-      const days = getWeekDays(currentDateStr, todayStr, "monday");
+      const days = getWeekDays(currentDateStr, todayStr, weekStartsOn);
       const first = days[0].dateStr;
       const last = days[6].dateStr;
       const [fYear, fMonth, fDay] = first.split("-");
@@ -112,18 +115,18 @@ export default function CalendarPage() {
     } else {
       return formatDateDisplay(currentDateStr);
     }
-  }, [viewMode, currentDateStr, todayStr]);
+  }, [viewMode, currentDateStr, todayStr, weekStartsOn]);
 
   // Compute date range window for occurrences calculation
   const { windowStart, windowEnd } = useMemo(() => {
     if (viewMode === "month") {
-      const grid = getMonthCalendarGrid(currentYear, currentMonth, todayStr, "monday");
+      const grid = getMonthCalendarGrid(currentYear, currentMonth, todayStr, weekStartsOn);
       return {
         windowStart: grid[0].dateStr,
         windowEnd: grid[grid.length - 1].dateStr,
       };
     } else if (viewMode === "week") {
-      const days = getWeekDays(currentDateStr, todayStr, "monday");
+      const days = getWeekDays(currentDateStr, todayStr, weekStartsOn);
       return {
         windowStart: days[0].dateStr,
         windowEnd: days[6].dateStr,
@@ -134,7 +137,7 @@ export default function CalendarPage() {
         windowEnd: currentDateStr,
       };
     }
-  }, [viewMode, currentYear, currentMonth, currentDateStr, todayStr]);
+  }, [viewMode, currentYear, currentMonth, currentDateStr, todayStr, weekStartsOn]);
 
   // Filter events by type and search query
   const filteredEvents = useMemo(() => {
@@ -262,7 +265,7 @@ export default function CalendarPage() {
             selectedDateStr={selectedDateStr}
             onSelectDate={setSelectedDateStr}
             occurrences={occurrences}
-            weekStartsOn="monday"
+            weekStartsOn={weekStartsOn}
             onSelectEvent={handleSelectEvent}
             onCreateEvent={(d) => handleCreateEvent(d)}
           />
@@ -273,7 +276,7 @@ export default function CalendarPage() {
             currentDateStr={currentDateStr}
             todayStr={todayStr}
             occurrences={occurrences}
-            weekStartsOn="monday"
+            weekStartsOn={weekStartsOn}
             onSelectEvent={handleSelectEvent}
             onCreateEvent={(d, t) => handleCreateEvent(d, t)}
           />

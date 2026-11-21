@@ -1,18 +1,30 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import type { Event } from "@/lib/schemas";
-import { formatFriendlyDate } from "@/lib/utils/dates";
+import { formatFriendlyDate, getLocalDateString, getOffsetDateString, parseLocalDate } from "@/lib/utils/dates";
+import { getAllOccurrencesForRange } from "@/lib/utils/recurrence";
 import { getCanonicalHour } from "./archival-math";
 
 export interface AnnalsChronicleProps {
   events: Event[];
+  todayStr?: string | null;
 }
 
-export function AnnalsChronicle({ events }: AnnalsChronicleProps) {
-  const displayEvents = events.slice(0, 4);
+export function AnnalsChronicle({ events, todayStr }: AnnalsChronicleProps) {
+  const resolvedToday = todayStr ?? getLocalDateString();
+  const next7DaysStr = useMemo(
+    () => getOffsetDateString(7, parseLocalDate(resolvedToday)),
+    [resolvedToday]
+  );
+
+  const displayEvents = useMemo(() => {
+    if (!events.length) return [];
+    // Expand recurring events and filter out past dates using the same pattern as other themes
+    return getAllOccurrencesForRange(events, resolvedToday, next7DaysStr).slice(0, 4);
+  }, [events, resolvedToday, next7DaysStr]);
 
   return (
     <section className="space-y-4">
@@ -36,12 +48,13 @@ export function AnnalsChronicle({ events }: AnnalsChronicleProps) {
       <div className="archivist-catalog-card p-5 md:p-6 rounded-[14px]">
         {displayEvents.length > 0 ? (
           <div className="relative pl-6 border-l-2 border-[#8c2d38]/40 dark:border-[#c94a58]/40 space-y-6 my-1">
-            {displayEvents.map((event) => {
+            {displayEvents.map((occ) => {
+              const event = occ.event;
               const canonical = getCanonicalHour(event.startTime);
-              const eventDateLabel = event.date ? formatFriendlyDate(event.date) : "Today";
+              const eventDateLabel = occ.occurrenceDate ? formatFriendlyDate(occ.occurrenceDate) : "Today";
 
               return (
-                <div key={event.id} className="relative group">
+                <div key={`${event.id}_${occ.occurrenceDate}`} className="relative group">
                   {/* Fleuron / Wax Pin Node on the Margin Rule */}
                   <div className="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-[#8c2d38] dark:bg-[#c94a58] border-2 border-[#fdfaf3] dark:border-[#1b1613] shadow-xs flex items-center justify-center">
                     <span className="w-1 h-1 rounded-full bg-amber-200" />

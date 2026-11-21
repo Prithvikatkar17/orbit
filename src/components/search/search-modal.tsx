@@ -177,6 +177,13 @@ export function SearchModal() {
       })
       .catch((err) => {
         console.error("Failed to execute universal search:", err);
+        if (!isMounted) return;
+        setSearchResults({
+          query: trimmedQuery,
+          totalMatches: 0,
+          items: [],
+          groups: [],
+        });
       });
 
     return () => {
@@ -184,11 +191,22 @@ export function SearchModal() {
     };
   }, [isSearchOpen, trimmedQuery, activeFilter]);
 
-  const items = activeSearchResults.items;
-  const itemsCount = items.length;
+  // Flatten the rendered groups into a single ordered visual list matching the on-screen display order
+  const visualItems = useMemo(() => {
+    if (!activeSearchResults.groups.length) return [];
+    const list: SearchResultItemType[] = [];
+    for (const group of activeSearchResults.groups) {
+      for (const item of group.items) {
+        list.push(item);
+      }
+    }
+    return list;
+  }, [activeSearchResults.groups]);
 
-  // Selected item reference
-  const selectedItem = itemsCount > 0 && selectedIndex < itemsCount ? items[selectedIndex] : null;
+  const itemsCount = visualItems.length;
+
+  // Selected item reference indexed against the visual order
+  const selectedItem = itemsCount > 0 && selectedIndex < itemsCount ? visualItems[selectedIndex] : null;
 
   // Navigate to selected result
   function handleSelectResult(item: SearchResultItemType) {
@@ -202,19 +220,7 @@ export function SearchModal() {
   // Handle Quick Capture shortcut (Ctrl+N / Cmd+N) or fallback action
   function handleOpenQuickCapture(prefillTitle?: string) {
     closeSearch();
-    useUIStore.getState().openQuickCapture();
-    if (prefillTitle && typeof window !== "undefined") {
-      // Small timeout to allow Quick Capture modal to mount and receive title
-      setTimeout(() => {
-        const titleInput = document.querySelector<HTMLInputElement>(
-          'input[placeholder*="What needs to be done"]'
-        );
-        if (titleInput) {
-          titleInput.value = prefillTitle;
-          titleInput.dispatchEvent(new Event("input", { bubbles: true }));
-        }
-      }, 50);
-    }
+    useUIStore.getState().openQuickCapture(prefillTitle ? { title: prefillTitle } : undefined);
   }
 
   // Live screen reader announcement
@@ -639,7 +645,7 @@ export function SearchModal() {
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-orbit-accent border-t-transparent mb-2" />
               <span className="font-mono text-xs text-orbit-text-muted">Searching local records...</span>
             </div>
-          ) : !query.trim() ? (
+          ) : !debouncedQuery.trim() ? (
             /* Empty Query State: Recent Searches & Hints */
             <div className="py-2 sm:py-3 px-1 sm:px-2">
               {recentSearches.length > 0 ? (
@@ -773,7 +779,7 @@ export function SearchModal() {
 
                   <div className="space-y-1">
                     {group.items.map((item) => {
-                      const itemIndex = items.findIndex((i) => i.id === item.id);
+                      const itemIndex = visualItems.findIndex((i) => i.id === item.id);
                       const isSelected = itemIndex === selectedIndex;
                       return (
                         <SearchResultItem

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useTheme } from "next-themes";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
@@ -50,9 +50,12 @@ export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const { themePersonality, setThemePersonality } = useThemePersonality();
   const mounted = useMounted();
-  const [permission, setPermission] = useState<NotificationPermission>("default");
-  const [defaultReminderTime, setDefaultReminderTime] = useState("09:00");
-  const [weekStartsOn, setWeekStartsOn] = useState<"monday" | "sunday">("monday");
+  const [explicitPermission, setExplicitPermission] = useState<NotificationPermission | null>(null);
+  const permission: NotificationPermission =
+    explicitPermission ??
+    (mounted && typeof window !== "undefined" && "Notification" in window
+      ? Notification.permission
+      : "default");
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -88,21 +91,39 @@ export default function SettingsPage() {
     filesCount,
   } = useLiveQuery(() => fetchDatabaseStorageCounts(), []) ?? EMPTY_STORAGE_COUNTS;
 
-  useEffect(() => {
-    // Load settings from db
-    db.settings
-      .get("user_settings")
-      .then((s) => {
-        if (s) {
-          if (s.defaultReminderTime) setDefaultReminderTime(s.defaultReminderTime);
-          if (s.weekStartsOn) setWeekStartsOn(s.weekStartsOn);
-        }
-        if (typeof window !== "undefined" && "Notification" in window) {
-          setPermission(Notification.permission);
-        }
-      })
-      .catch((err) => console.error("Error loading settings:", err));
-  }, []);
+  // Reactively track user settings so backup restores or database resets update form controls immediately
+  const dbSettings = useLiveQuery(() => db.settings.get("user_settings"), []);
+  const defaultReminderTime = dbSettings?.defaultReminderTime ?? "09:00";
+  const weekStartsOn = (dbSettings?.weekStartsOn as "monday" | "sunday") ?? "monday";
+
+  async function handleSetTheme(mode: string) {
+    setTheme(mode);
+    try {
+      const existing = await db.settings.get("user_settings");
+      if (existing) {
+        await db.settings.update("user_settings", {
+          theme: mode as "light" | "dark" | "system",
+          updatedAt: new Date().toISOString(),
+        });
+      } else {
+        await db.settings.add({
+          id: "user_settings",
+          theme: mode as "light" | "dark" | "system",
+          themePersonality: themePersonality || "archivist",
+          defaultPriority: "medium",
+          defaultReminderTime: "09:00",
+          weekStartsOn: "monday",
+          dateFormat: "DD/MM/YYYY",
+          notificationsEnabled: true,
+          heatmapDays: 180,
+          schemaVersion: 1,
+          updatedAt: new Date().toISOString(),
+        });
+      }
+    } catch (err) {
+      console.warn("Failed to persist theme to db.settings:", err);
+    }
+  }
 
   async function handleSavePreference(updates: {
     defaultReminderTime?: string;
@@ -141,7 +162,7 @@ export default function SettingsPage() {
 
   async function handleEnableNotifications() {
     const perm = await requestNotificationPermission();
-    setPermission(perm);
+    setExplicitPermission(perm);
     if (perm === "granted") {
       setStatusMessage("Notifications enabled!");
       setTimeout(() => setStatusMessage(null), 3000);
@@ -406,7 +427,7 @@ export default function SettingsPage() {
               <button
                 key={mode.id}
                 type="button"
-                onClick={() => setTheme(mode.id)}
+                onClick={() => handleSetTheme(mode.id)}
                 className={`flex flex-col items-center justify-center gap-2 rounded-lg border p-3.5 sm:p-4 text-xs font-medium transition-all ${
                   isSelected
                     ? "border-orbit-accent bg-orbit-accent-soft text-orbit-accent ring-1 ring-orbit-accent/40 shadow-orbit-xs font-semibold"
@@ -448,7 +469,6 @@ export default function SettingsPage() {
               type="time"
               value={defaultReminderTime}
               onChange={(e) => {
-                setDefaultReminderTime(e.target.value);
                 handleSavePreference({ defaultReminderTime: e.target.value });
               }}
               className="w-full rounded-lg border border-orbit-border bg-orbit-surface px-3 py-2 text-xs font-mono text-orbit-text focus:border-orbit-accent focus:outline-hidden"
@@ -467,7 +487,6 @@ export default function SettingsPage() {
               value={weekStartsOn}
               onChange={(e) => {
                 const val = e.target.value as "monday" | "sunday";
-                setWeekStartsOn(val);
                 handleSavePreference({ weekStartsOn: val });
               }}
               className="w-full rounded-lg border border-orbit-border bg-orbit-surface px-3 py-2 text-xs font-sans text-orbit-text focus:border-orbit-accent focus:outline-hidden"

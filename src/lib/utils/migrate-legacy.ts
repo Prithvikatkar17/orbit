@@ -78,6 +78,18 @@ function isLibraryCategory(cat: string): cat is "watch" | "learn" | "buy" {
   return c === "watch" || c === "youtube" || c === "learn" || c === "buy";
 }
 
+function safeHttpUrl(raw?: string): string | undefined {
+  if (!raw || typeof raw !== "string") return undefined;
+  const trimmed = raw.trim();
+  if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) return undefined;
+  try {
+    new URL(trimmed);
+    return trimmed;
+  } catch {
+    return undefined;
+  }
+}
+
 export async function analyzeLegacyData(): Promise<MigrationPreview> {
   const legacy = getLegacyTasks();
   const existingTasks = await db.tasks.toArray();
@@ -112,7 +124,17 @@ export async function analyzeLegacyData(): Promise<MigrationPreview> {
       continue;
     }
 
-    const createdIso = item.created ? new Date(item.created).toISOString() : new Date().toISOString();
+    let createdIso = new Date().toISOString();
+    if (item.created) {
+      try {
+        const d = new Date(item.created);
+        if (!isNaN(d.getTime())) {
+          createdIso = d.toISOString();
+        }
+      } catch {
+        // malformed date - fallback
+      }
+    }
     const signature = `${item.title.trim()}::${createdIso}`;
 
     if (existingTitles.has(signature)) {
@@ -173,7 +195,18 @@ export async function executeLegacyMigration(): Promise<{
     const title = item.title?.trim();
     if (!title) continue;
 
-    const createdIso = item.created ? new Date(item.created).toISOString() : nowIso;
+    const rawCreated = item.created;
+    let createdIso = nowIso;
+    if (rawCreated) {
+      try {
+        const d = new Date(rawCreated);
+        if (!isNaN(d.getTime())) {
+          createdIso = d.toISOString();
+        }
+      } catch {
+        // malformed date — fall back to nowIso
+      }
+    }
     const signature = `${title}::${createdIso}`;
     if (existingTitles.has(signature)) continue;
 
@@ -221,7 +254,7 @@ export async function executeLegacyMigration(): Promise<{
           id: crypto.randomUUID(),
           title,
           notes: item.notes || "",
-          link: item.link && item.link.startsWith("http") ? item.link : undefined,
+          link: safeHttpUrl(item.link),
           type: type || "other",
           status: item.completed ? "completed" : "saved",
           tags: [item.category],
@@ -238,7 +271,7 @@ export async function executeLegacyMigration(): Promise<{
           id: taskId,
           title,
           notes: item.notes || "",
-          link: item.link && item.link.startsWith("http") ? item.link : undefined,
+          link: safeHttpUrl(item.link),
           category: rawCat === "goal" ? "goal" : rawCat === "idea" ? "idea" : "task",
           priority,
           status: item.completed ? "completed" : "todo",

@@ -57,6 +57,12 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
 
     try {
       if (destination === "task") {
+        const existingTasks = await db.tasks.toArray();
+        const maxSortOrder = existingTasks.length > 0
+          ? Math.max(...existingTasks.map((t) => t.sortOrder ?? 0))
+          : -1;
+        const nextSortOrder = maxSortOrder + 1;
+
         // Non-blocking optimistic background sync to SQLite backend
         void fetch(`/api/inbox?id=${encodeURIComponent(item.id)}`, { method: "DELETE" }).catch((err) => {
           console.warn("Background inbox delete sync error:", err);
@@ -74,7 +80,7 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
             status: "todo",
             dueDate: dueDate || null,
             dueTime: dueTime || null,
-            sortOrder: 0,
+            sortOrder: nextSortOrder,
             tags: ["inbox-converted"],
             sourceItemId: item.id,
             createdAt: nowIso,
@@ -97,7 +103,7 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
               status: "todo",
               dueDate: dueDate || undefined,
               dueTime: dueTime || undefined,
-              sortOrder: 0,
+              sortOrder: nextSortOrder,
               tags: ["inbox-converted"],
               sourceItemId: item.id,
               createdAt: nowIso,

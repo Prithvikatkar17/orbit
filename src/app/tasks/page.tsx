@@ -228,13 +228,14 @@ export default function TasksPage() {
 
     const reordered = arrayMove(sortedTasks, oldIndex, newIndex);
 
-    // Preserve relative sortOrder slots across hidden tabs
-    const existingOrders = sortedTasks.map((t) => t.sortOrder).sort((a, b) => a - b);
+    // Normalize all sortOrder values to strictly increasing unique integers 0,1,2,...
+    // This fixes duplicate sortOrder:0 edge cases that prevented reordering from persisting.
+    const normalizedOrders = reordered.map((_, i) => i);
     try {
       await db.transaction("rw", db.tasks, async () => {
         for (let i = 0; i < reordered.length; i++) {
           const item = reordered[i];
-          const targetOrder = existingOrders[i];
+          const targetOrder = normalizedOrders[i];
           if (item.sortOrder !== targetOrder) {
             await db.tasks.update(item.id, {
               sortOrder: targetOrder,
@@ -244,6 +245,20 @@ export default function TasksPage() {
         }
       });
       setSortBy("custom");
+      // Background sync reorder to SQLite
+      for (let i = 0; i < reordered.length; i++) {
+        const item = reordered[i];
+        const targetOrder = normalizedOrders[i];
+        if (item.sortOrder !== targetOrder) {
+          void fetch("/api/tasks", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: item.id, sortOrder: targetOrder }),
+          }).catch((err) => {
+            console.warn("Background sortOrder sync error:", err);
+          });
+        }
+      }
     } catch (err) {
       console.error("Failed to reorder tasks:", err);
     }

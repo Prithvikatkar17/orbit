@@ -262,13 +262,15 @@ export function extractSnippet(
   const hasLeadingEllipsis = start > 0;
   const hasTrailingEllipsis = end < content.length;
 
-  const rawSlice = content.substring(start, end).trim();
+  const unstripped = content.substring(start, end);
+  const leadingTrimCount = unstripped.length - unstripped.trimStart().length;
+  const rawSlice = unstripped.trim();
   const snippetText =
     (hasLeadingEllipsis ? "..." : "") +
     rawSlice +
     (hasTrailingEllipsis ? "..." : "");
 
-  const matchStartInRaw = firstIdx - start;
+  const matchStartInRaw = (firstIdx - start) - leadingTrimCount;
   const matchStart = matchStartInRaw + (hasLeadingEllipsis ? 3 : 0);
   const matchEnd = matchStart + matchLen;
 
@@ -1256,9 +1258,10 @@ export function registerSearchDatabaseHooks(
     const wrapMethod = (methodName: string) => {
       const orig = table[methodName];
       if (typeof orig === "function" && !("__orbitWrapped" in orig)) {
-        const wrapped = function (this: unknown, ...args: unknown[]) {
+        const wrapped = async function (this: unknown, ...args: unknown[]) {
+          const result = await (orig as (...fnArgs: unknown[]) => unknown).apply(this, args);
           invalidateSearchCache([cacheTarget]);
-          return (orig as (...fnArgs: unknown[]) => unknown).apply(this, args);
+          return result;
         };
         (wrapped as unknown as Record<string, unknown>).__orbitWrapped = true;
         table[methodName] = wrapped;

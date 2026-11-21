@@ -12,6 +12,7 @@ import {
 import { ConstellationCadence } from "./constellation-cadence";
 import { OrbitalFocus } from "./orbital-focus";
 import { MeridianChronicle } from "./meridian-chronicle";
+import { LegacyMigrationBanner } from "@/components/legacy-migration-banner";
 
 export interface MidnightDashboardProps {
   tasks: Task[];
@@ -76,6 +77,7 @@ export function MidnightDashboard(props: MidnightDashboardProps) {
 
   return (
     <div className="space-y-8 pb-12 animate-in fade-in duration-300">
+      <LegacyMigrationBanner />
       {/* ZONE 1: The Planetarium Zenith Dome & Lunar Astrolabe */}
       <div className="midnight-zenith-hero rounded-[26px] p-7 md:p-9 relative overflow-hidden">
         {/* Inline SVG Horological Astrolabe Orrery & Constellation Backdrop */}
@@ -244,7 +246,7 @@ export function MidnightDashboard(props: MidnightDashboardProps) {
 
         {/* Right 4 Columns: The Meridian Transit Log */}
         <div className="xl:col-span-4">
-          <MeridianChronicle events={events} />
+          <MeridianChronicle events={events} todayStr={todayStr} />
         </div>
       </div>
     </div>

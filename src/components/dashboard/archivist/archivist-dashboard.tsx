@@ -11,6 +11,7 @@ import {
 import { LectionaryCadence } from "./lectionary-cadence";
 import { ManuscriptFocus } from "./manuscript-focus";
 import { AnnalsChronicle } from "./annals-chronicle";
+import { LegacyMigrationBanner } from "@/components/legacy-migration-banner";
 
 export interface ArchivistDashboardProps {
   tasks: Task[];
@@ -58,6 +59,7 @@ export function ArchivistDashboard(props: ArchivistDashboardProps) {
 
   return (
     <div className="space-y-8 pb-16">
+      <LegacyMigrationBanner />
       {/* =========================================================================
           ZONE 1: The Bound Collector's Tome & Ex-Libris Header
           ========================================================================= */}
@@ -281,7 +283,7 @@ export function ArchivistDashboard(props: ArchivistDashboardProps) {
           />
         </div>
         <div className="xl:col-span-4">
-          <AnnalsChronicle events={events} />
+          <AnnalsChronicle events={events} todayStr={todayStr} />
         </div>
       </div>
     </div>
