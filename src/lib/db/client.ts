@@ -12,6 +12,7 @@ import type {
   LibraryFile,
   Category,
   Settings,
+  SyncQueueItem,
 } from "../schemas/index.ts";
 
 export class OrbitDatabase extends Dexie {
@@ -27,6 +28,7 @@ export class OrbitDatabase extends Dexie {
   libraryFiles!:       EntityTable<LibraryFile, "id">;
   categories!:         EntityTable<Category, "id">;
   settings!:           EntityTable<Settings, "id">;
+  syncQueue!:          EntityTable<SyncQueueItem, "seq">;
 
   constructor() {
     super("orbit-db");
@@ -65,6 +67,11 @@ export class OrbitDatabase extends Dexie {
     // Avoids storing boolean indexes since IndexedDB keys exclude booleans.
     this.version(3).stores({
       notifications: "id, reminderId, eventId, occurrenceDate, deliveredAt",
+    });
+
+    // Version 4: Phase 13C Offline Hotspot Sync Queue
+    this.version(4).stores({
+      syncQueue: "++seq, id, createdAt, entityType",
     });
   }
 }

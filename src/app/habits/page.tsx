@@ -19,6 +19,7 @@ import {
   EmptyState,
 } from "@/components/ui";
 import { PersonalityPageHeader } from "@/components/layout/personality-page-header";
+import { flushSyncQueue, syncMutation } from "@/lib/services/sync-queue-service";
 
 export default function HabitsPage() {
   const [activeTab, setActiveTab] = useState<"active" | "archived">("active");
@@ -70,6 +71,7 @@ export default function HabitsPage() {
     let isCancelled = false;
     async function syncHabitsFromSQLite() {
       try {
+        await flushSyncQueue();
         const res = await fetch("/api/habits?all=true");
         if (res.ok) {
           const data = await res.json();
@@ -199,10 +201,11 @@ export default function HabitsPage() {
     setIsDeleting(true);
     try {
       // Non-blocking optimistic background delete to SQLite backend
-      void fetch(`/api/habits?id=${encodeURIComponent(targetId)}`, {
+      void syncMutation({
+        endpoint: `/api/habits?id=${encodeURIComponent(targetId)}`,
         method: "DELETE",
-      }).catch((err) => {
-        console.warn("Background habit delete sync error:", err);
+        entityType: "habit",
+        entityId: targetId,
       });
 
       await db.transaction("rw", [db.habits, db.habitLogs], async () => {

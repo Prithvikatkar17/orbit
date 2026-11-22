@@ -3,12 +3,13 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Inbox, CheckSquare, Repeat, Plus } from "lucide-react";
+import { Home, Inbox, CheckSquare, Repeat, Plus, CloudOff } from "lucide-react";
 import { useUIStore } from "@/lib/stores/ui-store";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db/client";
 import { useMounted } from "@/lib/utils/dates";
 import { useThemePersonality } from "@/components/theme-personality-provider";
+import { flushSyncQueue } from "@/lib/services/sync-queue-service";
 
 export function MobileBottomNav() {
   const pathname = usePathname();
@@ -20,6 +21,7 @@ export function MobileBottomNav() {
     () => db.items.where("status").equals("pending").count(),
     []
   ) ?? 0;
+  const pendingSyncCount = useLiveQuery(() => db.syncQueue.count(), []) ?? 0;
 
   const isMinimalist = mounted && themePersonality === "minimalist";
   const isFuturistic = mounted && themePersonality === "futuristic";
@@ -34,6 +36,7 @@ export function MobileBottomNav() {
   ];
 
   return (
+    <>
     <nav
       aria-label="Mobile Bottom Navigation"
       className={`fixed bottom-0 inset-x-0 z-30 flex h-16 items-center justify-around border-t border-orbit-border bg-orbit-surface px-1 lg:hidden select-none ${
@@ -120,5 +123,20 @@ export function MobileBottomNav() {
         );
       })}
     </nav>
+    {mounted && pendingSyncCount > 0 && (
+      <div className="fixed bottom-16 inset-x-0 z-30 flex justify-center pointer-events-none lg:hidden pb-1">
+        <button
+          type="button"
+          onClick={() => void flushSyncQueue()}
+          className="pointer-events-auto flex items-center gap-1.5 rounded-full border border-orbit-warning/40 bg-orbit-surface px-3 py-1 text-[11px] font-medium text-orbit-warning shadow-md hover:bg-orbit-subtle transition-colors"
+          style={{ backdropFilter: "none", WebkitBackdropFilter: "none" }}
+          title="Click to sync offline changes"
+        >
+          <CloudOff className="h-3 w-3" />
+          <span>{pendingSyncCount} pending</span>
+        </button>
+      </div>
+    )}
+    </>
   );
 }

@@ -33,6 +33,7 @@ import { getAllOccurrencesForRange } from "@/lib/utils/recurrence";
 import { useThemePersonality } from "@/components/theme-personality-provider";
 import { ArchivistDashboard } from "@/components/dashboard/archivist/archivist-dashboard";
 import { FuturisticDashboard } from "@/components/dashboard/futuristic/futuristic-dashboard";
+import { syncMutation } from "@/lib/services/sync-queue-service";
 import { AestheticDashboard } from "@/components/dashboard/aesthetic/aesthetic-dashboard";
 import { ArtisticDashboard } from "@/components/dashboard/artistic/artistic-dashboard";
 import { MinimalistDashboard } from "@/components/dashboard/minimalist/minimalist-dashboard";
@@ -136,17 +137,18 @@ export default function HomePage() {
 
     const newLogId = crypto.randomUUID();
 
-    // Non-blocking optimistic background sync to SQLite backend
-    void fetch("/api/habits/log", {
+    // Non-blocking optimistic background sync to SQLite backend via syncMutation
+    // syncMutation delegates to fetch("/api/habits/log", { method: "POST", ... }) with offline queue
+    void syncMutation({
+      endpoint: "/api/habits/log",
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+      body: {
         id: newLogId,
         habitId,
         date: targetDate,
-      }),
-    }).catch((err) => {
-      console.warn("Background habit log toggle sync error:", err);
+      },
+      entityType: "habitLog",
+      entityId: existing ? existing.id : newLogId,
     });
 
     if (existing) {
@@ -166,18 +168,18 @@ export default function HomePage() {
     try {
       const updatedTask = await toggleTaskCompletionWithSync(task);
       // Non-blocking optimistic background sync to SQLite backend
-      void fetch("/api/tasks", {
+      void syncMutation({
+        endpoint: "/api/tasks",
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: {
           id: updatedTask.id,
           status: updatedTask.status,
           completedAt: updatedTask.completedAt
             ? new Date(updatedTask.completedAt).getTime()
             : null,
-        }),
-      }).catch((err) => {
-        console.warn("Background task toggle sync error:", err);
+        },
+        entityType: "task",
+        entityId: updatedTask.id,
       });
     } catch (err: unknown) {
       console.error("Toggle task error:", err);

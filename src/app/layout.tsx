@@ -9,6 +9,7 @@ import { QuickCaptureModal } from "@/components/quick-capture-modal";
 import { SearchModal } from "@/components/search/search-modal";
 import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
 import { ReminderProvider } from "@/components/reminders/reminder-provider";
+import { SyncQueueListener } from "@/components/common/sync-queue-listener";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -107,6 +108,9 @@ export default function RootLayout({
 
               {/* First-Time User Onboarding Experience (Phase 10B.3) */}
               <OnboardingWizard />
+
+              {/* Offline Hotspot Sync Queue Listener (Phase 13C) */}
+              <SyncQueueListener />
             </ReminderProvider>
           </ThemePersonalityProvider>
         </ThemeProvider>

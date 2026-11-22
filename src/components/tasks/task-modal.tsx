@@ -5,6 +5,7 @@ import { CheckSquare, X, AlertCircle } from "lucide-react";
 import { db } from "@/lib/db/client";
 import { type Task } from "@/lib/schemas";
 import { saveTaskWithSync } from "@/lib/services/task-sync-service";
+import { syncMutation } from "@/lib/services/sync-queue-service";
 import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
 import { Button } from "@/components/ui/button";
 
@@ -61,10 +62,10 @@ export function TaskModal({ initialTask, onClose }: TaskModalProps) {
       });
 
       // Non-blocking optimistic background sync to SQLite backend
-      void fetch("/api/tasks", {
+      void syncMutation({
+        endpoint: "/api/tasks",
         method: isEditing ? "PATCH" : "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: {
           id: savedTask.id,
           title: savedTask.title,
           notes: savedTask.notes ? savedTask.notes.trim() : null,
@@ -77,9 +78,9 @@ export function TaskModal({ initialTask, onClose }: TaskModalProps) {
           completedAt: savedTask.completedAt || null,
           sortOrder: savedTask.sortOrder,
           tags: savedTask.tags,
-        }),
-      }).catch((err) => {
-        console.warn("Background task save sync error:", err);
+        },
+        entityType: "task",
+        entityId: savedTask.id,
       });
 
       onClose();

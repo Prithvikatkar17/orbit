@@ -35,6 +35,7 @@ import { SortableTaskItem } from "@/components/tasks/sortable-task-item";
 import { TaskModal } from "@/components/tasks/task-modal";
 import { useTodayDate } from "@/lib/utils/dates";
 import { DeepLinkListener } from "@/components/common/deep-link-listener";
+import { flushSyncQueue, syncMutation } from "@/lib/services/sync-queue-service";
 import {
   Button,
   ConfirmDialog,
@@ -66,6 +67,7 @@ export default function TasksPage() {
     let isCancelled = false;
     async function syncTasksFromSQLite() {
       try {
+        await flushSyncQueue();
         const res = await fetch("/api/tasks");
         if (res.ok) {
           const data = await res.json();
@@ -250,12 +252,12 @@ export default function TasksPage() {
         const item = reordered[i];
         const targetOrder = normalizedOrders[i];
         if (item.sortOrder !== targetOrder) {
-          void fetch("/api/tasks", {
+          void syncMutation({
+            endpoint: "/api/tasks",
             method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: item.id, sortOrder: targetOrder }),
-          }).catch((err) => {
-            console.warn("Background sortOrder sync error:", err);
+            body: { id: item.id, sortOrder: targetOrder },
+            entityType: "task",
+            entityId: item.id,
           });
         }
       }
@@ -269,16 +271,16 @@ export default function TasksPage() {
     try {
       const isNowCompleted = task.status !== "completed";
       // Non-blocking optimistic background sync to SQLite backend
-      void fetch("/api/tasks", {
+      void syncMutation({
+        endpoint: "/api/tasks",
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: {
           id: task.id,
           status: isNowCompleted ? "completed" : "todo",
           completedAt: isNowCompleted ? Date.now() : null,
-        }),
-      }).catch((err) => {
-        console.warn("Background task toggle sync error:", err);
+        },
+        entityType: "task",
+        entityId: task.id,
       });
 
       await toggleTaskCompletionWithSync(task);
@@ -300,10 +302,11 @@ export default function TasksPage() {
     setIsDeleting(true);
     try {
       // Non-blocking optimistic background delete to SQLite backend
-      void fetch(`/api/tasks?id=${encodeURIComponent(targetId)}`, {
+      void syncMutation({
+        endpoint: `/api/tasks?id=${encodeURIComponent(targetId)}`,
         method: "DELETE",
-      }).catch((err) => {
-        console.warn("Background task delete sync error:", err);
+        entityType: "task",
+        entityId: targetId,
       });
 
       await deleteTaskWithCascade(targetId);

@@ -11,6 +11,7 @@ import {
   type LibraryEntry,
 } from "@/lib/schemas";
 import { saveTaskWithSync } from "@/lib/services/task-sync-service";
+import { syncMutation } from "@/lib/services/sync-queue-service";
 import { normalizeUrl } from "@/lib/utils/dates";
 import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
 import { Button } from "@/components/ui/button";
@@ -64,13 +65,16 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
         const nextSortOrder = maxSortOrder + 1;
 
         // Non-blocking optimistic background sync to SQLite backend
-        void fetch(`/api/inbox?id=${encodeURIComponent(item.id)}`, { method: "DELETE" }).catch((err) => {
-          console.warn("Background inbox delete sync error:", err);
+        void syncMutation({
+          endpoint: `/api/inbox?id=${encodeURIComponent(item.id)}`,
+          method: "DELETE",
+          entityType: "inbox",
+          entityId: item.id,
         });
-        void fetch("/api/tasks", {
+        void syncMutation({
+          endpoint: "/api/tasks",
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+          body: {
             id: newId,
             title: title.trim(),
             notes: notes.trim(),
@@ -85,9 +89,9 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
             sourceItemId: item.id,
             createdAt: nowIso,
             updatedAt: nowIso,
-          }),
-        }).catch((err) => {
-          console.warn("Background task create sync error:", err);
+          },
+          entityType: "task",
+          entityId: newId,
         });
 
         // Atomic transaction: Add task with sync + Remove inbox item
@@ -114,13 +118,16 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
         });
       } else if (destination === "habit") {
         // Non-blocking optimistic background sync to SQLite backend
-        void fetch(`/api/inbox?id=${encodeURIComponent(item.id)}`, { method: "DELETE" }).catch((err) => {
-          console.warn("Background inbox delete sync error:", err);
+        void syncMutation({
+          endpoint: `/api/inbox?id=${encodeURIComponent(item.id)}`,
+          method: "DELETE",
+          entityType: "inbox",
+          entityId: item.id,
         });
-        void fetch("/api/habits", {
+        void syncMutation({
+          endpoint: "/api/habits",
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+          body: {
             id: newId,
             title: title.trim(),
             notes: notes.trim(),
@@ -131,9 +138,9 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
             sortOrder: 0,
             createdAt: nowIso,
             updatedAt: nowIso,
-          }),
-        }).catch((err) => {
-          console.warn("Background habit create sync error:", err);
+          },
+          entityType: "habit",
+          entityId: newId,
         });
 
         const habit = HabitSchema.parse({
@@ -155,8 +162,11 @@ export function ConvertModal({ item, onClose }: ConvertModalProps) {
         });
       } else if (destination === "library") {
         // Non-blocking optimistic background sync to SQLite backend
-        void fetch(`/api/inbox?id=${encodeURIComponent(item.id)}`, { method: "DELETE" }).catch((err) => {
-          console.warn("Background inbox delete sync error:", err);
+        void syncMutation({
+          endpoint: `/api/inbox?id=${encodeURIComponent(item.id)}`,
+          method: "DELETE",
+          entityType: "inbox",
+          entityId: item.id,
         });
         const tags = libraryTags
           .split(",")

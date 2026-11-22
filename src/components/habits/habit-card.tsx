@@ -23,6 +23,7 @@ import {
   getContrastTextColor,
   isLightHexColor,
 } from "@/lib/utils/color-harmony";
+import { syncMutation } from "@/lib/services/sync-queue-service";
 
 interface HabitCardProps {
   habit: Habit;
@@ -77,15 +78,15 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
         await db.habitLogs.delete(todayLog.id);
       }
       // Non-blocking optimistic background sync to SQLite backend (toggle off)
-      void fetch("/api/habits/log", {
+      void syncMutation({
+        endpoint: "/api/habits/log",
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: {
           habitId: habit.id,
           date: today,
-        }),
-      }).catch((err) => {
-        console.warn("Background habit log toggle sync error:", err);
+        },
+        entityType: "habitLog",
+        entityId: todayLog ? todayLog.id : `${habit.id}_${today}`,
       });
     } else {
       // Add log for today
@@ -100,16 +101,16 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
       await db.habitLogs.add(newLog);
 
       // Non-blocking optimistic background sync to SQLite backend (toggle on with matching UUID)
-      void fetch("/api/habits/log", {
+      void syncMutation({
+        endpoint: "/api/habits/log",
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: {
           id: newLogId,
           habitId: habit.id,
           date: today,
-        }),
-      }).catch((err) => {
-        console.warn("Background habit log toggle sync error:", err);
+        },
+        entityType: "habitLog",
+        entityId: newLogId,
       });
     }
   }
@@ -118,16 +119,16 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
   async function toggleArchive() {
     const nextActive = !habit.isActive;
     // Non-blocking optimistic background sync to SQLite backend
-    void fetch("/api/habits", {
+    void syncMutation({
+      endpoint: "/api/habits",
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+      body: {
         id: habit.id,
         isActive: nextActive,
         archived: !nextActive,
-      }),
-    }).catch((err) => {
-      console.warn("Background habit archive toggle sync error:", err);
+      },
+      entityType: "habit",
+      entityId: habit.id,
     });
 
     await db.habits.update(habit.id, {

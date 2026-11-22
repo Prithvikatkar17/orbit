@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { syncMutation } from "../services/sync-queue-service.ts";
 
 export interface QuickCaptureInitialData {
   title?: string;
@@ -73,16 +74,14 @@ export interface CaptureInboxPayload {
 }
 
 export async function captureInboxItem(payload: CaptureInboxPayload) {
-  const response = await fetch("/api/inbox", {
+  const result = await syncMutation({
+    endpoint: "/api/inbox",
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+    body: payload,
+    entityType: "inbox",
+    entityId: payload.id || crypto.randomUUID(),
   });
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || `Failed to capture item: ${response.status}`);
-  }
-  return response.json();
+  return { success: result.success || result.queued };
 }
 
 interface UIState {

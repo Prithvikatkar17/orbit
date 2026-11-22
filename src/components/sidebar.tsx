@@ -19,6 +19,7 @@ import {
   Search,
   Menu,
   X,
+  CloudOff,
 } from "lucide-react";
 import { useUIStore } from "@/lib/stores/ui-store";
 import { useSearchStore } from "@/lib/stores/search-store";
@@ -26,6 +27,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db/client";
 import { NotificationCenter } from "@/components/reminders/notification-center";
 import { useMounted } from "@/lib/utils/dates";
+import { flushSyncQueue } from "@/lib/services/sync-queue-service";
 
 const NAV_ITEMS = [
   { name: "Home", href: "/", icon: Home },
@@ -46,6 +48,7 @@ export function Sidebar() {
   const openSearch = useSearchStore((s) => s.openSearch);
   const inboxCount = useLiveQuery(() => db.items.where("status").equals("pending").count(), []) ?? 0;
   const libraryCount = useLiveQuery(() => db.libraryEntries.count(), []) ?? 0;
+  const pendingSyncCount = useLiveQuery(() => db.syncQueue.count(), []) ?? 0;
 
   const [isDesktop, setIsDesktop] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -269,6 +272,25 @@ export function Sidebar() {
           })}
         </nav>
 
+        {/* Offline Sync Pending Badge */}
+        {mounted && pendingSyncCount > 0 && (
+          <div className="shrink-0 pb-2">
+            <button
+              type="button"
+              onClick={() => void flushSyncQueue()}
+              title="Click to sync offline changes"
+              className="flex min-h-[38px] w-full items-center justify-between rounded-orbit-control border border-orbit-warning/40 bg-orbit-warning-soft px-3 py-1.5 text-xs font-medium text-orbit-warning hover:bg-orbit-warning/20 transition-colors"
+              style={{ backdropFilter: "none", WebkitBackdropFilter: "none" }}
+            >
+              <div className="flex items-center gap-2">
+                <CloudOff className="h-3.5 w-3.5 shrink-0" />
+                <span>{pendingSyncCount} pending sync</span>
+              </div>
+              <span className="text-[10px] uppercase font-bold tracking-wider">Sync</span>
+            </button>
+          </div>
+        )}
+
         {/* Footer: Theme Toggle */}
         <div className="shrink-0 border-t border-orbit-border pt-3">
           <button
@@ -311,6 +333,8 @@ export function Sidebar() {
 export function MobileHeader() {
   const { sidebarOpen, toggleSidebar, openQuickCapture } = useUIStore();
   const openSearch = useSearchStore((s) => s.openSearch);
+  const mounted = useMounted();
+  const pendingSyncCount = useLiveQuery(() => db.syncQueue.count(), []) ?? 0;
 
   return (
     <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-orbit-border bg-orbit-surface px-2.5 sm:px-4 lg:hidden">
@@ -333,6 +357,19 @@ export function MobileHeader() {
       </Link>
 
       <div className="flex items-center gap-1">
+        {mounted && pendingSyncCount > 0 && (
+          <button
+            type="button"
+            onClick={() => void flushSyncQueue()}
+            className="flex h-11 items-center gap-1.5 rounded-orbit-control border border-orbit-warning/40 bg-orbit-warning-soft px-2.5 text-xs font-medium text-orbit-warning hover:bg-orbit-warning/20 transition-colors"
+            title="Click to sync offline changes"
+            aria-label={`${pendingSyncCount} changes pending sync. Click to sync.`}
+            style={{ backdropFilter: "none", WebkitBackdropFilter: "none" }}
+          >
+            <CloudOff className="h-4 w-4" />
+            <span className="font-semibold">{pendingSyncCount}</span>
+          </button>
+        )}
         <button
           type="button"
           onClick={() => openSearch()}

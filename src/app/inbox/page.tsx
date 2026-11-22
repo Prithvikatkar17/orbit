@@ -33,6 +33,7 @@ import {
 } from "@/components/ui";
 import { PersonalityPageHeader } from "@/components/layout/personality-page-header";
 import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
+import { flushSyncQueue, syncMutation } from "@/lib/services/sync-queue-service";
 
 function getDisplayHost(rawUrl?: string): string | null {
   if (!rawUrl) return null;
@@ -225,6 +226,7 @@ export default function InboxPage() {
     let isCancelled = false;
     async function syncFromSQLiteServer() {
       try {
+        await flushSyncQueue();
         const res = await fetch("/api/inbox");
         if (res.ok) {
           const data = await res.json();
@@ -301,24 +303,22 @@ export default function InboxPage() {
 
       await db.items.add(item);
 
-      // Persist to SQLite backend
-      try {
-        await fetch("/api/inbox", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            id: item.id,
-            title: item.title,
-            notes: item.notes,
-            link: item.link,
-            category: item.category,
-            status: item.status,
-            createdAt: Date.now(),
-          }),
-        });
-      } catch (apiErr) {
-        console.warn("Failed to sync new item to SQLite backend:", apiErr);
-      }
+      // Persist to SQLite backend with offline queue fallback
+      void syncMutation({
+        endpoint: "/api/inbox",
+        method: "POST",
+        body: {
+          id: item.id,
+          title: item.title,
+          notes: item.notes,
+          link: item.link,
+          category: item.category,
+          status: item.status,
+          createdAt: Date.now(),
+        },
+        entityType: "inbox",
+        entityId: item.id,
+      });
 
       setNewTitle("");
       setNewNotes("");
@@ -335,13 +335,12 @@ export default function InboxPage() {
     setIsDeleting(true);
     try {
       await db.items.delete(deleteTargetId);
-      try {
-        await fetch(`/api/inbox?id=${encodeURIComponent(deleteTargetId)}`, {
-          method: "DELETE",
-        });
-      } catch (apiErr) {
-        console.warn("Failed to delete from SQLite backend:", apiErr);
-      }
+      void syncMutation({
+        endpoint: `/api/inbox?id=${encodeURIComponent(deleteTargetId)}`,
+        method: "DELETE",
+        entityType: "inbox",
+        entityId: deleteTargetId,
+      });
     } finally {
       setIsDeleting(false);
       setDeleteTargetId(null);
@@ -351,19 +350,19 @@ export default function InboxPage() {
   async function handleSaveEdit(updated: Item) {
     await db.items.put(updated);
     // Non-blocking optimistic background sync to SQLite backend
-    void fetch("/api/inbox", {
+    void syncMutation({
+      endpoint: "/api/inbox",
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+      body: {
         id: updated.id,
         title: updated.title,
         notes: updated.notes || null,
         link: updated.link || null,
         category: updated.category,
         status: updated.status,
-      }),
-    }).catch((err) => {
-      console.warn("Background inbox edit sync error:", err);
+      },
+      entityType: "inbox",
+      entityId: updated.id,
     });
   }
 

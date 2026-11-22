@@ -13,6 +13,7 @@ import {
   type LibraryEntry,
 } from "@/lib/schemas";
 import { saveTaskWithSync } from "@/lib/services/task-sync-service";
+import { syncMutation } from "@/lib/services/sync-queue-service";
 import { DEFAULT_CATEGORIES } from "@/lib/constants";
 import { normalizeUrl } from "@/lib/utils/dates";
 import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
@@ -115,7 +116,7 @@ function QuickCaptureListener() {
 }
 
 function QuickCaptureDialog() {
-  const { quickCaptureOpen, closeQuickCapture, quickCaptureInitialData, captureToInbox } = useUIStore();
+  const { quickCaptureOpen, closeQuickCapture, quickCaptureInitialData } = useUIStore();
   const modalRef = useAccessibleModal({
     isOpen: quickCaptureOpen,
     onClose: closeQuickCapture,
@@ -387,22 +388,26 @@ function QuickCaptureDialog() {
         }
 
         // Asynchronous non-blocking SQLite backend sync (fire-and-forget without freezing UI)
-        void captureToInbox({
-          id,
-          title: trimmedTitle,
-          notes: trimmedNotes,
-          link: normalizedLink,
-          category: "inbox",
-          priority: capturePriority,
-          status: "pending",
-        }).catch((err) => {
-          console.warn("Background SQLite sync error:", err);
+        void syncMutation({
+          endpoint: "/api/inbox",
+          method: "POST",
+          body: {
+            id,
+            title: trimmedTitle,
+            notes: trimmedNotes,
+            link: normalizedLink,
+            category: "inbox",
+            priority: capturePriority,
+            status: "pending",
+          },
+          entityType: "inbox",
+          entityId: id,
         });
       } else if (lowerCat === "habit") {
-        void fetch("/api/habits", {
+        void syncMutation({
+          endpoint: "/api/habits",
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+          body: {
             id,
             title: trimmedTitle,
             notes: trimmedNotes,
@@ -414,9 +419,9 @@ function QuickCaptureDialog() {
             sortOrder: 0,
             createdAt: nowIso,
             updatedAt: nowIso,
-          }),
-        }).catch((err) => {
-          console.warn("Background habit save sync error:", err);
+          },
+          entityType: "habit",
+          entityId: id,
         });
 
         const habit = HabitSchema.parse({
@@ -498,10 +503,10 @@ function QuickCaptureDialog() {
         });
       } else {
         // Task / Goal / Idea
-        void fetch("/api/tasks", {
+        void syncMutation({
+          endpoint: "/api/tasks",
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+          body: {
             id,
             title: trimmedTitle,
             notes: trimmedNotes,
@@ -515,9 +520,9 @@ function QuickCaptureDialog() {
             tags: [category],
             createdAt: nowIso,
             updatedAt: nowIso,
-          }),
-        }).catch((err) => {
-          console.warn("Background task save sync error:", err);
+          },
+          entityType: "task",
+          entityId: id,
         });
 
         void saveTaskWithSync({

@@ -6,6 +6,7 @@ import { db } from "@/lib/db/client";
 import { type Habit, HabitSchema } from "@/lib/schemas";
 import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
 import { Button } from "@/components/ui/button";
+import { syncMutation } from "@/lib/services/sync-queue-service";
 
 interface HabitModalProps {
   initialHabit?: Habit | null;
@@ -98,10 +99,10 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
       }
 
       // Non-blocking optimistic background sync to SQLite backend
-      void fetch("/api/habits", {
+      void syncMutation({
+        endpoint: "/api/habits",
         method: isEditing ? "PATCH" : "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: {
           id: habitId,
           title: title.trim(),
           notes: notes.trim(),
@@ -111,9 +112,9 @@ export function HabitModal({ initialHabit, onClose }: HabitModalProps) {
           color,
           isActive: isEditing && initialHabit ? initialHabit.isActive : true,
           archived: isEditing && initialHabit ? !initialHabit.isActive : false,
-        }),
-      }).catch((err) => {
-        console.warn("Background habit save sync error:", err);
+        },
+        entityType: "habit",
+        entityId: habitId,
       });
 
       onClose();
