@@ -64,6 +64,18 @@ export const habitLogs = sqliteTable(
   ]
 );
 
+export const expenses = sqliteTable("expenses", {
+  id: text("id").primaryKey(),
+  amountPaise: integer("amountPaise").notNull(),
+  category: text("category").notNull(),
+  paymentMode: text("paymentMode").default("upi").notNull(),
+  note: text("note"),
+  date: text("date").notNull(),
+  createdAt: integer("createdAt").notNull(),
+  updatedAt: integer("updatedAt").notNull(),
+  deletedAt: integer("deletedAt"),
+});
+
 export type InboxItem = typeof inbox.$inferSelect;
 export type NewInboxItem = typeof inbox.$inferInsert;
 
@@ -75,3 +87,6 @@ export type NewHabitItem = typeof habits.$inferInsert;
 
 export type HabitLogItem = typeof habitLogs.$inferSelect;
 export type NewHabitLogItem = typeof habitLogs.$inferInsert;
+
+export type ExpenseItem = typeof expenses.$inferSelect;
+export type NewExpenseItem = typeof expenses.$inferInsert;

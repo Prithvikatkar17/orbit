@@ -12,3 +12,4 @@ export * from "./category";
 export * from "./settings";
 export * from "./backup";
 export * from "./sync-queue";
+export * from "./expense";

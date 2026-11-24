@@ -13,6 +13,7 @@ import type {
   Category,
   Settings,
   SyncQueueItem,
+  Expense,
 } from "../schemas/index.ts";
 
 export class OrbitDatabase extends Dexie {
@@ -29,6 +30,7 @@ export class OrbitDatabase extends Dexie {
   categories!:         EntityTable<Category, "id">;
   settings!:           EntityTable<Settings, "id">;
   syncQueue!:          EntityTable<SyncQueueItem, "seq">;
+  expenses!:           EntityTable<Expense, "id">;
 
   constructor() {
     super("orbit-db");
@@ -72,6 +74,11 @@ export class OrbitDatabase extends Dexie {
     // Version 4: Phase 13C Offline Hotspot Sync Queue
     this.version(4).stores({
       syncQueue: "++seq, id, createdAt, entityType",
+    });
+
+    // Version 5: Phase 17 Daily Expenses Module
+    this.version(5).stores({
+      expenses: "id, date, category, createdAt, updatedAt",
     });
   }
 }

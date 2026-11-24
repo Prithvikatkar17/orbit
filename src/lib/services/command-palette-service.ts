@@ -84,6 +84,18 @@ export const COMMAND_PALETTE_ITEMS: CommandPaletteItem[] = [
     },
   },
   {
+    id: "nav-expenses",
+    category: "Navigation",
+    title: "Go to Expenses",
+    description: "Daily expense tracker, budget pacing, and spending ledger",
+    keywords: ["expenses", "money", "budget", "spend", "ledger", "finance"],
+    shortcutHint: "g e",
+    run: (ctx) => {
+      ctx.closePalette();
+      ctx.router.push("/expenses");
+    },
+  },
+  {
     id: "nav-library",
     category: "Navigation",
     title: "Go to Library",

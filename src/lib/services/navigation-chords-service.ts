@@ -6,6 +6,7 @@ export const CHORD_NAV_MAP: Record<string, string> = {
   t: "/tasks",
   h: "/habits",
   c: "/calendar",
+  e: "/expenses",
   l: "/library",
   d: "/",
 };

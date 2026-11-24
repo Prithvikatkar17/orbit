@@ -126,6 +126,7 @@ export const SettingsSchema = z.object({
   dateFormat:          z.enum(["DD/MM/YYYY", "MM/DD/YYYY", "YYYY-MM-DD"]).default("DD/MM/YYYY"),
   notificationsEnabled: z.boolean().default(true),
   heatmapDays:         z.number().min(30).max(365).default(180),
+  monthlyExpenseBudgetPaise: z.number().int().nonnegative().nullable().optional(),
   lastBackupAt:        z.string().datetime().optional(),
   schemaVersion:       z.number().int().default(1),
   onboardingCompletedVersion: z.number().int().optional(),

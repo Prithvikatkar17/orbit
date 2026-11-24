@@ -5,7 +5,7 @@ export interface SyncMutationOptions {
   endpoint: string;
   method: "POST" | "PATCH" | "DELETE";
   body?: unknown;
-  entityType: "inbox" | "task" | "habit" | "habitLog";
+  entityType: "inbox" | "task" | "habit" | "habitLog" | "expense";
   entityId: string;
   database?: OrbitDatabase;
 }

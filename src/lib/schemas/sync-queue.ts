@@ -6,7 +6,7 @@ export const SyncQueueItemSchema = z.object({
   endpoint: z.string().min(1),
   method: z.enum(["POST", "PATCH", "DELETE"]),
   body: z.string().nullable().optional(),
-  entityType: z.enum(["inbox", "task", "habit", "habitLog"]),
+  entityType: z.enum(["inbox", "task", "habit", "habitLog", "expense"]),
   entityId: z.string().min(1),
   createdAt: z.number().int(),
   retryCount: z.number().int().default(0),

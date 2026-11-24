@@ -20,6 +20,7 @@ import {
   Menu,
   X,
   CloudOff,
+  Wallet,
 } from "lucide-react";
 import { useUIStore } from "@/lib/stores/ui-store";
 import { useSearchStore } from "@/lib/stores/search-store";
@@ -35,6 +36,7 @@ const NAV_ITEMS = [
   { name: "Tasks", href: "/tasks", icon: CheckSquare },
   { name: "Calendar", href: "/calendar", icon: Calendar },
   { name: "Habits", href: "/habits", icon: Repeat },
+  { name: "Expenses", href: "/expenses", icon: Wallet },
   { name: "Library", href: "/library", icon: BookOpen },
   { name: "Insights", href: "/insights", icon: BarChart2 },
   { name: "Settings", href: "/settings", icon: Settings },
