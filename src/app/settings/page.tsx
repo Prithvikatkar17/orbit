@@ -17,6 +17,7 @@ import {
   Calendar,
   Clock,
   Palette,
+  Database,
 } from "lucide-react";
 import { db } from "@/lib/db/client";
 import {
@@ -45,6 +46,15 @@ import {
   PageHeader,
   SurfaceCard,
 } from "@/components/ui";
+import { flushSyncQueue } from "@/lib/services/sync-queue-service";
+
+function formatBytes(bytes: number): string {
+  if (bytes === 0) return "0 B";
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
+}
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
@@ -77,6 +87,68 @@ export default function SettingsPage() {
   const [isRestoring, setIsRestoring] = useState(false);
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
+
+  // SQLite Data Vault state
+  const [sqliteSizeBytes, setSqliteSizeBytes] = useState<number | null>(null);
+  const [isExportingSqlite, setIsExportingSqlite] = useState(false);
+  const [sqliteVaultError, setSqliteVaultError] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    let isCancelled = false;
+    async function fetchSqliteMeta() {
+      try {
+        const res = await fetch("/api/backup/sqlite?meta=1");
+        if (res.ok) {
+          const data = await res.json();
+          if (!isCancelled && typeof data.sizeBytes === "number") {
+            setSqliteSizeBytes(data.sizeBytes);
+          }
+        }
+      } catch {
+        // offline or unreachable
+      }
+    }
+    void fetchSqliteMeta();
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
+  async function handleDownloadSqliteVault() {
+    setIsExportingSqlite(true);
+    setSqliteVaultError(null);
+    try {
+      // 1. Flush any pending offline queue items before generating snapshot
+      await flushSyncQueue();
+
+      // 2. Fetch SQLite snapshot
+      const res = await fetch("/api/backup/sqlite");
+      if (!res.ok) {
+        throw new Error(`Server returned status ${res.status}`);
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const dateStr = new Date().toISOString().split("T")[0];
+      a.download = `orbit-backup-${dateStr}.sqlite`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      setStatusMessage("SQLite data vault downloaded successfully.");
+      setTimeout(() => setStatusMessage(null), 4000);
+    } catch (err) {
+      console.error("Failed to export SQLite vault:", err);
+      setSqliteVaultError(
+        "Unable to download SQLite vault. Verify your connection to the local server or hotspot."
+      );
+    } finally {
+      setIsExportingSqlite(false);
+    }
+  }
 
   // Consolidated single Dexie live query for all storage counts
   const {
@@ -586,7 +658,56 @@ export default function SettingsPage() {
         </div>
       </SurfaceCard>
 
-      {/* Section 5: Backup & Restore */}
+      {/* Section 5: SQLite Data Vault */}
+      <SurfaceCard padding="md" className="space-y-4">
+        <div className="flex items-center justify-between gap-3 pb-3 border-b border-orbit-border flex-wrap">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-orbit-surface-secondary border border-orbit-border text-orbit-accent">
+              <Database className="h-4 w-4" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="font-display text-base font-semibold text-orbit-text tracking-tight">
+                  SQLite Data Vault
+                </h2>
+                <Badge variant="success">WAL Active</Badge>
+                {sqliteSizeBytes !== null && (
+                  <Badge variant="neutral">
+                    {formatBytes(sqliteSizeBytes)}
+                  </Badge>
+                )}
+              </div>
+              <p className="text-xs text-orbit-text-muted">
+                Direct snapshot of the local relational database backend on disk
+              </p>
+            </div>
+          </div>
+
+          <Button
+            variant="secondary"
+            size="sm"
+            icon={<Download className="h-4 w-4" />}
+            onClick={handleDownloadSqliteVault}
+            disabled={isExportingSqlite}
+            className="min-h-[44px]"
+          >
+            {isExportingSqlite ? "Exporting Vault..." : "Download orbit.sqlite"}
+          </Button>
+        </div>
+
+        {sqliteVaultError && (
+          <div className="flex items-center gap-2 rounded-lg border border-orbit-danger/30 bg-orbit-danger-soft p-3 text-xs font-medium text-orbit-danger">
+            <AlertTriangle className="h-4 w-4 shrink-0 text-orbit-danger" />
+            <span>{sqliteVaultError}</span>
+          </div>
+        )}
+
+        <p className="text-xs text-orbit-text-muted leading-relaxed">
+          Flushes any pending offline queue mutations and exports an atomic checkpoint of <code className="font-mono text-orbit-text">orbit.sqlite</code>. Safe to query or restore directly with any SQLite viewer.
+        </p>
+      </SurfaceCard>
+
+      {/* Section 6: Backup & Restore */}
       <SurfaceCard padding="md" className="space-y-4">
         <div className="flex items-center gap-2.5 pb-3 border-b border-orbit-border">
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-orbit-surface-secondary border border-orbit-border text-orbit-accent">

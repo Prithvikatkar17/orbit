@@ -1,6 +1,6 @@
 import Database from "better-sqlite3";
 import { drizzle } from "drizzle-orm/better-sqlite3";
-import * as schema from "./schema";
+import * as schema from "./schema.ts";
 
 const globalForDb = globalThis as unknown as {
   sqlite: Database.Database | undefined;
@@ -15,4 +15,4 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 export const db = drizzle(sqlite, { schema });
-export * from "./schema";
+export * from "./schema.ts";
