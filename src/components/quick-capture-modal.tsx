@@ -116,7 +116,7 @@ function QuickCaptureListener() {
 }
 
 function QuickCaptureDialog() {
-  const { quickCaptureOpen, closeQuickCapture, quickCaptureInitialData } = useUIStore();
+  const { quickCaptureOpen, closeQuickCapture, quickCaptureInitialData, captureToInbox } = useUIStore();
   const modalRef = useAccessibleModal({
     isOpen: quickCaptureOpen,
     onClose: closeQuickCapture,
@@ -388,20 +388,14 @@ function QuickCaptureDialog() {
         }
 
         // Asynchronous non-blocking SQLite backend sync (fire-and-forget without freezing UI)
-        void syncMutation({
-          endpoint: "/api/inbox",
-          method: "POST",
-          body: {
-            id,
-            title: trimmedTitle,
-            notes: trimmedNotes,
-            link: normalizedLink,
-            category: "inbox",
-            priority: capturePriority,
-            status: "pending",
-          },
-          entityType: "inbox",
-          entityId: id,
+        void captureToInbox({
+          id,
+          title: trimmedTitle,
+          notes: trimmedNotes,
+          link: normalizedLink,
+          category: "inbox",
+          priority: capturePriority,
+          status: "pending",
         });
       } else if (lowerCat === "habit") {
         void syncMutation({

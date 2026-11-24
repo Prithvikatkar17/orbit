@@ -15,6 +15,10 @@ import {
   Link2,
   FileText,
   ChevronDown,
+  CheckSquare,
+  BookOpen,
+  Archive,
+  RotateCcw,
 } from "lucide-react";
 import { db } from "@/lib/db/client";
 import { type Item, ItemSchema } from "@/lib/schemas";
@@ -34,6 +38,13 @@ import {
 import { PersonalityPageHeader } from "@/components/layout/personality-page-header";
 import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
 import { flushSyncQueue, syncMutation } from "@/lib/services/sync-queue-service";
+import {
+  triageToTask,
+  triageToLibrary,
+  triageDismiss,
+  undoTriage,
+  type TriageUndoPayload,
+} from "@/lib/services/inbox-triage-service";
 
 function getDisplayHost(rawUrl?: string): string | null {
   if (!rawUrl) return null;
@@ -59,7 +70,7 @@ function EditInboxModal({ item, onClose, onSave }: EditInboxModalProps) {
   const [error, setError] = useState<string | null>(null);
 
   const modalRef = useAccessibleModal({
-    onClose: isSubmitting ? () => {} : onClose,
+    onClose: isSubmitting ? () => { } : onClose,
   });
 
   async function handleUpdate(e: React.FormEvent) {
@@ -199,6 +210,63 @@ export default function InboxPage() {
   // Confirm delete state
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // One-click triage & undo state
+  const [undoPayload, setUndoPayload] = useState<TriageUndoPayload | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const undoTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const triggerTriage = useCallback(
+    async (action: "task" | "library" | "dismiss", item: Item) => {
+      if (undoTimerRef.current) {
+        clearTimeout(undoTimerRef.current);
+        undoTimerRef.current = null;
+      }
+
+      let payload: TriageUndoPayload;
+      let msg = "";
+
+      if (action === "task") {
+        payload = await triageToTask(item);
+        msg = `Converted "${item.title}" to Task`;
+      } else if (action === "library") {
+        payload = await triageToLibrary(item);
+        msg = `Saved "${item.title}" to Library`;
+      } else {
+        payload = await triageDismiss(item);
+        msg = `Dismissed "${item.title}"`;
+      }
+
+      setUndoPayload(payload);
+      setToastMessage(msg);
+
+      undoTimerRef.current = setTimeout(() => {
+        setUndoPayload(null);
+        setToastMessage(null);
+      }, 4500);
+    },
+    []
+  );
+
+  const handleUndo = useCallback(async () => {
+    if (!undoPayload) return;
+    if (undoTimerRef.current) {
+      clearTimeout(undoTimerRef.current);
+      undoTimerRef.current = null;
+    }
+    const toUndo = undoPayload;
+    setUndoPayload(null);
+    setToastMessage(null);
+    await undoTriage(toUndo);
+  }, [undoPayload]);
+
+  useEffect(() => {
+    return () => {
+      if (undoTimerRef.current) {
+        clearTimeout(undoTimerRef.current);
+      }
+    };
+  }, []);
 
   // Deep link handler for /inbox?itemId={id}
   const handleInboxDeepLink = useCallback(async ({ itemId }: Record<string, string>) => {
@@ -438,9 +506,8 @@ export default function InboxPage() {
                 size="md"
                 trailingIcon={
                   <ChevronDown
-                    className={`h-3.5 w-3.5 transition-transform ${
-                      showCaptureDetails ? "rotate-180" : ""
-                    }`}
+                    className={`h-3.5 w-3.5 transition-transform ${showCaptureDetails ? "rotate-180" : ""
+                      }`}
                   />
                 }
                 onClick={() => setShowCaptureDetails((prev) => !prev)}
@@ -504,11 +571,10 @@ export default function InboxPage() {
                   type="button"
                   aria-selected={active}
                   onClick={() => setTypeFilter(tab.id)}
-                  className={`min-h-[40px] sm:min-h-[32px] rounded-lg px-3 py-1.5 sm:py-1 text-xs font-semibold transition-all ${
-                    active
+                  className={`min-h-[40px] sm:min-h-[32px] rounded-lg px-3 py-1.5 sm:py-1 text-xs font-semibold transition-all ${active
                       ? "bg-orbit-surface text-orbit-text shadow-orbit-xs"
                       : "text-orbit-text-secondary hover:text-orbit-text"
-                  }`}
+                    }`}
                 >
                   {tab.label}
                 </button>
@@ -595,11 +661,10 @@ export default function InboxPage() {
                 >
                   <div className="flex min-w-0 flex-1 items-start gap-3">
                     <span
-                      className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${
-                        hasLink
+                      className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${hasLink
                           ? "bg-orbit-accent-secondary-soft text-orbit-accent-secondary"
                           : "bg-orbit-subtle text-orbit-text-muted"
-                      }`}
+                        }`}
                       aria-hidden
                     >
                       {hasLink ? <Link2 className="h-3.5 w-3.5" /> : <FileText className="h-3.5 w-3.5" />}
@@ -637,37 +702,79 @@ export default function InboxPage() {
                     </div>
                   </div>
 
-                  {/* Triage & Item Actions */}
-                  <div className="flex items-center gap-1.5 self-end sm:self-center">
+                  {/* One-Click Triage Action Bar & Item Controls */}
+                  <div className="flex flex-wrap items-center gap-1.5 self-end sm:self-center">
+                    {/* One-Click: Task */}
+                    <button
+                      type="button"
+                      onClick={() => triggerTriage("task", item)}
+                      className="flex min-h-[44px] min-w-[44px] sm:min-h-[32px] sm:min-w-[32px] sm:h-8 sm:px-2.5 items-center justify-center gap-1.5 rounded-orbit-control border border-orbit-border bg-orbit-surface text-xs font-medium text-orbit-text-secondary hover:border-orbit-accent hover:bg-orbit-accent-soft hover:text-orbit-accent transition-colors"
+                      title="One-click: Convert to Task"
+                      aria-label={`Convert "${item.title}" to task`}
+                    >
+                      <CheckSquare className="h-4 w-4 shrink-0 text-orbit-accent" />
+                      <span className="hidden sm:inline">Task</span>
+                    </button>
+
+                    {/* One-Click: Library */}
+                    <button
+                      type="button"
+                      onClick={() => triggerTriage("library", item)}
+                      className="flex min-h-[44px] min-w-[44px] sm:min-h-[32px] sm:min-w-[32px] sm:h-8 sm:px-2.5 items-center justify-center gap-1.5 rounded-orbit-control border border-orbit-border bg-orbit-surface text-xs font-medium text-orbit-text-secondary hover:border-orbit-accent-secondary hover:bg-orbit-accent-secondary-soft hover:text-orbit-accent-secondary transition-colors"
+                      title="One-click: Save to Library"
+                      aria-label={`Save "${item.title}" to library`}
+                    >
+                      <BookOpen className="h-4 w-4 shrink-0 text-orbit-accent-secondary" />
+                      <span className="hidden sm:inline">Library</span>
+                    </button>
+
+                    {/* One-Click: Dismiss */}
+                    <button
+                      type="button"
+                      onClick={() => triggerTriage("dismiss", item)}
+                      className="flex min-h-[44px] min-w-[44px] sm:min-h-[32px] sm:min-w-[32px] sm:h-8 sm:px-2.5 items-center justify-center gap-1.5 rounded-orbit-control border border-orbit-border bg-orbit-surface text-xs font-medium text-orbit-text-muted hover:border-orbit-danger/40 hover:bg-orbit-danger-soft hover:text-orbit-danger transition-colors"
+                      title="One-click: Dismiss item"
+                      aria-label={`Dismiss "${item.title}"`}
+                    >
+                      <Archive className="h-4 w-4 shrink-0" />
+                      <span className="hidden sm:inline">Dismiss</span>
+                    </button>
+
+                    {/* Separator */}
+                    <div className="hidden sm:block h-4 w-[1px] bg-orbit-border mx-0.5" aria-hidden />
+
+                    {/* Custom Convert Modal Trigger */}
                     <Button
                       variant="secondary"
                       size="sm"
                       trailingIcon={<ArrowRight className="h-3.5 w-3.5" />}
                       onClick={() => setActiveConvertItem(item)}
-                      title="Convert this item into a task, habit, or library item"
-                      className="min-h-[40px] sm:min-h-[32px] text-orbit-accent border-orbit-accent/25 bg-orbit-accent-soft/50 hover:bg-orbit-accent-soft"
+                      title="Custom convert (with schedule or habit options)"
+                      className="min-h-[44px] sm:min-h-[32px] text-xs text-orbit-accent border-orbit-accent/25 bg-orbit-accent-soft/50 hover:bg-orbit-accent-soft"
                     >
-                      Process
+                      Process...
                     </Button>
 
+                    {/* Edit */}
                     <button
                       type="button"
                       onClick={() => setEditingItem(item)}
-                      className="flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-orbit-text-muted hover:bg-orbit-subtle hover:text-orbit-text transition-colors"
+                      className="flex min-h-[44px] min-w-[44px] sm:min-h-[32px] sm:min-w-[32px] sm:h-8 sm:w-8 items-center justify-center rounded-lg text-orbit-text-muted hover:bg-orbit-subtle hover:text-orbit-text transition-colors"
                       title="Edit title and notes"
                       aria-label={`Edit "${item.title}"`}
                     >
-                      <Edit2 className="h-4 w-4" />
+                      <Edit2 className="h-3.5 w-3.5" />
                     </button>
 
+                    {/* Delete */}
                     <button
                       type="button"
                       onClick={() => setDeleteTargetId(item.id)}
-                      className="flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-orbit-text-muted hover:bg-orbit-danger-soft hover:text-orbit-danger transition-colors"
-                      title="Delete item"
+                      className="flex min-h-[44px] min-w-[44px] sm:min-h-[32px] sm:min-w-[32px] sm:h-8 sm:w-8 items-center justify-center rounded-lg text-orbit-text-muted hover:bg-orbit-danger-soft hover:text-orbit-danger transition-colors"
+                      title="Permanently delete item"
                       aria-label={`Delete "${item.title}"`}
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   </div>
                 </li>
@@ -705,6 +812,41 @@ export default function InboxPage() {
         danger
         loading={isDeleting}
       />
+
+      {/* Zero-GPU-Blur Undo Toast */}
+      {toastMessage && undoPayload && (
+        <aside
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-20 lg:bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center justify-between gap-3 px-4 py-2.5 rounded-orbit-control border border-orbit-border bg-orbit-surface text-orbit-text shadow-orbit-elevated max-w-sm sm:max-w-md w-[calc(100%-2rem)] animate-in fade-in slide-in-from-bottom-2 duration-150"
+          style={{ backdropFilter: "none", WebkitBackdropFilter: "none" }}
+        >
+          <span className="truncate text-xs font-medium text-orbit-text">
+            {toastMessage}
+          </span>
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              type="button"
+              onClick={handleUndo}
+              className="flex items-center gap-1.5 rounded-md bg-orbit-accent px-2.5 py-1 text-xs font-semibold text-orbit-accent-fg hover:bg-orbit-accent-hover transition-colors"
+            >
+              <RotateCcw className="h-3 w-3" />
+              <span>Undo</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setToastMessage(null);
+                setUndoPayload(null);
+              }}
+              className="flex h-7 w-7 items-center justify-center rounded-md text-orbit-text-muted hover:bg-orbit-subtle hover:text-orbit-text transition-colors"
+              aria-label="Dismiss undo notification"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </aside>
+      )}
     </div>
   );
 }
