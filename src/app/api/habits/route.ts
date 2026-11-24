@@ -79,9 +79,13 @@ export async function POST(request: Request) {
       sortOrder: validated.sortOrder,
       createdAt: parseEpoch(validated.createdAt),
       updatedAt: parseEpoch(validated.updatedAt),
+      deletedAt: null,
     };
 
-    await db.insert(habits).values(newHabit);
+    await db.insert(habits).values(newHabit).onConflictDoUpdate({
+      target: habits.id,
+      set: newHabit,
+    });
     return NextResponse.json({ success: true, habit: newHabit }, { status: 201 });
   } catch (error) {
     console.error("Failed to insert habit into SQLite:", error);
@@ -147,10 +151,9 @@ export async function DELETE(request: Request) {
     if (!id) {
       return NextResponse.json({ success: false, error: "Habit ID is required" }, { status: 400 });
     }
-    // Delete dependent logs first as safety measure along with SQLite foreign_keys cascade
-    await db.delete(habitLogs).where(eq(habitLogs.habitId, id));
-    await db.delete(habits).where(eq(habits.id, id));
-    return NextResponse.json({ success: true });
+    const now = Date.now();
+    await db.update(habits).set({ deletedAt: now, updatedAt: now }).where(eq(habits.id, id));
+    return NextResponse.json({ success: true, deletedAt: now });
   } catch (error) {
     console.error("Failed to delete habit from SQLite:", error);
     return NextResponse.json(

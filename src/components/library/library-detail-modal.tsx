@@ -22,6 +22,7 @@ import { db } from "@/lib/db/client";
 import type { LibraryEntry, LibraryCollection } from "@/lib/schemas";
 import { getTypeConfig, getStatusConfig } from "./library-card";
 import { formatFriendlyDate } from "@/lib/utils/dates";
+import { getEntityLocalDate } from "@/lib/services/analytics-service";
 import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
 import { Button } from "@/components/ui/button";
 import { MarkdownContent } from "./markdown-content";
@@ -402,20 +403,20 @@ export function LibraryDetailModal({
         <div className="mt-5 pt-4 border-t border-orbit-border grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-[11px] text-orbit-text-muted">
           <div className="flex items-center gap-1.5">
             <Calendar className="h-3.5 w-3.5 shrink-0" />
-            <span>Added {formatFriendlyDate(entry.createdAt.slice(0, 10))}</span>
+            <span>Added {formatFriendlyDate(getEntityLocalDate(entry.createdAt))}</span>
           </div>
 
           {entry.lastViewedAt && (
             <div className="flex items-center gap-1.5">
               <Clock className="h-3.5 w-3.5 shrink-0" />
-              <span>Viewed {formatFriendlyDate(entry.lastViewedAt.slice(0, 10))}</span>
+              <span>Viewed {formatFriendlyDate(getEntityLocalDate(entry.lastViewedAt))}</span>
             </div>
           )}
 
           {entry.completedAt && (
             <div className="flex items-center gap-1.5 text-orbit-success">
               <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
-              <span>Completed {formatFriendlyDate(entry.completedAt.slice(0, 10))}</span>
+              <span>Completed {formatFriendlyDate(getEntityLocalDate(entry.completedAt))}</span>
             </div>
           )}
         </div>

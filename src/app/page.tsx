@@ -146,6 +146,7 @@ export default function HomePage() {
         id: newLogId,
         habitId,
         date: targetDate,
+        completed: existing ? false : true,
       },
       entityType: "habitLog",
       entityId: existing ? existing.id : newLogId,

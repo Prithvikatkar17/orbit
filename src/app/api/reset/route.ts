@@ -2,8 +2,37 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { inbox, tasks, habits, habitLogs } from "@/lib/db/schema";
 
-export async function DELETE() {
+function isCsrfValid(request: Request): boolean {
+  const confirmHeader = request.headers.get("X-Orbit-Confirm");
+  if (confirmHeader !== "reset") {
+    return false;
+  }
+
+  const origin = request.headers.get("origin");
+  if (origin) {
+    const host = request.headers.get("host") || request.headers.get("x-forwarded-host");
+    try {
+      const originUrl = new URL(origin);
+      if (host && originUrl.host !== host) {
+        return false;
+      }
+    } catch {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export async function DELETE(request: Request) {
   try {
+    if (!isCsrfValid(request)) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized reset request: missing or invalid CSRF headers" },
+        { status: 403 }
+      );
+    }
+
     await db.delete(habitLogs);
     await db.delete(habits);
     await db.delete(tasks);
@@ -22,6 +51,6 @@ export async function DELETE() {
   }
 }
 
-export async function POST() {
-  return DELETE();
+export async function POST(request: Request) {
+  return DELETE(request);
 }

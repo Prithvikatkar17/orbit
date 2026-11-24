@@ -24,6 +24,7 @@ import { db } from "@/lib/db/client";
 import { type Item, ItemSchema } from "@/lib/schemas";
 import { ConvertModal } from "@/components/inbox/convert-modal";
 import { formatFriendlyDate, normalizeUrl } from "@/lib/utils/dates";
+import { getEntityLocalDate } from "@/lib/services/analytics-service";
 import { DeepLinkListener } from "@/components/common/deep-link-listener";
 import {
   Badge,
@@ -302,7 +303,19 @@ export default function InboxPage() {
             for (const serverItem of data.items) {
               if (isCancelled) break;
               const existing = await db.items.get(serverItem.id);
-              if (!existing) {
+              if (serverItem.deletedAt) {
+                if (existing) {
+                  await db.items.delete(serverItem.id);
+                }
+                continue;
+              }
+              const serverUpdated = typeof serverItem.updatedAt === "number"
+                ? serverItem.updatedAt
+                : serverItem.updatedAt ? Date.parse(serverItem.updatedAt) : (serverItem.createdAt || 0);
+              const existingUpdated = existing
+                ? (Date.parse(existing.updatedAt) || Date.parse(existing.createdAt) || 0)
+                : -1;
+              if (!existing || serverUpdated > existingUpdated) {
                 await db.items.put({
                   id: serverItem.id,
                   title: serverItem.title,
@@ -312,7 +325,7 @@ export default function InboxPage() {
                   priority: "medium",
                   status: serverItem.status || "pending",
                   createdAt: new Date(serverItem.createdAt || Date.now()).toISOString(),
-                  updatedAt: new Date(serverItem.createdAt || Date.now()).toISOString(),
+                  updatedAt: new Date(serverUpdated || Date.now()).toISOString(),
                 });
               }
             }
@@ -697,7 +710,7 @@ export default function InboxPage() {
                       )}
 
                       <p className="text-[11px] font-medium text-orbit-text-muted">
-                        Captured {formatFriendlyDate(item.createdAt.slice(0, 10))}
+                        Captured {formatFriendlyDate(getEntityLocalDate(item.createdAt))}
                       </p>
                     </div>
                   </div>

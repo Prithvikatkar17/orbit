@@ -84,6 +84,7 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
         body: {
           habitId: habit.id,
           date: today,
+          completed: false,
         },
         entityType: "habitLog",
         entityId: todayLog ? todayLog.id : `${habit.id}_${today}`,
@@ -108,6 +109,7 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
           id: newLogId,
           habitId: habit.id,
           date: today,
+          completed: true,
         },
         entityType: "habitLog",
         entityId: newLogId,

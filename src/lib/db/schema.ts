@@ -7,6 +7,8 @@ export const inbox = sqliteTable("inbox", {
   link: text("link"),
   category: text("category").default("inbox"),
   createdAt: integer("createdAt"),
+  updatedAt: integer("updatedAt"),
+  deletedAt: integer("deletedAt"),
   status: text("status").default("pending"),
 });
 
@@ -26,6 +28,7 @@ export const tasks = sqliteTable("tasks", {
   sourceItemId: text("sourceItemId"),
   createdAt: integer("createdAt").notNull(),
   updatedAt: integer("updatedAt").notNull(),
+  deletedAt: integer("deletedAt"),
 });
 
 export const habits = sqliteTable("habits", {
@@ -42,6 +45,7 @@ export const habits = sqliteTable("habits", {
   sortOrder: integer("sortOrder").default(0),
   createdAt: integer("createdAt").notNull(),
   updatedAt: integer("updatedAt"),
+  deletedAt: integer("deletedAt"),
 });
 
 export const habitLogs = sqliteTable(

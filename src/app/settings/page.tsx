@@ -398,7 +398,12 @@ export default function SettingsPage() {
 
       // Also reset SQLite tables via reset endpoint to prevent ghost resurrection
       try {
-        await fetch("/api/reset", { method: "DELETE" });
+        await fetch("/api/reset", {
+          method: "DELETE",
+          headers: {
+            "X-Orbit-Confirm": "reset",
+          },
+        });
       } catch (resetErr) {
         console.warn("SQLite database reset error:", resetErr);
       }

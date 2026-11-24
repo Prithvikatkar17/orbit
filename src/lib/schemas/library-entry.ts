@@ -39,7 +39,7 @@ export const LibraryEntrySchema = z.object({
   id:           z.string().uuid(),
   title:        z.string().min(1).max(500),
   notes:        z.string().max(50000).default(""),
-  link:         z.string().url().optional(),
+  link:         z.string().url().refine((val) => /^https?:\/\//i.test(val), "URL must use http or https").optional(),
   type:         z.enum(LIBRARY_ENTRY_TYPES).default("other"),
   status:       z.enum(LIBRARY_ENTRY_STATUSES).default("saved"),
   rating:       z.number().min(1).max(5).optional(),

@@ -9,6 +9,7 @@ export const HabitSchema = z.object({
   color:      z.string().default("#10b981"),
   isActive:   z.boolean().default(true),
   sortOrder:  z.number().int().default(0),
+  deletedAt:  z.union([z.number().int(), z.string()]).optional(),
   createdAt:  z.string().datetime(),
   updatedAt:  z.string().datetime(),
 });

@@ -66,9 +66,13 @@ export async function POST(request: Request) {
       sourceItemId: validated.sourceItemId || null,
       createdAt: parseEpoch(validated.createdAt),
       updatedAt: parseEpoch(validated.updatedAt),
+      deletedAt: null,
     };
 
-    await db.insert(tasks).values(newTask);
+    await db.insert(tasks).values(newTask).onConflictDoUpdate({
+      target: tasks.id,
+      set: newTask,
+    });
     return NextResponse.json({ success: true, task: newTask }, { status: 201 });
   } catch (error) {
     console.error("Failed to insert task into SQLite:", error);
@@ -128,8 +132,9 @@ export async function DELETE(request: Request) {
     if (!id) {
       return NextResponse.json({ success: false, error: "Task ID is required" }, { status: 400 });
     }
-    await db.delete(tasks).where(eq(tasks.id, id));
-    return NextResponse.json({ success: true });
+    const now = Date.now();
+    await db.update(tasks).set({ deletedAt: now, updatedAt: now }).where(eq(tasks.id, id));
+    return NextResponse.json({ success: true, deletedAt: now });
   } catch (error) {
     console.error("Failed to delete task from SQLite:", error);
     return NextResponse.json(

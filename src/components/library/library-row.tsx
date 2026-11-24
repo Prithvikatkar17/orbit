@@ -11,6 +11,7 @@ import {
 import type { LibraryEntry, LibraryCollection } from "@/lib/schemas";
 import { getTypeConfig, getStatusConfig } from "./library-card";
 import { formatFriendlyDate } from "@/lib/utils/dates";
+import { getEntityLocalDate } from "@/lib/services/analytics-service";
 import { SurfaceCard } from "@/components/ui/surface-card";
 
 interface LibraryRowProps {
@@ -146,7 +147,7 @@ export function LibraryRow({
           )}
 
           <span className="hidden font-mono text-[11px] text-orbit-text-muted tabular-nums lg:inline">
-            {formatFriendlyDate(entry.createdAt.slice(0, 10))}
+            {formatFriendlyDate(getEntityLocalDate(entry.createdAt))}
           </span>
         </div>
 

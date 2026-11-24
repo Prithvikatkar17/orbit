@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import type { LibraryEntry, LibraryCollection } from "@/lib/schemas";
 import { formatFriendlyDate } from "@/lib/utils/dates";
+import { getEntityLocalDate } from "@/lib/services/analytics-service";
 import { SurfaceCard } from "@/components/ui/surface-card";
 
 interface LibraryCardProps {
@@ -295,7 +296,7 @@ export function LibraryCard({
           </select>
 
           <span className="font-mono text-[10px] text-orbit-text-muted tabular-nums">
-            {formatFriendlyDate(entry.createdAt.slice(0, 10))}
+            {formatFriendlyDate(getEntityLocalDate(entry.createdAt))}
           </span>
         </div>
 

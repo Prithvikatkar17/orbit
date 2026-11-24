@@ -79,7 +79,19 @@ export default function HabitsPage() {
             for (const serverHabit of data.allHabits) {
               if (isCancelled) break;
               const existing = await db.habits.get(serverHabit.id);
-              if (!existing) {
+              if (serverHabit.deletedAt) {
+                if (existing) {
+                  await db.habits.delete(serverHabit.id);
+                }
+                continue;
+              }
+              const serverUpdated = typeof serverHabit.updatedAt === "number"
+                ? serverHabit.updatedAt
+                : serverHabit.updatedAt ? Date.parse(serverHabit.updatedAt) : (serverHabit.createdAt || 0);
+              const existingUpdated = existing
+                ? (Date.parse(existing.updatedAt) || Date.parse(existing.createdAt) || 0)
+                : -1;
+              if (!existing || serverUpdated > existingUpdated) {
                 let customDays: number[] = [];
                 try {
                   if (serverHabit.customDays) {
@@ -98,7 +110,7 @@ export default function HabitsPage() {
                   isActive: Boolean(serverHabit.isActive),
                   sortOrder: serverHabit.sortOrder ?? 0,
                   createdAt: new Date(serverHabit.createdAt || Date.now()).toISOString(),
-                  updatedAt: new Date(serverHabit.updatedAt || Date.now()).toISOString(),
+                  updatedAt: new Date(serverUpdated || Date.now()).toISOString(),
                 });
               }
             }

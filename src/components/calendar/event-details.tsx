@@ -18,6 +18,7 @@ import { EVENT_TYPE_MAP } from "@/lib/constants";
 import { formatDateDisplay } from "@/lib/utils/dates";
 import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
 import { Badge, Button, ConfirmDialog } from "@/components/ui";
+import { syncMutation } from "@/lib/services/sync-queue-service";
 
 interface EventDetailsProps {
   event: Event;
@@ -76,6 +77,20 @@ export function EventDetails({
         await db.reminders.where("eventId").equals(event.id).delete();
         await db.events.delete(event.id);
       });
+      // Two-Way Task ↔ Calendar Sync: If linked to a task, cascade delete the task as well
+      const linkedTaskId = event.sourceItemId || (event as unknown as { taskId?: string })?.taskId;
+      if (linkedTaskId) {
+        const linkedTask = await db.tasks.get(linkedTaskId);
+        if (linkedTask) {
+          await db.tasks.delete(linkedTaskId);
+          void syncMutation({
+            endpoint: `/api/tasks?id=${linkedTaskId}`,
+            method: "DELETE",
+            entityType: "task",
+            entityId: linkedTaskId,
+          });
+        }
+      }
       setShowConfirmDelete(false);
       onDeleted(event.id);
       onClose();

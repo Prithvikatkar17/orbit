@@ -75,7 +75,19 @@ export default function TasksPage() {
             for (const serverTask of data.tasks) {
               if (isCancelled) break;
               const existing = await db.tasks.get(serverTask.id);
-              if (!existing) {
+              if (serverTask.deletedAt) {
+                if (existing) {
+                  await db.tasks.delete(serverTask.id);
+                }
+                continue;
+              }
+              const serverUpdated = typeof serverTask.updatedAt === "number"
+                ? serverTask.updatedAt
+                : serverTask.updatedAt ? Date.parse(serverTask.updatedAt) : (serverTask.createdAt || 0);
+              const existingUpdated = existing
+                ? (Date.parse(existing.updatedAt) || Date.parse(existing.createdAt) || 0)
+                : -1;
+              if (!existing || serverUpdated > existingUpdated) {
                 let tags: string[] = [serverTask.category || "task"];
                 try {
                   if (serverTask.tags) {
@@ -101,7 +113,7 @@ export default function TasksPage() {
                   tags,
                   sourceItemId: serverTask.sourceItemId || undefined,
                   createdAt: new Date(serverTask.createdAt || Date.now()).toISOString(),
-                  updatedAt: new Date(serverTask.updatedAt || Date.now()).toISOString(),
+                  updatedAt: new Date(serverUpdated || Date.now()).toISOString(),
                 });
               }
             }
@@ -230,9 +242,21 @@ export default function TasksPage() {
 
     const reordered = arrayMove(sortedTasks, oldIndex, newIndex);
 
-    // Normalize all sortOrder values to strictly increasing unique integers 0,1,2,...
-    // This fixes duplicate sortOrder:0 edge cases that prevented reordering from persisting.
-    const normalizedOrders = reordered.map((_, i) => i);
+    // Remap only the specific sortOrder slot values previously occupied by the visible subset,
+    // preserving non-visible tasks' slots and avoiding resetting filtered subsets to 0..n
+    const occupiedSlots = sortedTasks
+      .map((t) => t.sortOrder ?? 0)
+      .sort((a, b) => a - b);
+
+    let lastSlot = -1;
+    const normalizedOrders =
+      occupiedSlots.length > 0 && occupiedSlots.some((s, idx) => s !== idx)
+        ? occupiedSlots.map((slot, i) => {
+            const distinct = i === 0 ? slot : Math.max(slot, lastSlot + 1);
+            lastSlot = distinct;
+            return distinct;
+          })
+        : reordered.map((_, i) => i);
     try {
       await db.transaction("rw", db.tasks, async () => {
         for (let i = 0; i < reordered.length; i++) {

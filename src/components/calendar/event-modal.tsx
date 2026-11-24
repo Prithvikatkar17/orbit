@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { X, Calendar as CalendarIcon, Clock, AlertCircle } from "lucide-react";
+import { X, Calendar as CalendarIcon, Clock, AlertCircle, Trash2 } from "lucide-react";
 import { db } from "@/lib/db/client";
 import { type Event, EventSchema } from "@/lib/schemas/event";
 import { ReminderSchema } from "@/lib/schemas/reminder";
@@ -10,6 +10,7 @@ import { ReminderEditor, type ReminderDraft } from "@/components/reminders/remin
 import { getLocalDateString } from "@/lib/utils/dates";
 import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
 import { Button } from "@/components/ui/button";
+import { syncMutation } from "@/lib/services/sync-queue-service";
 
 interface EventModalProps {
   initialEvent?: Event | null;
@@ -17,6 +18,7 @@ interface EventModalProps {
   initialTime?: string;
   onClose: () => void;
   onSaved?: (event: Event) => void;
+  onDelete?: (id: string) => void;
 }
 
 export function EventModal({
@@ -25,6 +27,7 @@ export function EventModal({
   initialTime,
   onClose,
   onSaved,
+  onDelete,
 }: EventModalProps) {
   const modalRef = useAccessibleModal({ onClose });
   const isEditing = Boolean(initialEvent);
@@ -148,12 +151,73 @@ export function EventModal({
         }
       });
 
+      // Two-Way Task ↔ Calendar Sync: If event is linked to a task, propagate updates back to db.tasks and SQLite
+      const linkedTaskId = initialEvent?.sourceItemId || (initialEvent as unknown as { taskId?: string })?.taskId;
+      if (linkedTaskId) {
+        const linkedTask = await db.tasks.get(linkedTaskId);
+        if (linkedTask) {
+          const updatedTask = {
+            ...linkedTask,
+            title: parsedEvent.title,
+            notes: parsedEvent.notes,
+            dueDate: parsedEvent.date,
+            dueTime: parsedEvent.startTime || undefined,
+            updatedAt: nowIso,
+          };
+          await db.tasks.put(updatedTask);
+          void syncMutation({
+            endpoint: "/api/tasks",
+            method: "PATCH",
+            body: {
+              id: linkedTaskId,
+              title: updatedTask.title,
+              notes: updatedTask.notes,
+              dueDate: updatedTask.dueDate,
+              dueTime: updatedTask.dueTime,
+            },
+            entityType: "task",
+            entityId: linkedTaskId,
+          });
+        }
+      }
+
       onSaved?.(parsedEvent);
       onClose();
     } catch (err: unknown) {
       console.error("Save event error:", err);
       setError(err instanceof Error ? err.message : "Validation error");
     } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!initialEvent || isSubmitting) return;
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      await db.transaction("rw", [db.events, db.reminders], async () => {
+        await db.reminders.where("eventId").equals(initialEvent.id).delete();
+        await db.events.delete(initialEvent.id);
+      });
+      const linkedTaskId = initialEvent.sourceItemId || (initialEvent as unknown as { taskId?: string })?.taskId;
+      if (linkedTaskId) {
+        const linkedTask = await db.tasks.get(linkedTaskId);
+        if (linkedTask) {
+          await db.tasks.delete(linkedTaskId);
+          void syncMutation({
+            endpoint: `/api/tasks?id=${linkedTaskId}`,
+            method: "DELETE",
+            entityType: "task",
+            entityId: linkedTaskId,
+          });
+        }
+      }
+      onDelete?.(initialEvent.id);
+      onClose();
+    } catch (err: unknown) {
+      console.error("Delete event error:", err);
+      setError(err instanceof Error ? err.message : "Failed to delete event");
       setIsSubmitting(false);
     }
   }
@@ -345,24 +409,40 @@ export function EventModal({
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-orbit-border">
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              onClick={onClose}
-              disabled={isSubmitting}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              size="sm"
-              disabled={isSubmitting || !title.trim()}
-            >
-              {isSubmitting ? "Saving..." : isEditing ? "Save Changes" : "Create Event"}
-            </Button>
+          <div className="flex items-center justify-between gap-2 pt-3 border-t border-orbit-border">
+            {isEditing ? (
+              <Button
+                type="button"
+                variant="danger"
+                size="sm"
+                icon={<Trash2 className="h-4 w-4" />}
+                onClick={handleDelete}
+                disabled={isSubmitting}
+              >
+                Delete
+              </Button>
+            ) : (
+              <div />
+            )}
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={onClose}
+                disabled={isSubmitting}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                disabled={isSubmitting || !title.trim()}
+              >
+                {isSubmitting ? "Saving..." : isEditing ? "Save Changes" : "Create Event"}
+              </Button>
+            </div>
           </div>
         </form>
       </div>

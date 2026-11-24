@@ -4,7 +4,7 @@ export const TaskSchema = z.object({
   id:           z.string().uuid(),
   title:        z.string().min(1).max(500),
   notes:        z.string().max(5000).default(""),
-  link:         z.string().url().optional(),
+  link:         z.string().url().refine((val) => /^https?:\/\//i.test(val), "URL must use http or https").optional(),
   category:     z.string().default("task"), // "task", "goal", "idea", etc.
   priority:     z.enum(["low", "medium", "high"]).default("medium"),
   status:       z.enum(["todo", "in_progress", "completed", "archived"]).default("todo"),
@@ -14,6 +14,7 @@ export const TaskSchema = z.object({
   sortOrder:    z.number().int().default(0),
   tags:         z.array(z.string()).default([]),
   sourceItemId: z.string().uuid().optional(),
+  deletedAt:    z.union([z.number().int(), z.string()]).optional(),
   createdAt:    z.string().datetime(),
   updatedAt:    z.string().datetime(),
 });

@@ -17,11 +17,13 @@ export function getLocalDateString(d = new Date()): string {
 
 /**
  * Normalizes user-entered URL strings (e.g. "github.com" -> "https://github.com").
+ * Safely blocks unsafe pseudo-protocols (javascript:, data:, vbscript:).
  */
 export function normalizeUrl(url?: string): string | undefined {
   if (!url) return undefined;
   const trimmed = url.trim();
   if (!trimmed) return undefined;
+  if (/^(?:javascript|data|vbscript):/i.test(trimmed)) return undefined;
   if (/^https?:\/\//i.test(trimmed)) return trimmed;
   if (/^[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/i.test(trimmed)) {
     return `https://${trimmed}`;
