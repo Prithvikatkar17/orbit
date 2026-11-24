@@ -117,6 +117,53 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
     }
   }
 
+  // Toggle completion for a specific calendar date (supports backfilling past days in 0ms)
+  async function toggleDate(dateStr: string) {
+    if (dateStr > today) return; // Future dates are blocked
+    const existingLog = await db.habitLogs
+      .where("[habitId+date]")
+      .equals([habit.id, dateStr])
+      .first();
+
+    if (existingLog) {
+      await db.habitLogs.delete(existingLog.id);
+      void syncMutation({
+        endpoint: "/api/habits/log",
+        method: "POST",
+        body: {
+          habitId: habit.id,
+          date: dateStr,
+          completed: false,
+        },
+        entityType: "habitLog",
+        entityId: existingLog.id,
+      });
+    } else {
+      const newLogId = crypto.randomUUID();
+      const newLog = HabitLogSchema.parse({
+        id: newLogId,
+        habitId: habit.id,
+        date: dateStr,
+        completed: true,
+        createdAt: new Date().toISOString(),
+      });
+      await db.habitLogs.add(newLog);
+
+      void syncMutation({
+        endpoint: "/api/habits/log",
+        method: "POST",
+        body: {
+          id: newLogId,
+          habitId: habit.id,
+          date: dateStr,
+          completed: true,
+        },
+        entityType: "habitLog",
+        entityId: newLogId,
+      });
+    }
+  }
+
   // Toggle archive status
   async function toggleArchive() {
     const nextActive = !habit.isActive;
@@ -290,6 +337,7 @@ export function HabitCard({ habit, onEdit, onDelete, isHighlighted }: HabitCardP
           completedDates={completedDates}
           color={harmonizedColor}
           today={today}
+          onToggleDate={toggleDate}
         />
       </div>
     </SurfaceCard>

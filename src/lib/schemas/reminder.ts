@@ -11,6 +11,7 @@ export const ReminderSchema = z.object({
   lastNotifiedOccurrenceDate: z.string().optional(), // "YYYY-MM-DD"
   notifiedAt:                 z.string().datetime().optional(),
   acknowledgedAt:             z.string().datetime().optional(),
+  snoozedUntil:               z.string().datetime().optional(),
   isActive:                   z.boolean().default(true),
   createdAt:                  z.string().datetime(),
 });

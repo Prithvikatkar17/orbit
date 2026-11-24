@@ -10,6 +10,7 @@ import { SearchModal } from "@/components/search/search-modal";
 import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
 import { ReminderProvider } from "@/components/reminders/reminder-provider";
 import { SyncQueueListener } from "@/components/common/sync-queue-listener";
+import { NavigationChordsListener } from "@/components/common/navigation-chords-listener";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -111,6 +112,9 @@ export default function RootLayout({
 
               {/* Offline Hotspot Sync Queue Listener (Phase 13C) */}
               <SyncQueueListener />
+
+              {/* Two-Key Navigation Chords Listener (Phase 16) */}
+              <NavigationChordsListener />
             </ReminderProvider>
           </ThemePersonalityProvider>
         </ThemeProvider>

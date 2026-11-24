@@ -7,9 +7,15 @@ interface HeatmapProps {
   completedDates: Set<string>;
   color?: string; // hex color e.g. "#10b981"
   today?: string;
+  onToggleDate?: (dateStr: string) => void;
 }
 
-export function HabitHeatmap({ completedDates, color = "#10b981", today: propToday }: HeatmapProps) {
+export function HabitHeatmap({
+  completedDates,
+  color = "#10b981",
+  today: propToday,
+  onToggleDate,
+}: HeatmapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [expanded, setExpanded] = useState(false);
   const hookToday = useTodayDate();
@@ -125,18 +131,26 @@ export function HabitHeatmap({ completedDates, color = "#10b981", today: propTod
           {recentDays.map((day) => {
             const friendlyLabel = formatFriendlyDate(day.dateStr);
             const isCustomColor = color && color !== "#10b981";
+            const isFuture = day.dateStr > today;
             return (
-              <div
+              <button
                 key={day.dateStr}
+                type="button"
+                disabled={isFuture || !onToggleDate}
+                onClick={() => onToggleDate?.(day.dateStr)}
+                aria-label={`Toggle habit for ${friendlyLabel} (${day.dateStr})`}
+                aria-pressed={day.isCompleted}
                 title={`${friendlyLabel} (${day.dateStr}): ${
                   day.isCompleted ? "Completed" : "Not logged"
-                }`}
+                }${!isFuture && onToggleDate ? " (Click to toggle)" : ""}`}
                 style={
                   day.isCompleted && isCustomColor
                     ? { backgroundColor: color }
                     : undefined
                 }
-                className={`aspect-square w-full rounded-[3px] transition-transform hover:scale-110 ${
+                className={`aspect-square w-full rounded-[3px] transition-transform ${
+                  isFuture ? "cursor-not-allowed opacity-40" : onToggleDate ? "cursor-pointer hover:scale-110 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-ring" : ""
+                } ${
                   day.isCompleted
                     ? isCustomColor
                       ? "shadow-orbit-xs"
@@ -181,19 +195,27 @@ export function HabitHeatmap({ completedDates, color = "#10b981", today: propTod
 
                   const friendlyLabel = formatFriendlyDate(day.dateStr);
                   const isCustomColor = color && color !== "#10b981";
+                  const isFuture = day.dateStr > today;
 
                   return (
-                    <div
+                    <button
                       key={day.dateStr}
+                      type="button"
+                      disabled={isFuture || !onToggleDate}
+                      onClick={() => onToggleDate?.(day.dateStr)}
+                      aria-label={`Toggle habit for ${friendlyLabel} (${day.dateStr})`}
+                      aria-pressed={day.isCompleted}
                       title={`${friendlyLabel} (${day.dateStr}): ${
                         day.isCompleted ? "Completed" : "Not logged"
-                      }`}
+                      }${!isFuture && onToggleDate ? " (Click to toggle)" : ""}`}
                       style={
                         day.isCompleted && isCustomColor
                           ? { backgroundColor: color }
                           : undefined
                       }
-                      className={`h-3 w-3 cursor-pointer rounded-[3px] transition-transform hover:scale-125 ${
+                      className={`h-3 w-3 rounded-[3px] transition-transform ${
+                        isFuture ? "cursor-not-allowed opacity-40" : onToggleDate ? "cursor-pointer hover:scale-125 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-ring" : ""
+                      } ${
                         day.isCompleted
                           ? isCustomColor
                             ? "shadow-orbit-xs"

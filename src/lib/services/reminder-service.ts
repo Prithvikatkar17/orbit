@@ -114,8 +114,22 @@ async function runCheckDueReminders(
       const event = eventMap.get(reminder.eventId);
       if (!event) continue;
 
+      // If reminder is snoozed until a future time, skip it until snoozedUntil has passed!
+      const isSnoozed = Boolean(reminder.snoozedUntil);
+      let snoozePassed = false;
+      if (isSnoozed && reminder.snoozedUntil) {
+        const snoozeMs = Date.parse(reminder.snoozedUntil);
+        if (!isNaN(snoozeMs)) {
+          if (snoozeMs > now) {
+            continue; // Still snoozed, waiting for snooze target
+          }
+          snoozePassed = true; // Snooze target has arrived!
+        }
+      }
+
       // Fast path for non-recurring events already notified for their sole occurrence date
       if (
+        !snoozePassed &&
         event.recurrence.rule === "none" &&
         reminder.lastNotifiedOccurrenceDate &&
         event.date <= reminder.lastNotifiedOccurrenceDate
@@ -129,18 +143,21 @@ async function runCheckDueReminders(
       for (const occ of occurrences) {
         // Chronological deduplication: skip any occurrence already delivered or older than lastNotifiedOccurrenceDate
         if (
+          !snoozePassed &&
           reminder.lastNotifiedOccurrenceDate &&
           occ.occurrenceDate <= reminder.lastNotifiedOccurrenceDate
         ) {
           continue;
         }
 
-        const triggerTimestamp = calculateReminderTriggerTime(
-          event,
-          occ.occurrenceDate,
-          reminder,
-          defaultReminderTime
-        );
+        const triggerTimestamp = snoozePassed && reminder.snoozedUntil
+          ? Date.parse(reminder.snoozedUntil)
+          : calculateReminderTriggerTime(
+              event,
+              occ.occurrenceDate,
+              reminder,
+              defaultReminderTime
+            );
 
         // If trigger time is still in the future, it is waiting
         if (triggerTimestamp > now) {
@@ -148,8 +165,10 @@ async function runCheckDueReminders(
         }
 
         // Trigger time is due (now or past). Determine if missed (> 15 minutes late)
-        const isMissed = now - triggerTimestamp > 15 * 60 * 1000;
-        const notificationId = `${reminder.id}-${occ.occurrenceDate}`;
+        const isMissed = !snoozePassed && now - triggerTimestamp > 15 * 60 * 1000;
+        const notificationId = snoozePassed && reminder.snoozedUntil
+          ? `${reminder.id}-${occ.occurrenceDate}-snoozed-${Date.parse(reminder.snoozedUntil)}`
+          : `${reminder.id}-${occ.occurrenceDate}`;
 
         const notificationItem = NotificationSchema.parse({
           id: notificationId,
@@ -218,6 +237,7 @@ async function runCheckDueReminders(
           await database.reminders.update(remId, {
             notifiedAt: nowIso,
             lastNotifiedOccurrenceDate: latestOccDate,
+            snoozedUntil: undefined,
           });
         }
       }
@@ -292,4 +312,69 @@ export async function requestNotificationPermission(): Promise<NotificationPermi
   } catch {
     return "denied";
   }
+}
+
+export type SnoozePreset = "15m" | "1h" | "tomorrow_9am";
+
+/**
+ * Calculates target timestamp for snooze presets:
+ * - 15m: Date.now() + 15m
+ * - 1h: Date.now() + 1h
+ * - tomorrow_9am: local tomorrow at 09:00:00
+ */
+export function calculateSnoozeTarget(
+  preset: SnoozePreset,
+  fromMs: number = Date.now()
+): Date {
+  if (preset === "15m") {
+    return new Date(fromMs + 15 * 60 * 1000);
+  }
+  if (preset === "1h") {
+    return new Date(fromMs + 60 * 60 * 1000);
+  }
+  // tomorrow_9am: local tomorrow at 09:00:00
+  const d = new Date(fromMs);
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1, 9, 0, 0, 0);
+}
+
+export interface SnoozeReminderOptions {
+  reminderId: string;
+  notificationId?: string;
+  preset?: SnoozePreset;
+  targetDate?: Date;
+  database?: OrbitDatabase;
+}
+
+/**
+ * Snoozes a reminder alert:
+ * 1. Dismisses the active notification immediately so it leaves the alert panel in 0ms.
+ * 2. Persists snoozedUntil on the reminder in Dexie so runCheckDueReminders re-fires at the target time.
+ */
+export async function snoozeReminder(
+  options: SnoozeReminderOptions
+): Promise<Date> {
+  const database = options.database || defaultDb;
+  const target =
+    options.targetDate || calculateSnoozeTarget(options.preset || "15m");
+  const targetIso = target.toISOString();
+
+  // 1. Dismiss active notification from store and db.notifications
+  if (options.notificationId) {
+    try {
+      await useNotificationStore
+        .getState()
+        .dismissNotification(options.notificationId, database);
+    } catch {
+      try {
+        await database.notifications.delete(options.notificationId);
+      } catch {}
+    }
+  }
+
+  // 2. Persist snoozedUntil on reminder
+  await database.reminders.update(options.reminderId, {
+    snoozedUntil: targetIso,
+  });
+
+  return target;
 }

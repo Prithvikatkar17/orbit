@@ -16,6 +16,7 @@ import {
 import {
   acknowledgeReminder,
   requestNotificationPermission,
+  snoozeReminder,
 } from "@/lib/services/reminder-service";
 import { EVENT_TYPE_MAP } from "@/lib/constants";
 import { useMounted } from "@/lib/utils/dates";
@@ -25,6 +26,7 @@ export function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
   const [panelStyle, setPanelStyle] = useState<React.CSSProperties | null>(null);
   const [permission, setPermission] = useState<NotificationPermission>("default");
+  const [activeSnoozeId, setActiveSnoozeId] = useState<string | null>(null);
 
   const buttonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -285,7 +287,7 @@ export function NotificationCenter() {
                           <span>{item.occurrenceDate}</span>
                         </div>
 
-                        <div className="pt-1 flex items-center gap-2">
+                        <div className="pt-1 flex flex-wrap items-center gap-1.5">
                           <button
                             type="button"
                             onClick={() => handleAcknowledge(item)}
@@ -294,6 +296,59 @@ export function NotificationCenter() {
                             <Check className="h-3 w-3 text-orbit-success" />
                             <span>Acknowledge</span>
                           </button>
+
+                          {activeSnoozeId === item.id ? (
+                            <div className="flex items-center gap-1 animate-in fade-in zoom-in-95">
+                              <button
+                                type="button"
+                                onClick={async () => {
+                                  setActiveSnoozeId(null);
+                                  await snoozeReminder({ reminderId: item.reminderId, notificationId: item.id, preset: "15m" });
+                                }}
+                                className="rounded-orbit-control bg-orbit-accent-soft px-2 py-0.5 text-[10px] font-semibold text-orbit-accent hover:brightness-95 transition-all"
+                              >
+                                15m
+                              </button>
+                              <button
+                                type="button"
+                                onClick={async () => {
+                                  setActiveSnoozeId(null);
+                                  await snoozeReminder({ reminderId: item.reminderId, notificationId: item.id, preset: "1h" });
+                                }}
+                                className="rounded-orbit-control bg-orbit-accent-soft px-2 py-0.5 text-[10px] font-semibold text-orbit-accent hover:brightness-95 transition-all"
+                              >
+                                1h
+                              </button>
+                              <button
+                                type="button"
+                                onClick={async () => {
+                                  setActiveSnoozeId(null);
+                                  await snoozeReminder({ reminderId: item.reminderId, notificationId: item.id, preset: "tomorrow_9am" });
+                                }}
+                                className="rounded-orbit-control bg-orbit-accent-soft px-2 py-0.5 text-[10px] font-semibold text-orbit-accent hover:brightness-95 transition-all"
+                              >
+                                Tomorrow 9am
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setActiveSnoozeId(null)}
+                                className="text-orbit-text-muted hover:text-orbit-text text-[10px] px-1"
+                                title="Cancel snooze"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => setActiveSnoozeId(item.id)}
+                              className="flex items-center gap-1 rounded-orbit-control bg-orbit-surface-secondary px-2.5 py-1 text-[10px] font-semibold text-orbit-text-secondary hover:text-orbit-text hover:bg-orbit-subtle transition-colors"
+                              title="Snooze alert"
+                            >
+                              <Clock className="h-3 w-3 text-orbit-accent" />
+                              <span>Snooze</span>
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>

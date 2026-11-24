@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Plus, Clock, Repeat, Calendar as CalendarIcon } from "lucide-react";
 import { type Event } from "@/lib/schemas/event";
 import { EVENT_TYPE_MAP } from "@/lib/constants";
@@ -28,6 +28,26 @@ export function DayView({
   onCreateEvent,
 }: DayViewProps) {
   const [showEmptySlots, setShowEmptySlots] = useState(false);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(new Date());
+    }, 60000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+
+  // Auto-scroll on showing hourly slots: scrolls to (currentHour - 1) if today, else 08:00
+  useEffect(() => {
+    if (showEmptySlots && timelineRef.current) {
+      const targetHour = isToday ? Math.max(0, currentHour - 1) : 8;
+      timelineRef.current.scrollTop = targetHour * 60;
+    }
+  }, [showEmptySlots, isToday, currentHour]);
 
   const dayOccurrences = occurrences.filter((o) => o.occurrenceDate === dateStr);
   const allDayEvents = dayOccurrences.filter((o) => o.event.isAllDay);
@@ -233,7 +253,10 @@ export function DayView({
 
       {/* Interactive Hourly Timeline (toggled on empty days or alongside agenda) */}
       {showEmptySlots && (
-        <div className="max-h-[540px] flex-1 divide-y divide-orbit-border/60 overflow-y-auto">
+        <div
+          ref={timelineRef}
+          className="max-h-[540px] flex-1 divide-y divide-orbit-border/60 overflow-y-auto"
+        >
           {HOURS.map((hour) => {
             const hourStr = String(hour).padStart(2, "0") + ":00";
             const matchingEvents = timedEvents.filter((occ) => {
@@ -253,8 +276,19 @@ export function DayView({
 
                 <div
                   onClick={() => onCreateEvent(dateStr, hourStr)}
-                  className="flex min-w-0 flex-1 cursor-pointer flex-col gap-2 p-2"
+                  className="relative flex min-w-0 flex-1 cursor-pointer flex-col gap-2 p-2"
                 >
+                  {/* Live Current-Time Indicator on Today */}
+                  {isToday && hour === currentHour && (
+                    <div
+                      style={{ top: `${(currentMinute / 60) * 100}%` }}
+                      className="pointer-events-none absolute left-0 right-0 z-20 flex items-center"
+                      aria-label={`Current time: ${String(currentHour).padStart(2, "0")}:${String(currentMinute).padStart(2, "0")}`}
+                    >
+                      <div className="h-2 w-2 -ml-1 rounded-full bg-orbit-accent shadow-orbit-xs" />
+                      <div className="h-[2px] w-full bg-orbit-accent" />
+                    </div>
+                  )}
                   {matchingEvents.length === 0 ? (
                     <div className="hidden items-center py-1 text-[11px] italic text-orbit-text-muted group-hover:flex">
                       + Click to add event at {hourStr}

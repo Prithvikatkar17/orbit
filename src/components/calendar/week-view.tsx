@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { type Event } from "@/lib/schemas/event";
 import { EVENT_TYPE_MAP } from "@/lib/constants";
 import {
@@ -51,6 +51,27 @@ export function WeekView({
     weekStartsOn === "monday"
       ? ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
       : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(new Date());
+    }, 60000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+  const isTodayVisible = weekDays.some((d) => d.isToday);
+
+  // Auto-scroll on mount or week navigation: smoothly scrolls to (currentHour - 1) if today is visible, else 08:00
+  useEffect(() => {
+    if (!gridRef.current) return;
+    const targetHour = isTodayVisible ? Math.max(0, currentHour - 1) : 8;
+    gridRef.current.scrollTop = targetHour * 58;
+  }, [currentDateStr, isTodayVisible, currentHour]);
 
   return (
     <SurfaceCard className="flex flex-1 flex-col overflow-hidden">
@@ -124,7 +145,10 @@ export function WeekView({
           </div>
 
           {/* Hourly Time Grid */}
-          <div className="max-h-[620px] divide-y divide-orbit-border/60 overflow-y-auto">
+          <div
+            ref={gridRef}
+            className="max-h-[620px] divide-y divide-orbit-border/60 overflow-y-auto"
+          >
             {HOURS.map((hour) => {
               const hourStr = String(hour).padStart(2, "0") + ":00";
               return (
@@ -184,6 +208,18 @@ export function WeekView({
                             </button>
                           );
                         })}
+
+                        {/* Live Current-Time Indicator on Today Column */}
+                        {day.isToday && hour === currentHour && (
+                          <div
+                            style={{ top: `${(currentMinute / 60) * 100}%` }}
+                            className="pointer-events-none absolute left-0 right-0 z-20 flex items-center"
+                            aria-label={`Current time: ${String(currentHour).padStart(2, "0")}:${String(currentMinute).padStart(2, "0")}`}
+                          >
+                            <div className="h-2 w-2 -ml-1 rounded-full bg-orbit-accent shadow-orbit-xs" />
+                            <div className="h-[2px] w-full bg-orbit-accent" />
+                          </div>
+                        )}
                       </div>
                     );
                   })}

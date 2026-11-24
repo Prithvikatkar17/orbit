@@ -10,6 +10,7 @@ import {
   Plus,
   ArrowRight,
   Sparkles,
+  Terminal,
 } from "lucide-react";
 import { db } from "@/lib/db/client";
 import { useSearchStore, type SearchFilterTab } from "@/lib/stores/search-store";
@@ -24,6 +25,8 @@ import { SearchResultItem } from "./search-result-item";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useThemePersonality } from "@/components/theme-personality-provider";
+import { useTheme } from "next-themes";
+import { filterCommandPalette } from "@/lib/services/command-palette-service";
 import { useMounted } from "@/lib/utils/dates";
 
 const FILTER_TABS: { id: SearchFilterTab; label: string }[] = [
@@ -51,7 +54,8 @@ export function SearchModal() {
   const inputRef = useRef<HTMLInputElement>(null);
   const previousActiveElementRef = useRef<HTMLElement | null>(null);
 
-  const { themePersonality } = useThemePersonality();
+  const { themePersonality, setThemePersonality } = useThemePersonality();
+  const { theme, setTheme } = useTheme();
   const mounted = useMounted();
 
   const isMinimalist = mounted && themePersonality === "minimalist";
@@ -93,6 +97,13 @@ export function SearchModal() {
   const [debouncedQuery, setDebouncedQuery] = useState(query);
   const [searchResults, setSearchResults] = useState<SearchResultsGrouped>(EMPTY_SEARCH_RESULTS);
   const [selectedRecentIndex, setSelectedRecentIndex] = useState(-1);
+
+  const isCommandMode = query.trim().startsWith(">");
+  const matchingCommands = useMemo(
+    () => (isCommandMode ? filterCommandPalette(query) : []),
+    [isCommandMode, query]
+  );
+  const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
 
   const trimmedQuery = debouncedQuery.trim();
   const activeSearchResults = trimmedQuery ? searchResults : EMPTY_SEARCH_RESULTS;
@@ -237,6 +248,45 @@ export function SearchModal() {
 
   // Keyboard navigation within search palette
   function handleInputKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (isCommandMode) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (matchingCommands.length > 0) {
+          setSelectedCommandIndex((prev) => (prev + 1) % matchingCommands.length);
+        }
+        return;
+      }
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (matchingCommands.length > 0) {
+          setSelectedCommandIndex(
+            (prev) => (prev - 1 + matchingCommands.length) % matchingCommands.length
+          );
+        }
+        return;
+      }
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (matchingCommands.length > 0 && matchingCommands[selectedCommandIndex]) {
+          const cmd = matchingCommands[selectedCommandIndex];
+          cmd.run({
+            router,
+            setThemePersonality,
+            setTheme,
+            currentTheme: theme,
+            closePalette: closeSearch,
+            openQuickCapture: () => handleOpenQuickCapture(),
+          });
+        }
+        return;
+      }
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setQuery("");
+        return;
+      }
+    }
+
     // Arrow Down
     if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -486,9 +536,10 @@ export function SearchModal() {
             onChange={(e) => {
               setQuery(e.target.value);
               setSelectedRecentIndex(-1);
+              setSelectedCommandIndex(0);
             }}
             onKeyDown={handleInputKeyDown}
-            placeholder="Search ORBIT... (e.g. 'planning', '#books', 'gym')"
+            placeholder="Search ORBIT or type '>' for actions... (e.g. '> theme', '> dark')"
             className={`orbit-unstyled-input flex-1 bg-transparent text-sm sm:text-base text-orbit-text placeholder:text-orbit-text-muted focus:outline-hidden min-w-0 ${
               isArchivist
                 ? "font-serif placeholder:font-serif"
@@ -506,6 +557,7 @@ export function SearchModal() {
               onClick={() => {
                 setQuery("");
                 setSelectedRecentIndex(-1);
+                setSelectedCommandIndex(0);
                 inputRef.current?.focus();
               }}
               className={`flex items-center justify-center min-w-[36px] min-h-[36px] sm:min-w-0 sm:min-h-0 p-1.5 sm:p-1 text-orbit-text-muted hover:bg-orbit-subtle hover:text-orbit-text transition-colors ${
@@ -549,98 +601,175 @@ export function SearchModal() {
           <div className="border-t border-b border-[#2c2621]/15 dark:border-[#f0eae1]/15 h-[3px] mx-4" />
         )}
 
-        {/* Filter Tabs Bar */}
-        <div
-          role="tablist"
-          aria-label="Filter search results by module"
-          className="flex items-center gap-1.5 overflow-x-auto px-3.5 sm:px-4 py-2 border-b border-orbit-border bg-orbit-surface-secondary/40 no-scrollbar"
-        >
-          {FILTER_TABS.map((tab) => {
-            const isActive = activeFilter === tab.id;
+        {/* Filter Tabs Bar or Command Mode Banner */}
+        {isCommandMode ? (
+          <div className="flex items-center gap-2 px-3.5 sm:px-4 py-2 border-b border-orbit-border bg-orbit-accent-soft/25 text-xs select-none">
+            <Terminal className="h-3.5 w-3.5 text-orbit-accent" />
+            <span className="font-semibold text-orbit-accent">Command Mode</span>
+            <span className="text-orbit-text-muted">•</span>
+            <span className="text-orbit-text-secondary text-[11px] truncate">
+              Type to filter workspace actions (e.g. &gt; theme, &gt; dark, &gt; tasks, &gt; export)
+            </span>
+          </div>
+        ) : (
+          <div
+            role="tablist"
+            aria-label="Filter search results by module"
+            className="flex items-center gap-1.5 overflow-x-auto px-3.5 sm:px-4 py-2 border-b border-orbit-border bg-orbit-surface-secondary/40 no-scrollbar"
+          >
+            {FILTER_TABS.map((tab) => {
+              const isActive = activeFilter === tab.id;
 
-            const tabClass = isMinimalist
-              ? `rounded-none font-mono text-[11px] uppercase tracking-wider px-2.5 py-1 transition-all ${
-                  isActive
-                    ? "bg-[#ff3b00] text-white font-bold"
-                    : "text-orbit-text-secondary hover:bg-black/5 dark:hover:bg-white/10"
-                }`
-              : isNaturalist
-              ? `rounded-full px-3 py-1 text-xs transition-all ${
-                  isActive
-                    ? "bg-[#10b981] text-white shadow-xs font-medium"
-                    : "text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text"
-                }`
-              : isFuturistic
-              ? `rounded-sm font-mono text-xs px-2.5 py-1 transition-all ${
-                  isActive
-                    ? "bg-[#00f0ff] text-[#04111d] font-bold shadow-[0_0_6px_#00f0ff]/50"
-                    : "text-[#94a3b8] hover:text-[#00f0ff]"
-                }`
-              : isArtistic
-              ? `rounded-full px-3 py-1 text-xs relative transition-all ${
-                  isActive
-                    ? "bg-[#d97706] text-white font-medium shadow-xs"
-                    : "text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text"
-                }`
-              : isArchivist
-              ? `rounded-md font-serif text-xs px-2.5 py-1 transition-all ${
-                  isActive
-                    ? "bg-[#1b4332] text-[#faf9f5] font-semibold"
-                    : "text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text"
-                }`
-              : isMidnight
-              ? `rounded-md font-mono text-xs px-2.5 py-1 transition-all ${
-                  isActive
-                    ? "bg-[#818cf8] text-[#03050c] font-semibold"
-                    : "text-orbit-text-secondary hover:text-[#818cf8]"
-                }`
-              : `rounded-md px-2.5 py-1 text-xs whitespace-nowrap transition-all ${
-                  isActive
-                    ? "bg-orbit-accent text-orbit-accent-fg shadow-orbit-xs font-medium"
-                    : "text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text"
-                }`;
+              const tabClass = isMinimalist
+                ? `rounded-none font-mono text-[11px] uppercase tracking-wider px-2.5 py-1 transition-all ${
+                    isActive
+                      ? "bg-[#ff3b00] text-white font-bold"
+                      : "text-orbit-text-secondary hover:bg-black/5 dark:hover:bg-white/10"
+                  }`
+                : isNaturalist
+                ? `rounded-full px-3 py-1 text-xs transition-all ${
+                    isActive
+                      ? "bg-[#10b981] text-white shadow-xs font-medium"
+                      : "text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text"
+                  }`
+                : isFuturistic
+                ? `rounded-sm font-mono text-xs px-2.5 py-1 transition-all ${
+                    isActive
+                      ? "bg-[#00f0ff] text-[#04111d] font-bold shadow-[0_0_6px_#00f0ff]/50"
+                      : "text-[#94a3b8] hover:text-[#00f0ff]"
+                  }`
+                : isArtistic
+                ? `rounded-full px-3 py-1 text-xs relative transition-all ${
+                    isActive
+                      ? "bg-[#d97706] text-white font-medium shadow-xs"
+                      : "text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text"
+                  }`
+                : isArchivist
+                ? `rounded-md font-serif text-xs px-2.5 py-1 transition-all ${
+                    isActive
+                      ? "bg-[#1b4332] text-[#faf9f5] font-semibold"
+                      : "text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text"
+                  }`
+                : isMidnight
+                ? `rounded-md font-mono text-xs px-2.5 py-1 transition-all ${
+                    isActive
+                      ? "bg-[#818cf8] text-[#03050c] font-semibold"
+                      : "text-orbit-text-secondary hover:text-[#818cf8]"
+                  }`
+                : `rounded-md px-2.5 py-1 text-xs whitespace-nowrap transition-all ${
+                    isActive
+                      ? "bg-orbit-accent text-orbit-accent-fg shadow-orbit-xs font-medium"
+                      : "text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text"
+                  }`;
 
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                role="tab"
-                aria-selected={isActive}
-                data-active={isActive ? "true" : "false"}
-                onClick={() => setActiveFilter(tab.id)}
-                className={`orbit-filter-tab whitespace-nowrap focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-accent relative ${tabClass}`}
-              >
-                <span>{tab.label}</span>
-                {/* Artistic Brushstroke accent under active tab */}
-                {isArtistic && isActive && (
-                  <svg
-                    className="absolute -bottom-1 left-2 right-2 h-1 w-[calc(100%-16px)] pointer-events-none"
-                    viewBox="0 0 40 4"
-                    preserveAspectRatio="none"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M1 2 Q 20 0, 39 3"
-                      stroke="#d97706"
-                      strokeWidth="2"
-                      fill="none"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                )}
-              </button>
-            );
-          })}
-        </div>
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  data-active={isActive ? "true" : "false"}
+                  onClick={() => setActiveFilter(tab.id)}
+                  className={`orbit-filter-tab whitespace-nowrap focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orbit-accent relative ${tabClass}`}
+                >
+                  <span>{tab.label}</span>
+                  {/* Artistic Brushstroke accent under active tab */}
+                  {isArtistic && isActive && (
+                    <svg
+                      className="absolute -bottom-1 left-2 right-2 h-1 w-[calc(100%-16px)] pointer-events-none"
+                      viewBox="0 0 40 4"
+                      preserveAspectRatio="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M1 2 Q 20 0, 39 3"
+                        stroke="#d97706"
+                        strokeWidth="2"
+                        fill="none"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         {/* Results Area */}
         <div
           id="orbit-search-results"
           role="listbox"
-          aria-label="Search Results"
+          aria-label={isCommandMode ? "Command Palette Actions" : "Search Results"}
           className="flex-1 overflow-y-auto overscroll-contain p-2 sm:p-3 min-h-[160px] max-h-[55vh]"
         >
-          {isSearching && itemsCount === 0 ? (
+          {isCommandMode ? (
+            matchingCommands.length === 0 ? (
+              <div className="py-12 text-center text-orbit-text-muted text-xs">
+                No commands matching &ldquo;{query.slice(1).trim()}&rdquo;.
+                <p className="mt-1 text-orbit-text-secondary text-[11px]">
+                  Try <span className="font-mono text-orbit-accent">&gt; theme</span>,{" "}
+                  <span className="font-mono text-orbit-accent">&gt; dark</span>,{" "}
+                  <span className="font-mono text-orbit-accent">&gt; tasks</span>, or{" "}
+                  <span className="font-mono text-orbit-accent">&gt; export</span>.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-1">
+                {matchingCommands.map((cmd, idx) => {
+                  const isSelected = selectedCommandIndex === idx;
+                  const categoryBadgeVariant =
+                    cmd.category === "Navigation"
+                      ? "neutral"
+                      : cmd.category === "Theme Personality"
+                      ? "accent"
+                      : cmd.category === "Appearance"
+                      ? "warning"
+                      : cmd.category === "Data & Vault"
+                      ? "info"
+                      : "neutral";
+
+                  return (
+                    <div
+                      key={cmd.id}
+                      role="option"
+                      aria-selected={isSelected}
+                      onClick={() => {
+                        cmd.run({
+                          router,
+                          setThemePersonality,
+                          setTheme,
+                          currentTheme: theme,
+                          closePalette: closeSearch,
+                          openQuickCapture: () => handleOpenQuickCapture(),
+                        });
+                      }}
+                      className={`group flex items-center justify-between rounded-lg px-3 py-2 text-xs cursor-pointer transition-colors ${
+                        isSelected
+                          ? "bg-orbit-accent-soft text-orbit-text shadow-orbit-xs border border-orbit-accent/40"
+                          : "hover:bg-orbit-subtle text-orbit-text-secondary border border-transparent"
+                      }`}
+                    >
+                      <div className="min-w-0 flex-1 pr-2">
+                        <div className="flex items-center gap-2">
+                          <Badge variant={categoryBadgeVariant}>{cmd.category}</Badge>
+                          <span className="font-semibold text-orbit-text">{cmd.title}</span>
+                        </div>
+                        <p className="mt-0.5 text-[11px] text-orbit-text-muted line-clamp-1">
+                          {cmd.description}
+                        </p>
+                      </div>
+                      {cmd.shortcutHint && (
+                        <kbd className="font-mono text-[10px] rounded border border-orbit-border bg-orbit-surface-secondary px-1.5 py-0.5 text-orbit-text-muted shrink-0">
+                          {cmd.shortcutHint}
+                        </kbd>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )
+          ) : isSearching && itemsCount === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-orbit-text-muted">
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-orbit-accent border-t-transparent mb-2" />
               <span className="font-mono text-xs text-orbit-text-muted">Searching local records...</span>
