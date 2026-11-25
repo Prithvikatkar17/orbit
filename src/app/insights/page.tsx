@@ -1,21 +1,29 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Calendar } from "lucide-react";
 import { db } from "@/lib/db/client";
-import type { Task, Habit, HabitLog } from "@/lib/schemas";
+import type { Task, Habit, HabitLog, Expense } from "@/lib/schemas";
+import type { ExpenseCategory, ExpensePaymentMode } from "@/lib/schemas/expense";
 import { useMounted, useTodayDate } from "@/lib/utils/dates";
 import {
   calculateAnalyticsSnapshot,
+  calculateExpenseBreakdown,
+  calculateDailyBurnRate,
   type DateRangeType,
 } from "@/lib/services/analytics-service";
+import { flushSyncQueue } from "@/lib/services/sync-queue-service";
 import { PersonalityPageHeader } from "@/components/layout/personality-page-header";
 import { OverviewCards } from "@/components/insights/overview-cards";
 import { ActivityChart } from "@/components/insights/activity-chart";
 import { HabitBreakdown } from "@/components/insights/habit-breakdown";
 import { TaskDistribution } from "@/components/insights/task-distribution";
 import { RecentAccomplishments } from "@/components/insights/recent-accomplishments";
+import {
+  SpendingBreakdownCard,
+  DailyBurnRateCard,
+} from "@/components/insights/expense-insights";
 
 const RANGE_OPTIONS: { id: DateRangeType; label: string }[] = [
   { id: "7d", label: "7 Days" },
@@ -33,6 +41,59 @@ export default function InsightsPage() {
   const rawTasks = useLiveQuery(() => db.tasks.toArray(), []);
   const rawHabits = useLiveQuery(() => db.habits.toArray(), []);
   const rawHabitLogs = useLiveQuery(() => db.habitLogs.toArray(), []);
+  const rawExpenses = useLiveQuery(() => db.expenses.toArray(), []);
+  const userSettings = useLiveQuery(() => db.settings.get("user_settings"), []);
+
+  // Flush-Before-Hydrate for Expenses so recent mobile spends appear immediately
+  useEffect(() => {
+    let isCancelled = false;
+    async function syncExpensesFromSQLite() {
+      try {
+        await flushSyncQueue();
+        const res = await fetch("/api/expenses");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.expenses && Array.isArray(data.expenses)) {
+            for (const serverItem of data.expenses) {
+              if (isCancelled) break;
+              const existing = await db.expenses.get(serverItem.id);
+              if (serverItem.deletedAt != null) {
+                if (existing) {
+                  await db.expenses.delete(serverItem.id);
+                }
+                continue;
+              }
+              const serverUpdated =
+                typeof serverItem.updatedAt === "number"
+                  ? serverItem.updatedAt
+                  : serverItem.createdAt || 0;
+              const existingUpdated = existing?.updatedAt || 0;
+
+              if (!existing || serverUpdated > existingUpdated) {
+                await db.expenses.put({
+                  id: serverItem.id,
+                  amountPaise: serverItem.amountPaise,
+                  category: serverItem.category as ExpenseCategory,
+                  paymentMode: (serverItem.paymentMode as ExpensePaymentMode) || "upi",
+                  note: serverItem.note || null,
+                  date: serverItem.date,
+                  createdAt: serverItem.createdAt,
+                  updatedAt: serverItem.updatedAt,
+                  deletedAt: serverItem.deletedAt || null,
+                });
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error("[InsightsPage] Expense hydration sync error:", err);
+      }
+    }
+    syncExpensesFromSQLite();
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   // Hydration-safe memoized arrays
   const tasks: Task[] = useMemo(
@@ -47,6 +108,11 @@ export default function InsightsPage() {
     () => (mounted && rawHabitLogs ? rawHabitLogs : []),
     [mounted, rawHabitLogs]
   );
+  const expenses: Expense[] = useMemo(
+    () => (mounted && rawExpenses ? rawExpenses : []),
+    [mounted, rawExpenses]
+  );
+  const monthlyBudgetPaise = mounted ? (userSettings?.monthlyExpenseBudgetPaise ?? null) : null;
 
   // Pure analytics snapshot calculation
   const snapshot = useMemo(() => {
@@ -72,6 +138,26 @@ export default function InsightsPage() {
     habitLogs,
     todayStr,
   ]);
+
+  const expenseAnalytics = useMemo(() => {
+    if (!snapshot) return null;
+    const breakdown = calculateExpenseBreakdown(
+      expenses,
+      snapshot.range.startDate,
+      snapshot.range.endDate
+    );
+    const burnRate = calculateDailyBurnRate(
+      expenses,
+      snapshot.range.startDate,
+      snapshot.range.endDate,
+      monthlyBudgetPaise,
+      todayStr || undefined
+    );
+    return { breakdown, burnRate };
+  }, [snapshot, expenses, monthlyBudgetPaise, todayStr]);
+
+  const rangeLabel =
+    RANGE_OPTIONS.find((o) => o.id === rangeType)?.label || rangeType;
 
   return (
     <div className="space-y-6 pb-16 animate-in fade-in duration-200">
@@ -158,6 +244,25 @@ export default function InsightsPage() {
             <div className="lg:col-span-5 flex flex-col">
               <TaskDistribution distributions={snapshot.distributions} />
             </div>
+
+            {/* Expense Insights: Spending Breakdown & Daily Burn-Rate */}
+            {expenseAnalytics && (
+              <>
+                <div className="lg:col-span-6 flex flex-col">
+                  <SpendingBreakdownCard
+                    breakdown={expenseAnalytics.breakdown}
+                    rangeLabel={rangeLabel}
+                  />
+                </div>
+                <div className="lg:col-span-6 flex flex-col">
+                  <DailyBurnRateCard
+                    burnRate={expenseAnalytics.burnRate}
+                    budgetPaise={monthlyBudgetPaise}
+                    rangeLabel={rangeLabel}
+                  />
+                </div>
+              </>
+            )}
 
             {/* Recent Accomplishments: Full-Width Milestone Ledger */}
             <div className="lg:col-span-12">

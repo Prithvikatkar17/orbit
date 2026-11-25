@@ -5,6 +5,13 @@
 
 import type { Task, Habit, HabitLog } from "../schemas/index.ts";
 import {
+  EXPENSE_CATEGORIES,
+  EXPENSE_PAYMENT_MODES,
+  type Expense,
+  type ExpenseCategory,
+  type ExpensePaymentMode,
+} from "../schemas/expense.ts";
+import {
   getLocalDateString,
   parseLocalDate,
   getOffsetDateString,
@@ -901,4 +908,186 @@ export function calculateAnalyticsSnapshot(params: {
     recentAccomplishments,
   };
 }
+
+// ============================================================================
+// Expense Analytics (Phase 17C) — Integer Paise, Tombstone-Safe
+// ============================================================================
+
+export interface ExpenseCategoryBreakdownItem {
+  category: ExpenseCategory;
+  totalPaise: number;
+  count: number;
+  percentage: number; // Rounded to 1 decimal; 0 when total is 0
+}
+
+export interface ExpensePaymentModeBreakdownItem {
+  paymentMode: ExpensePaymentMode;
+  totalPaise: number;
+  count: number;
+  percentage: number; // Rounded to 1 decimal; 0 when total is 0
+}
+
+export interface ExpenseBreakdownResult {
+  totalPaise: number;
+  count: number;
+  byCategory: ExpenseCategoryBreakdownItem[];
+  byPaymentMode: ExpensePaymentModeBreakdownItem[];
+}
+
+export interface DailyBurnRatePoint {
+  date: string; // "YYYY-MM-DD"
+  totalPaise: number;
+  cumulativePaise: number;
+}
+
+export interface DailyBurnRateResult {
+  series: DailyBurnRatePoint[];
+  totalPaise: number;
+  totalDaysInWindow: number;
+  elapsedDays: number;
+  avgDailyPaise: number;
+  projectedTotalPaise: number;
+  budgetUsedPercent: number | null;
+}
+
+function filterActiveExpensesInRange(
+  expenses: Expense[],
+  startDate: string,
+  endDate: string
+): Expense[] {
+  return expenses.filter(
+    (e) =>
+      e.deletedAt == null &&
+      e.date >= startDate &&
+      e.date <= endDate
+  );
+}
+
+/**
+ * Computes spending breakdown by category and payment mode using integer paise.
+ * Filters out soft-deleted tombstones (`deletedAt != null`) and restricts to [startDate, endDate].
+ */
+export function calculateExpenseBreakdown(
+  expenses: Expense[],
+  startDate: string,
+  endDate: string
+): ExpenseBreakdownResult {
+  const active = filterActiveExpensesInRange(expenses, startDate, endDate);
+  const totalPaise = active.reduce((sum, e) => sum + e.amountPaise, 0);
+  const count = active.length;
+
+  const catTotals = new Map<ExpenseCategory, { totalPaise: number; count: number }>();
+  for (const cat of EXPENSE_CATEGORIES) {
+    catTotals.set(cat, { totalPaise: 0, count: 0 });
+  }
+
+  const modeTotals = new Map<ExpensePaymentMode, { totalPaise: number; count: number }>();
+  for (const mode of EXPENSE_PAYMENT_MODES) {
+    modeTotals.set(mode, { totalPaise: 0, count: 0 });
+  }
+
+  for (const exp of active) {
+    const catEntry = catTotals.get(exp.category);
+    if (catEntry) {
+      catEntry.totalPaise += exp.amountPaise;
+      catEntry.count += 1;
+    }
+
+    const modeEntry = modeTotals.get(exp.paymentMode);
+    if (modeEntry) {
+      modeEntry.totalPaise += exp.amountPaise;
+      modeEntry.count += 1;
+    }
+  }
+
+  const byCategory: ExpenseCategoryBreakdownItem[] = EXPENSE_CATEGORIES.map((category) => {
+    const entry = catTotals.get(category)!;
+    const percentage =
+      totalPaise > 0 ? Math.round((entry.totalPaise / totalPaise) * 1000) / 10 : 0;
+    return {
+      category,
+      totalPaise: entry.totalPaise,
+      count: entry.count,
+      percentage,
+    };
+  }).sort((a, b) => b.totalPaise - a.totalPaise);
+
+  const byPaymentMode: ExpensePaymentModeBreakdownItem[] = EXPENSE_PAYMENT_MODES.map(
+    (paymentMode) => {
+      const entry = modeTotals.get(paymentMode)!;
+      const percentage =
+        totalPaise > 0 ? Math.round((entry.totalPaise / totalPaise) * 1000) / 10 : 0;
+      return {
+        paymentMode,
+        totalPaise: entry.totalPaise,
+        count: entry.count,
+        percentage,
+      };
+    }
+  );
+
+  return {
+    totalPaise,
+    count,
+    byCategory,
+    byPaymentMode,
+  };
+}
+
+/**
+ * Generates a contiguous daily spend & cumulative burn-rate series from startDate to endDate,
+ * along with elapsed-day average, window projection, and optional budget pacing percentage.
+ */
+export function calculateDailyBurnRate(
+  expenses: Expense[],
+  startDate: string,
+  endDate: string,
+  budgetPaise?: number | null,
+  todayStr?: string
+): DailyBurnRateResult {
+  const active = filterActiveExpensesInRange(expenses, startDate, endDate);
+  const dailyMap = new Map<string, number>();
+
+  for (const exp of active) {
+    dailyMap.set(exp.date, (dailyMap.get(exp.date) || 0) + exp.amountPaise);
+  }
+
+  const dates = startDate <= endDate ? getDateList(startDate, endDate) : [startDate];
+  let cumulativePaise = 0;
+  const series: DailyBurnRatePoint[] = dates.map((date) => {
+    const dayTotal = dailyMap.get(date) || 0;
+    cumulativePaise += dayTotal;
+    return {
+      date,
+      totalPaise: dayTotal,
+      cumulativePaise,
+    };
+  });
+
+  const totalPaise = cumulativePaise;
+  const totalDaysInWindow = Math.max(1, series.length);
+
+  const effectiveToday = todayStr || getLocalDateString();
+  let elapsedDays = 1;
+  if (effectiveToday >= startDate) {
+    const effectiveEnd = effectiveToday < endDate ? effectiveToday : endDate;
+    elapsedDays = Math.max(1, getDateList(startDate, effectiveEnd).length);
+  }
+
+  const avgDailyPaise = Math.round(totalPaise / elapsedDays);
+  const projectedTotalPaise = avgDailyPaise * totalDaysInWindow;
+  const budgetUsedPercent =
+    budgetPaise && budgetPaise > 0 ? Math.round((totalPaise / budgetPaise) * 100) : null;
+
+  return {
+    series,
+    totalPaise,
+    totalDaysInWindow,
+    elapsedDays,
+    avgDailyPaise,
+    projectedTotalPaise,
+    budgetUsedPercent,
+  };
+}
+
 
