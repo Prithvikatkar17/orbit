@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useCallback, useSyncExternalStore, Suspense } from "react";
+import React, { useState, useMemo, useCallback, useEffect, useSyncExternalStore, Suspense } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   BookOpen,
@@ -20,6 +20,8 @@ import {
 import { db } from "@/lib/db/client";
 import type { LibraryEntry, LibraryCollection } from "@/lib/schemas";
 import { deleteLibraryEntryWithFiles } from "@/lib/services/library-service";
+import { reconcileLibraryFromSQLite } from "@/lib/services/vault-sync-service";
+import { syncMutation } from "@/lib/services/sync-queue-service";
 import { useMounted } from "@/lib/utils/dates";
 import { LibraryCard, getTypeConfig } from "@/components/library/library-card";
 import { LibraryRow } from "@/components/library/library-row";
@@ -83,6 +85,10 @@ export default function LibraryPage() {
     () => db.libraryCollections.orderBy("sortOrder").toArray(),
     []
   );
+
+  useEffect(() => {
+    void reconcileLibraryFromSQLite();
+  }, []);
 
   const entries: LibraryEntry[] = useMemo(
     () => (mounted && rawEntries ? rawEntries : []),
@@ -311,14 +317,29 @@ export default function LibraryPage() {
       isFavorite: !current,
       updatedAt: nowIso,
     });
+    void syncMutation({
+      endpoint: "/api/library/entries",
+      method: "PATCH",
+      body: { id, isFavorite: !current, updatedAt: nowIso },
+      entityType: "libraryEntry",
+      entityId: id,
+    });
   }
 
   async function handleStatusChange(id: string, status: LibraryEntry["status"]) {
     const nowIso = new Date().toISOString();
+    const completedAt = status === "completed" ? nowIso : undefined;
     await db.libraryEntries.update(id, {
       status,
-      completedAt: status === "completed" ? nowIso : undefined,
+      completedAt,
       updatedAt: nowIso,
+    });
+    void syncMutation({
+      endpoint: "/api/library/entries",
+      method: "PATCH",
+      body: { id, status, completedAt: completedAt || null, updatedAt: nowIso },
+      entityType: "libraryEntry",
+      entityId: id,
     });
   }
 
@@ -327,6 +348,13 @@ export default function LibraryPage() {
     await db.libraryEntries.update(entry.id, {
       lastViewedAt: nowIso,
       updatedAt: nowIso,
+    });
+    void syncMutation({
+      endpoint: "/api/library/entries",
+      method: "PATCH",
+      body: { id: entry.id, lastViewedAt: nowIso, updatedAt: nowIso },
+      entityType: "libraryEntry",
+      entityId: entry.id,
     });
     setViewingEntryId(entry.id);
   }

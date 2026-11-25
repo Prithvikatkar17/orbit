@@ -7,6 +7,7 @@ import {
   ThemePersonalitySchema,
 } from "@/lib/schemas/settings";
 import { db } from "@/lib/db/client";
+import { syncSettingsToSQLite } from "@/lib/services/vault-sync-service";
 import { useMounted } from "@/lib/utils/dates";
 
 interface ThemePersonalityContextValue {
@@ -124,6 +125,7 @@ export function ThemePersonalityProvider({
             updatedAt: nowIso,
           });
         }
+        void syncSettingsToSQLite();
       } catch (err) {
         console.error("Failed to persist theme personality to DB:", err);
         // Revert in-memory state, DOM, and localStorage if database persistence fails

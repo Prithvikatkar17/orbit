@@ -151,6 +151,32 @@ export function EventModal({
         }
       });
 
+      // Background SQLite sync for event and reminders
+      void syncMutation({
+        endpoint: "/api/calendar/events",
+        method: "POST",
+        body: parsedEvent,
+        entityType: "calendarEvent",
+        entityId: parsedEvent.id,
+      });
+      if (isEditing) {
+        void syncMutation({
+          endpoint: `/api/calendar/reminders?eventId=${encodeURIComponent(eventId)}`,
+          method: "DELETE",
+          entityType: "reminder",
+          entityId: eventId,
+        });
+      }
+      for (const rem of parsedReminders) {
+        void syncMutation({
+          endpoint: "/api/calendar/reminders",
+          method: "POST",
+          body: rem,
+          entityType: "reminder",
+          entityId: rem.id,
+        });
+      }
+
       // Two-Way Task ↔ Calendar Sync: If event is linked to a task, propagate updates back to db.tasks and SQLite
       const linkedTaskId = initialEvent?.sourceItemId || (initialEvent as unknown as { taskId?: string })?.taskId;
       if (linkedTaskId) {
@@ -199,6 +225,18 @@ export function EventModal({
       await db.transaction("rw", [db.events, db.reminders], async () => {
         await db.reminders.where("eventId").equals(initialEvent.id).delete();
         await db.events.delete(initialEvent.id);
+      });
+      void syncMutation({
+        endpoint: `/api/calendar/reminders?eventId=${encodeURIComponent(initialEvent.id)}`,
+        method: "DELETE",
+        entityType: "reminder",
+        entityId: initialEvent.id,
+      });
+      void syncMutation({
+        endpoint: `/api/calendar/events?id=${encodeURIComponent(initialEvent.id)}`,
+        method: "DELETE",
+        entityType: "calendarEvent",
+        entityId: initialEvent.id,
       });
       const linkedTaskId = initialEvent.sourceItemId || (initialEvent as unknown as { taskId?: string })?.taskId;
       if (linkedTaskId) {

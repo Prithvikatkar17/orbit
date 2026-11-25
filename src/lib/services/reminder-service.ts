@@ -1,4 +1,5 @@
 import { db as defaultDb, type OrbitDatabase } from "../db/client.ts";
+import { syncMutation } from "./sync-queue-service.ts";
 import { type Event } from "../schemas/event.ts";
 import { NotificationSchema, type NotificationItem } from "../schemas/notification.ts";
 import {
@@ -292,9 +293,20 @@ export async function acknowledgeReminder(
   database: OrbitDatabase = defaultDb
 ): Promise<void> {
   try {
+    const ackIso = new Date().toISOString();
     await database.reminders.update(reminderId, {
-      acknowledgedAt: new Date().toISOString(),
+      acknowledgedAt: ackIso,
     });
+    if (database === defaultDb) {
+      void syncMutation({
+        endpoint: "/api/calendar/reminders",
+        method: "PATCH",
+        body: { id: reminderId, acknowledgedAt: ackIso },
+        entityType: "reminder",
+        entityId: reminderId,
+        database,
+      });
+    }
   } catch (err) {
     console.error("Failed to acknowledge reminder:", err);
   }
@@ -375,6 +387,17 @@ export async function snoozeReminder(
   await database.reminders.update(options.reminderId, {
     snoozedUntil: targetIso,
   });
+
+  if (database === defaultDb) {
+    void syncMutation({
+      endpoint: "/api/calendar/reminders",
+      method: "PATCH",
+      body: { id: options.reminderId, snoozedUntil: targetIso },
+      entityType: "reminder",
+      entityId: options.reminderId,
+      database,
+    });
+  }
 
   return target;
 }

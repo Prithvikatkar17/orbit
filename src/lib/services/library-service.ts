@@ -11,6 +11,8 @@ import {
   validateLibraryFileSize,
 } from "../schemas/library-file.ts";
 import { normalizeUrl } from "../utils/dates.ts";
+import { syncMutation } from "./sync-queue-service.ts";
+import { uploadLibraryFileToSQLite } from "./vault-sync-service.ts";
 
 export interface SaveLibraryEntryInput {
   entryData: {
@@ -150,6 +152,24 @@ export async function saveLibraryEntryWithAttachment(
     }
   );
 
+  if (database === defaultDb) {
+    void syncMutation({
+      endpoint: "/api/library/entries",
+      method: "POST",
+      body: parsedEntry,
+      entityType: "libraryEntry",
+      entityId: parsedEntry.id,
+      database,
+    });
+    if (fileRecord) {
+      void uploadLibraryFileToSQLite(fileRecord);
+    } else if (isRemovingFile) {
+      void fetch(`/api/library/files?entryId=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+      }).catch(() => {});
+    }
+  }
+
   return parsedEntry;
 }
 
@@ -169,6 +189,19 @@ export async function deleteLibraryEntryWithFiles(
       await database.libraryEntries.delete(entryId);
     }
   );
+
+  if (database === defaultDb) {
+    void syncMutation({
+      endpoint: `/api/library/entries?id=${encodeURIComponent(entryId)}`,
+      method: "DELETE",
+      entityType: "libraryEntry",
+      entityId: entryId,
+      database,
+    });
+    void fetch(`/api/library/files?entryId=${encodeURIComponent(entryId)}`, {
+      method: "DELETE",
+    }).catch(() => {});
+  }
 }
 
 /**
@@ -195,4 +228,14 @@ export async function deleteLibraryCollectionAndCleanReferences(
       await database.libraryCollections.delete(collectionId);
     }
   );
+
+  if (database === defaultDb) {
+    void syncMutation({
+      endpoint: `/api/library/collections?id=${encodeURIComponent(collectionId)}`,
+      method: "DELETE",
+      entityType: "libraryCollection",
+      entityId: collectionId,
+      database,
+    });
+  }
 }

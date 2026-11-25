@@ -1,6 +1,18 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { inbox, tasks, habits, habitLogs, expenses } from "@/lib/db/schema";
+import {
+  inbox,
+  tasks,
+  habits,
+  habitLogs,
+  expenses,
+  calendarEvents,
+  reminders,
+  libraryCollections,
+  libraryEntries,
+  libraryFiles,
+  settings,
+} from "@/lib/db/schema";
 
 function isCsrfValid(request: Request): boolean {
   const confirmHeader = request.headers.get("X-Orbit-Confirm");
@@ -33,6 +45,12 @@ export async function DELETE(request: Request) {
       );
     }
 
+    await db.delete(libraryFiles);
+    await db.delete(libraryEntries);
+    await db.delete(libraryCollections);
+    await db.delete(reminders);
+    await db.delete(calendarEvents);
+    await db.delete(settings);
     await db.delete(expenses);
     await db.delete(habitLogs);
     await db.delete(habits);

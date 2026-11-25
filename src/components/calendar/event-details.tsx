@@ -77,6 +77,18 @@ export function EventDetails({
         await db.reminders.where("eventId").equals(event.id).delete();
         await db.events.delete(event.id);
       });
+      void syncMutation({
+        endpoint: `/api/calendar/reminders?eventId=${encodeURIComponent(event.id)}`,
+        method: "DELETE",
+        entityType: "reminder",
+        entityId: event.id,
+      });
+      void syncMutation({
+        endpoint: `/api/calendar/events?id=${encodeURIComponent(event.id)}`,
+        method: "DELETE",
+        entityType: "calendarEvent",
+        entityId: event.id,
+      });
       // Two-Way Task ↔ Calendar Sync: If linked to a task, cascade delete the task as well
       const linkedTaskId = event.sourceItemId || (event as unknown as { taskId?: string })?.taskId;
       if (linkedTaskId) {

@@ -3,6 +3,7 @@ import { TaskSchema, type Task } from "../schemas/task.ts";
 import { EventSchema } from "../schemas/event.ts";
 import { ReminderSchema } from "../schemas/reminder.ts";
 import { normalizeUrl } from "../utils/dates.ts";
+import { syncMutation } from "./sync-queue-service.ts";
 
 export interface SaveTaskInput {
   taskData: {
@@ -239,6 +240,37 @@ export async function saveTaskWithSync(
     }
   );
 
+  if (database === defaultDb) {
+    try {
+      const linkedEvents = await database.events
+        .filter((e) => e.sourceItemId === validatedTask.id)
+        .toArray();
+      for (const ev of linkedEvents) {
+        void syncMutation({
+          endpoint: "/api/calendar/events",
+          method: "POST",
+          body: ev,
+          entityType: "calendarEvent",
+          entityId: ev.id,
+          database,
+        });
+        const rems = await database.reminders.where("eventId").equals(ev.id).toArray();
+        for (const rem of rems) {
+          void syncMutation({
+            endpoint: "/api/calendar/reminders",
+            method: "POST",
+            body: rem,
+            entityType: "reminder",
+            entityId: rem.id,
+            database,
+          });
+        }
+      }
+    } catch {
+      // non-fatal
+    }
+  }
+
   return validatedTask;
 }
 
@@ -253,6 +285,11 @@ export async function deleteTaskWithCascade(
   taskId: string,
   database: OrbitDatabase = defaultDb
 ): Promise<void> {
+  const preLinkedEvents =
+    database === defaultDb
+      ? await database.events.filter((e) => e.sourceItemId === taskId).toArray()
+      : [];
+
   await database.transaction(
     "rw",
     [database.tasks, database.events, database.reminders],
@@ -277,6 +314,25 @@ export async function deleteTaskWithCascade(
       await database.tasks.delete(taskId);
     }
   );
+
+  if (database === defaultDb) {
+    for (const ev of preLinkedEvents) {
+      void syncMutation({
+        endpoint: `/api/calendar/reminders?eventId=${encodeURIComponent(ev.id)}`,
+        method: "DELETE",
+        entityType: "reminder",
+        entityId: ev.id,
+        database,
+      });
+      void syncMutation({
+        endpoint: `/api/calendar/events?id=${encodeURIComponent(ev.id)}`,
+        method: "DELETE",
+        entityType: "calendarEvent",
+        entityId: ev.id,
+        database,
+      });
+    }
+  }
 }
 
 /**
@@ -316,6 +372,29 @@ export async function toggleTaskCompletionWithSync(
       }
     }
   );
+
+  if (database === defaultDb) {
+    try {
+      const linkedEvents = await database.events
+        .filter((e) => e.sourceItemId === task.id)
+        .toArray();
+      for (const ev of linkedEvents) {
+        const rems = await database.reminders.where("eventId").equals(ev.id).toArray();
+        for (const rem of rems) {
+          void syncMutation({
+            endpoint: "/api/calendar/reminders",
+            method: "PATCH",
+            body: { id: rem.id, isActive: !isNowCompleted },
+            entityType: "reminder",
+            entityId: rem.id,
+            database,
+          });
+        }
+      }
+    } catch {
+      // non-fatal
+    }
+  }
 
   return updatedTask;
 }

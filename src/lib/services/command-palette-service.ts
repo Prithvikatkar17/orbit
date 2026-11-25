@@ -1,5 +1,6 @@
 import { db } from "../db/client.ts";
 import { flushSyncQueue } from "./sync-queue-service.ts";
+import { syncSettingsToSQLite } from "./vault-sync-service.ts";
 import { type ThemePersonality } from "../schemas/settings.ts";
 
 export interface CommandContext {
@@ -232,6 +233,7 @@ export const COMMAND_PALETTE_ITEMS: CommandPaletteItem[] = [
             theme: "dark",
             updatedAt: new Date().toISOString(),
           });
+          void syncSettingsToSQLite();
         }
       } catch {}
     },
@@ -252,6 +254,7 @@ export const COMMAND_PALETTE_ITEMS: CommandPaletteItem[] = [
             theme: "light",
             updatedAt: new Date().toISOString(),
           });
+          void syncSettingsToSQLite();
         }
       } catch {}
     },
@@ -273,6 +276,7 @@ export const COMMAND_PALETTE_ITEMS: CommandPaletteItem[] = [
             theme: nextTheme,
             updatedAt: new Date().toISOString(),
           });
+          void syncSettingsToSQLite();
         }
       } catch {}
     },

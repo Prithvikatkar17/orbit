@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useMemo, useCallback, Suspense } from "react";
+import React, { useState, useMemo, useCallback, useEffect, Suspense } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db/client";
+import { reconcileCalendarFromSQLite } from "@/lib/services/vault-sync-service";
 import { type Event } from "@/lib/schemas/event";
 import {
   CalendarHeader,
@@ -89,6 +90,11 @@ export default function CalendarPage() {
 
   const allEvents = useLiveQuery(async () => {
     return await db.events.toArray();
+  }, []);
+
+  // Flush-Before-Hydrate for Calendar Events & Reminders
+  useEffect(() => {
+    void reconcileCalendarFromSQLite();
   }, []);
 
   const currentDateObj = useMemo(

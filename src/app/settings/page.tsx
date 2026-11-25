@@ -47,6 +47,11 @@ import {
   SurfaceCard,
 } from "@/components/ui";
 import { flushSyncQueue } from "@/lib/services/sync-queue-service";
+import {
+  reconcileSettingsFromSQLite,
+  syncSettingsToSQLite,
+  syncRestoredDatabaseToSQLite,
+} from "@/lib/services/vault-sync-service";
 
 function formatBytes(bytes: number): string {
   if (bytes === 0) return "0 B";
@@ -109,6 +114,7 @@ export default function SettingsPage() {
       }
     }
     void fetchSqliteMeta();
+    void reconcileSettingsFromSQLite();
     return () => {
       isCancelled = true;
     };
@@ -192,6 +198,7 @@ export default function SettingsPage() {
           updatedAt: new Date().toISOString(),
         });
       }
+      void syncSettingsToSQLite();
     } catch (err) {
       console.warn("Failed to persist theme to db.settings:", err);
     }
@@ -224,6 +231,7 @@ export default function SettingsPage() {
           updatedAt: nowIso,
         });
       }
+      void syncSettingsToSQLite();
       setStatusMessage("Preferences saved successfully!");
       setTimeout(() => setStatusMessage(null), 3000);
     } catch (err) {
@@ -296,6 +304,7 @@ export default function SettingsPage() {
     setIsRestoring(true);
     try {
       const stats = await restoreBackup(file, restoreMode, { confirmFileDeletion });
+      await syncRestoredDatabaseToSQLite(restoreMode);
 
       setStatusMessage(
         `Successfully restored ${stats.tasks} tasks, ${stats.events} events, ${stats.libraryEntries} library resources, and ${stats.libraryFiles} file attachments!`

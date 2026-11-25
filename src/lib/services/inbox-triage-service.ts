@@ -149,6 +149,15 @@ export async function triageToLibrary(
     database,
   });
 
+  void syncMutation({
+    endpoint: "/api/library/entries",
+    method: "POST",
+    body: entry,
+    entityType: "libraryEntry",
+    entityId: entry.id,
+    database,
+  });
+
   return {
     action: "library",
     originalItem: item,
@@ -202,6 +211,13 @@ export async function undoTriage(
     });
   } else if (action === "library" && createdId) {
     await database.libraryEntries.delete(createdId);
+    void syncMutation({
+      endpoint: `/api/library/entries?id=${encodeURIComponent(createdId)}`,
+      method: "DELETE",
+      entityType: "libraryEntry",
+      entityId: createdId,
+      database,
+    });
   }
 
   // 2. Restore the original Inbox item in Dexie

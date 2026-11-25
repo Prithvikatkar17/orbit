@@ -8,6 +8,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { db } from "@/lib/db/client";
+import { syncMutation } from "@/lib/services/sync-queue-service";
 import {
   type LibraryCollection,
   LibraryCollectionSchema,
@@ -83,6 +84,14 @@ export function LibraryCollectionModal({
       } else {
         await db.libraryCollections.add(parsed);
       }
+
+      void syncMutation({
+        endpoint: "/api/library/collections",
+        method: "POST",
+        body: parsed,
+        entityType: "libraryCollection",
+        entityId: parsed.id,
+      });
 
       onSaved?.(parsed);
       onClose();

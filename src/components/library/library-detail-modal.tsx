@@ -19,6 +19,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { db } from "@/lib/db/client";
+import { fetchLibraryFileLazily } from "@/lib/services/vault-sync-service";
 import type { LibraryEntry, LibraryCollection } from "@/lib/schemas";
 import { getTypeConfig, getStatusConfig } from "./library-card";
 import { formatFriendlyDate } from "@/lib/utils/dates";
@@ -81,6 +82,9 @@ export function LibraryDetailModal({
         let file = await db.libraryFiles.get(entry.fileMetadata.fileId);
         if (!file && entry.id) {
           file = await db.libraryFiles.where("entryId").equals(entry.id).first();
+        }
+        if (!file && entry.fileMetadata.fileId) {
+          file = await fetchLibraryFileLazily(entry.fileMetadata.fileId);
         }
 
         if (!active) return;
