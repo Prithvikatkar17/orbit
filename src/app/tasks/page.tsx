@@ -36,6 +36,7 @@ import { TaskModal } from "@/components/tasks/task-modal";
 import { useTodayDate } from "@/lib/utils/dates";
 import { DeepLinkListener } from "@/components/common/deep-link-listener";
 import { flushSyncQueue, syncMutation } from "@/lib/services/sync-queue-service";
+import { isStaticPwaMode } from "@/lib/config/runtime";
 import {
   Button,
   ConfirmDialog,
@@ -64,6 +65,7 @@ export default function TasksPage() {
 
   // Hydrate tasks from SQLite backend on mount (hotspot bridge)
   useEffect(() => {
+    if (isStaticPwaMode()) return;
     let isCancelled = false;
     async function syncTasksFromSQLite() {
       try {

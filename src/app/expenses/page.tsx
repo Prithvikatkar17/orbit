@@ -29,6 +29,7 @@ import {
 } from "@/lib/schemas/expense";
 import { useTodayDate, getLocalDateString } from "@/lib/utils/dates";
 import { flushSyncQueue, syncMutation } from "@/lib/services/sync-queue-service";
+import { isStaticPwaMode } from "@/lib/config/runtime";
 import { syncSettingsToSQLite } from "@/lib/services/vault-sync-service";
 import { PersonalityPageHeader } from "@/components/layout/personality-page-header";
 import { ExpenseModal } from "@/components/expenses/expense-modal";
@@ -66,6 +67,7 @@ export default function ExpensesPage() {
 
   // Flush-Before-Hydrate from SQLite backend on mount
   useEffect(() => {
+    if (isStaticPwaMode()) return;
     let isCancelled = false;
     async function syncExpensesFromSQLite() {
       try {

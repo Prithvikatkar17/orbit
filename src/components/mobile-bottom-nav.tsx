@@ -27,6 +27,10 @@ export function MobileBottomNav() {
   const isFuturistic = mounted && themePersonality === "futuristic";
   const isArchivist = mounted && themePersonality === "archivist";
 
+  if (pathname?.startsWith("/welcome")) {
+    return null;
+  }
+
   const NAV_LINKS = [
     { name: "Home", href: "/", icon: Home },
     { name: "Inbox", href: "/inbox", icon: Inbox, count: inboxCount },

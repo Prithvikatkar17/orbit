@@ -1,5 +1,7 @@
 import withSerwistInit from "@serwist/next";
 
+const isStaticExport = process.env.ORBIT_STATIC_EXPORT === "1";
+
 const withSerwist = withSerwistInit({
   swSrc: "src/app/sw.ts",
   swDest: "public/sw.js",
@@ -8,8 +10,14 @@ const withSerwist = withSerwistInit({
 });
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  serverExternalPackages: ["better-sqlite3"],
-};
+const nextConfig = isStaticExport
+  ? {
+      output: "export",
+      images: { unoptimized: true },
+      trailingSlash: true,
+    }
+  : {
+      serverExternalPackages: ["better-sqlite3"],
+    };
 
 export default withSerwist(nextConfig);

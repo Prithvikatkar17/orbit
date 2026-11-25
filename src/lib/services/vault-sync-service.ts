@@ -1,5 +1,6 @@
 import { db, type OrbitDatabase } from "../db/client.ts";
 import { syncMutation, flushSyncQueue } from "./sync-queue-service.ts";
+import { isStaticPwaMode } from "../config/runtime.ts";
 import type { Event } from "../schemas/event.ts";
 import type { Reminder } from "../schemas/reminder.ts";
 import type { LibraryCollection } from "../schemas/library-collection.ts";
@@ -46,6 +47,7 @@ function parseJsonSafe<T>(val: unknown, fallback: T): T {
 export async function reconcileCalendarFromSQLite(
   database: OrbitDatabase = db
 ): Promise<void> {
+  if (isStaticPwaMode()) return;
   try {
     await flushSyncQueue(database);
 
@@ -155,6 +157,7 @@ export async function reconcileCalendarFromSQLite(
 export async function reconcileLibraryFromSQLite(
   database: OrbitDatabase = db
 ): Promise<void> {
+  if (isStaticPwaMode()) return;
   try {
     await flushSyncQueue(database);
 
@@ -258,6 +261,7 @@ export async function reconcileLibraryFromSQLite(
 export async function reconcileSettingsFromSQLite(
   database: OrbitDatabase = db
 ): Promise<void> {
+  if (isStaticPwaMode()) return;
   try {
     await flushSyncQueue(database);
     const res = await fetch("/api/settings");
@@ -326,6 +330,7 @@ function base64ToBlob(base64: string, mimeType: string): Blob {
 export async function uploadLibraryFileToSQLite(
   fileRecord: LibraryFile
 ): Promise<boolean> {
+  if (isStaticPwaMode()) return false;
   try {
     let buffer: ArrayBuffer;
     if (fileRecord.data instanceof Blob) {
@@ -369,6 +374,7 @@ export async function fetchLibraryFileLazily(
   fileId: string,
   database: OrbitDatabase = db
 ): Promise<LibraryFile | undefined> {
+  if (isStaticPwaMode()) return undefined;
   try {
     const res = await fetch(`/api/library/files?id=${encodeURIComponent(fileId)}`);
     if (!res.ok) return undefined;
@@ -424,6 +430,7 @@ export async function syncRestoredDatabaseToSQLite(
   mode: "replace" | "merge",
   database: OrbitDatabase = db
 ): Promise<void> {
+  if (isStaticPwaMode()) return;
   try {
     if (mode === "replace") {
       await database.syncQueue.clear();

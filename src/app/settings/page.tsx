@@ -47,6 +47,7 @@ import {
   SurfaceCard,
 } from "@/components/ui";
 import { flushSyncQueue } from "@/lib/services/sync-queue-service";
+import { isStaticPwaMode } from "@/lib/config/runtime";
 import {
   reconcileSettingsFromSQLite,
   syncSettingsToSQLite,
@@ -99,6 +100,7 @@ export default function SettingsPage() {
   const [sqliteVaultError, setSqliteVaultError] = useState<string | null>(null);
 
   React.useEffect(() => {
+    if (isStaticPwaMode()) return;
     let isCancelled = false;
     async function fetchSqliteMeta() {
       try {
@@ -406,15 +408,17 @@ export default function SettingsPage() {
       resetSearchIndex();
 
       // Also reset SQLite tables via reset endpoint to prevent ghost resurrection
-      try {
-        await fetch("/api/reset", {
-          method: "DELETE",
-          headers: {
-            "X-Orbit-Confirm": "reset",
-          },
-        });
-      } catch (resetErr) {
-        console.warn("SQLite database reset error:", resetErr);
+      if (!isStaticPwaMode()) {
+        try {
+          await fetch("/api/reset", {
+            method: "DELETE",
+            headers: {
+              "X-Orbit-Confirm": "reset",
+            },
+          });
+        } catch (resetErr) {
+          console.warn("SQLite database reset error:", resetErr);
+        }
       }
 
       setIsResetConfirmOpen(false);
@@ -672,7 +676,7 @@ export default function SettingsPage() {
         </div>
       </SurfaceCard>
 
-      {/* Section 5: SQLite Data Vault */}
+      {/* Section 5: SQLite Data Vault (or Static PWA Local Vault Notice) */}
       <SurfaceCard padding="md" className="space-y-4">
         <div className="flex items-center justify-between gap-3 pb-3 border-b border-orbit-border flex-wrap">
           <div className="flex items-center gap-2.5">
@@ -682,34 +686,40 @@ export default function SettingsPage() {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="font-display text-base font-semibold text-orbit-text tracking-tight">
-                  SQLite Data Vault
+                  {isStaticPwaMode() ? "Browser Local Vault" : "SQLite Data Vault"}
                 </h2>
-                <Badge variant="success">WAL Active</Badge>
-                {sqliteSizeBytes !== null && (
+                <Badge variant="success">
+                  {isStaticPwaMode() ? "IndexedDB Active" : "WAL Active"}
+                </Badge>
+                {!isStaticPwaMode() && sqliteSizeBytes !== null && (
                   <Badge variant="neutral">
                     {formatBytes(sqliteSizeBytes)}
                   </Badge>
                 )}
               </div>
               <p className="text-xs text-orbit-text-muted">
-                Direct snapshot of the local relational database backend on disk
+                {isStaticPwaMode()
+                  ? "100% offline browser storage powered by Dexie (IndexedDB)"
+                  : "Direct snapshot of the local relational database backend on disk"}
               </p>
             </div>
           </div>
 
-          <Button
-            variant="secondary"
-            size="sm"
-            icon={<Download className="h-4 w-4" />}
-            onClick={handleDownloadSqliteVault}
-            disabled={isExportingSqlite}
-            className="min-h-[44px]"
-          >
-            {isExportingSqlite ? "Exporting Vault..." : "Download orbit.sqlite"}
-          </Button>
+          {!isStaticPwaMode() && (
+            <Button
+              variant="secondary"
+              size="sm"
+              icon={<Download className="h-4 w-4" />}
+              onClick={handleDownloadSqliteVault}
+              disabled={isExportingSqlite}
+              className="min-h-[44px]"
+            >
+              {isExportingSqlite ? "Exporting Vault..." : "Download orbit.sqlite"}
+            </Button>
+          )}
         </div>
 
-        {sqliteVaultError && (
+        {!isStaticPwaMode() && sqliteVaultError && (
           <div className="flex items-center gap-2 rounded-lg border border-orbit-danger/30 bg-orbit-danger-soft p-3 text-xs font-medium text-orbit-danger">
             <AlertTriangle className="h-4 w-4 shrink-0 text-orbit-danger" />
             <span>{sqliteVaultError}</span>
@@ -717,7 +727,15 @@ export default function SettingsPage() {
         )}
 
         <p className="text-xs text-orbit-text-muted leading-relaxed">
-          Flushes any pending offline queue mutations and exports an atomic checkpoint of <code className="font-mono text-orbit-text">orbit.sqlite</code>. Safe to query or restore directly with any SQLite viewer.
+          {isStaticPwaMode() ? (
+            <>
+              In Static PWA mode, all your ORBIT data lives locally inside your browser&apos;s IndexedDB with zero cloud sync. Use <strong className="text-orbit-text">Export .zip</strong> or <strong className="text-orbit-text">Export .json</strong> below anytime to back up or move your vault.
+            </>
+          ) : (
+            <>
+              Flushes any pending offline queue mutations and exports an atomic checkpoint of <code className="font-mono text-orbit-text">orbit.sqlite</code>. Safe to query or restore directly with any SQLite viewer.
+            </>
+          )}
         </p>
       </SurfaceCard>
 

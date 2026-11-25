@@ -137,6 +137,10 @@ export function Sidebar() {
   // Only set inert/aria-hidden after mount to prevent SSR/client attribute mismatch
   const isMobileDrawerHidden = mounted && !isDesktop && !sidebarOpen;
 
+  if (pathname?.startsWith("/welcome")) {
+    return null;
+  }
+
   return (
     <>
       {/* Mobile / Tablet Backdrop (< 1024px) */}
@@ -333,10 +337,15 @@ export function Sidebar() {
 }
 
 export function MobileHeader() {
+  const pathname = usePathname();
   const { sidebarOpen, toggleSidebar, openQuickCapture } = useUIStore();
   const openSearch = useSearchStore((s) => s.openSearch);
   const mounted = useMounted();
   const pendingSyncCount = useLiveQuery(() => db.syncQueue.count(), []) ?? 0;
+
+  if (pathname?.startsWith("/welcome")) {
+    return null;
+  }
 
   return (
     <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-orbit-border bg-orbit-surface px-2.5 sm:px-4 lg:hidden">

@@ -20,6 +20,7 @@ import {
 } from "@/components/ui";
 import { PersonalityPageHeader } from "@/components/layout/personality-page-header";
 import { flushSyncQueue, syncMutation } from "@/lib/services/sync-queue-service";
+import { isStaticPwaMode } from "@/lib/config/runtime";
 
 export default function HabitsPage() {
   const [activeTab, setActiveTab] = useState<"active" | "archived">("active");
@@ -68,6 +69,7 @@ export default function HabitsPage() {
 
   // Hydrate habits and logs from SQLite backend on mount (hotspot bridge)
   useEffect(() => {
+    if (isStaticPwaMode()) return;
     let isCancelled = false;
     async function syncHabitsFromSQLite() {
       try {

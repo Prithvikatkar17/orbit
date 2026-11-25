@@ -14,6 +14,7 @@ import {
   type DateRangeType,
 } from "@/lib/services/analytics-service";
 import { flushSyncQueue } from "@/lib/services/sync-queue-service";
+import { isStaticPwaMode } from "@/lib/config/runtime";
 import { PersonalityPageHeader } from "@/components/layout/personality-page-header";
 import { OverviewCards } from "@/components/insights/overview-cards";
 import { ActivityChart } from "@/components/insights/activity-chart";
@@ -46,6 +47,7 @@ export default function InsightsPage() {
 
   // Flush-Before-Hydrate for Expenses so recent mobile spends appear immediately
   useEffect(() => {
+    if (isStaticPwaMode()) return;
     let isCancelled = false;
     async function syncExpensesFromSQLite() {
       try {

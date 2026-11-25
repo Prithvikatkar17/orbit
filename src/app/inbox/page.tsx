@@ -39,6 +39,7 @@ import {
 import { PersonalityPageHeader } from "@/components/layout/personality-page-header";
 import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
 import { flushSyncQueue, syncMutation } from "@/lib/services/sync-queue-service";
+import { isStaticPwaMode } from "@/lib/config/runtime";
 import {
   triageToTask,
   triageToLibrary,
@@ -292,6 +293,7 @@ export default function InboxPage() {
 
   // Synchronize items from SQLite server on mount (multi-device hotspot bridge)
   useEffect(() => {
+    if (isStaticPwaMode()) return;
     let isCancelled = false;
     async function syncFromSQLiteServer() {
       try {

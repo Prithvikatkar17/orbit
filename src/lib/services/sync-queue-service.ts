@@ -1,5 +1,6 @@
 import { db, OrbitDatabase } from "../db/client.ts";
 import type { SyncQueueItem } from "../schemas/sync-queue.ts";
+import { isStaticPwaMode } from "../config/runtime.ts";
 
 export interface SyncMutationOptions {
   endpoint: string;
@@ -37,6 +38,10 @@ export function isQueueFlushing(): boolean {
  * the mutation is reliably enqueued into Dexie `syncQueue` for background replay.
  */
 export async function syncMutation(options: SyncMutationOptions): Promise<SyncMutationResult> {
+  if (isStaticPwaMode()) {
+    return { success: true, queued: false };
+  }
+
   const targetDb = options.database ?? db;
 
   const serializedBody: string | null =
@@ -116,6 +121,10 @@ async function enqueueMutation(
 export async function flushSyncQueue(
   database: OrbitDatabase = db
 ): Promise<{ flushed: number; hasMore: boolean }> {
+  if (isStaticPwaMode()) {
+    return { flushed: 0, hasMore: false };
+  }
+
   if (isFlushing) {
     return { flushed: 0, hasMore: true };
   }

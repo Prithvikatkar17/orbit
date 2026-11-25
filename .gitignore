@@ -17,6 +17,7 @@
 # next.js
 /.next/
 /out/
+/.orbit-static-api-backup/
 public/sw*
 
 # production

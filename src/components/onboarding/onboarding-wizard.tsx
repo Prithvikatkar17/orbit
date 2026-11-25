@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import {
   CheckCircle2,
   Repeat,
@@ -632,6 +633,8 @@ export function DynamicWorkspaceSpecimen({ theme }: { theme: ThemePersonality })
 }
 
 export function OnboardingWizard() {
+  const pathname = usePathname();
+  const isWelcomeRoute = Boolean(pathname?.startsWith("/welcome"));
   const { themePersonality, setThemePersonality } = useThemePersonality();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -641,6 +644,9 @@ export function OnboardingWizard() {
 
   // Check onboarding status on initial mount
   useEffect(() => {
+    if (isWelcomeRoute) {
+      return;
+    }
     let isSubscribed = true;
 
     checkOnboardingStatus()
@@ -661,7 +667,7 @@ export function OnboardingWizard() {
     return () => {
       isSubscribed = false;
     };
-  }, []);
+  }, [isWelcomeRoute]);
 
   const handleSelectPersonality = useCallback(
     async (personality: ThemePersonality) => {
@@ -709,7 +715,7 @@ export function OnboardingWizard() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, handleSkip]);
 
-  if (isLoading || !isOpen) {
+  if (isWelcomeRoute || isLoading || !isOpen) {
     return null;
   }
 
