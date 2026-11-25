@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { X, ArrowRight, Star, Zap } from "lucide-react";
+import { X, ArrowRight, Star, Zap, Wallet } from "lucide-react";
 import { useUIStore, type QuickCaptureInitialData } from "@/lib/stores/ui-store";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db/client";
@@ -10,19 +10,28 @@ import {
   HabitSchema,
   LibraryEntrySchema,
   TaskSchema,
+  ExpenseSchema,
   type LibraryEntry,
 } from "@/lib/schemas";
+import {
+  EXPENSE_CATEGORIES,
+  EXPENSE_PAYMENT_MODES,
+  CATEGORY_METADATA,
+  parseINRToPaise,
+  type ExpenseCategory,
+  type ExpensePaymentMode,
+} from "@/lib/schemas/expense";
 import { saveTaskWithSync } from "@/lib/services/task-sync-service";
 import { syncMutation } from "@/lib/services/sync-queue-service";
 import { DEFAULT_CATEGORIES } from "@/lib/constants";
-import { normalizeUrl } from "@/lib/utils/dates";
+import { normalizeUrl, getLocalDateString } from "@/lib/utils/dates";
 import { useAccessibleModal } from "@/lib/hooks/use-accessible-modal";
 import { Button } from "@/components/ui/button";
 import { useThemePersonality } from "@/components/theme-personality-provider";
 import { useMounted } from "@/lib/utils/dates";
 
 function getInitialCaptureData(storeData?: QuickCaptureInitialData): QuickCaptureInitialData {
-  if (storeData && (storeData.title || storeData.link || storeData.notes || storeData.category)) {
+  if (storeData && (storeData.title || storeData.link || storeData.notes || storeData.category || storeData.defaultTab)) {
     return storeData;
   }
   if (typeof window !== "undefined") {
@@ -154,12 +163,11 @@ function QuickCaptureDialog() {
     : "rounded-orbit-control";
 
   const initialData = getInitialCaptureData(quickCaptureInitialData);
+  const defaultCategory = initialData.defaultTab === "expense" ? "expense" : (initialData.category ?? (initialData.link ? "bookmark" : "inbox"));
   const [title, setTitle] = useState(initialData.title ?? "");
   const [notes, setNotes] = useState(initialData.notes ?? "");
   const [link, setLink] = useState(initialData.link ?? "");
-  const [category, setCategory] = useState(
-    initialData.category ?? (initialData.link ? "bookmark" : "inbox")
-  );
+  const [category, setCategory] = useState(defaultCategory);
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
   const [dueDate, setDueDate] = useState("");
   const [dueTime, setDueTime] = useState("");
@@ -170,6 +178,13 @@ function QuickCaptureDialog() {
   const [libraryStatus, setLibraryStatus] = useState<LibraryEntry["status"]>("saved");
   const [tagInput, setTagInput] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
+
+  // Expense-specific Quick Capture fields
+  const [expenseAmount, setExpenseAmount] = useState("");
+  const [expenseCategory, setExpenseCategory] = useState<ExpenseCategory>("food");
+  const [expensePaymentMode, setExpensePaymentMode] = useState<ExpensePaymentMode>("upi");
+  const [expenseNote, setExpenseNote] = useState("");
+  const [expenseDate, setExpenseDate] = useState(() => getLocalDateString());
 
   const collections = useLiveQuery(
     () => db.libraryCollections.orderBy("sortOrder").toArray(),
@@ -192,10 +207,13 @@ function QuickCaptureDialog() {
     "library",
   ].includes(category.toLowerCase());
 
+  const isExpenseCategory = category.toLowerCase() === "expense";
+
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!title.trim() || isSubmitting) return;
+    if (isSubmitting) return;
+    if (!isExpenseCategory && !title.trim()) return;
 
     setIsSubmitting(true);
     setFormError(null);
@@ -215,7 +233,7 @@ function QuickCaptureDialog() {
 
     // 1. Compute nextSortOrder for tasks
     let nextSortOrder = 0;
-    if (!isLibraryCategory && lowerCat !== "inbox" && lowerCat !== "habit") {
+    if (!isLibraryCategory && !isExpenseCategory && lowerCat !== "inbox" && lowerCat !== "habit") {
       try {
         const existingTasks = await db.tasks.toArray();
         const maxSortOrder =
@@ -229,7 +247,30 @@ function QuickCaptureDialog() {
     }
 
     // 2. Validate with Zod before closing modal or resetting state to prevent data loss
-    if (lowerCat === "inbox") {
+    if (lowerCat === "expense") {
+      const paise = parseINRToPaise(expenseAmount);
+      if (paise <= 0) {
+        setFormError("Please enter a valid amount greater than ₹0");
+        setIsSubmitting(false);
+        return;
+      }
+      const expenseDateVal = expenseDate || getLocalDateString();
+      const parsed = ExpenseSchema.safeParse({
+        id,
+        amountPaise: paise,
+        category: expenseCategory,
+        paymentMode: expensePaymentMode,
+        note: expenseNote.trim() || null,
+        date: expenseDateVal,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      });
+      if (!parsed.success) {
+        setFormError(parsed.error.issues[0]?.message || "Validation failed for expense");
+        setIsSubmitting(false);
+        return;
+      }
+    } else if (lowerCat === "inbox") {
       const parsed = ItemSchema.safeParse({
         id,
         title: trimmedTitle,
@@ -363,10 +404,42 @@ function QuickCaptureDialog() {
     setIsFavorite(false);
     setLibraryStatus("saved");
     setTagInput("");
+    setExpenseAmount("");
+    setExpenseCategory("food");
+    setExpensePaymentMode("upi");
+    setExpenseNote("");
+    setExpenseDate(getLocalDateString());
     setIsSubmitting(false);
 
     try {
-      if (lowerCat === "inbox") {
+      if (lowerCat === "expense") {
+        // Expense: 0ms optimistic write to Dexie + background syncMutation
+        const paise = parseINRToPaise(expenseAmount);
+        const expenseDateVal = expenseDate || getLocalDateString();
+        const now = Date.now();
+        const expense = ExpenseSchema.parse({
+          id,
+          amountPaise: paise,
+          category: expenseCategory,
+          paymentMode: expensePaymentMode,
+          note: expenseNote.trim() || null,
+          date: expenseDateVal,
+          createdAt: now,
+          updatedAt: now,
+        });
+
+        void db.expenses.put(expense).catch((err) => {
+          console.warn("Expense optimistic Dexie write error:", err);
+        });
+
+        void syncMutation({
+          endpoint: "/api/expenses",
+          method: "POST",
+          body: expense,
+          entityType: "expense",
+          entityId: expense.id,
+        });
+      } else if (lowerCat === "inbox") {
         // Dual-write: Instant local Dexie backup
         try {
           const item = ItemSchema.parse({
@@ -548,6 +621,7 @@ function QuickCaptureDialog() {
     { id: "inbox", label: "Inbox", icon: "📥" },
     { id: "task", label: "Task", icon: "📌" },
     { id: "habit", label: "Habit", icon: "🌱" },
+    { id: "expense", label: "Expense", icon: "💰" },
     { id: "note", label: "Note", icon: "📝" },
     { id: "bookmark", label: "Resource", icon: "🔖" },
     { id: "goal", label: "Goal", icon: "🎯" },
@@ -698,28 +772,53 @@ function QuickCaptureDialog() {
               {formError}
             </div>
           )}
-          <div>
-            <input
-              type="text"
-              required
-              autoFocus
-              value={title}
-              onChange={(e) => {
-                setTitle(e.target.value);
-                if (formError) setFormError(null);
-              }}
-              placeholder="What do you want to remember or do?"
-              className={`w-full border border-orbit-border bg-orbit-surface-secondary px-3.5 py-2.5 text-base text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors ${controlRadiusClass} ${
-                isArchivist
-                  ? "font-serif placeholder:font-serif"
-                  : isFuturistic
-                  ? "font-mono"
-                  : isMinimalist
-                  ? "font-mono rounded-none"
-                  : ""
-              }`}
-            />
-          </div>
+          {isExpenseCategory ? (
+            <div>
+              <label className="mb-1 block text-xs font-semibold text-orbit-text-secondary">
+                Amount (₹)
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-base font-semibold text-orbit-text-muted select-none">
+                  ₹
+                </span>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  autoFocus
+                  value={expenseAmount}
+                  onChange={(e) => {
+                    setExpenseAmount(e.target.value);
+                    if (formError) setFormError(null);
+                  }}
+                  placeholder="e.g. 40 or 120.50"
+                  className={`w-full border border-orbit-border bg-orbit-surface-secondary pl-8 pr-3.5 py-2.5 text-base font-semibold text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors ${controlRadiusClass}`}
+                />
+              </div>
+            </div>
+          ) : (
+            <div>
+              <input
+                type="text"
+                required
+                autoFocus
+                value={title}
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                  if (formError) setFormError(null);
+                }}
+                placeholder="What do you want to remember or do?"
+                className={`w-full border border-orbit-border bg-orbit-surface-secondary px-3.5 py-2.5 text-base text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors ${controlRadiusClass} ${
+                  isArchivist
+                    ? "font-serif placeholder:font-serif"
+                    : isFuturistic
+                    ? "font-mono"
+                    : isMinimalist
+                    ? "font-mono rounded-none"
+                    : ""
+                }`}
+              />
+            </div>
+          )}
 
           {/* Tactile Entity Type Selector Pills */}
           <div>
@@ -789,10 +888,17 @@ function QuickCaptureDialog() {
                   <button
                     key={t.id}
                     type="button"
-                    onClick={() => setCategory(t.id)}
-                    className={`flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${pillClass}`}
+                    onClick={() => {
+                      setCategory(t.id);
+                      if (formError) setFormError(null);
+                    }}
+                    className={`flex items-center gap-1.5 min-h-[44px] sm:min-h-0 shrink-0 whitespace-nowrap cursor-pointer ${pillClass}`}
                   >
-                    <span>{t.icon}</span>
+                    {t.id === "expense" ? (
+                      <Wallet className="h-3.5 w-3.5" aria-hidden="true" />
+                    ) : (
+                      <span>{t.icon}</span>
+                    )}
                     <span>{t.label}</span>
                   </button>
                 );
@@ -800,8 +906,94 @@ function QuickCaptureDialog() {
             </div>
           </div>
 
+          {/* Expense-Specific Quick Capture Form Fields */}
+          {isExpenseCategory && (
+            <>
+              <div>
+                <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
+                  Category
+                </label>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {EXPENSE_CATEGORIES.map((cat) => {
+                    const isSelected = expenseCategory === cat;
+                    const meta = CATEGORY_METADATA[cat];
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => setExpenseCategory(cat)}
+                        className={`flex items-center min-h-[44px] px-3 py-1.5 ${controlRadiusClass} border text-xs font-medium transition-all ${
+                          isSelected
+                            ? "border-orbit-accent bg-orbit-accent text-orbit-accent-fg shadow-xs font-semibold"
+                            : "border-orbit-border bg-orbit-surface text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text"
+                        }`}
+                      >
+                        {meta.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
+                    Payment Mode
+                  </label>
+                  <div className="flex gap-1.5">
+                    {EXPENSE_PAYMENT_MODES.map((mode) => {
+                      const isSelected = expensePaymentMode === mode;
+                      return (
+                        <button
+                          key={mode}
+                          type="button"
+                          onClick={() => setExpensePaymentMode(mode)}
+                          className={`flex-1 min-h-[40px] ${controlRadiusClass} border text-xs font-semibold uppercase tracking-wider transition-all ${
+                            isSelected
+                              ? "border-orbit-accent bg-orbit-accent/15 text-orbit-accent"
+                              : "border-orbit-border bg-orbit-surface text-orbit-text-muted hover:text-orbit-text"
+                          }`}
+                        >
+                          {mode}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
+                    Date
+                  </label>
+                  <input
+                    type="date"
+                    value={expenseDate}
+                    onChange={(e) => setExpenseDate(e.target.value)}
+                    className={`w-full min-h-[40px] border border-orbit-border bg-orbit-surface-secondary px-3 py-2 text-sm text-orbit-text focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors ${controlRadiusClass}`}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
+                  Note (Optional)
+                </label>
+                <input
+                  type="text"
+                  maxLength={160}
+                  value={expenseNote}
+                  onChange={(e) => setExpenseNote(e.target.value)}
+                  placeholder="e.g. Chai, Metro, Groceries"
+                  className={`w-full border border-orbit-border bg-orbit-surface-secondary px-3 py-2 text-sm text-orbit-text placeholder:text-orbit-text-muted focus:border-orbit-accent focus:bg-orbit-surface focus:outline-hidden transition-colors ${controlRadiusClass}`}
+                />
+              </div>
+            </>
+          )}
+
           {/* Priority Pills (for actionable items) or Collection Selector (for Library items) */}
-          {isLibraryCategory ? (
+          {!isExpenseCategory && (
+            <>
+              {isLibraryCategory ? (
             <div>
               <label className="mb-1.5 block text-xs font-semibold text-orbit-text-secondary">
                 Collection (Optional)
@@ -1003,6 +1195,8 @@ function QuickCaptureDialog() {
               </label>
             </div>
           )}
+            </>
+          )}
 
           <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-orbit-border">
             <Button
@@ -1017,7 +1211,7 @@ function QuickCaptureDialog() {
               type="submit"
               variant="primary"
               loading={isSubmitting}
-              disabled={!title.trim() || isSubmitting}
+              disabled={isSubmitting || (!isExpenseCategory && !title.trim())}
               trailingIcon={<ArrowRight className="h-4 w-4" />}
               className={
                 isMinimalist
@@ -1048,7 +1242,7 @@ export function QuickCaptureModal() {
   const { quickCaptureOpen, quickCaptureInitialData } = useUIStore();
 
   const dialogKey = quickCaptureOpen
-    ? `${quickCaptureInitialData?.title ?? ""}-${quickCaptureInitialData?.link ?? ""}-${quickCaptureInitialData?.notes ?? ""}-${quickCaptureInitialData?.category ?? ""}`
+    ? `${quickCaptureInitialData?.defaultTab ?? ""}-${quickCaptureInitialData?.title ?? ""}-${quickCaptureInitialData?.link ?? ""}-${quickCaptureInitialData?.notes ?? ""}-${quickCaptureInitialData?.category ?? ""}`
     : "closed";
 
   return (

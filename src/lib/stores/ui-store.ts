@@ -6,6 +6,7 @@ export interface QuickCaptureInitialData {
   notes?: string;
   link?: string;
   category?: string;
+  defaultTab?: string;
 }
 
 export function parseShareTargetDraft(
@@ -112,7 +113,7 @@ export const useUIStore = create<UIState>((set) => ({
       data &&
       typeof data === "object" &&
       !("nativeEvent" in data) &&
-      ("title" in data || "notes" in data || "link" in data || "category" in data)
+      ("title" in data || "notes" in data || "link" in data || "category" in data || "defaultTab" in data)
     ) {
       set({
         quickCaptureOpen: true,

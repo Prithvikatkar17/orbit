@@ -229,9 +229,15 @@ export function SearchModal() {
   }
 
   // Handle Quick Capture shortcut (Ctrl+N / Cmd+N) or fallback action
-  function handleOpenQuickCapture(prefillTitle?: string) {
+  function handleOpenQuickCapture(
+    prefill?: string | { defaultTab?: string; title?: string; notes?: string; link?: string; category?: string }
+  ) {
     closeSearch();
-    useUIStore.getState().openQuickCapture(prefillTitle ? { title: prefillTitle } : undefined);
+    if (typeof prefill === "string") {
+      useUIStore.getState().openQuickCapture(prefill ? { title: prefill } : undefined);
+    } else {
+      useUIStore.getState().openQuickCapture(prefill);
+    }
   }
 
   // Live screen reader announcement
@@ -275,7 +281,7 @@ export function SearchModal() {
             setTheme,
             currentTheme: theme,
             closePalette: closeSearch,
-            openQuickCapture: () => handleOpenQuickCapture(),
+            openQuickCapture: (data) => handleOpenQuickCapture(data),
           });
         }
         return;
@@ -741,7 +747,7 @@ export function SearchModal() {
                           setTheme,
                           currentTheme: theme,
                           closePalette: closeSearch,
-                          openQuickCapture: () => handleOpenQuickCapture(),
+                          openQuickCapture: (data) => handleOpenQuickCapture(data),
                         });
                       }}
                       className={`group flex items-center justify-between rounded-lg px-3 py-2 text-xs cursor-pointer transition-colors ${

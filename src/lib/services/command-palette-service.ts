@@ -8,7 +8,13 @@ export interface CommandContext {
   setTheme: (theme: "light" | "dark" | "system") => void;
   currentTheme?: string;
   closePalette: () => void;
-  openQuickCapture?: () => void;
+  openQuickCapture?: (data?: {
+    defaultTab?: string;
+    title?: string;
+    notes?: string;
+    link?: string;
+    category?: string;
+  }) => void;
 }
 
 export interface CommandPaletteItem {
@@ -308,6 +314,17 @@ export const COMMAND_PALETTE_ITEMS: CommandPaletteItem[] = [
     run: (ctx) => {
       ctx.closePalette();
       ctx.openQuickCapture?.();
+    },
+  },
+  {
+    id: "action-log-expense",
+    category: "Actions",
+    title: "Log Expense",
+    description: "Open Quick Capture directly on the Expense tab",
+    keywords: ["expense", "log", "spend", "money", "inr", "upi", "capture"],
+    run: (ctx) => {
+      ctx.closePalette();
+      ctx.openQuickCapture?.({ defaultTab: "expense" });
     },
   },
 ];
