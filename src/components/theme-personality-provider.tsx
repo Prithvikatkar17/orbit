@@ -1,13 +1,17 @@
 "use client";
 
 import * as React from "react";
+import { useTheme } from "next-themes";
 import {
   DEFAULT_THEME_PERSONALITY,
   ThemePersonality,
   ThemePersonalitySchema,
 } from "@/lib/schemas/settings";
 import { db } from "@/lib/db/client";
-import { syncSettingsToSQLite } from "@/lib/services/vault-sync-service";
+import {
+  reconcileSettingsFromSQLite,
+  syncSettingsToSQLite,
+} from "@/lib/services/vault-sync-service";
 import { useMounted } from "@/lib/utils/dates";
 
 interface ThemePersonalityContextValue {
@@ -46,6 +50,7 @@ export function ThemePersonalityProvider({
   children: React.ReactNode;
 }) {
   const [personality, setPersonality] = React.useState<ThemePersonality>(getInitialPersonality);
+  const { setTheme } = useTheme();
   const isLoaded = useMounted();
 
   // 1. Sync DOM attribute whenever personality state changes
@@ -55,18 +60,23 @@ export function ThemePersonalityProvider({
     }
   }, [personality]);
 
-  // 2. Mount-only hydration from Dexie user_settings with cancellation guard
+  // 2. Mount-only hydration: reconcile SQLite user_settings first, then hydrate Dexie -> state/localStorage
   React.useEffect(() => {
     let cancelled = false;
 
-    db.settings
-      .get("user_settings")
-      .then((settings) => {
-        if (cancelled) return;
-        if (settings?.themePersonality) {
+    (async () => {
+      try {
+        await reconcileSettingsFromSQLite();
+        const settings = await db.settings.get("user_settings");
+        if (cancelled || !settings) return;
+
+        if (settings.themePersonality) {
           const parsed = ThemePersonalitySchema.safeParse(settings.themePersonality);
           if (parsed.success) {
             setPersonality(parsed.data);
+            if (typeof document !== "undefined") {
+              document.documentElement.setAttribute("data-orbit-theme", parsed.data);
+            }
             try {
               localStorage.setItem(THEME_PERSONALITY_STORAGE_KEY, parsed.data);
             } catch {
@@ -74,15 +84,19 @@ export function ThemePersonalityProvider({
             }
           }
         }
-      })
-      .catch((err) => {
+
+        if (settings.theme) {
+          setTheme(settings.theme);
+        }
+      } catch (err) {
         console.error("Failed to load theme personality from DB:", err);
-      });
+      }
+    })();
 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [setTheme]);
 
   const setThemePersonality = React.useCallback(
     async (next: ThemePersonality) => {

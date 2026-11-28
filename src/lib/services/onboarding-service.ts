@@ -5,6 +5,10 @@ import {
   type ThemePersonality,
 } from "@/lib/schemas/settings";
 import { THEME_PERSONALITY_STORAGE_KEY } from "@/components/theme-personality-provider";
+import {
+  reconcileSettingsFromSQLite,
+  syncSettingsToSQLite,
+} from "@/lib/services/vault-sync-service";
 
 export const ONBOARDING_STORAGE_KEY = "orbit_onboarding_completed_version";
 
@@ -35,7 +39,16 @@ export async function checkOnboardingStatus(): Promise<OnboardingStatusResult> {
     }
   }
 
-  // 2. Deep check in Dexie IndexedDB
+  // 2. Hydrate settings from SQLite first (when available) so welcome dismissal survives origin/cache resets
+  if (typeof window !== "undefined") {
+    try {
+      await reconcileSettingsFromSQLite();
+    } catch {
+      // Non-fatal in offline/restricted mode
+    }
+  }
+
+  // 3. Deep check in Dexie IndexedDB
   try {
     const settings = await db.settings.get("user_settings");
 
@@ -141,6 +154,7 @@ export async function completeOnboarding(options?: {
         updatedAt: nowIso,
       });
     }
+    await syncSettingsToSQLite();
   } catch (err) {
     console.error("Failed to persist onboarding completion to Dexie:", err);
     // We already persisted to localStorage, so user can proceed
@@ -181,6 +195,7 @@ async function autoMarkExistingUserCompleted(
         updatedAt: nowIso,
       });
     }
+    await syncSettingsToSQLite();
   } catch {
     // ignore
   }

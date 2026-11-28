@@ -11,17 +11,29 @@ let mainWindow = null;
 let serverProcess = null;
 let isQuitting = false;
 
-function getFreePort() {
+function tryBindPort(port) {
   return new Promise((resolve, reject) => {
     const srv = net.createServer();
     srv.unref();
     srv.on("error", reject);
-    srv.listen(0, "127.0.0.1", () => {
+    srv.listen(port, "127.0.0.1", () => {
       const address = srv.address();
-      const port = typeof address === "object" && address ? address.port : 3000;
-      srv.close(() => resolve(port));
+      const boundPort =
+        typeof address === "object" && address ? address.port : port;
+      srv.close(() => resolve(boundPort));
     });
   });
+}
+
+async function getPreferredPort(startPort = 47831, endPort = 47850) {
+  for (let port = startPort; port <= endPort; port++) {
+    try {
+      return await tryBindPort(port);
+    } catch {
+      // Port busy; try next sequential port
+    }
+  }
+  return tryBindPort(0);
 }
 
 function waitForServerReady(url, timeoutMs = 20000) {
@@ -78,7 +90,7 @@ async function createMainWindow() {
   const dbPath = path.join(userDataDir, "orbit.sqlite");
   process.env.ORBIT_DB_PATH = dbPath;
 
-  const port = await getFreePort();
+  const port = await getPreferredPort(47831, 47850);
   const standaloneDir = resolveStandaloneDir();
   const serverJs = path.join(standaloneDir, "server.js");
 
