@@ -17,6 +17,7 @@ const nextConfig = isStaticExport
       trailingSlash: true,
     }
   : {
+      output: "standalone",
       serverExternalPackages: ["better-sqlite3"],
     };
 

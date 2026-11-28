@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { sqlite } from "@/lib/db";
+import { sqlite, getDbPath } from "@/lib/db";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   // Metadata query: ?meta=1
   if (searchParams.get("meta") === "1") {
     try {
-      const dbPath = path.resolve("orbit.sqlite");
+      const dbPath = path.resolve(getDbPath());
       let sizeBytes = 0;
       let lastModified: string | null = null;
 

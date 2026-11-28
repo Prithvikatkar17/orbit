@@ -1,21 +1,24 @@
 {
   "name": "orbit",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
+  "main": "electron/main.cjs",
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "build:static": "node scripts/build-static.mjs",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "electron:rebuild": "node scripts/rebuild-electron-sqlite.mjs",
+    "dist:win": "npm run build && node scripts/prepare-electron.mjs && npm run electron:rebuild && electron-builder --win nsis"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@serwist/next": "^9.5.14",
-    "better-sqlite3": "^13.2.0",
+    "better-sqlite3": "^12.11.1",
     "caniuse-lite": "1.0.30001823",
     "clsx": "^2.1.1",
     "dexie": "^4.4.7",
@@ -33,6 +36,7 @@
     "zustand": "^5.0.16"
   },
   "devDependencies": {
+    "@electron/rebuild": "^4.2.1",
     "@tailwindcss/postcss": "^4.3.4",
     "@tailwindcss/turbopack": "^4",
     "@types/better-sqlite3": "^9.6.0",
@@ -40,10 +44,66 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "drizzle-kit": "^0.31.11",
+    "electron": "^42.11.18",
+    "electron-builder": "^26.18.0",
     "es-abstract": "^1.24.2",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
+    "prebuild-install": "^7.1.3",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "build": {
+    "appId": "com.prithvikatkar.orbit",
+    "productName": "ORBIT",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "electron/**/*",
+      "package.json",
+      "!**/*.sqlite",
+      "!**/*.sqlite-wal",
+      "!**/*.sqlite-shm",
+      "!**/*.sqlite-journal",
+      "!**/.env*",
+      "!out/**",
+      "!electron-standalone/**"
+    ],
+    "extraResources": [
+      {
+        "from": "electron-standalone",
+        "to": "standalone",
+        "filter": [
+          "**/*",
+          "!**/*.sqlite",
+          "!**/*.sqlite-wal",
+          "!**/*.sqlite-shm",
+          "!**/*.sqlite-journal",
+          "!**/.env*",
+          "!out/**"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "public/icons/icon-512x512.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "ORBIT",
+      "artifactName": "ORBIT-Setup-1.0.0.exe"
+    }
   }
 }

@@ -22,6 +22,8 @@ public/sw*
 
 # production
 /build
+/dist-electron/
+/electron-standalone/
 
 # misc
 .DS_Store
