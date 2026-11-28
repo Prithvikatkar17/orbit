@@ -59,6 +59,11 @@
     "directories": {
       "output": "dist-electron"
     },
+    "afterPack": "./scripts/after-pack.cjs",
+    "npmRebuild": false,
+    "asarUnpack": [
+      "**/*.node"
+    ],
     "files": [
       "electron/**/*",
       "package.json",
@@ -75,13 +80,7 @@
         "from": "electron-standalone",
         "to": "standalone",
         "filter": [
-          "**/*",
-          "!**/*.sqlite",
-          "!**/*.sqlite-wal",
-          "!**/*.sqlite-shm",
-          "!**/*.sqlite-journal",
-          "!**/.env*",
-          "!out/**"
+          "**/*"
         ]
       }
     ],

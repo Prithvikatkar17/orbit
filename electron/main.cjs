@@ -86,6 +86,9 @@ async function createMainWindow() {
     throw new Error(`ORBIT standalone server not found at: ${serverJs}`);
   }
 
+  let stderrBuffer = "";
+  let earlyExitError = null;
+
   serverProcess = fork(serverJs, [], {
     cwd: standaloneDir,
     stdio: "pipe",
@@ -100,11 +103,31 @@ async function createMainWindow() {
   });
 
   serverProcess.stderr?.on("data", (chunk) => {
-    console.error("[ORBIT Server]", chunk.toString());
+    const text = chunk.toString();
+    stderrBuffer += text;
+    console.error("[ORBIT Server]", text);
+  });
+
+  serverProcess.on("exit", (code, signal) => {
+    if (!isQuitting && !mainWindow) {
+      earlyExitError = new Error(
+        `ORBIT server exited early (code=${code}, signal=${signal}).\n\n${stderrBuffer.trim()}`
+      );
+    }
   });
 
   const serverUrl = `http://127.0.0.1:${port}`;
-  await waitForServerReady(serverUrl);
+  try {
+    await waitForServerReady(serverUrl);
+  } catch (err) {
+    if (earlyExitError) throw earlyExitError;
+    const detail = stderrBuffer.trim()
+      ? `${err instanceof Error ? err.message : String(err)}\n\n${stderrBuffer.trim()}`
+      : err instanceof Error
+      ? err.message
+      : String(err);
+    throw new Error(detail);
+  }
 
   const iconPath = path.join(
     standaloneDir,

@@ -51,4 +51,17 @@ function scrubSensitiveFiles(dir) {
 }
 
 scrubSensitiveFiles(destDir);
-console.log("[prepare-electron] Staged clean standalone server into electron-standalone/");
+
+const REQUIRED_PATHS = [
+  path.join(destDir, "server.js"),
+  path.join(destDir, "node_modules", "next", "package.json"),
+  path.join(destDir, "node_modules", "better-sqlite3", "build", "Release", "better_sqlite3.node"),
+];
+
+for (const reqPath of REQUIRED_PATHS) {
+  if (!fs.existsSync(reqPath)) {
+    throw new Error(`[prepare-electron] Missing required staged file: ${reqPath}`);
+  }
+}
+
+console.log("[prepare-electron] Verified server.js, next, and better_sqlite3.node in electron-standalone/");
