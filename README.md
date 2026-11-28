@@ -2,6 +2,11 @@
 
 > **"Your Local-First Personal OS. Zero Cloud. Zero Subscriptions."**
 
+- **Live Product Website:** [https://orbit-os-bjh.pages.dev](https://orbit-os-bjh.pages.dev)
+- **Live Browser App (Zero-Install Offline PWA):** [https://orbit-app-2fa.pages.dev](https://orbit-app-2fa.pages.dev)
+- **Website Source Repository:** [https://github.com/Prithvikatkar17/orbit-website](https://github.com/Prithvikatkar17/orbit-website)
+- **Windows Desktop Releases (`.exe`):** [https://github.com/Prithvikatkar17/orbit/releases/latest](https://github.com/Prithvikatkar17/orbit/releases/latest)
+
 ORBIT is a local-first personal workspace uniting **Inbox Triage**, **Tasks**, **Habit Heatmaps**, **Daily Expenses (`₹` INR)**, **Calendar & Reminders**, **Personal Library**, and **Insights & Telemetry** inside a single private, keyboard-driven application.
 
 ---
