@@ -29,6 +29,8 @@ import { db } from "@/lib/db/client";
 import { NotificationCenter } from "@/components/reminders/notification-center";
 import { useMounted } from "@/lib/utils/dates";
 import { flushSyncQueue } from "@/lib/services/sync-queue-service";
+import { syncSettingsToSQLite } from "@/lib/services/vault-sync-service";
+import { useThemePersonality } from "@/components/theme-personality-provider";
 
 const NAV_ITEMS = [
   { name: "Home", href: "/", icon: Home },
@@ -46,6 +48,7 @@ export function Sidebar() {
   const pathname = usePathname();
   const mounted = useMounted();
   const { theme, resolvedTheme, setTheme } = useTheme();
+  const { themePersonality } = useThemePersonality();
   const { sidebarOpen, setSidebarOpen, openQuickCapture } = useUIStore();
   const openSearch = useSearchStore((s) => s.openSearch);
   const inboxCount = useLiveQuery(() => db.items.where("status").equals("pending").count(), []) ?? 0;
@@ -58,6 +61,40 @@ export function Sidebar() {
   const wasOpenRef = useRef(false);
 
   const isDark = (resolvedTheme || theme) === "dark";
+
+  async function handleToggleTheme() {
+    if (!mounted) return;
+    const nextTheme: "light" | "dark" = isDark ? "light" : "dark";
+    setTheme(nextTheme);
+
+    try {
+      const nowIso = new Date().toISOString();
+      const existing = await db.settings.get("user_settings");
+      if (existing) {
+        await db.settings.update("user_settings", {
+          theme: nextTheme,
+          updatedAt: nowIso,
+        });
+      } else {
+        await db.settings.add({
+          id: "user_settings",
+          theme: nextTheme,
+          themePersonality: themePersonality || "archivist",
+          defaultPriority: "medium",
+          defaultReminderTime: "09:00",
+          weekStartsOn: "monday",
+          dateFormat: "DD/MM/YYYY",
+          notificationsEnabled: true,
+          heatmapDays: 180,
+          schemaVersion: 1,
+          updatedAt: nowIso,
+        });
+      }
+      void syncSettingsToSQLite();
+    } catch (err) {
+      console.warn("Failed to persist sidebar theme toggle:", err);
+    }
+  }
 
   // Track desktop (>= 1024px) breakpoint for drawer inertness & auto-close
   useEffect(() => {
@@ -301,11 +338,7 @@ export function Sidebar() {
         <div className="shrink-0 border-t border-orbit-border pt-3">
           <button
             type="button"
-            onClick={() => {
-              if (mounted) {
-                setTheme(isDark ? "light" : "dark");
-              }
-            }}
+            onClick={() => void handleToggleTheme()}
             className="flex min-h-[44px] w-full items-center justify-between rounded-orbit-control px-3.5 py-2.5 text-sm font-medium text-orbit-text-secondary hover:bg-orbit-subtle hover:text-orbit-text transition-colors"
             aria-label="Toggle light and dark theme"
           >

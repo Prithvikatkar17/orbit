@@ -249,4 +249,22 @@ test("Phase 18: Full SQLite Data Vault Migration Verification", async (t) => {
       globalThis.fetch = originalFetch;
     }
   });
+
+  await t.test("5. ThemePersonalityProvider hydration ref-guard & Sidebar 3-layer Light/Dark sync", () => {
+    const providerContent = fs.readFileSync(
+      path.join(ROOT_DIR, "src", "components", "theme-personality-provider.tsx"),
+      "utf-8"
+    );
+    assert.match(providerContent, /hasHydratedRef = React\.useRef\(false\)/);
+    assert.match(providerContent, /if \(hasHydratedRef\.current\) return;/);
+
+    const sidebarContent = fs.readFileSync(
+      path.join(ROOT_DIR, "src", "components", "sidebar.tsx"),
+      "utf-8"
+    );
+    assert.match(sidebarContent, /async function handleToggleTheme\(\)/);
+    assert.match(sidebarContent, /setTheme\(nextTheme\)/);
+    assert.match(sidebarContent, /db\.settings\.(update|add)/);
+    assert.match(sidebarContent, /syncSettingsToSQLite\(\)/);
+  });
 });

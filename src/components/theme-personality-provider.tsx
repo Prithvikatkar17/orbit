@@ -52,6 +52,7 @@ export function ThemePersonalityProvider({
   const [personality, setPersonality] = React.useState<ThemePersonality>(getInitialPersonality);
   const { setTheme } = useTheme();
   const isLoaded = useMounted();
+  const hasHydratedRef = React.useRef(false);
 
   // 1. Sync DOM attribute whenever personality state changes
   React.useEffect(() => {
@@ -60,8 +61,11 @@ export function ThemePersonalityProvider({
     }
   }, [personality]);
 
-  // 2. Mount-only hydration: reconcile SQLite user_settings first, then hydrate Dexie -> state/localStorage
+  // 2. Mount-only hydration: reconcile SQLite user_settings ONCE, then hydrate Dexie -> state/localStorage
   React.useEffect(() => {
+    if (hasHydratedRef.current) return;
+    hasHydratedRef.current = true;
+
     let cancelled = false;
 
     (async () => {

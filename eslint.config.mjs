@@ -11,10 +11,19 @@ const eslintConfig = defineConfig([
     ".next/**",
     "out/**",
     "build/**",
+    "dist-electron/**",
+    "electron-standalone/**",
+    ".orbit-static-api-backup/**",
     "public/**",
     "next-env.d.ts",
     "legacy/**",
   ]),
+  {
+    files: ["**/*.cjs"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;
